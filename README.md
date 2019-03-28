@@ -1,6 +1,6 @@
-# JupiterOne Managed Integration Example
+# JupiterOne Managed Integration for Tenable.io
 
-[![Build Status](https://travis-ci.org/JupiterOne/managed-integration-example.svg?branch=master)](https://travis-ci.org/JupterOne/managed-integration-example)
+[![Build Status](https://travis-ci.org/JupiterOne/jupiter-integration-tenable-cloud.svg?branch=master)](https://travis-ci.org/JupterOne/jupiter-integration-tenable-cloud)
 
 A JupiterOne integration ingests information such as configurations and other
 metadata about digital and physical assets belonging to an organization. The

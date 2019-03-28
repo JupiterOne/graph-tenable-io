@@ -1,9 +1,9 @@
 {
-  "name": "@jupiterone/managed-integration-example",
+  "name": "@jupiterone/jupiter-integration-tenable-cloud",
   "version": "0.1.0",
-  "description": "An example JupiterOne managed integration.",
+  "description": "A JupiterOne managed integration for https://www.tenable.com/products/tenable-io",
   "main": "index.js",
-  "repository": "https://github.com/JupiterOne/managed-integration-example",
+  "repository": "https://github.com/JupiterOne/jupiter-integration-tenable-cloud",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "start": "ts-node --require dotenv/config tools/execute.ts | bunyan",
