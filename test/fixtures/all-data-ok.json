@@ -1,0 +1,1983 @@
+[
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/assets",
+    "body": "",
+    "status": 200,
+    "response": {
+      "assets": [
+        {
+          "id": "5cf9ecff-6867-46df-bf8f-d819fc8ed0b0",
+          "has_agent": false,
+          "last_seen": "2019-04-15T12:16:15.622Z",
+          "sources": [
+            {
+              "name": "WAS",
+              "first_seen": "2019-04-12T10:48:00.711Z",
+              "last_seen": "2019-04-12T10:48:00.711Z"
+            },
+            {
+              "name": "NESSUS_SCAN",
+              "first_seen": "2019-04-15T12:16:15.622Z",
+              "last_seen": "2019-04-15T12:16:15.622Z"
+            }
+          ],
+          "ipv4": ["18.221.79.150"],
+          "ipv6": [],
+          "fqdn": ["dualboot.ru"],
+          "netbios_name": [],
+          "operating_system": [
+            "Linux Kernel 2.2",
+            "Linux Kernel 2.4",
+            "Linux Kernel 2.6"
+          ],
+          "agent_name": [],
+          "aws_ec2_name": [],
+          "mac_address": []
+        },
+        {
+          "id": "df0f891f-f18b-4047-8fe1-6e15ca7798a8",
+          "has_agent": false,
+          "last_seen": "2019-04-15T12:16:15.622Z",
+          "sources": [
+            {
+              "name": "WAS",
+              "first_seen": "2019-04-12T10:48:54.822Z",
+              "last_seen": "2019-04-12T10:48:54.822Z"
+            },
+            {
+              "name": "NESSUS_SCAN",
+              "first_seen": "2019-04-15T12:16:15.622Z",
+              "last_seen": "2019-04-15T12:16:15.622Z"
+            }
+          ],
+          "ipv4": ["185.203.72.17"],
+          "ipv6": [],
+          "fqdn": ["dualbootpartners.com"],
+          "netbios_name": [],
+          "operating_system": [],
+          "agent_name": [],
+          "aws_ec2_name": [],
+          "mac_address": []
+        }
+      ],
+      "total": 2
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:23 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "1007",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Frame-Options",
+      "DENY",
+      "X-Xss-Protection",
+      "mode=block",
+      "X-Request-Uuid",
+      "2e1912cbdf2eb71b52d71c1b9702f732",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/users",
+    "body": "",
+    "status": 200,
+    "response": {
+      "users": [
+        {
+          "uuid": "671e65d5-4101-4e97-8448-f86272407b46",
+          "id": 2,
+          "user_name": "denis.arkhireev@dualbootpartners.com",
+          "username": "denis.arkhireev@dualbootpartners.com",
+          "email": "denis.arkhireev@dualbootpartners.com",
+          "name": "Denis Arkhireev",
+          "type": "local",
+          "container_uuid": "a01249a3-3547-4961-9d5d-9c74d296169d",
+          "permissions": 64,
+          "login_fail_count": 0,
+          "login_fail_total": 0,
+          "enabled": true,
+          "lastlogin": 1555420696094,
+          "uuid_id": "671e65d5-4101-4e97-8448-f86272407b46"
+        }
+      ]
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:23 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "459",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "X-Request-Uuid",
+      "5d63d4d2b3e1f2d873db1571d0d8529a",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Frame-Options",
+      "DENY",
+      "X-Xss-Protection",
+      "mode=block",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans",
+    "body": "",
+    "status": 200,
+    "response": {
+      "folders": [
+        {
+          "unread_count": 0,
+          "custom": 0,
+          "default_tag": 0,
+          "type": "trash",
+          "name": "Trash",
+          "id": 7
+        },
+        {
+          "unread_count": 0,
+          "custom": 0,
+          "default_tag": 1,
+          "type": "main",
+          "name": "My Scans",
+          "id": 8
+        }
+      ],
+      "scans": [
+        {
+          "legacy": false,
+          "permissions": 128,
+          "type": "webapp",
+          "read": true,
+          "last_modification_date": 1555068471,
+          "creation_date": 1555066123,
+          "status": "completed",
+          "uuid": "32c22094-3343-4163-a3ac-3863926b96e9",
+          "shared": false,
+          "user_permissions": 128,
+          "owner": "denis.arkhireev@dualbootpartners.com",
+          "schedule_uuid": "template-2a48d3bb-1cd9-28a1-7742-c26c40ac09f7591cd108d64699c9",
+          "timezone": null,
+          "rrules": null,
+          "starttime": null,
+          "enabled": false,
+          "control": true,
+          "name": ".com",
+          "id": 12
+        },
+        {
+          "legacy": false,
+          "permissions": 128,
+          "type": "ps",
+          "read": true,
+          "last_modification_date": 1555330669,
+          "creation_date": 1555329315,
+          "status": "completed",
+          "uuid": "598df0a7-8ec1-478f-b0e4-a3762c8372db",
+          "shared": false,
+          "user_permissions": 128,
+          "owner": "denis.arkhireev@dualbootpartners.com",
+          "schedule_uuid": "template-68d391a6-dd92-e1e0-4a9c-28e61716080660877649d32f60e1",
+          "timezone": null,
+          "rrules": null,
+          "starttime": null,
+          "enabled": false,
+          "control": true,
+          "name": "basic network scan",
+          "id": 14
+        },
+        {
+          "legacy": false,
+          "permissions": 128,
+          "type": "webapp",
+          "read": true,
+          "last_modification_date": 1555066639,
+          "creation_date": 1555066072,
+          "status": "completed",
+          "uuid": "00190df0-6f12-4a04-80d8-a46edc310489",
+          "shared": false,
+          "user_permissions": 128,
+          "owner": "denis.arkhireev@dualbootpartners.com",
+          "schedule_uuid": "template-8c0959e2-2cdc-09c0-75a1-e349542d27074153e142624b9fcc",
+          "timezone": null,
+          "rrules": null,
+          "starttime": null,
+          "enabled": false,
+          "control": true,
+          "name": ".ru",
+          "id": 10
+        }
+      ],
+      "timestamp": 1555449383
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:23 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "1597",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Pragma",
+      "",
+      "Expires",
+      "0",
+      "X-Frame-Options",
+      "DENY",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Xss-Protection",
+      "mode=block",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Request-Uuid",
+      "8ca2fa4fe8305762112b4bd8b85c0008",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans/10",
+    "body": "",
+    "status": 200,
+    "response": {
+      "info": {
+        "owner": "denis.arkhireev@dualbootpartners.com",
+        "name": ".ru",
+        "no_target": false,
+        "folder_id": 8,
+        "control": true,
+        "user_permissions": 128,
+        "schedule_uuid": "template-8c0959e2-2cdc-09c0-75a1-e349542d27074153e142624b9fcc",
+        "edit_allowed": false,
+        "scanner_name": "US Cloud Scanner",
+        "policy": "Web App Scan",
+        "shared": null,
+        "object_id": 10,
+        "acls": [
+          {
+            "permissions": 0,
+            "owner": null,
+            "display_name": null,
+            "name": null,
+            "id": null,
+            "type": "default"
+          },
+          {
+            "permissions": 128,
+            "owner": 1,
+            "display_name": "Denis Arkhireev",
+            "name": "denis.arkhireev@dualbootpartners.com",
+            "id": 2,
+            "type": "user"
+          }
+        ],
+        "hostcount": 0,
+        "uuid": "00190df0-6f12-4a04-80d8-a46edc310489",
+        "status": "completed",
+        "scan_type": "webapp",
+        "targets": "https://dualboot.ru/",
+        "alt_targets_used": false,
+        "pci-can-upload": false,
+        "scan_start": 1555066072,
+        "timestamp": 1555066639,
+        "scan_end": 1555066639,
+        "haskb": false,
+        "hasaudittrail": true,
+        "scanner_start": null,
+        "scanner_end": null
+      },
+      "history": [
+        {
+          "history_id": 12356235,
+          "owner_id": 2,
+          "creation_date": 1555066072,
+          "last_modification_date": 1555066639,
+          "uuid": "00190df0-6f12-4a04-80d8-a46edc310489",
+          "type": "webapp",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "count": 1,
+          "plugin_family": "General",
+          "plugin_id": 98138,
+          "plugin_name": "Screenshot",
+          "severity": 0
+        },
+        {
+          "count": 1,
+          "plugin_family": "General",
+          "plugin_id": 98000,
+          "plugin_name": "Scan Information",
+          "severity": 0
+        },
+        {
+          "count": 3,
+          "plugin_family": "Web Applications",
+          "plugin_id": 98050,
+          "plugin_name": "Interesting response",
+          "severity": 0
+        }
+      ],
+      "comphosts": [],
+      "compliance": [],
+      "notes": [],
+      "remediations": {
+        "num_cves": 0,
+        "num_hosts": 1,
+        "num_remediated_cves": 0,
+        "num_impacted_hosts": 0,
+        "remediations": []
+      }
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:25 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "20801",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Request-Uuid",
+      "4aa2fa17cfe2e918df8e2bbbada10850",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans/14",
+    "body": "",
+    "status": 200,
+    "response": {
+      "info": {
+        "owner": "denis.arkhireev@dualbootpartners.com",
+        "name": "basic network scan",
+        "no_target": false,
+        "folder_id": 8,
+        "control": true,
+        "user_permissions": 128,
+        "schedule_uuid": "template-68d391a6-dd92-e1e0-4a9c-28e61716080660877649d32f60e1",
+        "edit_allowed": false,
+        "scanner_name": "US Cloud Scanner",
+        "policy": "Basic Network Scan",
+        "shared": null,
+        "object_id": 14,
+        "acls": [
+          {
+            "permissions": 0,
+            "owner": null,
+            "display_name": null,
+            "name": null,
+            "id": null,
+            "type": "default"
+          },
+          {
+            "permissions": 128,
+            "owner": 1,
+            "display_name": "Denis Arkhireev",
+            "name": "denis.arkhireev@dualbootpartners.com",
+            "id": 2,
+            "type": "user"
+          }
+        ],
+        "hostcount": 2,
+        "uuid": "598df0a7-8ec1-478f-b0e4-a3762c8372db",
+        "status": "completed",
+        "scan_type": "ps",
+        "targets": "dualboot.ru, dualbootpartners.com",
+        "alt_targets_used": false,
+        "pci-can-upload": false,
+        "scan_start": 1555329315,
+        "timestamp": 1555330669,
+        "scan_end": 1555330669,
+        "haskb": true,
+        "hasaudittrail": true,
+        "scanner_start": null,
+        "scanner_end": null
+      },
+      "history": [
+        {
+          "history_id": 12392146,
+          "owner_id": 2,
+          "creation_date": 1555329315,
+          "last_modification_date": 1555330669,
+          "uuid": "598df0a7-8ec1-478f-b0e4-a3762c8372db",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        }
+      ],
+      "hosts": [
+        {
+          "asset_id": 2,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "progress": "100-100/200-200",
+          "scanprogresscurrent": 100,
+          "scanprogresstotal": 100,
+          "numchecksconsidered": 100,
+          "totalchecksconsidered": 100,
+          "severitycount": {
+            "item": [
+              {
+                "count": 30,
+                "severitylevel": 0
+              },
+              {
+                "count": 0,
+                "severitylevel": 1
+              },
+              {
+                "count": 0,
+                "severitylevel": 2
+              },
+              {
+                "count": 0,
+                "severitylevel": 3
+              },
+              {
+                "count": 0,
+                "severitylevel": 4
+              }
+            ]
+          },
+          "severity": 30,
+          "score": 30,
+          "info": 30,
+          "low": 0,
+          "medium": 0,
+          "high": 0,
+          "critical": 0,
+          "host_index": 0
+        },
+        {
+          "asset_id": 3,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "progress": "100-100/200-200",
+          "scanprogresscurrent": 100,
+          "scanprogresstotal": 100,
+          "numchecksconsidered": 100,
+          "totalchecksconsidered": 100,
+          "severitycount": {
+            "item": [
+              {
+                "count": 26,
+                "severitylevel": 0
+              },
+              {
+                "count": 0,
+                "severitylevel": 1
+              },
+              {
+                "count": 1,
+                "severitylevel": 2
+              },
+              {
+                "count": 0,
+                "severitylevel": 3
+              },
+              {
+                "count": 0,
+                "severitylevel": 4
+              }
+            ]
+          },
+          "severity": 27,
+          "score": 126,
+          "info": 26,
+          "low": 0,
+          "medium": 1,
+          "high": 0,
+          "critical": 0,
+          "host_index": 1
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "count": 4,
+          "plugin_id": 10107,
+          "plugin_name": "HTTP Server Type and Version",
+          "severity": 0,
+          "plugin_family": "Web Servers",
+          "vuln_index": 1
+        },
+        {
+          "count": 4,
+          "plugin_id": 11219,
+          "plugin_name": "Nessus SYN scanner",
+          "severity": 0,
+          "plugin_family": "Port scanners",
+          "vuln_index": 2
+        },
+        {
+          "count": 4,
+          "plugin_id": 24260,
+          "plugin_name": "HyperText Transfer Protocol (HTTP) Information",
+          "severity": 0,
+          "plugin_family": "Web Servers",
+          "vuln_index": 3
+        }
+      ],
+      "comphosts": [],
+      "compliance": [],
+      "notes": [],
+      "remediations": {
+        "num_cves": 3,
+        "num_hosts": 2,
+        "num_remediated_cves": 0,
+        "num_impacted_hosts": 0,
+        "remediations": []
+      }
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:25 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "23776",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Request-Uuid",
+      "b09f06589e842d616b48d1dbb39a6359",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans/12",
+    "body": "",
+    "status": 200,
+    "response": {
+      "info": {
+        "owner": "denis.arkhireev@dualbootpartners.com",
+        "name": ".com",
+        "no_target": false,
+        "folder_id": 8,
+        "control": true,
+        "user_permissions": 128,
+        "schedule_uuid": "template-2a48d3bb-1cd9-28a1-7742-c26c40ac09f7591cd108d64699c9",
+        "edit_allowed": false,
+        "scanner_name": "US Cloud Scanner",
+        "policy": "Web App Scan",
+        "shared": null,
+        "object_id": 12,
+        "acls": [
+          {
+            "permissions": 0,
+            "owner": null,
+            "display_name": null,
+            "name": null,
+            "id": null,
+            "type": "default"
+          },
+          {
+            "permissions": 128,
+            "owner": 1,
+            "display_name": "Denis Arkhireev",
+            "name": "denis.arkhireev@dualbootpartners.com",
+            "id": 2,
+            "type": "user"
+          }
+        ],
+        "hostcount": 0,
+        "uuid": "32c22094-3343-4163-a3ac-3863926b96e9",
+        "status": "completed",
+        "scan_type": "webapp",
+        "targets": "https://dualbootpartners.com",
+        "alt_targets_used": false,
+        "pci-can-upload": false,
+        "scan_start": 1555066123,
+        "timestamp": 1555068471,
+        "scan_end": 1555068471,
+        "haskb": false,
+        "hasaudittrail": true,
+        "scanner_start": null,
+        "scanner_end": null
+      },
+      "history": [
+        {
+          "history_id": 12356240,
+          "owner_id": 2,
+          "creation_date": 1555066123,
+          "last_modification_date": 1555068471,
+          "uuid": "32c22094-3343-4163-a3ac-3863926b96e9",
+          "type": "webapp",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        }
+      ],
+      "hosts": [
+        {
+          "host_index": 0,
+          "critical": 0,
+          "high": 0,
+          "medium": 4,
+          "low": 9,
+          "info": 12,
+          "severity": 25,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com"
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "count": 1,
+          "plugin_family": "Web Applications",
+          "plugin_id": 112526,
+          "plugin_name": "Missing 'X-XSS-Protection' Header",
+          "severity": 1
+        },
+        {
+          "count": 1,
+          "plugin_family": "Web Servers",
+          "plugin_id": 112530,
+          "plugin_name": "SSL/TLS Versions Supported",
+          "severity": 0
+        },
+        {
+          "count": 1,
+          "plugin_family": "Web Servers",
+          "plugin_id": 115491,
+          "plugin_name": "SSL/TLS Cipher Suites Supported",
+          "severity": 0
+        }
+      ],
+      "comphosts": [],
+      "compliance": [],
+      "notes": [],
+      "remediations": {
+        "num_cves": 0,
+        "num_hosts": 1,
+        "num_remediated_cves": 0,
+        "num_impacted_hosts": 0,
+        "remediations": []
+      }
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:25 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "21535",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Request-Uuid",
+      "5ed279d73eec023ddd619f5d05ce40ad",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans/12/hosts/1",
+    "body": "",
+    "status": 200,
+    "response": {
+      "info": {
+        "host_start": "2019-04-12T10:48:54.822Z",
+        "host_end": "2019-04-12T11:25:35.239Z",
+        "host-ip": "dualbootpartners.com"
+      },
+      "vulnerabilities": [
+        {
+          "vuln_index": 0,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112526,
+          "plugin_name": "Missing 'X-XSS-Protection' Header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 0,
+          "severity": 1
+        },
+        {
+          "vuln_index": 1,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112530,
+          "plugin_name": "SSL/TLS Versions Supported",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 1,
+          "severity": 0
+        },
+        {
+          "vuln_index": 2,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 115491,
+          "plugin_name": "SSL/TLS Cipher Suites Supported",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 2,
+          "severity": 0
+        },
+        {
+          "vuln_index": 3,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98138,
+          "plugin_name": "Screenshot",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 3,
+          "severity": 0
+        },
+        {
+          "vuln_index": 4,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98056,
+          "plugin_name": "Missing 'Strict-Transport-Security' header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 4,
+          "severity": 2
+        },
+        {
+          "vuln_index": 5,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112551,
+          "plugin_name": "Missing Content Security Policy",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 5,
+          "severity": 1
+        },
+        {
+          "vuln_index": 6,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98050,
+          "plugin_name": "Interesting response",
+          "plugin_family": "Web Applications",
+          "count": 3,
+          "severity_index": 6,
+          "severity": 0
+        },
+        {
+          "vuln_index": 7,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98064,
+          "plugin_name": "Cookie Without Secure Flag Detected",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 7,
+          "severity": 1
+        },
+        {
+          "vuln_index": 8,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 115540,
+          "plugin_name": "Cookie Without SameSite Flag Detected",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 8,
+          "severity": 1
+        },
+        {
+          "vuln_index": 9,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112376,
+          "plugin_name": "Bootstrap 4.x < 4.3.1 Cross-site Scripting",
+          "plugin_family": "Component Vulnerability",
+          "count": 1,
+          "severity_index": 9,
+          "severity": 2
+        },
+        {
+          "vuln_index": 10,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112374,
+          "plugin_name": "Bootstrap 4.0.0 < 4.1.2 Cross-site Scripting",
+          "plugin_family": "Component Vulnerability",
+          "count": 1,
+          "severity_index": 10,
+          "severity": 2
+        },
+        {
+          "vuln_index": 11,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98000,
+          "plugin_name": "Scan Information",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 11,
+          "severity": 0
+        },
+        {
+          "vuln_index": 12,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98063,
+          "plugin_name": "Cookie Without HttpOnly Flag Detected",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 12,
+          "severity": 1
+        },
+        {
+          "vuln_index": 13,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112491,
+          "plugin_name": "SSL/TLS Certificate Information",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 13,
+          "severity": 0
+        },
+        {
+          "vuln_index": 14,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98059,
+          "plugin_name": "Technologies Detected",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 14,
+          "severity": 0
+        },
+        {
+          "vuln_index": 15,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98009,
+          "plugin_name": "Web Application Sitemap",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 15,
+          "severity": 0
+        },
+        {
+          "vuln_index": 16,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98136,
+          "plugin_name": "Target Information",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 16,
+          "severity": 0
+        },
+        {
+          "vuln_index": 17,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112529,
+          "plugin_name": "Missing 'X-Content-Type-Options' Header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 17,
+          "severity": 1
+        },
+        {
+          "vuln_index": 18,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 98060,
+          "plugin_name": "Missing 'X-Frame-Options' header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 18,
+          "severity": 1
+        },
+        {
+          "vuln_index": 19,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112434,
+          "plugin_name": "jQuery 1.4.0 < 1.12.0 Cross-site Scripting",
+          "plugin_family": "Component Vulnerability",
+          "count": 1,
+          "severity_index": 19,
+          "severity": 2
+        },
+        {
+          "vuln_index": 20,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112496,
+          "plugin_name": "TLS 1.0 Weak Protocol",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 20,
+          "severity": 1
+        },
+        {
+          "vuln_index": 21,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112546,
+          "plugin_name": "TLS 1.1 Deprecated Protocol",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 21,
+          "severity": 0
+        },
+        {
+          "vuln_index": 22,
+          "host_id": 1,
+          "hostname": "dualbootpartners.com",
+          "plugin_id": 112539,
+          "plugin_name": "SSL/TLS Weak Cipher Suites Supported",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 22,
+          "severity": 1
+        }
+      ]
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:26 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "4854",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "X-Request-Uuid",
+      "8e8decb480b9d8d8a6ab4f5f82a33197",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Frame-Options",
+      "DENY",
+      "X-Xss-Protection",
+      "mode=block",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans/14/hosts/2",
+    "body": "",
+    "status": 200,
+    "response": {
+      "info": {
+        "mac-address": null,
+        "host-fqdn": "dualboot.ru",
+        "host-ip": "18.221.79.150",
+        "operating-system": [
+          "Linux Kernel 2.2",
+          "Linux Kernel 2.4",
+          "Linux Kernel 2.6"
+        ],
+        "host_end": "Mon Apr 15 12:16:15 2019",
+        "host_start": "Mon Apr 15 11:55:15 2019"
+      },
+      "vulnerabilities": [
+        {
+          "count": 2,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Web Servers",
+          "plugin_id": 10107,
+          "plugin_name": "HTTP Server Type and Version",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 2,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Port scanners",
+          "plugin_id": 11219,
+          "plugin_name": "Nessus SYN scanner",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 2,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Service detection",
+          "plugin_id": 22964,
+          "plugin_name": "Service Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 2,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Web Servers",
+          "plugin_id": 24260,
+          "plugin_name": "HyperText Transfer Protocol (HTTP) Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Web Servers",
+          "plugin_id": 10386,
+          "plugin_name": "Web Server No 404 Error Code Check",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 10863,
+          "plugin_name": "SSL Certificate Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 11936,
+          "plugin_name": "OS Identification",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 12053,
+          "plugin_name": "Host Fully Qualified Domain Name (FQDN) Resolution",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Settings",
+          "plugin_id": 19506,
+          "plugin_name": "Nessus Scan Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 21643,
+          "plugin_name": "SSL Cipher Suites Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 25220,
+          "plugin_name": "TCP/IP Timestamps Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 45590,
+          "plugin_name": "Common Platform Enumeration (CPE)",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Service detection",
+          "plugin_id": 50845,
+          "plugin_name": "OpenSSL Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 54615,
+          "plugin_name": "Device Type",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 56984,
+          "plugin_name": "SSL / TLS Versions Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 57041,
+          "plugin_name": "SSL Perfect Forward Secrecy Cipher Suites Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 62564,
+          "plugin_name": "TLS Next Protocols Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 70544,
+          "plugin_name": "SSL Cipher Block Chaining Cipher Suites Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Web Servers",
+          "plugin_id": 84502,
+          "plugin_name": "HSTS Missing From HTTPS Server",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Misc.",
+          "plugin_id": 84821,
+          "plugin_name": "TLS ALPN Supported Protocol Enumeration",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Misc.",
+          "plugin_id": 87242,
+          "plugin_name": "TLS NPN Supported Protocol Enumeration",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 94761,
+          "plugin_name": "SSL Root Certification Authority Certificate Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "General",
+          "plugin_id": 95631,
+          "plugin_name": "SSL Certificate Signed Using Weak Hashing Algorithm (Known CA)",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Service detection",
+          "plugin_id": 104743,
+          "plugin_name": "TLS Version 1.0 Protocol Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Web Servers",
+          "plugin_id": 106375,
+          "plugin_name": "nginx HTTP Server Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 2,
+          "hostname": "dualboot.ru",
+          "plugin_family": "Service detection",
+          "plugin_id": 121010,
+          "plugin_name": "TLS Version 1.1 Protocol Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        }
+      ],
+      "compliance": []
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:26 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "5272",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Request-Uuid",
+      "9c78e2e1ed700ffa0cc7165163044f03",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans/10/hosts/1",
+    "body": "",
+    "status": 200,
+    "response": {
+      "info": {
+        "host_start": "2019-04-12T10:48:00.711Z",
+        "host_end": "2019-04-12T10:54:49.462Z",
+        "host-ip": "dualboot.ru"
+      },
+      "vulnerabilities": [
+        {
+          "vuln_index": 0,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98138,
+          "plugin_name": "Screenshot",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 0,
+          "severity": 0
+        },
+        {
+          "vuln_index": 1,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98000,
+          "plugin_name": "Scan Information",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 1,
+          "severity": 0
+        },
+        {
+          "vuln_index": 2,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98050,
+          "plugin_name": "Interesting response",
+          "plugin_family": "Web Applications",
+          "count": 3,
+          "severity_index": 2,
+          "severity": 0
+        },
+        {
+          "vuln_index": 3,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112551,
+          "plugin_name": "Missing Content Security Policy",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 3,
+          "severity": 1
+        },
+        {
+          "vuln_index": 4,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112496,
+          "plugin_name": "TLS 1.0 Weak Protocol",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 4,
+          "severity": 1
+        },
+        {
+          "vuln_index": 5,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112546,
+          "plugin_name": "TLS 1.1 Deprecated Protocol",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 5,
+          "severity": 0
+        },
+        {
+          "vuln_index": 6,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98136,
+          "plugin_name": "Target Information",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 6,
+          "severity": 0
+        },
+        {
+          "vuln_index": 7,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98056,
+          "plugin_name": "Missing 'Strict-Transport-Security' header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 7,
+          "severity": 2
+        },
+        {
+          "vuln_index": 8,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98060,
+          "plugin_name": "Missing 'X-Frame-Options' header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 8,
+          "severity": 1
+        },
+        {
+          "vuln_index": 9,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112530,
+          "plugin_name": "SSL/TLS Versions Supported",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 9,
+          "severity": 0
+        },
+        {
+          "vuln_index": 10,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112529,
+          "plugin_name": "Missing 'X-Content-Type-Options' Header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 10,
+          "severity": 1
+        },
+        {
+          "vuln_index": 11,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112526,
+          "plugin_name": "Missing 'X-XSS-Protection' Header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 11,
+          "severity": 1
+        },
+        {
+          "vuln_index": 12,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98059,
+          "plugin_name": "Technologies Detected",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 12,
+          "severity": 0
+        },
+        {
+          "vuln_index": 13,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98009,
+          "plugin_name": "Web Application Sitemap",
+          "plugin_family": "General",
+          "count": 1,
+          "severity_index": 13,
+          "severity": 0
+        },
+        {
+          "vuln_index": 14,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112553,
+          "plugin_name": "Missing 'Cache-Control' Header",
+          "plugin_family": "Web Applications",
+          "count": 1,
+          "severity_index": 14,
+          "severity": 1
+        },
+        {
+          "vuln_index": 15,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 115491,
+          "plugin_name": "SSL/TLS Cipher Suites Supported",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 15,
+          "severity": 0
+        },
+        {
+          "vuln_index": 16,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 112491,
+          "plugin_name": "SSL/TLS Certificate Information",
+          "plugin_family": "Web Servers",
+          "count": 1,
+          "severity_index": 16,
+          "severity": 0
+        },
+        {
+          "vuln_index": 17,
+          "host_id": 1,
+          "hostname": "dualboot.ru",
+          "plugin_id": 98078,
+          "plugin_name": "E-mail address disclosure",
+          "plugin_family": "Data Exposure",
+          "count": 1,
+          "severity_index": 17,
+          "severity": 0
+        }
+      ]
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:26 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "3557",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "X-Request-Uuid",
+      "2e0f7a3ddc0f16e0e93c12f9506df95b",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Frame-Options",
+      "DENY",
+      "X-Xss-Protection",
+      "mode=block",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  },
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/scans/14/hosts/3",
+    "body": "",
+    "status": 200,
+    "response": {
+      "info": {
+        "mac-address": null,
+        "host-fqdn": "dualbootpartners.com",
+        "host-ip": "185.203.72.17",
+        "operating-system": null,
+        "host_end": "Mon Apr 15 12:16:15 2019",
+        "host_start": "Mon Apr 15 11:55:15 2019"
+      },
+      "vulnerabilities": [
+        {
+          "count": 2,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Web Servers",
+          "plugin_id": 10107,
+          "plugin_name": "HTTP Server Type and Version",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 2,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Port scanners",
+          "plugin_id": 11219,
+          "plugin_name": "Nessus SYN scanner",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 2,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Web Servers",
+          "plugin_id": 24260,
+          "plugin_name": "HyperText Transfer Protocol (HTTP) Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 2,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Web Servers",
+          "plugin_id": 106375,
+          "plugin_name": "nginx HTTP Server Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 10863,
+          "plugin_name": "SSL Certificate Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Service detection",
+          "plugin_id": 11153,
+          "plugin_name": "Service Detection (HELP Request)",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Settings",
+          "plugin_id": 19506,
+          "plugin_name": "Nessus Scan Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 21643,
+          "plugin_name": "SSL Cipher Suites Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Service detection",
+          "plugin_id": 22964,
+          "plugin_name": "Service Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 25220,
+          "plugin_name": "TCP/IP Timestamps Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 42873,
+          "plugin_name": "SSL Medium Strength Cipher Suites Supported (SWEET32)",
+          "severity": 2,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 42981,
+          "plugin_name": "SSL Certificate Expiry - Future Expiry",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 46180,
+          "plugin_name": "Additional DNS Hostnames",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Service detection",
+          "plugin_id": 50845,
+          "plugin_name": "OpenSSL Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 56984,
+          "plugin_name": "SSL / TLS Versions Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 57041,
+          "plugin_name": "SSL Perfect Forward Secrecy Cipher Suites Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 70544,
+          "plugin_name": "SSL Cipher Block Chaining Cipher Suites Supported",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Misc.",
+          "plugin_id": 83298,
+          "plugin_name": "SSL Certificate Chain Contains Certificates Expiring Soon",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Web Servers",
+          "plugin_id": 84502,
+          "plugin_name": "HSTS Missing From HTTPS Server",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 94761,
+          "plugin_name": "SSL Root Certification Authority Certificate Information",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "General",
+          "plugin_id": 95631,
+          "plugin_name": "SSL Certificate Signed Using Weak Hashing Algorithm (Known CA)",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Service detection",
+          "plugin_id": 104743,
+          "plugin_name": "TLS Version 1.0 Protocol Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        },
+        {
+          "count": 1,
+          "host_id": 3,
+          "hostname": "dualbootpartners.com",
+          "plugin_family": "Service detection",
+          "plugin_id": 121010,
+          "plugin_name": "TLS Version 1.1 Protocol Detection",
+          "severity": 0,
+          "severity_index": 0,
+          "vuln_index": 0
+        }
+      ],
+      "compliance": []
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 21:16:26 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "4925",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Request-Uuid",
+      "9902062f3c5f226846c84ffcf580a262",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  }
+]

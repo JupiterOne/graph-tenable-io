@@ -29,7 +29,7 @@ export default async function fetchTenableData(
 
   await Promise.all(
     scansWithFullInfo.map(async scan => {
-      if (!scan.scanDetail) {
+      if (!scan.scanDetail || !scan.scanDetail.hosts) {
         return;
       }
       await Promise.all(

@@ -233,6 +233,7 @@ export default class TenableClient {
       headers: {
         "Content-type": "application/json",
         Accept: "application/json",
+        "Accept-encoding": "identity",
         "X-ApiKeys": `accessKey=${this.accessToken}; secretKey=${
           this.secretToken
         };`,

@@ -7,8 +7,8 @@ test("creates tenable client", async () => {
   const options = {
     instance: {
       config: {
-        clientId: "",
-        clientSecret: "",
+        accessKey: "",
+        secretKey: "",
       },
     },
   };

@@ -7,8 +7,10 @@ module.exports = {
   testMatch: ["<rootDir>/src/**/*.test.{js,ts}"],
   collectCoverageFrom: [
     "src/**/*.ts",
+    "!src/**/index.ts",
     "!src/index.ts",
-    "!src/ProviderClient.ts",
+    "!src/TenableClient.ts",
+    "!src/converters.ts",
   ],
   moduleFileExtensions: [...defaults.moduleFileExtensions, "ts"],
   testEnvironment: "node",
