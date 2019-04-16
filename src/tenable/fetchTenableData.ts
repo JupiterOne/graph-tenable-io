@@ -38,11 +38,15 @@ export default async function fetchTenableData(
             scan.id,
             host.host_id,
           );
+
           if (!vulnerabilities[host.hostname]) {
             vulnerabilities[host.hostname] = fetchedVulnerabilities;
             return;
           }
-          vulnerabilities[host.hostname].concat(fetchedVulnerabilities);
+
+          vulnerabilities[host.hostname] = vulnerabilities[
+            host.hostname
+          ].concat(fetchedVulnerabilities);
           return;
         }),
       );
