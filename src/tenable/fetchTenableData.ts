@@ -27,21 +27,27 @@ export default async function fetchTenableData(
 
   const vulnerabilities: Dictionary<Vulnerability[]> = {};
 
-  await Promise.all(scansWithFullInfo.map(async scan => {
+  await Promise.all(
+    scansWithFullInfo.map(async scan => {
       if (!scan.scanDetail) {
         return;
       }
-      await Promise.all(scan.scanDetail.hosts.map(async host => {
-          vulnerabilities[host.hostname] = await client.fetchVulnerabilities(
+      await Promise.all(
+        scan.scanDetail.hosts.map(async host => {
+          const fetchedVulnerabilities = await client.fetchVulnerabilities(
             scan.id,
             host.host_id,
           );
-        })
+          if (!vulnerabilities[host.hostname]) {
+            vulnerabilities[host.hostname] = fetchedVulnerabilities;
+            return;
+          }
+          vulnerabilities[host.hostname].concat(fetchedVulnerabilities);
+          return;
+        }),
       );
-    })
+    }),
   );
-
-  console.warn(vulnerabilities["dualboot.ru"]);
 
   return { users, scans: scansWithFullInfo, assets, vulnerabilities };
 }

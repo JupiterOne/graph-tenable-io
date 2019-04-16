@@ -5,7 +5,11 @@ import {
   RelationshipOperation,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import { createApplicationEntities } from "../converters/ApplicationEntityConverter";
+import { createApplicationVulnerabilityRelationships } from "../converters/ApplicationVulnerabilityRelationshipConverter";
+import { createAssessmentApplicationRelationships } from "../converters/AssessmentApplicationRelationshipConverter";
 import { createAssessmentEntities } from "../converters/AssessmentEntityConverter";
+import { createAssessmentVulnerabilityRelationships } from "../converters/AssessmentVulnerabilityRelationshipConverter";
+import { createUserAssessmentRelationships } from "../converters/UserAssessmentRelationshipConverter";
 import { createUserEntities } from "../converters/UserEntityConverter";
 import { createVulnerabilityEntities } from "../converters/VulnerabilityEntityConverter";
 
@@ -100,12 +104,30 @@ export function convertEntities(
     users: createUserEntities(tenableDataModel.users),
     applications: createApplicationEntities(tenableDataModel.assets),
     assessments: createAssessmentEntities(tenableDataModel.scans),
-    vulnerabilities: createVulnerabilityEntities(tenableDataModel.vulnerabilities),
+    vulnerabilities: createVulnerabilityEntities(
+      tenableDataModel.vulnerabilities,
+    ),
   };
 }
 
 export function convertRelationships(
   tenableDataModel: TenableDataModel,
 ): JupiterOneRelationshipsData {
-  return {};
+  return {
+    userAssessmentRelationships: createUserAssessmentRelationships(
+      tenableDataModel.scans,
+      tenableDataModel.users,
+    ),
+    assessmentVulnerabilityRelationships: createAssessmentVulnerabilityRelationships(
+      tenableDataModel.scans,
+    ),
+    assessmentApplicationRelationships: createAssessmentApplicationRelationships(
+      tenableDataModel.scans,
+      tenableDataModel.assets,
+    ),
+    applicationVulnerabilityRelationships: createApplicationVulnerabilityRelationships(
+      tenableDataModel.assets,
+      tenableDataModel.vulnerabilities,
+    ),
+  };
 }
