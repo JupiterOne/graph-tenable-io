@@ -1,4 +1,5 @@
 import {
+  IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
   IntegrationInvocationEvent,
@@ -9,13 +10,23 @@ import initializeContext from "./initializeContext";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
 import publishChanges from "./persister/publishChanges";
 import fetchTenableData from "./tenable/fetchTenableData";
+import { TenableIntegrationContext } from "./types";
 
 export default async function executionHandler(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>,
 ): Promise<IntegrationExecutionResult> {
-  const { graph, persister, provider, account } = await initializeContext(
-    context,
-  );
+  const actionFunction = ACTIONS[context.event.action.name];
+  if (actionFunction) {
+    return await actionFunction(await initializeContext(context));
+  } else {
+    return {};
+  }
+}
+
+async function synchronize(
+  context: TenableIntegrationContext,
+): Promise<IntegrationExecutionResult> {
+  const { graph, persister, provider, account } = context;
 
   const oldData = await fetchEntitiesAndRelationships(graph);
   const tenableData = await fetchTenableData(provider);
@@ -26,3 +37,15 @@ export default async function executionHandler(
     ),
   };
 }
+
+type ActionFunction = (
+  context: TenableIntegrationContext,
+) => Promise<IntegrationExecutionResult>;
+
+interface ActionMap {
+  [actionName: string]: ActionFunction | undefined;
+}
+
+const ACTIONS: ActionMap = {
+  [IntegrationActionName.INGEST]: synchronize,
+};

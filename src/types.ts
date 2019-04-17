@@ -5,11 +5,12 @@ import {
   PersisterClient,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
-import TenableClient from "./tenable/TenableClient";
+import TenableClient, { Account } from "./tenable/TenableClient";
 
-export interface TenableExecutionContext
+export interface TenableIntegrationContext
   extends IntegrationExecutionContext<IntegrationInvocationEvent> {
   graph: GraphClient;
   persister: PersisterClient;
   provider: TenableClient;
+  account: Account;
 }
