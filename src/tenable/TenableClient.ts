@@ -4,6 +4,11 @@ export interface Dictionary<T> {
   [key: string]: T;
 }
 
+export interface Account {
+  id: string;
+  name: string;
+}
+
 export interface User {
   uuid: string;
   id: number;

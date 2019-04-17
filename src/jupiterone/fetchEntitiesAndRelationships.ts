@@ -2,6 +2,7 @@ import { GraphClient } from "@jupiterone/jupiter-managed-integration-sdk";
 import * as Entities from "./entities";
 
 export interface JupiterOneEntitiesData {
+  accounts: Entities.AccountEntity[];
   users: Entities.UserEntity[];
   applications: Entities.ApplicationEntity[];
   assessments: Entities.AssessmentEntity[];
@@ -9,6 +10,7 @@ export interface JupiterOneEntitiesData {
 }
 
 export interface JupiterOneRelationshipsData {
+  accountUserRelationships: Entities.AccountUserRelationship[];
   userAssessmentRelationships: Entities.UserAssessmentRelationship[];
   assessmentVulnerabilityRelationships: Entities.AssessmentVulnerabilityRelationship[];
   assessmentApplicationRelationships: Entities.AssessmentApplicationRelationship[];
@@ -34,22 +36,30 @@ export default async function fetchEntitiesAndRelationships(
 async function fetchEntities(
   graph: GraphClient,
 ): Promise<JupiterOneEntitiesData> {
-  const [users, applications, assessments, vulnerabilities] = await Promise.all(
-    [
-      graph.findEntitiesByType<Entities.UserEntity>(Entities.USER_ENTITY_TYPE),
-      graph.findEntitiesByType<Entities.ApplicationEntity>(
-        Entities.APPLICATION_ENTITY_TYPE,
-      ),
-      graph.findEntitiesByType<Entities.AssessmentEntity>(
-        Entities.ASSESSMENT_ENTITY_TYPE,
-      ),
-      graph.findEntitiesByType<Entities.VulnerabilityEntity>(
-        Entities.VULNERABILITY_ENTITY_TYPE,
-      ),
-    ],
-  );
+  const [
+    accounts,
+    users,
+    applications,
+    assessments,
+    vulnerabilities,
+  ] = await Promise.all([
+    graph.findEntitiesByType<Entities.AccountEntity>(
+      Entities.ACCOUNT_ENTITY_TYPE,
+    ),
+    graph.findEntitiesByType<Entities.UserEntity>(Entities.USER_ENTITY_TYPE),
+    graph.findEntitiesByType<Entities.ApplicationEntity>(
+      Entities.APPLICATION_ENTITY_TYPE,
+    ),
+    graph.findEntitiesByType<Entities.AssessmentEntity>(
+      Entities.ASSESSMENT_ENTITY_TYPE,
+    ),
+    graph.findEntitiesByType<Entities.VulnerabilityEntity>(
+      Entities.VULNERABILITY_ENTITY_TYPE,
+    ),
+  ]);
 
   return {
+    accounts,
     users,
     applications,
     assessments,
@@ -61,11 +71,15 @@ export async function fetchRelationships(
   graph: GraphClient,
 ): Promise<JupiterOneRelationshipsData> {
   const [
+    accountUserRelationships,
     userAssessmentRelationships,
     assessmentVulnerabilityRelationships,
     assessmentApplicationRelationships,
     applicationVulnerabilityRelationships,
   ] = await Promise.all([
+    graph.findRelationshipsByType<Entities.AccountUserRelationship>(
+      Entities.ACCOUNT_USER_RELATIONSHIP_TYPE,
+    ),
     graph.findRelationshipsByType<Entities.UserAssessmentRelationship>(
       Entities.USER_HAS_ASSESSMENT_RELATIONSHIP_TYPE,
     ),
@@ -81,6 +95,7 @@ export async function fetchRelationships(
   ]);
 
   return {
+    accountUserRelationships,
     userAssessmentRelationships,
     assessmentVulnerabilityRelationships,
     assessmentApplicationRelationships,

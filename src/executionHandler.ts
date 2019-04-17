@@ -7,13 +7,13 @@ import {
 
 import initializeContext from "./initializeContext";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
-import fetchTenableData from "./tenable/fetchTenableData";
 import publishChanges from "./persister/publishChanges";
+import fetchTenableData from "./tenable/fetchTenableData";
 
 export default async function executionHandler(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>,
 ): Promise<IntegrationExecutionResult> {
-  const { graph, persister, provider } = await initializeContext(
+  const { graph, persister, provider, account } = await initializeContext(
     context,
   );
 
@@ -22,7 +22,7 @@ export default async function executionHandler(
 
   return {
     operations: summarizePersisterOperationsResults(
-      await publishChanges(persister, oldData, tenableData),
+      await publishChanges(persister, oldData, tenableData, account),
     ),
   };
 }

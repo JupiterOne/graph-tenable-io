@@ -19,6 +19,7 @@ The following entity resources are ingested when the integration runs:
 
 | Tenable Entity Resource | \_type : \_class of the Entity            |
 | ----------------------- | ----------------------------------------- |
+| Account                 | `tenable_account` : `Account`             |
 | User                    | `tenable_user` : `User`                   |
 | Scan                    | `tenable_scan` : `Assessment`             |
 | Asset                   | `tenable_asset` : `Application`           |
@@ -28,12 +29,13 @@ The following entity resources are ingested when the integration runs:
 
 The following relationships are created/mapped:
 
-| From            | Type     | To                      |
-| --------------- | -------- | ----------------------- |
-| `tenable_user`  | **OWNS** | `tenable_scan`          |
-| `tenable_scan`  | **HAS**  | `tenable_asset`         |
-| `tenable_scan`  | **HAS**  | `tenable_vulnerability` |
-| `tenable_asset` | **HAS**  | `tenable_vulnerability` |
+| From              | Type     | To                      |
+| ----------------- | -------- | ----------------------- |
+| `tenable_account` | **HAS**  | `tenable_user`          |
+| `tenable_user`    | **OWNS** | `tenable_scan`          |
+| `tenable_scan`    | **HAS**  | `tenable_asset`         |
+| `tenable_scan`    | **HAS**  | `tenable_vulnerability` |
+| `tenable_asset`   | **HAS**  | `tenable_vulnerability` |
 
 [1]: https://www.tenable.com/products/tenable-io
 [2]: https://cloud.tenable.com/api#/overview

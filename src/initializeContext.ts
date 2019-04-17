@@ -2,7 +2,7 @@ import {
   IntegrationExecutionContext,
   IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
-import TenableClient from "./tenable/TenableClient";
+import TenableClient, { Account } from "./tenable/TenableClient";
 
 export default async function initializeContext(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>,
@@ -13,9 +13,15 @@ export default async function initializeContext(
 
   const { persister, graph } = context.clients.getClients();
 
+  const account: Account = {
+    id: context.instance.id,
+    name: config.accountName || context.instance.name,
+  };
+
   return {
     graph,
     persister,
     provider,
+    account,
   };
 }

@@ -4,6 +4,8 @@ import {
   PersisterClient,
   RelationshipOperation,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+import { createAccountEntity } from "../converters/AccountEntityConverter";
+import { createAccountUserRelationships } from "../converters/AccountUserRelationshipsConverter";
 import { createApplicationEntities } from "../converters/ApplicationEntityConverter";
 import { createApplicationVulnerabilityRelationships } from "../converters/ApplicationVulnerabilityRelationshipConverter";
 import { createAssessmentApplicationRelationships } from "../converters/AssessmentApplicationRelationshipConverter";
@@ -19,7 +21,7 @@ import {
   JupiterOneRelationshipsData,
 } from "../jupiterone";
 
-import { TenableDataModel } from "../tenable";
+import { Account, TenableDataModel } from "../tenable";
 
 type EntitiesKeys = keyof JupiterOneEntitiesData;
 type RelationshipsKeys = keyof JupiterOneRelationshipsData;
@@ -28,8 +30,9 @@ export default async function publishChanges(
   persister: PersisterClient,
   oldData: JupiterOneDataModel,
   tenableDataModel: TenableDataModel,
+  account: Account,
 ) {
-  const newData = convert(tenableDataModel);
+  const newData = convert(tenableDataModel, account);
 
   const entities = createEntitiesOperations(
     oldData.entities,
@@ -90,17 +93,20 @@ function createRelationshipsOperations(
 
 export function convert(
   tenableDataModel: TenableDataModel,
+  account: Account,
 ): JupiterOneDataModel {
   return {
-    entities: convertEntities(tenableDataModel),
-    relationships: convertRelationships(tenableDataModel),
+    entities: convertEntities(tenableDataModel, account),
+    relationships: convertRelationships(tenableDataModel, account),
   };
 }
 
 export function convertEntities(
   tenableDataModel: TenableDataModel,
+  account: Account,
 ): JupiterOneEntitiesData {
   return {
+    accounts: [createAccountEntity(account)],
     users: createUserEntities(tenableDataModel.users),
     applications: createApplicationEntities(tenableDataModel.assets),
     assessments: createAssessmentEntities(tenableDataModel.scans),
@@ -112,8 +118,13 @@ export function convertEntities(
 
 export function convertRelationships(
   tenableDataModel: TenableDataModel,
+  account: Account,
 ): JupiterOneRelationshipsData {
   return {
+    accountUserRelationships: createAccountUserRelationships(
+      account,
+      tenableDataModel.users,
+    ),
     userAssessmentRelationships: createUserAssessmentRelationships(
       tenableDataModel.scans,
       tenableDataModel.users,

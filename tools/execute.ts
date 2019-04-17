@@ -10,6 +10,7 @@ async function run(): Promise<void> {
   const logger = createLogger({ name: "local", level: TRACE });
 
   const integrationConfig = {
+    accountName: process.env.TENABLE_LOCAL_EXECUTION_ACCOUNT_NAME,
     accessKey: process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY,
     secretKey: process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY,
   };
