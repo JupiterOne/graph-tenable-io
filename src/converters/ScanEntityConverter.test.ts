@@ -1,4 +1,4 @@
-import { createAssessmentEntities } from "./AssessmentEntityConverter";
+import { createScanEntities } from "./ScanEntityConverter";
 
 test("convert assessment entities", () => {
   const scans: any[] = [
@@ -47,7 +47,7 @@ test("convert assessment entities", () => {
             hostname: "dualbootpartners.com",
           },
         ],
-        vulnerabilities: [
+        webAppVulnerabilities: [
           {
             count: 1,
             plugin_family: "Web Applications",
@@ -81,7 +81,7 @@ test("convert assessment entities", () => {
     },
   ];
 
-  const entities = createAssessmentEntities(scans);
+  const entities = createScanEntities(scans);
 
   expect(entities).toEqual([
     {

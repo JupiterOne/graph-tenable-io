@@ -101,7 +101,10 @@ describe("TenableClient fetch ok data", () => {
     expect(response.users.length).not.toEqual(0);
     expect(response.scans.length).not.toEqual(0);
     expect(response.assets.length).not.toEqual(0);
-    expect(response.vulnerabilities).not.toEqual({});
+    expect(response.containers.length).not.toEqual(0);
+    expect(response.reports.length).not.toEqual(0);
+    expect(response.webAppVulnerabilities).not.toEqual({});
+    expect(response.containerVulnerabilities).not.toEqual({});
   });
 
   afterAll(() => {

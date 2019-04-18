@@ -1,17 +1,17 @@
 import {
-  ASSESSMENT_ENTITY_CLASS,
-  ASSESSMENT_ENTITY_TYPE,
-  AssessmentEntity,
+  SCAN_ENTITY_CLASS,
+  SCAN_ENTITY_TYPE,
+  ScanEntity,
 } from "../jupiterone/entities";
 import { Scan } from "../tenable";
 import generateKey from "../utils/generateKey";
 
-export function createAssessmentEntities(data: Scan[]): AssessmentEntity[] {
+export function createScanEntities(data: Scan[]): ScanEntity[] {
   return data.map(item => {
-    const assessmentEntity: AssessmentEntity = {
-      _key: generateKey(ASSESSMENT_ENTITY_TYPE, item.id),
-      _type: ASSESSMENT_ENTITY_TYPE,
-      _class: ASSESSMENT_ENTITY_CLASS,
+    const assessmentEntity: ScanEntity = {
+      _key: generateKey(SCAN_ENTITY_TYPE, item.id),
+      _type: SCAN_ENTITY_TYPE,
+      _class: SCAN_ENTITY_CLASS,
       id: item.id,
       legacy: item.legacy,
       permissions: item.permissions,

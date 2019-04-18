@@ -4,17 +4,17 @@ import * as Entities from "./entities";
 export interface JupiterOneEntitiesData {
   accounts: Entities.AccountEntity[];
   users: Entities.UserEntity[];
-  applications: Entities.ApplicationEntity[];
-  assessments: Entities.AssessmentEntity[];
-  vulnerabilities: Entities.VulnerabilityEntity[];
+  applications: Entities.AssetEntity[];
+  assessments: Entities.ScanEntity[];
+  webAppVulnerabilities: Entities.WebAppVulnerabilityEntity[];
 }
 
 export interface JupiterOneRelationshipsData {
   accountUserRelationships: Entities.AccountUserRelationship[];
-  userAssessmentRelationships: Entities.UserAssessmentRelationship[];
-  assessmentVulnerabilityRelationships: Entities.AssessmentVulnerabilityRelationship[];
-  assessmentApplicationRelationships: Entities.AssessmentApplicationRelationship[];
-  applicationVulnerabilityRelationships: Entities.ApplicationVulnerabilityRelationship[];
+  userAssessmentRelationships: Entities.UserScanRelationship[];
+  assessmentWebAppVulnerabilityRelationships: Entities.ScanWebAppVulnerabilityRelationship[];
+  assessmentApplicationRelationships: Entities.ScanAssetRelationship[];
+  applicationWebAppVulnerabilityRelationships: Entities.AssetWebAppVulnerabilityRelationship[];
 }
 
 export interface JupiterOneDataModel {
@@ -41,20 +41,16 @@ async function fetchEntities(
     users,
     applications,
     assessments,
-    vulnerabilities,
+    webAppVulnerabilities,
   ] = await Promise.all([
     graph.findEntitiesByType<Entities.AccountEntity>(
       Entities.ACCOUNT_ENTITY_TYPE,
     ),
     graph.findEntitiesByType<Entities.UserEntity>(Entities.USER_ENTITY_TYPE),
-    graph.findEntitiesByType<Entities.ApplicationEntity>(
-      Entities.APPLICATION_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.AssessmentEntity>(
-      Entities.ASSESSMENT_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.VulnerabilityEntity>(
-      Entities.VULNERABILITY_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.AssetEntity>(Entities.ASSET_ENTITY_TYPE),
+    graph.findEntitiesByType<Entities.ScanEntity>(Entities.SCAN_ENTITY_TYPE),
+    graph.findEntitiesByType<Entities.WebAppVulnerabilityEntity>(
+      Entities.WEBAPP_VULNERABILITY_ENTITY_TYPE,
     ),
   ]);
 
@@ -63,7 +59,7 @@ async function fetchEntities(
     users,
     applications,
     assessments,
-    vulnerabilities,
+    webAppVulnerabilities,
   };
 }
 
@@ -73,32 +69,32 @@ export async function fetchRelationships(
   const [
     accountUserRelationships,
     userAssessmentRelationships,
-    assessmentVulnerabilityRelationships,
+    assessmentWebAppVulnerabilityRelationships,
     assessmentApplicationRelationships,
-    applicationVulnerabilityRelationships,
+    applicationWebAppVulnerabilityRelationships,
   ] = await Promise.all([
     graph.findRelationshipsByType<Entities.AccountUserRelationship>(
       Entities.ACCOUNT_USER_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<Entities.UserAssessmentRelationship>(
-      Entities.USER_HAS_ASSESSMENT_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType<Entities.UserScanRelationship>(
+      Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<Entities.AssessmentVulnerabilityRelationship>(
-      Entities.ASSESSMENT_HAS_VULNERABILITY_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType<Entities.ScanWebAppVulnerabilityRelationship>(
+      Entities.SCAN_HAS_WEBAPP_VULNERABILITY_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<Entities.AssessmentApplicationRelationship>(
-      Entities.ASSESSMENT_HAS_APPLICATION_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType<Entities.ScanAssetRelationship>(
+      Entities.SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
     ),
     graph.findRelationshipsByType<
-      Entities.ApplicationVulnerabilityRelationship
-    >(Entities.APPLICATION_HAS_VULNERABILITY_RELATIONSHIP_TYPE),
+      Entities.AssetWebAppVulnerabilityRelationship
+    >(Entities.ASSET_HAS_WEBAPP_VULNERABILITY_RELATIONSHIP_TYPE),
   ]);
 
   return {
     accountUserRelationships,
     userAssessmentRelationships,
-    assessmentVulnerabilityRelationships,
+    assessmentWebAppVulnerabilityRelationships,
     assessmentApplicationRelationships,
-    applicationVulnerabilityRelationships,
+    applicationWebAppVulnerabilityRelationships,
   };
 }

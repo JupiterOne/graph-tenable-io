@@ -1,4 +1,4 @@
-import { createApplicationEntities } from "./ApplicationEntityConverter";
+import { createAssetEntities } from "./AssetEntityConverter";
 
 test("convert application entities", () => {
   const assets: any[] = [
@@ -62,7 +62,7 @@ test("convert application entities", () => {
     },
   ];
 
-  const entities = createApplicationEntities(assets);
+  const entities = createAssetEntities(assets);
 
   expect(entities).toEqual([
     {

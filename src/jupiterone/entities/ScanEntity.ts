@@ -1,9 +1,9 @@
 import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 
-export const ASSESSMENT_ENTITY_TYPE = "tenable_scan";
-export const ASSESSMENT_ENTITY_CLASS = "Assessment";
+export const SCAN_ENTITY_TYPE = "tenable_scan";
+export const SCAN_ENTITY_CLASS = "Assessment";
 
-export interface AssessmentEntity extends EntityFromIntegration {
+export interface ScanEntity extends EntityFromIntegration {
   id: number;
   legacy: boolean;
   permissions: number;

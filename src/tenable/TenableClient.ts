@@ -52,10 +52,10 @@ export interface Scan {
 export interface ScanDetail {
   info: ScanInfo;
   hosts: Host[];
-  vulnerabilities: Vulnerability[];
+  vulnerabilities: WebAppVulnerability[];
 }
 
-export interface Vulnerability {
+export interface WebAppVulnerability {
   count: number;
   plugin_family: string;
   plugin_id: number;
@@ -117,6 +117,85 @@ export interface Asset {
   mac_address: string[];
 }
 
+export interface Container {
+  number_of_vulnerabilities: string;
+  name: string;
+  size: string;
+  digest: string;
+  repo_name: string;
+  score: string;
+  id: string;
+  status: string;
+  created_at: string;
+  repo_id: string;
+  platform: string;
+  updated_at: string;
+}
+
+export type ContainerVulnerability =
+  | Malware
+  | Finding
+  | PotentiallyUnwantedProgram;
+
+export interface Report {
+  malware: Malware[];
+  sha256: string;
+  os: string;
+  risk_score: number;
+  findings: Finding[];
+  os_version: string;
+  created_at: string;
+  platform: string;
+  image_name: string;
+  updated_at: string;
+  digest: string;
+  tag: string;
+  potentially_unwanted_programs: PotentiallyUnwantedProgram[];
+  docker_image_id: string;
+  os_architecture: string;
+}
+
+export interface Malware {
+  infectedFile: string;
+  fileTypeDescriptor: string;
+  md5: string;
+  sha256: string;
+}
+
+export interface Finding {
+  nvdFinding: {
+    reference_id: string;
+    cve: string;
+    published_date: string;
+    modified_date: string;
+    description: string;
+    cvss_score: string;
+    access_vector: string;
+    access_complexity: string;
+    auth: string;
+    availability_impact: string;
+    confidentiality_impact: string;
+    integrity_impact: string;
+    cwe: string;
+    remediation: string;
+  };
+  packages: Package[];
+}
+
+interface Package {
+  name: string;
+  version: string;
+  release: string;
+  epoch: string;
+  rawString: string;
+}
+
+export interface PotentiallyUnwantedProgram {
+  file: string;
+  md5: string;
+  sha256: string;
+}
+
 interface Source {
   name: string;
   first_seen: string;
@@ -145,7 +224,7 @@ interface Folder {
 interface ScanResponse {
   info: ScanInfo;
   hosts: Host[];
-  vulnerabilities: Vulnerability[];
+  vulnerabilities: WebAppVulnerability[];
 }
 
 interface AssetsResponse {
@@ -153,15 +232,22 @@ interface AssetsResponse {
   total: number;
 }
 
-interface VulnerabilityResponse {
-  vulnerabilities: Vulnerability[];
+interface WebAppVulnerabilityResponse {
+  vulnerabilities: WebAppVulnerability[];
 }
+
+type ContainersResponse = Container[];
+
+type ReportResponse = Report;
 
 export interface TenableDataModel {
   users: User[];
   scans: Scan[];
   assets: Asset[];
-  vulnerabilities: Dictionary<Vulnerability[]>;
+  webAppVulnerabilities: Dictionary<WebAppVulnerability[]>;
+  containers: Container[];
+  reports: Report[];
+  containerVulnerabilities: Dictionary<ContainerVulnerability[]>;
 }
 
 enum Method {
@@ -210,12 +296,12 @@ export default class TenableClient {
   public async fetchVulnerabilities(
     scanId: number,
     hostId: number,
-  ): Promise<Vulnerability[]> {
+  ): Promise<WebAppVulnerability[]> {
     const vulnerabilitiesResponse = (await this.makeRequest(
       `/scans/${scanId}/hosts/${hostId}`,
       Method.GET,
       {},
-    )) as VulnerabilityResponse;
+    )) as WebAppVulnerabilityResponse;
     return vulnerabilitiesResponse.vulnerabilities;
   }
 
@@ -228,11 +314,36 @@ export default class TenableClient {
     return assetsResponse.assets;
   }
 
+  public async fetchContainers(): Promise<Container[]> {
+    const containerResponse = (await this.makeRequest(
+      "/container-security/api/v1/container/list",
+      Method.GET,
+      {},
+    )) as ContainersResponse;
+    return containerResponse;
+  }
+
+  public async fetchReportByImageDigest(digestId: string): Promise<Report> {
+    const reportResponse = (await this.makeRequest(
+      `/container-security/api/v1/reports/by_image_digest?image_digest=${digestId}`,
+      Method.GET,
+      {},
+    )) as ReportResponse;
+    return reportResponse;
+  }
+
   private async makeRequest(
     url: string,
     method: Method,
     headers: {},
-  ): Promise<UsersResponse | ScansResponse | AssetsResponse | ScanResponse> {
+  ): Promise<
+    | UsersResponse
+    | ScansResponse
+    | AssetsResponse
+    | ScanResponse
+    | ContainersResponse
+    | ReportResponse
+  > {
     const options: RequestInit = {
       method,
       headers: {

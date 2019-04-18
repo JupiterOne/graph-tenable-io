@@ -1,5 +1,5 @@
 import { User } from "../tenable";
-import { createUserAssessmentRelationships } from "./UserAssessmentRelationshipConverter";
+import { createUserScanRelationships } from "./UserScanRelationshipConverter";
 
 const scans: any[] = [
   {
@@ -91,7 +91,7 @@ const users: User[] = [
 
 describe("convert user assessment relationships", () => {
   test("convert user assessment relationships with all data", () => {
-    const relationships = createUserAssessmentRelationships(scans, users);
+    const relationships = createUserScanRelationships(scans, users);
     expect(relationships).toEqual([
       {
         _class: "OWNS",
@@ -118,7 +118,7 @@ describe("convert user assessment relationships", () => {
   });
 
   test("convert user assessment relationships without user", () => {
-    const relationships = createUserAssessmentRelationships(scans, []);
+    const relationships = createUserScanRelationships(scans, []);
     expect(relationships).toEqual([]);
   });
 });

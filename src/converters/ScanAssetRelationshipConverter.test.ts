@@ -1,4 +1,4 @@
-import { createAssessmentApplicationRelationships } from "./AssessmentApplicationRelationshipConverter";
+import { createScanAssetRelationships } from "./ScanAssetRelationshipConverter";
 
 const scans: any[] = [
   {
@@ -46,7 +46,7 @@ const scans: any[] = [
           hostname: "dualbootpartners.com",
         },
       ],
-      vulnerabilities: [
+      webAppVulnerabilities: [
         {
           count: 1,
           plugin_family: "Web Applications",
@@ -175,10 +175,7 @@ const assetWithWrongFqdn: any[] = [
 
 describe("convert assessment application relationships", () => {
   test("convert assessment application relationships with full data", () => {
-    const relationships = createAssessmentApplicationRelationships(
-      scans,
-      assets,
-    );
+    const relationships = createScanAssetRelationships(scans, assets);
     expect(relationships).toEqual([
       {
         _class: "HAS",
@@ -192,7 +189,7 @@ describe("convert assessment application relationships", () => {
   });
 
   test("convert assessment application relationships without scanDetail", () => {
-    const relationships = createAssessmentApplicationRelationships(
+    const relationships = createScanAssetRelationships(
       [{ id: "TestId" }] as any[],
       assets,
     );
@@ -200,7 +197,7 @@ describe("convert assessment application relationships", () => {
   });
 
   test("convert assessment application relationships with wrong asset", () => {
-    const relationships = createAssessmentApplicationRelationships(
+    const relationships = createScanAssetRelationships(
       scans,
       assetWithWrongFqdn,
     );

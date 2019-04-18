@@ -6,14 +6,14 @@ import {
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import { createAccountEntity } from "../converters/AccountEntityConverter";
 import { createAccountUserRelationships } from "../converters/AccountUserRelationshipsConverter";
-import { createApplicationEntities } from "../converters/ApplicationEntityConverter";
-import { createApplicationVulnerabilityRelationships } from "../converters/ApplicationVulnerabilityRelationshipConverter";
-import { createAssessmentApplicationRelationships } from "../converters/AssessmentApplicationRelationshipConverter";
-import { createAssessmentEntities } from "../converters/AssessmentEntityConverter";
-import { createAssessmentVulnerabilityRelationships } from "../converters/AssessmentVulnerabilityRelationshipConverter";
-import { createUserAssessmentRelationships } from "../converters/UserAssessmentRelationshipConverter";
+import { createAssetEntities } from "../converters/AssetEntityConverter";
+import { createAssetWebAppVulnerabilityRelationships } from "../converters/AssetWebAppVulnerabilityRelationshipConverter";
+import { createScanAssetRelationships } from "../converters/ScanAssetRelationshipConverter";
+import { createScanEntities } from "../converters/ScanEntityConverter";
+import { createScanWebAppVulnerabilityRelationships } from "../converters/ScanWebAppVulnerabilityRelationshipConverter";
 import { createUserEntities } from "../converters/UserEntityConverter";
-import { createVulnerabilityEntities } from "../converters/VulnerabilityEntityConverter";
+import { createUserScanRelationships } from "../converters/UserScanRelationshipConverter";
+import { createVulnerabilityEntities } from "../converters/WebAppVulnerabilityEntityConverter";
 
 import {
   JupiterOneDataModel,
@@ -108,10 +108,10 @@ export function convertEntities(
   return {
     accounts: [createAccountEntity(account)],
     users: createUserEntities(tenableDataModel.users),
-    applications: createApplicationEntities(tenableDataModel.assets),
-    assessments: createAssessmentEntities(tenableDataModel.scans),
-    vulnerabilities: createVulnerabilityEntities(
-      tenableDataModel.vulnerabilities,
+    applications: createAssetEntities(tenableDataModel.assets),
+    assessments: createScanEntities(tenableDataModel.scans),
+    webAppVulnerabilities: createVulnerabilityEntities(
+      tenableDataModel.webAppVulnerabilities,
     ),
   };
 }
@@ -125,20 +125,20 @@ export function convertRelationships(
       account,
       tenableDataModel.users,
     ),
-    userAssessmentRelationships: createUserAssessmentRelationships(
+    userAssessmentRelationships: createUserScanRelationships(
       tenableDataModel.scans,
       tenableDataModel.users,
     ),
-    assessmentVulnerabilityRelationships: createAssessmentVulnerabilityRelationships(
+    assessmentWebAppVulnerabilityRelationships: createScanWebAppVulnerabilityRelationships(
       tenableDataModel.scans,
     ),
-    assessmentApplicationRelationships: createAssessmentApplicationRelationships(
+    assessmentApplicationRelationships: createScanAssetRelationships(
       tenableDataModel.scans,
       tenableDataModel.assets,
     ),
-    applicationVulnerabilityRelationships: createApplicationVulnerabilityRelationships(
+    applicationWebAppVulnerabilityRelationships: createAssetWebAppVulnerabilityRelationships(
       tenableDataModel.assets,
-      tenableDataModel.vulnerabilities,
+      tenableDataModel.webAppVulnerabilities,
     ),
   };
 }
