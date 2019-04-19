@@ -91,6 +91,30 @@ describe("TenableClient fetch ok data", () => {
     expect(vulnerabilities.length).not.toEqual(0);
   });
 
+  test("fetchContainers ok", async () => {
+    const { nockDone } = await nock.back("containers-ok.json", {
+      before: prepareScope,
+    });
+    const client = await getClient();
+    const response = await client.fetchContainers();
+    expect(response.length).not.toEqual(0);
+    nockDone();
+  });
+
+  test("fetchReports ok", async () => {
+    const { nockDone } = await nock.back("reports-ok.json", {
+      before: prepareScope,
+    });
+    const client = await getClient();
+    const containers = await client.fetchContainers();
+    const response =
+      containers &&
+      containers.length > 0 &&
+      (await client.fetchReportByImageDigest(containers[0].digest));
+    nockDone();
+    expect(response).not.toEqual({});
+  });
+
   test("fetchTenableData ok", async () => {
     const { nockDone } = await nock.back("all-data-ok.json", {
       before: prepareScope,
