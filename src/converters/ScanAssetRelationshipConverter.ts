@@ -18,13 +18,13 @@ export function createScanAssetRelationships(
   assets: Asset[],
 ): ScanAssetRelationship[] {
   const relationships: ScanAssetRelationship[] = scans.reduce((acc, scan) => {
-    if (!scan.scanDetail) {
+    if (isHost(scan)) {
       return acc;
     }
 
     const relationshipsForOneScan = createRelationshipsForOneScan(
       scan.id,
-      scan.scanDetail,
+      scan.scanDetail!,
       assets,
     );
 
@@ -32,6 +32,10 @@ export function createScanAssetRelationships(
   }, defaultValue);
 
   return relationships;
+}
+
+function isHost(scan: Scan) {
+  return !(scan.scanDetail && scan.scanDetail.hosts);
 }
 
 function createRelationshipsForOneScan(

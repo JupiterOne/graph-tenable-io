@@ -71,6 +71,7 @@ export interface ScanDetail {
 }
 
 export interface WebAppVulnerability {
+  scan_id?: number;
   count: number;
   plugin_family: string;
   plugin_id: number;

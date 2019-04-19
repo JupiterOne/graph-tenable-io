@@ -144,6 +144,7 @@ export function convertRelationships(
     ),
     scanWebAppVulnerabilityRelationships: createScanWebAppVulnerabilityRelationships(
       tenableDataModel.scans,
+      tenableDataModel.webAppVulnerabilities,
     ),
     scanAssetRelationships: createScanAssetRelationships(
       tenableDataModel.scans,

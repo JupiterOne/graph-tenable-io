@@ -46,7 +46,7 @@ async function fetchScansWithFullInfo(
   scans: Scan[],
   client: TenableClient,
 ): Promise<Scan[]> {
-  return await Promise.all(
+  const scansWithFullInfo = await Promise.all(
     scans.map(async scan => {
       const fullScanInfo: ScanDetail = await client.fetchScanById(scan.id);
       return {
@@ -55,6 +55,7 @@ async function fetchScansWithFullInfo(
       };
     }),
   );
+  return scansWithFullInfo;
 }
 
 async function fillWebAppVulnerabilities(
@@ -72,14 +73,19 @@ async function fillWebAppVulnerabilities(
         host.host_id,
       );
 
+      const vulnerabilityWithScanId = fetchedVulnerabilities.map(value => ({
+        ...value,
+        scan_id: scan.id,
+      }));
+
       if (!webAppVulnerabilities[host.hostname]) {
-        webAppVulnerabilities[host.hostname] = fetchedVulnerabilities;
+        webAppVulnerabilities[host.hostname] = vulnerabilityWithScanId;
         return;
       }
 
       webAppVulnerabilities[host.hostname] = webAppVulnerabilities[
         host.hostname
-      ].concat(fetchedVulnerabilities);
+      ].concat(vulnerabilityWithScanId);
       return;
     });
   });

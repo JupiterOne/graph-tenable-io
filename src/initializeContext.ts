@@ -2,8 +2,8 @@ import {
   IntegrationExecutionContext,
   IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
-import TenableClient, { Account } from "./tenable/TenableClient";
-import { TenableIntegrationContext } from "./types";
+import TenableClient from "./tenable/TenableClient";
+import { Account, TenableIntegrationContext } from "./types";
 
 export default async function initializeContext(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>,
