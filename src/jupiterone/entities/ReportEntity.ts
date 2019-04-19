@@ -4,6 +4,7 @@ export const REPORT_ENTITY_TYPE = "tenable_report";
 export const REPORT_ENTITY_CLASS = "Risk";
 
 export interface ReportEntity extends EntityFromIntegration {
+  id: string;
   sha256: string;
   digest: string;
   dockerImageId: string;

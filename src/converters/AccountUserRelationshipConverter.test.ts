@@ -1,5 +1,5 @@
 import { Account, User } from "../tenable";
-import { createAccountUserRelationships } from "./AccountUserRelationshipsConverter";
+import { createAccountUserRelationships } from "./AccountUserRelationshipConverter";
 
 const account: Account = {
   id: "TestId",

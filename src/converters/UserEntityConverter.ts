@@ -1,4 +1,8 @@
-import { USER_ENTITY_CLASS, USER_ENTITY_TYPE, UserEntity } from "../jupiterone/entities";
+import {
+  USER_ENTITY_CLASS,
+  USER_ENTITY_TYPE,
+  UserEntity,
+} from "../jupiterone/entities";
 import { User } from "../tenable";
 import generateKey from "../utils/generateKey";
 
@@ -23,7 +27,6 @@ export function createUserEntities(data: User[]): UserEntity[] {
       lastlogin: user.lastlogin,
       uuidId: user.uuid_id,
     };
-
     return userEntity;
   });
 }
