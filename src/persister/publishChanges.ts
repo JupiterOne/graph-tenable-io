@@ -29,7 +29,7 @@ import {
   JupiterOneRelationshipsData,
 } from "../jupiterone";
 
-import { Account, TenableDataModel } from "../tenable";
+import { Account, TenableDataModel } from "../types";
 
 type EntitiesKeys = keyof JupiterOneEntitiesData;
 type RelationshipsKeys = keyof JupiterOneRelationshipsData;

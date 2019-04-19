@@ -3,13 +3,13 @@ import {
   SCAN_ENTITY_TYPE,
   ScanEntity,
 } from "../jupiterone/entities";
-import { Scan } from "../tenable";
-import generateKey from "../utils/generateKey";
+import { Scan } from "../types";
+import { generateEntityKey } from "../utils/generateKey";
 
 export function createScanEntities(data: Scan[]): ScanEntity[] {
   return data.map(item => {
     const assessmentEntity: ScanEntity = {
-      _key: generateKey(SCAN_ENTITY_TYPE, item.id),
+      _key: generateEntityKey(SCAN_ENTITY_TYPE, item.id),
       _type: SCAN_ENTITY_TYPE,
       _class: SCAN_ENTITY_CLASS,
       id: item.id,

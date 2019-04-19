@@ -1,4 +1,4 @@
-import { User } from "../tenable";
+import { User } from "../types";
 import { createUserEntities } from "./UserEntityConverter";
 
 test("convert user entity", () => {

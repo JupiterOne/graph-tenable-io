@@ -3,13 +3,13 @@ import {
   USER_ENTITY_TYPE,
   UserEntity,
 } from "../jupiterone/entities";
-import { User } from "../tenable";
-import generateKey from "../utils/generateKey";
+import { User } from "../types";
+import { generateEntityKey } from "../utils/generateKey";
 
 export function createUserEntities(data: User[]): UserEntity[] {
   return data.map(user => {
     const userEntity: UserEntity = {
-      _key: generateKey(USER_ENTITY_TYPE, user.id),
+      _key: generateEntityKey(USER_ENTITY_TYPE, user.id),
       _type: USER_ENTITY_TYPE,
       _class: USER_ENTITY_CLASS,
       id: user.id,

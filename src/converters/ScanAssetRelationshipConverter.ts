@@ -5,8 +5,11 @@ import {
   SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
   ScanAssetRelationship,
 } from "../jupiterone/entities";
-import { Asset, Scan, ScanDetail } from "../tenable";
-import generateKey from "../utils/generateKey";
+import { Asset, Scan, ScanDetail } from "../types";
+import {
+  generateEntityKey,
+  generateRelationshipKey,
+} from "../utils/generateKey";
 
 const defaultValue: ScanAssetRelationship[] = [];
 
@@ -35,7 +38,7 @@ function createRelationshipsForOneScan(
   scanId: number,
   scanDetail: ScanDetail,
   assets: Asset[],
-) {
+): ScanAssetRelationship[] {
   const relationships = scanDetail.hosts.reduce((acc, host) => {
     const asset = findAsset(assets, host.hostname);
 
@@ -43,13 +46,19 @@ function createRelationshipsForOneScan(
       return acc;
     }
 
-    const parentKey = generateKey(SCAN_ENTITY_TYPE, scanId);
-    const childKey = generateKey(ASSET_ENTITY_TYPE, asset.id);
+    const parentKey = generateEntityKey(SCAN_ENTITY_TYPE, scanId);
+    const childKey = generateEntityKey(ASSET_ENTITY_TYPE, asset.id);
+    const relationKey = generateRelationshipKey(
+      parentKey,
+      SCAN_HAS_ASSET_RELATIONSHIP_CLASS,
+      childKey,
+    );
+
     const relationship: ScanAssetRelationship = {
       _class: SCAN_HAS_ASSET_RELATIONSHIP_CLASS,
       _type: SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
       _fromEntityKey: parentKey,
-      _key: `${parentKey}_has_${childKey}`,
+      _key: relationKey,
       _toEntityKey: childKey,
     };
     return acc.concat(relationship);
@@ -58,6 +67,6 @@ function createRelationshipsForOneScan(
   return relationships;
 }
 
-function findAsset(assets: Asset[], assetName: string) {
+function findAsset(assets: Asset[], assetName: string): Asset | undefined {
   return assets.find(asset => !!asset.fqdn.find(item => item === assetName));
 }

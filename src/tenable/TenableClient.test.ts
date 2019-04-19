@@ -60,9 +60,7 @@ describe("TenableClient fetch ok data", () => {
     const { nockDone } = await nock.back("scan-ok.json", {
       before: prepareScope,
     });
-    const scans = await client.fetchScans();
-    const scan =
-      scans && scans.length > 0 && (await client.fetchScanById(scans[0].id));
+    const scan = await client.fetchScanById(12);
     nockDone();
 
     expect(scan).not.toEqual({});
@@ -74,18 +72,7 @@ describe("TenableClient fetch ok data", () => {
     const { nockDone } = await nock.back("vulnerabilities-ok.json", {
       before: prepareScope,
     });
-    const scans = await client.fetchScans();
-    const scan =
-      scans && scans.length > 0 && (await client.fetchScanById(scans[0].id));
-    const vulnerabilities =
-      (scan &&
-        scan.hosts &&
-        scan.hosts.length > 0 &&
-        (await client.fetchVulnerabilities(
-          scans[0].id,
-          scan.hosts[0].host_id,
-        ))) ||
-      [];
+    const vulnerabilities = await client.fetchVulnerabilities(12, 1);
     nockDone();
 
     expect(vulnerabilities.length).not.toEqual(0);
@@ -106,11 +93,9 @@ describe("TenableClient fetch ok data", () => {
       before: prepareScope,
     });
     const client = await getClient();
-    const containers = await client.fetchContainers();
-    const response =
-      containers &&
-      containers.length > 0 &&
-      (await client.fetchReportByImageDigest(containers[0].digest));
+    const response = await client.fetchReportByImageDigest(
+      "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
+    );
     nockDone();
     expect(response).not.toEqual({});
   });

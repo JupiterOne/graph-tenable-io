@@ -5,8 +5,8 @@ import {
   USER_OWNS_SCAN_RELATIONSHIP_TYPE,
   UserScanRelationship,
 } from "../jupiterone/entities";
-import { Scan, User } from "../tenable";
-import generateKey from "../utils/generateKey";
+import { Scan, User } from "../types";
+import { generateEntityKey } from "../utils/generateKey";
 
 export function createUserScanRelationships(
   scans: Scan[],
@@ -19,8 +19,8 @@ export function createUserScanRelationships(
     if (!user) {
       return acc;
     }
-    const parentKey = generateKey(USER_ENTITY_TYPE, user.id);
-    const childKey = generateKey(SCAN_ENTITY_TYPE, scan.id);
+    const parentKey = generateEntityKey(USER_ENTITY_TYPE, user.id);
+    const childKey = generateEntityKey(SCAN_ENTITY_TYPE, scan.id);
     const relationship: UserScanRelationship = {
       _class: USER_OWNS_SCAN_RELATIONSHIP_CLASS,
       _type: USER_OWNS_SCAN_RELATIONSHIP_TYPE,
@@ -34,6 +34,6 @@ export function createUserScanRelationships(
   return relationships;
 }
 
-function findUser(users: User[], username: string) {
+function findUser(users: User[], username: string): User | undefined {
   return users.find(user => user.username === username);
 }

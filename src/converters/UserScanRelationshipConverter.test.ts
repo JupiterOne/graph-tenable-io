@@ -1,4 +1,4 @@
-import { User } from "../tenable";
+import { User } from "../types";
 import { createUserScanRelationships } from "./UserScanRelationshipConverter";
 
 const scans: any[] = [

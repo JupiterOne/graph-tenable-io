@@ -1,4 +1,5 @@
-import TenableClient, {
+import {
+  Container,
   ContainerVulnerability,
   Dictionary,
   Report,
@@ -6,7 +7,8 @@ import TenableClient, {
   ScanDetail,
   TenableDataModel,
   WebAppVulnerability,
-} from "./TenableClient";
+} from "../types";
+import TenableClient from "./TenableClient";
 
 export default async function fetchTenableData(
   client: TenableClient,
@@ -18,10 +20,33 @@ export default async function fetchTenableData(
     client.fetchContainers(),
   ]);
 
-  const webAppVulnerabilities: Dictionary<WebAppVulnerability[]> = {};
-  const containerVulnerabilities: Dictionary<ContainerVulnerability[]> = {};
+  const scansWithFullInfo: Scan[] = await fetchScansWithFullInfo(scans, client);
 
-  const scansWithFullInfo: Scan[] = await Promise.all(
+  const webAppVulnerabilities: Dictionary<
+    WebAppVulnerability[]
+  > = await fillWebAppVulnerabilities(scansWithFullInfo, client);
+
+  const {
+    reports,
+    containerVulnerabilities,
+  } = await fetchReportsWithContainerVulnerabilities(containers, client);
+
+  return {
+    users,
+    scans: scansWithFullInfo,
+    assets,
+    webAppVulnerabilities,
+    containers,
+    reports,
+    containerVulnerabilities,
+  };
+}
+
+async function fetchScansWithFullInfo(
+  scans: Scan[],
+  client: TenableClient,
+): Promise<Scan[]> {
+  return await Promise.all(
     scans.map(async scan => {
       const fullScanInfo: ScanDetail = await client.fetchScanById(scan.id);
       return {
@@ -30,33 +55,45 @@ export default async function fetchTenableData(
       };
     }),
   );
+}
 
-  await Promise.all(
-    scansWithFullInfo.map(async scan => {
-      if (!scan.scanDetail || !scan.scanDetail.hosts) {
+async function fillWebAppVulnerabilities(
+  scans: Scan[],
+  client: TenableClient,
+): Promise<Dictionary<WebAppVulnerability[]>> {
+  const webAppVulnerabilities: Dictionary<WebAppVulnerability[]> = {};
+  await scans.forEach(async scan => {
+    if (!scan.scanDetail || !scan.scanDetail.hosts) {
+      return;
+    }
+    await scan.scanDetail.hosts.forEach(async host => {
+      const fetchedVulnerabilities = await client.fetchVulnerabilities(
+        scan.id,
+        host.host_id,
+      );
+
+      if (!webAppVulnerabilities[host.hostname]) {
+        webAppVulnerabilities[host.hostname] = fetchedVulnerabilities;
         return;
       }
-      await Promise.all(
-        scan.scanDetail.hosts.map(async host => {
-          const fetchedVulnerabilities = await client.fetchVulnerabilities(
-            scan.id,
-            host.host_id,
-          );
 
-          if (!webAppVulnerabilities[host.hostname]) {
-            webAppVulnerabilities[host.hostname] = fetchedVulnerabilities;
-            return;
-          }
+      webAppVulnerabilities[host.hostname] = webAppVulnerabilities[
+        host.hostname
+      ].concat(fetchedVulnerabilities);
+      return;
+    });
+  });
+  return webAppVulnerabilities;
+}
 
-          webAppVulnerabilities[host.hostname] = webAppVulnerabilities[
-            host.hostname
-          ].concat(fetchedVulnerabilities);
-          return;
-        }),
-      );
-    }),
-  );
-
+async function fetchReportsWithContainerVulnerabilities(
+  containers: Container[],
+  client: TenableClient,
+): Promise<{
+  reports: Report[];
+  containerVulnerabilities: Dictionary<ContainerVulnerability[]>;
+}> {
+  const containerVulnerabilities: Dictionary<ContainerVulnerability[]> = {};
   const reports: Report[] = await Promise.all(
     containers.map(async item => {
       const report: Report = await client.fetchReportByImageDigest(item.digest);
@@ -82,14 +119,5 @@ export default async function fetchTenableData(
       return report;
     }),
   );
-
-  return {
-    users,
-    scans: scansWithFullInfo,
-    assets,
-    webAppVulnerabilities,
-    containers,
-    reports,
-    containerVulnerabilities,
-  };
+  return { reports, containerVulnerabilities };
 }

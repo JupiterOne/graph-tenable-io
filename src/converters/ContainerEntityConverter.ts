@@ -3,13 +3,13 @@ import {
   CONTAINER_ENTITY_TYPE,
   ContainerEntity,
 } from "../jupiterone/entities";
-import { Container } from "../tenable";
-import generateKey from "../utils/generateKey";
+import { Container } from "../types";
+import { generateEntityKey } from "../utils/generateKey";
 
 export function createContainerEntities(data: Container[]): ContainerEntity[] {
   return data.map(container => {
     const containerEntity: ContainerEntity = {
-      _key: generateKey(CONTAINER_ENTITY_TYPE, container.id),
+      _key: generateEntityKey(CONTAINER_ENTITY_TYPE, container.id),
       _type: CONTAINER_ENTITY_TYPE,
       _class: CONTAINER_ENTITY_CLASS,
       id: container.id,

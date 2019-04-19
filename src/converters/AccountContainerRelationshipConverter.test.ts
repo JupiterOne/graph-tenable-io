@@ -1,4 +1,4 @@
-import { Account, Container } from "../tenable";
+import { Account, Container } from "../types";
 import { createAccountContainerRelationships } from "./AccountContainerRelationshipConverter";
 
 test("convert account container relationship", () => {

@@ -1,4 +1,4 @@
-import { Report } from "../tenable";
+import { Report } from "../types";
 import { createReportEntities } from "./ReportEntityConverter";
 
 test("convert report entity", () => {
