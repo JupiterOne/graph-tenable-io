@@ -265,7 +265,9 @@ export interface TenableDataModel {
   webAppVulnerabilities: Dictionary<WebAppVulnerability[]>;
   containers: Container[];
   reports: Report[];
-  containerVulnerabilities: Dictionary<ContainerVulnerability[]>;
+  malwares: Dictionary<Malware[]>;
+  findings: Dictionary<Finding[]>;
+  unwantedPrograms: Dictionary<PotentiallyUnwantedProgram[]>;
 }
 
 export enum Method {

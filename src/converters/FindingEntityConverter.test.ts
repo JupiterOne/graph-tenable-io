@@ -1,4 +1,4 @@
-import { createContainerVulnerabilityEntities } from "./ContainerVulnerabilityEntityConverter";
+import { createFindingEntities } from "./FindingEntityConverter";
 
 test("convert container vulnerability entity", () => {
   const data = {
@@ -32,27 +32,16 @@ test("convert container vulnerability entity", () => {
           },
         ],
       },
-      {
-        infectedFile: "string",
-        fileTypeDescriptor: "string",
-        md5: "malwareMd5",
-        sha256: "string",
-      },
-      {
-        file: "file",
-        md5: "unwantedProgramMd5",
-        sha256: "string",
-      },
     ],
   };
 
-  const entities = createContainerVulnerabilityEntities(data as any);
+  const entities = createFindingEntities(data as any);
 
   expect(entities).toEqual([
     {
       _class: "Vulnerability",
-      _key: "tenable_container_vulnerability_findingId",
-      _type: "tenable_container_vulnerability",
+      _key: "tenable_finding_findingId",
+      _type: "tenable_finding",
       accessComplexity: "string",
       accessVector: "string",
       auth: "string",
@@ -67,23 +56,6 @@ test("convert container vulnerability entity", () => {
       publishedDate: "string",
       referenceId: "findingId",
       remediation: "string",
-    },
-    {
-      _class: "Vulnerability",
-      _key: "tenable_container_vulnerability_malwareMd5",
-      _type: "tenable_container_vulnerability",
-      fileTypeDescriptor: "string",
-      infectedFile: "string",
-      md5: "malwareMd5",
-      sha256: "string",
-    },
-    {
-      _class: "Vulnerability",
-      _key: "tenable_container_vulnerability_unwantedProgramMd5",
-      _type: "tenable_container_vulnerability",
-      file: "file",
-      md5: "unwantedProgramMd5",
-      sha256: "string",
     },
   ]);
 });

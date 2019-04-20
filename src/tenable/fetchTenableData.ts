@@ -1,7 +1,9 @@
 import {
   Container,
-  ContainerVulnerability,
   Dictionary,
+  Finding,
+  Malware,
+  PotentiallyUnwantedProgram,
   Report,
   Scan,
   ScanDetail,
@@ -28,7 +30,9 @@ export default async function fetchTenableData(
 
   const {
     reports,
-    containerVulnerabilities,
+    malwares,
+    findings,
+    unwantedPrograms,
   } = await fetchReportsWithContainerVulnerabilities(containers, client);
 
   return {
@@ -38,7 +42,9 @@ export default async function fetchTenableData(
     webAppVulnerabilities,
     containers,
     reports,
-    containerVulnerabilities,
+    malwares,
+    findings,
+    unwantedPrograms,
   };
 }
 
@@ -97,9 +103,13 @@ async function fetchReportsWithContainerVulnerabilities(
   client: TenableClient,
 ): Promise<{
   reports: Report[];
-  containerVulnerabilities: Dictionary<ContainerVulnerability[]>;
+  malwares: Dictionary<Malware[]>;
+  findings: Dictionary<Finding[]>;
+  unwantedPrograms: Dictionary<PotentiallyUnwantedProgram[]>;
 }> {
-  const containerVulnerabilities: Dictionary<ContainerVulnerability[]> = {};
+  const malwares: Dictionary<Malware[]> = {};
+  const findings: Dictionary<Finding[]> = {};
+  const unwantedPrograms: Dictionary<PotentiallyUnwantedProgram[]> = {};
   const reports: Report[] = await Promise.all(
     containers.map(async item => {
       const report: Report = await client.fetchReportByImageDigest(item.digest);
@@ -107,23 +117,24 @@ async function fetchReportsWithContainerVulnerabilities(
       if (!report.sha256) {
         return report;
       }
-
-      if (!containerVulnerabilities[report.sha256]) {
-        containerVulnerabilities[report.sha256] = [];
+      if (!malwares[report.sha256]) {
+        malwares[report.sha256] = [];
+      }
+      if (!findings[report.sha256]) {
+        findings[report.sha256] = [];
+      }
+      if (!unwantedPrograms[report.sha256]) {
+        unwantedPrograms[report.sha256] = [];
       }
 
-      containerVulnerabilities[report.sha256] = containerVulnerabilities[
-        report.sha256
-      ].concat(report.malware);
-      containerVulnerabilities[report.sha256] = containerVulnerabilities[
-        report.sha256
-      ].concat(report.findings);
-      containerVulnerabilities[report.sha256] = containerVulnerabilities[
-        report.sha256
-      ].concat(report.potentially_unwanted_programs);
+      malwares[report.sha256] = malwares[report.sha256].concat(report.malware);
+      findings[report.sha256] = findings[report.sha256].concat(report.findings);
+      unwantedPrograms[report.sha256] = unwantedPrograms[report.sha256].concat(
+        report.potentially_unwanted_programs,
+      );
 
       return report;
     }),
   );
-  return { reports, containerVulnerabilities };
+  return { reports, malwares, findings, unwantedPrograms };
 }

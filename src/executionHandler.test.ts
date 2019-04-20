@@ -55,7 +55,7 @@ test("executionHandler INGEST action", async () => {
   expect(
     executionContext.provider.fetchReportByImageDigest,
   ).toHaveBeenCalledTimes(0);
-  expect(executionContext.persister.processEntities).toHaveBeenCalledTimes(8);
+  expect(executionContext.persister.processEntities).toHaveBeenCalledTimes(10);
   expect(
     executionContext.persister.publishPersisterOperations,
   ).toHaveBeenCalledTimes(1);

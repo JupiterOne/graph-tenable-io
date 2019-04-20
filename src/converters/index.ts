@@ -15,13 +15,12 @@ export {
 export {
   createContainerReportRelationships,
 } from "../converters/ContainerReportRelationshipConverter";
-export {
-  createContainerVulnerabilityEntities,
-} from "../converters/ContainerVulnerabilityEntityConverter";
-export {
-  createReportContainerVulnerabilityRelationships,
-} from "../converters/ReportContainerVulnerabilityRelationshipConverter";
 export { createReportEntities } from "../converters/ReportEntityConverter";
+export { createMalwareEntities } from "../converters/MalwareEntityConverter";
+export { createFindingEntities } from "../converters/FindingEntityConverter";
+export {
+  createUnwantedProgramEntities,
+} from "../converters/UnwantedProgramEntityConverter";
 export {
   createScanAssetRelationships,
 } from "../converters/ScanAssetRelationshipConverter";
@@ -36,3 +35,12 @@ export {
 export {
   createVulnerabilityEntities,
 } from "../converters/WebAppVulnerabilityEntityConverter";
+export {
+  createReportMalwareRelationships,
+} from "../converters/ReportMalwareRelationshipConverter";
+export {
+  createReportFindingRelationships,
+} from "../converters/ReportFindingRelationshipConverter";
+export {
+  createReportUnwantedProgramRelationships,
+} from "../converters/ReportUnwantedProgramRelationshipConverter";

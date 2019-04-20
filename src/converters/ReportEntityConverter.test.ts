@@ -28,7 +28,7 @@ test("convert report entity", () => {
 
   expect(entities).toEqual([
     {
-      _class: "Risk",
+      _class: "Assessment",
       _key:
         "tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       _type: "tenable_report",

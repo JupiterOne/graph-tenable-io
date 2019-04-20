@@ -1,7 +1,7 @@
 import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 
 export const REPORT_ENTITY_TYPE = "tenable_report";
-export const REPORT_ENTITY_CLASS = "Risk";
+export const REPORT_ENTITY_CLASS = "Assessment";
 
 export interface ReportEntity extends EntityFromIntegration {
   id: string;

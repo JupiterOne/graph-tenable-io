@@ -12,8 +12,6 @@ import {
   createAssetWebAppVulnerabilityRelationships,
   createContainerEntities,
   createContainerReportRelationships,
-  createContainerVulnerabilityEntities,
-  createReportContainerVulnerabilityRelationships,
   createReportEntities,
   createScanAssetRelationships,
   createScanEntities,
@@ -22,6 +20,12 @@ import {
   createUserScanRelationships,
   createVulnerabilityEntities,
 } from "../converters";
+import { createFindingEntities } from "../converters/FindingEntityConverter";
+import { createMalwareEntities } from "../converters/MalwareEntityConverter";
+import { createReportFindingRelationships } from "../converters/ReportFindingRelationshipConverter";
+import { createReportMalwareRelationships } from "../converters/ReportMalwareRelationshipConverter";
+import { createReportUnwantedProgramRelationships } from "../converters/ReportUnwantedProgramRelationshipConverter";
+import { createUnwantedProgramEntities } from "../converters/UnwantedProgramEntityConverter";
 
 import {
   JupiterOneDataModel,
@@ -123,8 +127,10 @@ export function convertEntities(
     ),
     containers: createContainerEntities(tenableDataModel.containers),
     reports: createReportEntities(tenableDataModel.reports),
-    containerVulnerabilities: createContainerVulnerabilityEntities(
-      tenableDataModel.containerVulnerabilities,
+    malwares: createMalwareEntities(tenableDataModel.malwares),
+    findings: createFindingEntities(tenableDataModel.findings),
+    unwantedPrograms: createUnwantedProgramEntities(
+      tenableDataModel.unwantedPrograms,
     ),
   };
 }
@@ -162,9 +168,17 @@ export function convertRelationships(
       tenableDataModel.containers,
       tenableDataModel.reports,
     ),
-    reportContainerVulnerabilityRelationships: createReportContainerVulnerabilityRelationships(
+    reportMalwareRelationships: createReportMalwareRelationships(
       tenableDataModel.reports,
-      tenableDataModel.containerVulnerabilities,
+      tenableDataModel.malwares,
+    ),
+    reportFindingRelationships: createReportFindingRelationships(
+      tenableDataModel.reports,
+      tenableDataModel.findings,
+    ),
+    reportUnwantedProgramRelationships: createReportUnwantedProgramRelationships(
+      tenableDataModel.reports,
+      tenableDataModel.unwantedPrograms,
     ),
   };
 }
