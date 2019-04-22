@@ -1,111 +1,51 @@
 import {
+  IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
   IntegrationInvocationEvent,
+  summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
-import {
-  createAccountEntity,
-  createAccountRelationships,
-  createDeviceEntities,
-  createUserDeviceRelationships,
-  createUserEntities,
-} from "./converters";
+
 import initializeContext from "./initializeContext";
-import ProviderClient from "./ProviderClient";
-import {
-  ACCOUNT_DEVICE_RELATIONSHIP_TYPE,
-  ACCOUNT_ENTITY_TYPE,
-  ACCOUNT_USER_RELATIONSHIP_TYPE,
-  AccountEntity,
-  DEVICE_ENTITY_TYPE,
-  DeviceEntity,
-  USER_DEVICE_RELATIONSHIP_TYPE,
-  USER_ENTITY_TYPE,
-  UserEntity,
-} from "./types";
+import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
+import publishChanges from "./persister/publishChanges";
+import fetchTenableData from "./tenable/fetchTenableData";
+import { TenableIntegrationContext } from "./types";
 
 export default async function executionHandler(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>,
 ): Promise<IntegrationExecutionResult> {
-  const { graph, persister, provider } = initializeContext(context);
+  const actionFunction = ACTIONS[context.event.action.name];
+  if (actionFunction) {
+    return await actionFunction(await initializeContext(context));
+  } else {
+    return {};
+  }
+}
 
-  const [
-    oldAccountEntities,
-    oldUserEntities,
-    oldDeviceEntities,
-    oldAccountRelationships,
-    oldUserDeviceRelationships,
-    newAccountEntities,
-    newUserEntities,
-    newDeviceEntities,
-  ] = await Promise.all([
-    graph.findEntitiesByType<AccountEntity>(ACCOUNT_ENTITY_TYPE),
-    graph.findEntitiesByType<UserEntity>(USER_ENTITY_TYPE),
-    graph.findEntitiesByType<DeviceEntity>(DEVICE_ENTITY_TYPE),
-    graph.findRelationshipsByType([
-      ACCOUNT_USER_RELATIONSHIP_TYPE,
-      ACCOUNT_DEVICE_RELATIONSHIP_TYPE,
-    ]),
-    graph.findRelationshipsByType(USER_DEVICE_RELATIONSHIP_TYPE),
-    fetchAccountEntitiesFromProvider(provider),
-    fetchUserEntitiesFromProvider(provider),
-    fetchDeviceEntitiesFromProvider(provider),
-  ]);
+async function synchronize(
+  context: TenableIntegrationContext,
+): Promise<IntegrationExecutionResult> {
+  const { graph, persister, provider, account } = context;
 
-  const [accountEntity] = newAccountEntities;
-  const newAccountRelationships = [
-    ...createAccountRelationships(
-      accountEntity,
-      newUserEntities,
-      ACCOUNT_USER_RELATIONSHIP_TYPE,
-    ),
-    ...createAccountRelationships(
-      accountEntity,
-      newDeviceEntities,
-      ACCOUNT_DEVICE_RELATIONSHIP_TYPE,
-    ),
-  ];
-
-  const newUserDeviceRelationships = createUserDeviceRelationships(
-    newUserEntities,
-    newDeviceEntities,
-  );
+  const oldData = await fetchEntitiesAndRelationships(graph);
+  const tenableData = await fetchTenableData(provider);
 
   return {
-    operations: await persister.publishPersisterOperations([
-      [
-        ...persister.processEntities(oldAccountEntities, newAccountEntities),
-        ...persister.processEntities(oldUserEntities, newUserEntities),
-        ...persister.processEntities(oldDeviceEntities, newDeviceEntities),
-      ],
-      [
-        ...persister.processRelationships(
-          oldUserDeviceRelationships,
-          newUserDeviceRelationships,
-        ),
-        ...persister.processRelationships(
-          oldAccountRelationships,
-          newAccountRelationships,
-        ),
-      ],
-    ]),
+    operations: summarizePersisterOperationsResults(
+      await publishChanges(persister, oldData, tenableData, account),
+    ),
   };
 }
 
-async function fetchAccountEntitiesFromProvider(
-  provider: ProviderClient,
-): Promise<AccountEntity[]> {
-  return [createAccountEntity(await provider.fetchAccountDetails())];
+type ActionFunction = (
+  context: TenableIntegrationContext,
+) => Promise<IntegrationExecutionResult>;
+
+interface ActionMap {
+  [actionName: string]: ActionFunction | undefined;
 }
 
-async function fetchUserEntitiesFromProvider(
-  provider: ProviderClient,
-): Promise<UserEntity[]> {
-  return createUserEntities(await provider.fetchUsers());
-}
-
-async function fetchDeviceEntitiesFromProvider(
-  provider: ProviderClient,
-): Promise<DeviceEntity[]> {
-  return createDeviceEntities(await provider.fetchDevices());
-}
+const ACTIONS: ActionMap = {
+  [IntegrationActionName.INGEST]: synchronize,
+};

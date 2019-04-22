@@ -1,7 +1,10 @@
 import {
   IntegrationExecutionContext,
+  IntegrationInstanceAuthenticationError,
+  IntegrationInstanceConfigError,
   IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+import TenableClient from "./tenable/TenableClient";
 
 /**
  * Performs validation of the execution before the execution handler function is
@@ -21,13 +24,18 @@ import {
 export default async function invocationValidator(
   executionContext: IntegrationExecutionContext<IntegrationInvocationEvent>,
 ) {
-  // const { config } = executionContext.instance;
-  // if (!config.providerAPIKey) {
-  //   throw new IntegrationInstanceConfigError('providerAPIKey missing in config');
-  // }
-  // try {
-  //   new ProviderClient(config.providerAPIKey).someEndpoint();
-  // } catch (err) {
-  //   throw new IntegrationInstanceAuthenticationError(err);
-  // }
+  const { config } = executionContext.instance;
+  if (!config.accessKey || !config.secretKey) {
+    throw new IntegrationInstanceConfigError(
+      "config requires all of { accessKey, secretKey }",
+    );
+  }
+
+  const provider = new TenableClient(config.accessKey, config.secretKey);
+
+  try {
+    await provider.fetchUsers();
+  } catch (err) {
+    throw new IntegrationInstanceAuthenticationError(err);
+  }
 }

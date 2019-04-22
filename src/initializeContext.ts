@@ -2,15 +2,28 @@ import {
   IntegrationExecutionContext,
   IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
-import ProviderClient from "./ProviderClient";
-import { ExampleExecutionContext } from "./types";
+import TenableClient from "./tenable/TenableClient";
+import { Account, TenableIntegrationContext } from "./types";
 
-export default function initializeContext(
+export default async function initializeContext(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>,
-): ExampleExecutionContext {
+): Promise<TenableIntegrationContext> {
+  const { config } = context.instance;
+
+  const provider = new TenableClient(config.accessKey, config.secretKey);
+
+  const { persister, graph } = context.clients.getClients();
+
+  const account: Account = {
+    id: context.instance.id,
+    name: config.accountName || context.instance.name,
+  };
+
   return {
     ...context,
-    ...context.clients.getClients(),
-    provider: new ProviderClient(),
+    graph,
+    persister,
+    provider,
+    account,
   };
 }

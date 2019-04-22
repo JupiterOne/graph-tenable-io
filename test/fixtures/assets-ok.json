@@ -1,0 +1,102 @@
+[
+  {
+    "scope": "https://cloud.tenable.com:443",
+    "method": "GET",
+    "path": "/assets",
+    "body": "",
+    "status": 200,
+    "response": {
+      "assets": [
+        {
+          "id": "df0f891f-f18b-4047-8fe1-6e15ca7798a8",
+          "has_agent": false,
+          "last_seen": "2019-04-15T12:16:15.622Z",
+          "sources": [
+            {
+              "name": "WAS",
+              "first_seen": "2019-04-12T10:48:54.822Z",
+              "last_seen": "2019-04-12T10:48:54.822Z"
+            },
+            {
+              "name": "NESSUS_SCAN",
+              "first_seen": "2019-04-15T12:16:15.622Z",
+              "last_seen": "2019-04-15T12:16:15.622Z"
+            }
+          ],
+          "ipv4": ["185.203.72.17"],
+          "ipv6": [],
+          "fqdn": ["dualbootpartners.com"],
+          "netbios_name": [],
+          "operating_system": [],
+          "agent_name": [],
+          "aws_ec2_name": [],
+          "mac_address": []
+        },
+        {
+          "id": "5cf9ecff-6867-46df-bf8f-d819fc8ed0b0",
+          "has_agent": false,
+          "last_seen": "2019-04-15T12:16:15.622Z",
+          "sources": [
+            {
+              "name": "WAS",
+              "first_seen": "2019-04-12T10:48:00.711Z",
+              "last_seen": "2019-04-12T10:48:00.711Z"
+            },
+            {
+              "name": "NESSUS_SCAN",
+              "first_seen": "2019-04-15T12:16:15.622Z",
+              "last_seen": "2019-04-15T12:16:15.622Z"
+            }
+          ],
+          "ipv4": ["18.221.79.150"],
+          "ipv6": [],
+          "fqdn": ["dualboot.ru"],
+          "netbios_name": [],
+          "operating_system": [
+            "Linux Kernel 2.2",
+            "Linux Kernel 2.4",
+            "Linux Kernel 2.6"
+          ],
+          "agent_name": [],
+          "aws_ec2_name": [],
+          "mac_address": []
+        }
+      ],
+      "total": 2
+    },
+    "rawHeaders": [
+      "Date",
+      "Tue, 16 Apr 2019 19:37:54 GMT",
+      "Content-Type",
+      "application/json; charset=utf-8",
+      "Content-Length",
+      "1007",
+      "Connection",
+      "close",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Set-Cookie",
+      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
+      "Cache-Control",
+      "no-cache",
+      "Vary",
+      "accept-encoding",
+      "Accept-Ranges",
+      "bytes",
+      "X-Content-Type-Options",
+      "nosniff",
+      "X-Frame-Options",
+      "DENY",
+      "X-Xss-Protection",
+      "mode=block",
+      "X-Request-Uuid",
+      "fbce2983ca7f25774706f05225e709b3",
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains",
+      "X-Gateway-Site-ID",
+      "nginx-router-b-prod-eu-west-2",
+      "Server",
+      "tenable.io"
+    ]
+  }
+]
