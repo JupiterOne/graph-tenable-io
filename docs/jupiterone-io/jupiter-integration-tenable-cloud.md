@@ -11,7 +11,8 @@ providing API keys to JupiterOne.
 ## Integration Instance Configuration
 
 The integration is triggered by an event containing the information for a
-specific integration instance.
+specific integration instance, including the API access key and secret key
+provided by the user.
 
 ## Entities
 
@@ -48,4 +49,4 @@ The following relationships are created/mapped:
 | `tenable_report`    | **IDENTIFIED** | `tenable_unwanted_program`     |
 
 [1]: https://www.tenable.com/products/tenable-io
-[2]: https://cloud.tenable.com/api#/overview
+[2]: https://developer.tenable.com

@@ -3,7 +3,6 @@ import { executeIntegrationLocal } from "@jupiterone/jupiter-managed-integration
 import invocationConfig from "../src/index";
 
 const integrationConfig = {
-  accountName: process.env.TENABLE_LOCAL_EXECUTION_ACCOUNT_NAME,
   accessKey: process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY,
   secretKey: process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY,
 };

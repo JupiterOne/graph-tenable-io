@@ -13,7 +13,7 @@ export default async function initializeContext(
 
   const account: Account = {
     id: context.instance.id,
-    name: config.accountName || context.instance.name,
+    name: context.instance.name,
   };
 
   return {
