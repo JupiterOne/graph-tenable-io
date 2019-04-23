@@ -1,14 +1,12 @@
 import {
   GraphClient,
   IntegrationExecutionContext,
-  IntegrationInvocationEvent,
   PersisterClient,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
 import TenableClient from "./tenable/TenableClient";
 
-export interface TenableIntegrationContext
-  extends IntegrationExecutionContext<IntegrationInvocationEvent> {
+export interface TenableIntegrationContext extends IntegrationExecutionContext {
   graph: GraphClient;
   persister: PersisterClient;
   provider: TenableClient;

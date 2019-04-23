@@ -1,8 +1,8 @@
 import {
   IntegrationActionName,
   IntegrationExecutionContext,
-  IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+
 import executionHandler from "./executionHandler";
 import initializeContext from "./initializeContext";
 
@@ -44,7 +44,7 @@ test("executionHandler INGEST action", async () => {
         name: IntegrationActionName.INGEST,
       },
     },
-  } as IntegrationExecutionContext<IntegrationInvocationEvent>;
+  } as IntegrationExecutionContext;
   await executionHandler(invocationContext);
 
   expect(initializeContext).toHaveBeenCalledWith(invocationContext);
@@ -71,7 +71,7 @@ test("executionHandler unhandled action", async () => {
         name: IntegrationActionName.CREATE_ENTITY,
       },
     },
-  } as IntegrationExecutionContext<IntegrationInvocationEvent>;
+  } as IntegrationExecutionContext;
 
   await executionHandler(invocationContext);
 
