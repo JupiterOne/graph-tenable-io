@@ -1,9 +1,9 @@
 import {
-  IntegrationExecutionContext,
   IntegrationInstanceAuthenticationError,
   IntegrationInstanceConfigError,
-  IntegrationInvocationEvent,
+  IntegrationValidationContext,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+
 import TenableClient from "./tenable/TenableClient";
 
 /**
@@ -22,7 +22,7 @@ import TenableClient from "./tenable/TenableClient";
  * @param executionContext
  */
 export default async function invocationValidator(
-  executionContext: IntegrationExecutionContext<IntegrationInvocationEvent>,
+  executionContext: IntegrationValidationContext,
 ) {
   const { config } = executionContext.instance;
   if (!config.accessKey || !config.secretKey) {

@@ -1,3 +1,24 @@
 language: node_js
 node_js:
-  - "8.10"
+  - '8'
+  - '10'
+  - '11'
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
+script: yarn build
+
+deploy:
+  provider: npm
+  email: npm@jupiterone.io
+  api_key:
+    secure: "ZVUGtgaTVvNRK1Ywm289H4sxphmjQXnTXdZrNRngUPEpD5J4HVf6aeRS2tqtjcDTjPtyOXf1Pl+5M8m1XBXb4CBJFkf/oMgxX0Ih1cYhdHEOVVCiI9GTyzFpDv1NO9nsudaSkG5+ljzFsM6HtOXzwaB+Zha8VsouT/MHaRKK42hQn+pLyBdyp/3mYlD24Wwu9wl0Vw5RPvGep3l097wf35nNETcTMwh/AT6f6LfppBg3IZ8Kw4Dvu5Q6mkMBu1jJMQfpqepPideEZ0YKXd4xVsEvjINbDAJSibv6/VjRRnbPqvMEm8ZEqIrffw8LfN3N75lqV015eriVYiXUi0PGdegxJYts1PIzOG/76oA3pspazoimii5nXdbuCsERno8NMtupYVIN6J4V4X6pm9ZHERVoRirEj4bL8FZGLku7v/iTvwheuiRkBP71tynz6y+IdlKxjT5jKVX27aYQzVgHwdEgCi+QHc2DM0oYsBVknv9tiNy32OzlR6NxAMFDDhUmeboZ3h3BD6bEoff9Hu7qAvC+0uv9C/qERAS4ZNkgYQGvy1LFeXxp74zb+QJlC5WRqkPGJAVZRNyq91LxH2qbdGR6yqZBmdCNSIgslNZnbqef/S4bbDyc37UMZPekzUlD8Xu+dJiL1bEmOHfvPQ1aDRIjcjRg/JFwhNYFm9rxzyQ="
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: master
+    repo: JupiterOne/jupiter-integration-tenable-cloud
+    node: '8'

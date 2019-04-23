@@ -2,7 +2,6 @@ import {
   IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
-  IntegrationInvocationEvent,
   summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
@@ -13,7 +12,7 @@ import fetchTenableData from "./tenable/fetchTenableData";
 import { TenableIntegrationContext } from "./types";
 
 export default async function executionHandler(
-  context: IntegrationExecutionContext<IntegrationInvocationEvent>,
+  context: IntegrationExecutionContext,
 ): Promise<IntegrationExecutionResult> {
   const actionFunction = ACTIONS[context.event.action.name];
   if (actionFunction) {
