@@ -13,7 +13,7 @@ export interface ContainerEntity extends EntityFromIntegration {
   repoName: string;
   score: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
   numberOfVulnerabilities: string;
 }

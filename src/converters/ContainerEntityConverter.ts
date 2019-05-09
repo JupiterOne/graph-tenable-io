@@ -5,6 +5,7 @@ import {
 } from "../jupiterone/entities";
 import { Container } from "../types";
 import { generateEntityKey } from "../utils/generateKey";
+import getTime from "../utils/getTime";
 
 export function createContainerEntities(data: Container[]): ContainerEntity[] {
   return data.map(container => {
@@ -21,8 +22,8 @@ export function createContainerEntities(data: Container[]): ContainerEntity[] {
       repoName: container.repo_name,
       score: container.score,
       status: container.status,
-      createdAt: container.created_at,
-      updatedAt: container.updated_at,
+      createdAt: getTime(container.created_at)!,
+      updatedAt: getTime(container.updated_at)!,
       numberOfVulnerabilities: container.number_of_vulnerabilities,
     };
     return containerEntity;

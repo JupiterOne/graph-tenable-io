@@ -5,6 +5,7 @@ import {
 } from "../jupiterone/entities";
 import { Report } from "../types";
 import { generateEntityKey } from "../utils/generateKey";
+import getTime from "../utils/getTime";
 
 export function createReportEntities(data: Report[]): ReportEntity[] {
   return data.map(report => {
@@ -24,8 +25,8 @@ export function createReportEntities(data: Report[]): ReportEntity[] {
       riskScore: report.risk_score,
       osArchitecture: report.os_architecture,
       osVersion: report.os_version,
-      createdAt: report.created_at,
-      updatedAt: report.updated_at,
+      createdAt: getTime(report.created_at)!,
+      updatedAt: getTime(report.updated_at)!,
     };
     return reportEntity;
   });

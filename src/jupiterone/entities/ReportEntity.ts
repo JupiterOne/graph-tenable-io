@@ -15,6 +15,6 @@ export interface ReportEntity extends EntityFromIntegration {
   riskScore: number;
   osArchitecture: string;
   osVersion: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
 }
