@@ -161,9 +161,9 @@ export interface Report {
   findings: Finding[];
   os_version: string;
   created_at: string;
+  updated_at: string;
   platform: string;
   image_name: string;
-  updated_at: string;
   digest: string;
   tag: string;
   potentially_unwanted_programs: PotentiallyUnwantedProgram[];

@@ -5,6 +5,7 @@ import {
 } from "../jupiterone/entities";
 import { Asset } from "../types";
 import { generateEntityKey } from "../utils/generateKey";
+import getTime from "../utils/getTime";
 
 export function createAssetEntities(data: Asset[]): AssetEntity[] {
   return data.map(item => {
@@ -14,7 +15,7 @@ export function createAssetEntities(data: Asset[]): AssetEntity[] {
       _class: ASSET_ENTITY_CLASS,
       id: item.id,
       hasAgent: item.has_agent,
-      lastSeen: item.last_seen,
+      lastSeen: getTime(item.last_seen)!,
       fqdn: item.fqdn.reduce((acc, value) => acc.concat(`, ${value}`)),
     };
 

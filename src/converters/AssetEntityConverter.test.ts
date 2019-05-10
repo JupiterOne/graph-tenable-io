@@ -73,7 +73,7 @@ test("convert application entities", () => {
         "dualbootpartners.com, dualbootpartnerscopy.com, dualbootpartnerscopycopy.com",
       hasAgent: false,
       id: "df0f891f-f18b-4047-8fe1-6e15ca7798a8",
-      lastSeen: "2019-04-15T12:16:15.622Z",
+      lastSeen: 1555330575622,
     },
     {
       _class: "Application",
@@ -82,7 +82,7 @@ test("convert application entities", () => {
       fqdn: "dualboot.ru",
       hasAgent: false,
       id: "5cf9ecff-6867-46df-bf8f-d819fc8ed0b0",
-      lastSeen: "2019-04-15T12:16:15.622Z",
+      lastSeen: 1555330575622,
     },
   ]);
 });

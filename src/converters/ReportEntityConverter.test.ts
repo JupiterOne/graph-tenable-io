@@ -32,7 +32,7 @@ test("convert report entity", () => {
       _key:
         "tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       _type: "tenable_report",
-      createdAt: "2019-04-17T10:26:58.509Z",
+      createdAt: 1555496818509,
       digest:
         "c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       dockerImageId: "f8ebac0b4322",
@@ -47,7 +47,7 @@ test("convert report entity", () => {
       sha256:
         "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       tag: "latest",
-      updatedAt: "2019-04-17T10:26:58.509Z",
+      updatedAt: 1555496818509,
     },
   ]);
 });

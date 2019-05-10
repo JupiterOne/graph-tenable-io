@@ -6,6 +6,6 @@ export const ASSET_ENTITY_CLASS = "Application";
 export interface AssetEntity extends EntityFromIntegration {
   id: string;
   hasAgent: boolean;
-  lastSeen: string;
+  lastSeen: number;
   fqdn: string;
 }
