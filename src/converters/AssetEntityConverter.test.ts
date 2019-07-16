@@ -60,6 +60,35 @@ test("convert application entities", () => {
       aws_ec2_name: [],
       mac_address: [],
     },
+    {
+      id: "15329b88-762a-44cc-8263-f7fbde183552",
+      has_agent: false,
+      last_seen: "2019-04-15T12:16:15.622Z",
+      sources: [
+        {
+          name: "WAS",
+          first_seen: "2019-04-12T10:48:00.711Z",
+          last_seen: "2019-04-12T10:48:00.711Z",
+        },
+        {
+          name: "NESSUS_SCAN",
+          first_seen: "2019-04-15T12:16:15.622Z",
+          last_seen: "2019-04-15T12:16:15.622Z",
+        },
+      ],
+      ipv4: ["18.221.79.150"],
+      ipv6: [],
+      fqdn: [],
+      netbios_name: [],
+      operating_system: [
+        "Linux Kernel 2.2",
+        "Linux Kernel 2.4",
+        "Linux Kernel 2.6",
+      ],
+      agent_name: [],
+      aws_ec2_name: [],
+      mac_address: [],
+    },
   ];
 
   const entities = createAssetEntities(assets);
@@ -82,6 +111,15 @@ test("convert application entities", () => {
       fqdn: "dualboot.ru",
       hasAgent: false,
       id: "5cf9ecff-6867-46df-bf8f-d819fc8ed0b0",
+      lastSeen: 1555330575622,
+    },
+    {
+      _class: "Application",
+      _key: "tenable_asset_15329b88-762a-44cc-8263-f7fbde183552",
+      _type: "tenable_asset",
+      fqdn: "",
+      hasAgent: false,
+      id: "15329b88-762a-44cc-8263-f7fbde183552",
       lastSeen: 1555330575622,
     },
   ]);

@@ -16,7 +16,7 @@ export function createAssetEntities(data: Asset[]): AssetEntity[] {
       id: item.id,
       hasAgent: item.has_agent,
       lastSeen: getTime(item.last_seen)!,
-      fqdn: item.fqdn.reduce((acc, value) => acc.concat(`, ${value}`)),
+      fqdn: item.fqdn.join(", "),
     };
 
     return applicationEntity;
