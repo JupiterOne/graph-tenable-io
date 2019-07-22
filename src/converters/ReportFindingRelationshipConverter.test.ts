@@ -1,4 +1,4 @@
-import { Dictionary, Finding, Report } from "../types";
+import { ContainerFinding, Dictionary, Report } from "../tenable/types";
 import { createReportFindingRelationships } from "./ReportFindingRelationshipConverter";
 
 test("convert report container vulnerability relationship", () => {
@@ -23,12 +23,13 @@ test("convert report container vulnerability relationship", () => {
       os_architecture: "AMD64",
     },
   ];
-  const findings: Dictionary<Finding[]> = {
+  const findings: Dictionary<ContainerFinding[]> = {
     "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc": [
       {
         nvdFinding: {
           reference_id: "findingId",
           cve: "string",
+          cpe: ["string"],
           published_date: "string",
           modified_date: "string",
           description: "string",
@@ -41,6 +42,7 @@ test("convert report container vulnerability relationship", () => {
           integrity_impact: "string",
           cwe: "string",
           remediation: "string",
+          references: ["string"],
         },
         packages: [
           {

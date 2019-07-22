@@ -5,7 +5,7 @@ import {
   USER_OWNS_SCAN_RELATIONSHIP_TYPE,
   UserScanRelationship,
 } from "../jupiterone/entities";
-import { Scan, User } from "../types";
+import { Scan, User } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
 export function createUserScanRelationships(

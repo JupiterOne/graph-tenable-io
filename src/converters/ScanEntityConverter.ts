@@ -3,7 +3,7 @@ import {
   SCAN_ENTITY_TYPE,
   ScanEntity,
 } from "../jupiterone/entities";
-import { Scan } from "../types";
+import { Scan } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
 export function createScanEntities(data: Scan[]): ScanEntity[] {

@@ -1,4 +1,5 @@
-import { Account, User } from "../types";
+import { User } from "../tenable/types";
+import { Account } from "../types";
 import { createAccountUserRelationships } from "./AccountUserRelationshipConverter";
 
 const account: Account = {

@@ -3,11 +3,11 @@ import {
   FINDING_ENTITY_TYPE,
   FindingVulnerabilityEntity,
 } from "../jupiterone/entities";
-import { Dictionary, Finding } from "../types";
+import { ContainerFinding, Dictionary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
 export function createFindingEntities(
-  data: Dictionary<Finding[]>,
+  data: Dictionary<ContainerFinding[]>,
 ): FindingVulnerabilityEntity[] {
   const defaultValue: FindingVulnerabilityEntity[] = [];
   const vulnerabilityArrays = Object.values(data);
@@ -22,8 +22,8 @@ export function createFindingEntities(
   return relationships;
 }
 
-function createFindingEntity(
-  vulnerability: Finding,
+export function createFindingEntity(
+  vulnerability: ContainerFinding,
 ): FindingVulnerabilityEntity {
   const { nvdFinding } = vulnerability;
   const findingId = nvdFinding.reference_id;

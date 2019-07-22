@@ -1,4 +1,4 @@
-import { Container, Report } from "../types";
+import { Container, Report } from "../tenable/types";
 import { createContainerReportRelationships } from "./ContainerReportRelationshipConverter";
 
 test("convert container report relationship", () => {

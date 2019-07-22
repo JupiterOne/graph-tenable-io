@@ -15,7 +15,7 @@ import {
   UsersResponse,
   WebAppVulnerability,
   WebAppVulnerabilityResponse,
-} from "../types";
+} from "./types";
 
 export default class TenableClient {
   private readonly host: string = "https://cloud.tenable.com";
@@ -45,14 +45,14 @@ export default class TenableClient {
     return scansResponse.scans;
   }
 
-  public async fetchScanById(id: number): Promise<ScanDetail> {
+  public async fetchScanDetail(scan: Scan): Promise<ScanDetail> {
     const scanResponse = await this.makeRequest<ScanResponse>(
-      `/scans/${id}`,
+      `/scans/${scan.id}`,
       Method.GET,
       {},
     );
     const { hosts, info, vulnerabilities } = scanResponse;
-    return { hosts, info, vulnerabilities };
+    return { ...scan, hosts: hosts || [], info, vulnerabilities };
   }
 
   public async fetchVulnerabilities(
@@ -103,9 +103,7 @@ export default class TenableClient {
         "Content-type": "application/json",
         Accept: "application/json",
         "Accept-encoding": "identity",
-        "X-ApiKeys": `accessKey=${this.accessToken}; secretKey=${
-          this.secretToken
-        };`,
+        "X-ApiKeys": `accessKey=${this.accessToken}; secretKey=${this.secretToken};`,
         ...headers,
       },
     };

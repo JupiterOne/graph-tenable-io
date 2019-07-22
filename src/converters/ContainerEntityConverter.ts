@@ -3,7 +3,7 @@ import {
   CONTAINER_ENTITY_TYPE,
   ContainerEntity,
 } from "../jupiterone/entities";
-import { Container } from "../types";
+import { Container } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 import getTime from "../utils/getTime";
 

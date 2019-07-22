@@ -1,4 +1,4 @@
-import { Dictionary, PotentiallyUnwantedProgram, Report } from "../types";
+import { ContainerUnwantedProgram, Dictionary, Report } from "../tenable/types";
 import { createReportUnwantedProgramRelationships } from "./ReportUnwantedProgramRelationshipConverter";
 
 test("convert report container vulnerability relationship", () => {
@@ -23,7 +23,7 @@ test("convert report container vulnerability relationship", () => {
       os_architecture: "AMD64",
     },
   ];
-  const unwantedPrograms: Dictionary<PotentiallyUnwantedProgram[]> = {
+  const unwantedPrograms: Dictionary<ContainerUnwantedProgram[]> = {
     "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc": [
       {
         file: "file",

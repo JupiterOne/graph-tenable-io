@@ -26,13 +26,9 @@ test("convert assessment entities", () => {
           targets: "https://dualbootpartners.com",
           alt_targets_used: false,
           "pci-can-upload": false,
-          scan_start: 1555066123,
           timestamp: 1555068471,
-          scan_end: 1555068471,
           haskb: false,
           hasaudittrail: true,
-          scanner_start: null,
-          scanner_end: null,
         },
         hosts: [
           {

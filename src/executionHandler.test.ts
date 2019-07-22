@@ -22,7 +22,7 @@ const executionContext: any = {
     fetchUsers: jest.fn().mockReturnValue([]),
     fetchScans: jest.fn().mockReturnValue([]),
     fetchAssets: jest.fn().mockReturnValue([]),
-    fetchScanById: jest.fn().mockReturnValue({}),
+    fetchScanDetail: jest.fn().mockReturnValue({}),
     fetchContainers: jest.fn().mockReturnValue([]),
     fetchReportByImageDigest: jest.fn().mockReturnValue({}),
   },

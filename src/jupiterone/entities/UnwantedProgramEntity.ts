@@ -3,7 +3,7 @@ import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-s
 export const UNWANTED_PROGRAM_ENTITY_TYPE = "tenable_unwanted_program";
 export const UNWANTED_PROGRAM_ENTITY_CLASS = "Vulnerability";
 
-export interface PotentiallyUnwantedProgramVulnerabilityEntity
+export interface ContainerUnwantedProgramVulnerabilityEntity
   extends EntityFromIntegration {
   file: string;
   md5: string;

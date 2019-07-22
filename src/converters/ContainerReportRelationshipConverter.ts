@@ -5,7 +5,7 @@ import {
   ContainerReportRelationship,
   REPORT_ENTITY_TYPE,
 } from "../jupiterone/entities";
-import { Container, Report } from "../types";
+import { Container, Report } from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,

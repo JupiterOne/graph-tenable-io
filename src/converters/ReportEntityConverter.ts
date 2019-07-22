@@ -3,7 +3,7 @@ import {
   REPORT_ENTITY_TYPE,
   ReportEntity,
 } from "../jupiterone/entities";
-import { Report } from "../types";
+import { Report } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 import getTime from "../utils/getTime";
 

@@ -5,7 +5,7 @@ import {
   REPORT_FINDING_RELATIONSHIP_TYPE,
   ReportFindingRelationship,
 } from "../jupiterone/entities";
-import { Dictionary, Finding, Report } from "../types";
+import { ContainerFinding, Dictionary, Report } from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
@@ -13,7 +13,7 @@ import {
 
 export function createReportFindingRelationships(
   reports: Report[],
-  findings: Dictionary<Finding[]>,
+  findings: Dictionary<ContainerFinding[]>,
 ): ReportFindingRelationship[] {
   const defaultValue: ReportFindingRelationship[] = [];
   const relationships = reports.reduce((acc, report) => {
@@ -27,7 +27,7 @@ export function createReportFindingRelationships(
 }
 
 function createRelation(
-  vulnerability: Finding,
+  vulnerability: ContainerFinding,
   reportId: string,
 ): ReportFindingRelationship {
   const findingId = vulnerability.nvdFinding.reference_id;

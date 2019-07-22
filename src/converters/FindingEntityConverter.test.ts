@@ -1,44 +1,48 @@
-import { createFindingEntities } from "./FindingEntityConverter";
+import { ContainerFinding } from "../tenable/types";
+import {
+  createFindingEntities,
+  createFindingEntity,
+} from "./FindingEntityConverter";
 
-test("convert container vulnerability entity", () => {
-  const data = {
-    "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc": [
+describe("container vulnerabilities", () => {
+  const data: ContainerFinding = {
+    nvdFinding: {
+      reference_id: "findingId",
+      cve: "string",
+      published_date: "string",
+      modified_date: "string",
+      description: "string",
+      cvss_score: "string",
+      access_vector: "string",
+      access_complexity: "string",
+      auth: "string",
+      availability_impact: "string",
+      confidentiality_impact: "string",
+      integrity_impact: "string",
+      cwe: "string",
+      cpe: ["string"],
+      remediation: "string",
+      references: ["string"],
+    },
+    packages: [
       {
-        nvdFinding: {
-          reference_id: "findingId",
-          cve: "string",
-          published_date: "string",
-          modified_date: "string",
-          description: "string",
-          cvss_score: "string",
-          access_vector: "string",
-          access_complexity: "string",
-          auth: "string",
-          availability_impact: "string",
-          confidentiality_impact: "string",
-          integrity_impact: "string",
-          cwe: "string",
-          cpe: ["string"],
-          remediation: "string",
-          references: ["string"],
-        },
-        packages: [
-          {
-            name: "string",
-            version: "string",
-            release: "string",
-            epoch: "string",
-            rawString: "string",
-          },
-        ],
+        name: "string",
+        version: "string",
+        release: "string",
+        epoch: "string",
+        rawString: "string",
       },
     ],
   };
 
-  const entities = createFindingEntities(data as any);
+  test("convert many", () => {
+    createFindingEntities({ "report-findings-sha": [data] });
+  });
 
-  expect(entities).toEqual([
-    {
+  test("convert one", () => {
+    const entity = createFindingEntity(data);
+
+    expect(entity).toEqual({
       _class: "Vulnerability",
       _key: "tenable_finding_findingId",
       _type: "tenable_finding",
@@ -56,6 +60,6 @@ test("convert container vulnerability entity", () => {
       publishedDate: "string",
       referenceId: "findingId",
       remediation: "string",
-    },
-  ]);
+    });
+  });
 });

@@ -1,20 +1,20 @@
 import {
-  PotentiallyUnwantedProgramVulnerabilityEntity,
+  ContainerUnwantedProgramVulnerabilityEntity,
   UNWANTED_PROGRAM_ENTITY_CLASS,
   UNWANTED_PROGRAM_ENTITY_TYPE,
 } from "../jupiterone/entities";
-import { Dictionary, PotentiallyUnwantedProgram } from "../types";
+import { ContainerUnwantedProgram, Dictionary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
 export function createUnwantedProgramEntities(
-  data: Dictionary<PotentiallyUnwantedProgram[]>,
-): PotentiallyUnwantedProgramVulnerabilityEntity[] {
-  const defaultValue: PotentiallyUnwantedProgramVulnerabilityEntity[] = [];
+  data: Dictionary<ContainerUnwantedProgram[]>,
+): ContainerUnwantedProgramVulnerabilityEntity[] {
+  const defaultValue: ContainerUnwantedProgramVulnerabilityEntity[] = [];
   const vulnerabilityArrays = Object.values(data);
 
   const relationships = vulnerabilityArrays.reduce(
-    (acc: PotentiallyUnwantedProgramVulnerabilityEntity[], array) => {
-      const relationsForOneReport: PotentiallyUnwantedProgramVulnerabilityEntity[] = array.map(
+    (acc: ContainerUnwantedProgramVulnerabilityEntity[], array) => {
+      const relationsForOneReport: ContainerUnwantedProgramVulnerabilityEntity[] = array.map(
         createUnwantedProgramEntity,
       );
       return acc.concat(relationsForOneReport);
@@ -26,8 +26,8 @@ export function createUnwantedProgramEntities(
 }
 
 function createUnwantedProgramEntity(
-  vulnerability: PotentiallyUnwantedProgram,
-): PotentiallyUnwantedProgramVulnerabilityEntity {
+  vulnerability: ContainerUnwantedProgram,
+): ContainerUnwantedProgramVulnerabilityEntity {
   const unwantedProgramId = vulnerability.md5;
   return {
     _key: generateEntityKey(UNWANTED_PROGRAM_ENTITY_TYPE, unwantedProgramId),

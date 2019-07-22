@@ -3,7 +3,7 @@ import {
   ASSET_ENTITY_TYPE,
   AssetEntity,
 } from "../jupiterone/entities";
-import { Asset } from "../types";
+import { Asset } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 import getTime from "../utils/getTime";
 

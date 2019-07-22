@@ -11,7 +11,7 @@ export interface JupiterOneEntitiesData {
   reports: Entities.ReportEntity[];
   malwares: Entities.MalwareVulnerabilityEntity[];
   findings: Entities.FindingVulnerabilityEntity[];
-  unwantedPrograms: Entities.PotentiallyUnwantedProgramVulnerabilityEntity[];
+  unwantedPrograms: Entities.ContainerUnwantedProgramVulnerabilityEntity[];
 }
 
 export interface JupiterOneRelationshipsData {
@@ -80,7 +80,7 @@ async function fetchEntities(
       Entities.FINDING_ENTITY_TYPE,
     ),
     graph.findEntitiesByType<
-      Entities.PotentiallyUnwantedProgramVulnerabilityEntity
+      Entities.ContainerUnwantedProgramVulnerabilityEntity
     >(Entities.UNWANTED_PROGRAM_ENTITY_TYPE),
   ]);
 

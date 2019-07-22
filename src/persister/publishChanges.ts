@@ -26,14 +26,13 @@ import { createReportFindingRelationships } from "../converters/ReportFindingRel
 import { createReportMalwareRelationships } from "../converters/ReportMalwareRelationshipConverter";
 import { createReportUnwantedProgramRelationships } from "../converters/ReportUnwantedProgramRelationshipConverter";
 import { createUnwantedProgramEntities } from "../converters/UnwantedProgramEntityConverter";
-
 import {
   JupiterOneDataModel,
   JupiterOneEntitiesData,
   JupiterOneRelationshipsData,
 } from "../jupiterone";
-
-import { Account, TenableDataModel } from "../types";
+import { TenableDataModel } from "../tenable/types";
+import { Account } from "../types";
 
 type EntitiesKeys = keyof JupiterOneEntitiesData;
 type RelationshipsKeys = keyof JupiterOneRelationshipsData;

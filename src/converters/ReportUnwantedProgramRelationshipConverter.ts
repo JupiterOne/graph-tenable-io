@@ -5,7 +5,7 @@ import {
   ReportUnwantedProgramRelationship,
   UNWANTED_PROGRAM_ENTITY_TYPE,
 } from "../jupiterone/entities";
-import { Dictionary, PotentiallyUnwantedProgram, Report } from "../types";
+import { ContainerUnwantedProgram, Dictionary, Report } from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
@@ -13,7 +13,7 @@ import {
 
 export function createReportUnwantedProgramRelationships(
   reports: Report[],
-  unwantedPrograms: Dictionary<PotentiallyUnwantedProgram[]>,
+  unwantedPrograms: Dictionary<ContainerUnwantedProgram[]>,
 ): ReportUnwantedProgramRelationship[] {
   const defaultValue: ReportUnwantedProgramRelationship[] = [];
   const relationships = reports.reduce((acc, report) => {
@@ -27,7 +27,7 @@ export function createReportUnwantedProgramRelationships(
 }
 
 function createRelation(
-  vulnerability: PotentiallyUnwantedProgram,
+  vulnerability: ContainerUnwantedProgram,
   reportId: string,
 ): ReportUnwantedProgramRelationship {
   const unwantedProgramId = vulnerability.md5;
