@@ -4,28 +4,29 @@ import {
   PersisterClient,
   RelationshipOperation,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+
 import {
   createAccountContainerRelationships,
   createAccountEntity,
   createAccountUserRelationships,
   createAssetEntities,
-  createAssetWebAppVulnerabilityRelationships,
+  createAssetScanVulnerabilityRelationships,
   createContainerEntities,
   createContainerReportRelationships,
+  createFindingEntities,
+  createMalwareEntities,
   createReportEntities,
+  createReportFindingRelationships,
+  createReportMalwareRelationships,
+  createReportUnwantedProgramRelationships,
   createScanAssetRelationships,
   createScanEntities,
-  createScanWebAppVulnerabilityRelationships,
+  createScanVulnerabilityRelationships,
+  createUnwantedProgramEntities,
   createUserEntities,
   createUserScanRelationships,
   createVulnerabilityEntities,
 } from "../converters";
-import { createFindingEntities } from "../converters/FindingEntityConverter";
-import { createMalwareEntities } from "../converters/MalwareEntityConverter";
-import { createReportFindingRelationships } from "../converters/ReportFindingRelationshipConverter";
-import { createReportMalwareRelationships } from "../converters/ReportMalwareRelationshipConverter";
-import { createReportUnwantedProgramRelationships } from "../converters/ReportUnwantedProgramRelationshipConverter";
-import { createUnwantedProgramEntities } from "../converters/UnwantedProgramEntityConverter";
 import {
   JupiterOneDataModel,
   JupiterOneEntitiesData,
@@ -147,7 +148,7 @@ export function convertRelationships(
       tenableDataModel.scans,
       tenableDataModel.users,
     ),
-    scanWebAppVulnerabilityRelationships: createScanWebAppVulnerabilityRelationships(
+    scanWebAppVulnerabilityRelationships: createScanVulnerabilityRelationships(
       tenableDataModel.scans,
       tenableDataModel.webAppVulnerabilities,
     ),
@@ -155,7 +156,7 @@ export function convertRelationships(
       tenableDataModel.scans,
       tenableDataModel.assets,
     ),
-    assetWebAppVulnerabilityRelationships: createAssetWebAppVulnerabilityRelationships(
+    assetWebAppVulnerabilityRelationships: createAssetScanVulnerabilityRelationships(
       tenableDataModel.assets,
       tenableDataModel.webAppVulnerabilities,
     ),

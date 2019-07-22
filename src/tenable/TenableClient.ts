@@ -11,10 +11,10 @@ import {
   ScanDetail,
   ScanResponse,
   ScansResponse,
+  ScanVulnerabilitiesResponse,
+  ScanVulnerability,
   User,
   UsersResponse,
-  WebAppVulnerability,
-  WebAppVulnerabilityResponse,
 } from "./types";
 
 export default class TenableClient {
@@ -58,9 +58,9 @@ export default class TenableClient {
   public async fetchVulnerabilities(
     scanId: number,
     hostId: number,
-  ): Promise<WebAppVulnerability[]> {
+  ): Promise<ScanVulnerability[]> {
     const vulnerabilitiesResponse = await this.makeRequest<
-      WebAppVulnerabilityResponse
+      ScanVulnerabilitiesResponse
     >(`/scans/${scanId}/hosts/${hostId}`, Method.GET, {});
     return vulnerabilitiesResponse.vulnerabilities;
   }

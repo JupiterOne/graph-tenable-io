@@ -7,8 +7,8 @@ export {
 } from "../converters/AccountUserRelationshipConverter";
 export { createAssetEntities } from "../converters/AssetEntityConverter";
 export {
-  createAssetWebAppVulnerabilityRelationships,
-} from "../converters/AssetWebAppVulnerabilityRelationshipConverter";
+  createAssetScanVulnerabilityRelationships,
+} from "../converters/AssetScanVulnerabilityRelationshipConverter";
 export {
   createContainerEntities,
 } from "../converters/ContainerEntityConverter";
@@ -26,15 +26,15 @@ export {
 } from "../converters/ScanAssetRelationshipConverter";
 export { createScanEntities } from "../converters/ScanEntityConverter";
 export {
-  createScanWebAppVulnerabilityRelationships,
-} from "../converters/ScanWebAppVulnerabilityRelationshipConverter";
+  createScanVulnerabilityRelationships,
+} from "../converters/ScanVulnerabilityRelationshipConverter";
 export { createUserEntities } from "../converters/UserEntityConverter";
 export {
   createUserScanRelationships,
 } from "../converters/UserScanRelationshipConverter";
 export {
   createVulnerabilityEntities,
-} from "../converters/WebAppVulnerabilityEntityConverter";
+} from "../converters/ScanVulnerabilityEntityConverter";
 export {
   createReportMalwareRelationships,
 } from "../converters/ReportMalwareRelationshipConverter";

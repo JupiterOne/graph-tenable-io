@@ -8,8 +8,8 @@ import {
   Report,
   Scan,
   ScanDetail,
+  ScanVulnerability,
   TenableDataModel,
-  WebAppVulnerability,
 } from "./types";
 
 export default async function fetchTenableData(
@@ -25,8 +25,8 @@ export default async function fetchTenableData(
   const scansWithDetails = await fetchScansWithDetails(scans, client);
 
   const webAppVulnerabilities: Dictionary<
-    WebAppVulnerability[]
-  > = await fillWebAppVulnerabilities(scansWithDetails, client);
+    ScanVulnerability[]
+  > = await fetchScanVulnerabilities(scansWithDetails, client);
 
   const {
     reports,
@@ -58,11 +58,11 @@ async function fetchScansWithDetails(
   return scansWithDetails;
 }
 
-async function fillWebAppVulnerabilities(
+async function fetchScanVulnerabilities(
   scans: ScanDetail[],
   client: TenableClient,
-): Promise<Dictionary<WebAppVulnerability[]>> {
-  const webAppVulnerabilities: Dictionary<WebAppVulnerability[]> = {};
+): Promise<Dictionary<ScanVulnerability[]>> {
+  const scanVulnerabilities: Dictionary<ScanVulnerability[]> = {};
   await scans.forEach(async scan => {
     await scan.hosts.forEach(async host => {
       const fetchedVulnerabilities = await client.fetchVulnerabilities(
@@ -74,18 +74,18 @@ async function fillWebAppVulnerabilities(
         scan_id: scan.id,
       }));
 
-      if (!webAppVulnerabilities[host.hostname]) {
-        webAppVulnerabilities[host.hostname] = vulnerabilityWithScanId;
+      if (!scanVulnerabilities[host.hostname]) {
+        scanVulnerabilities[host.hostname] = vulnerabilityWithScanId;
         return;
       }
 
-      webAppVulnerabilities[host.hostname] = webAppVulnerabilities[
+      scanVulnerabilities[host.hostname] = scanVulnerabilities[
         host.hostname
       ].concat(vulnerabilityWithScanId);
       return;
     });
   });
-  return webAppVulnerabilities;
+  return scanVulnerabilities;
 }
 
 async function fetchReportsWithContainerVulnerabilities(

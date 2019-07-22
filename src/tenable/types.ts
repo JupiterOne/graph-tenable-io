@@ -72,8 +72,8 @@ export interface VulnerabilitySummary {
   severity: number;
 }
 
-export interface WebAppVulnerability {
-  scan_id?: number;
+export interface ScanVulnerability {
+  scan_id: number;
   count: number;
   plugin_family: string;
   plugin_id: number;
@@ -252,8 +252,8 @@ export interface AssetsResponse {
   total: number;
 }
 
-export interface WebAppVulnerabilityResponse {
-  vulnerabilities: WebAppVulnerability[];
+export interface ScanVulnerabilitiesResponse {
+  vulnerabilities: ScanVulnerability[];
 }
 
 export type ContainersResponse = Container[];
@@ -264,7 +264,7 @@ export interface TenableDataModel {
   users: User[];
   scans: ScanDetail[];
   assets: Asset[];
-  webAppVulnerabilities: Dictionary<WebAppVulnerability[]>;
+  webAppVulnerabilities: Dictionary<ScanVulnerability[]>;
   containers: Container[];
   reports: Report[];
   malwares: Dictionary<ContainerMalware[]>;

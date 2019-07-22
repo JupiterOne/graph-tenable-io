@@ -1,4 +1,5 @@
 import { GraphClient } from "@jupiterone/jupiter-managed-integration-sdk";
+
 import * as Entities from "./entities";
 
 export interface JupiterOneEntitiesData {
@@ -6,7 +7,7 @@ export interface JupiterOneEntitiesData {
   users: Entities.UserEntity[];
   assets: Entities.AssetEntity[];
   scans: Entities.ScanEntity[];
-  webAppVulnerabilities: Entities.WebAppVulnerabilityEntity[];
+  webAppVulnerabilities: Entities.ScanVulnerabilityEntity[];
   containers: Entities.ContainerEntity[];
   reports: Entities.ReportEntity[];
   malwares: Entities.MalwareVulnerabilityEntity[];
@@ -17,9 +18,9 @@ export interface JupiterOneEntitiesData {
 export interface JupiterOneRelationshipsData {
   accountUserRelationships: Entities.AccountUserRelationship[];
   userScanRelationships: Entities.UserScanRelationship[];
-  scanWebAppVulnerabilityRelationships: Entities.ScanWebAppVulnerabilityRelationship[];
+  scanWebAppVulnerabilityRelationships: Entities.ScanVulnerabilityRelationship[];
   scanAssetRelationships: Entities.ScanAssetRelationship[];
-  assetWebAppVulnerabilityRelationships: Entities.AssetWebAppVulnerabilityRelationship[];
+  assetWebAppVulnerabilityRelationships: Entities.AssetScanVulnerabilityRelationship[];
   accountContainerRelationships: Entities.AccountContainerRelationship[];
   containerReportRelationships: Entities.ContainerReportRelationship[];
   reportMalwareRelationships: Entities.ReportMalwareRelationship[];
@@ -64,8 +65,8 @@ async function fetchEntities(
     graph.findEntitiesByType<Entities.UserEntity>(Entities.USER_ENTITY_TYPE),
     graph.findEntitiesByType<Entities.AssetEntity>(Entities.ASSET_ENTITY_TYPE),
     graph.findEntitiesByType<Entities.ScanEntity>(Entities.SCAN_ENTITY_TYPE),
-    graph.findEntitiesByType<Entities.WebAppVulnerabilityEntity>(
-      Entities.WEBAPP_VULNERABILITY_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.ScanVulnerabilityEntity>(
+      Entities.SCAN_VULNERABILITY_ENTITY_TYPE,
     ),
     graph.findEntitiesByType<Entities.ContainerEntity>(
       Entities.CONTAINER_ENTITY_TYPE,
@@ -119,15 +120,15 @@ export async function fetchRelationships(
     graph.findRelationshipsByType<Entities.UserScanRelationship>(
       Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<Entities.ScanWebAppVulnerabilityRelationship>(
-      Entities.SCAN_WEBAPP_VULNERABILITY_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType<Entities.ScanVulnerabilityRelationship>(
+      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
     ),
     graph.findRelationshipsByType<Entities.ScanAssetRelationship>(
       Entities.SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<
-      Entities.AssetWebAppVulnerabilityRelationship
-    >(Entities.ASSET_HAS_WEBAPP_VULNERABILITY_RELATIONSHIP_TYPE),
+    graph.findRelationshipsByType<Entities.AssetScanVulnerabilityRelationship>(
+      Entities.ASSET_SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    ),
     graph.findRelationshipsByType<Entities.AccountContainerRelationship>(
       Entities.ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
     ),
