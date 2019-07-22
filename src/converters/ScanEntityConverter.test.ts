@@ -43,7 +43,7 @@ test("convert assessment entities", () => {
             hostname: "dualbootpartners.com",
           },
         ],
-        webAppVulnerabilities: [
+        scanVulnerabilities: [
           {
             count: 1,
             plugin_family: "Web Applications",

@@ -122,8 +122,8 @@ export function convertEntities(
     users: createUserEntities(tenableDataModel.users),
     assets: createAssetEntities(tenableDataModel.assets),
     scans: createScanEntities(tenableDataModel.scans),
-    webAppVulnerabilities: createVulnerabilityEntities(
-      tenableDataModel.webAppVulnerabilities,
+    scanVulnerabilities: createVulnerabilityEntities(
+      tenableDataModel.scanVulnerabilities,
     ),
     containers: createContainerEntities(tenableDataModel.containers),
     reports: createReportEntities(tenableDataModel.reports),
@@ -148,17 +148,17 @@ export function convertRelationships(
       tenableDataModel.scans,
       tenableDataModel.users,
     ),
-    scanWebAppVulnerabilityRelationships: createScanVulnerabilityRelationships(
+    scanVulnerabilityRelationships: createScanVulnerabilityRelationships(
       tenableDataModel.scans,
-      tenableDataModel.webAppVulnerabilities,
+      tenableDataModel.scanVulnerabilities,
     ),
     scanAssetRelationships: createScanAssetRelationships(
       tenableDataModel.scans,
       tenableDataModel.assets,
     ),
-    assetWebAppVulnerabilityRelationships: createAssetScanVulnerabilityRelationships(
+    assetScanVulnerabilityRelationships: createAssetScanVulnerabilityRelationships(
       tenableDataModel.assets,
-      tenableDataModel.webAppVulnerabilities,
+      tenableDataModel.scanVulnerabilities,
     ),
     accountContainerRelationships: createAccountContainerRelationships(
       account,

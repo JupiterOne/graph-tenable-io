@@ -15,18 +15,18 @@ import {
 export default async function fetchTenableData(
   client: TenableClient,
 ): Promise<TenableDataModel> {
-  const [users, scans, assets, containers] = await Promise.all([
+  const [users, scanSummaries, assets, containers] = await Promise.all([
     client.fetchUsers(),
     client.fetchScans(),
     client.fetchAssets(),
     client.fetchContainers(),
   ]);
 
-  const scansWithDetails = await fetchScansWithDetails(scans, client);
+  const scans = await fetchScanDetails(scanSummaries, client);
 
-  const webAppVulnerabilities: Dictionary<
+  const scanVulnerabilities: Dictionary<
     ScanVulnerability[]
-  > = await fetchScanVulnerabilities(scansWithDetails, client);
+  > = await fetchScanVulnerabilities(scans, client);
 
   const {
     reports,
@@ -37,9 +37,9 @@ export default async function fetchTenableData(
 
   return {
     users,
-    scans: scansWithDetails,
+    scans,
     assets,
-    webAppVulnerabilities,
+    scanVulnerabilities,
     containers,
     reports,
     malwares,
@@ -48,14 +48,11 @@ export default async function fetchTenableData(
   };
 }
 
-async function fetchScansWithDetails(
+async function fetchScanDetails(
   scans: Scan[],
   client: TenableClient,
 ): Promise<ScanDetail[]> {
-  const scansWithDetails = await Promise.all(
-    scans.map(scan => client.fetchScanDetail(scan)),
-  );
-  return scansWithDetails;
+  return Promise.all(scans.map(scan => client.fetchScanDetail(scan)));
 }
 
 async function fetchScanVulnerabilities(

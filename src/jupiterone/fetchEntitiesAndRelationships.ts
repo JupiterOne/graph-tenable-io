@@ -7,7 +7,7 @@ export interface JupiterOneEntitiesData {
   users: Entities.UserEntity[];
   assets: Entities.AssetEntity[];
   scans: Entities.ScanEntity[];
-  webAppVulnerabilities: Entities.ScanVulnerabilityEntity[];
+  scanVulnerabilities: Entities.ScanVulnerabilityEntity[];
   containers: Entities.ContainerEntity[];
   reports: Entities.ReportEntity[];
   malwares: Entities.MalwareVulnerabilityEntity[];
@@ -18,9 +18,9 @@ export interface JupiterOneEntitiesData {
 export interface JupiterOneRelationshipsData {
   accountUserRelationships: Entities.AccountUserRelationship[];
   userScanRelationships: Entities.UserScanRelationship[];
-  scanWebAppVulnerabilityRelationships: Entities.ScanVulnerabilityRelationship[];
+  scanVulnerabilityRelationships: Entities.ScanVulnerabilityRelationship[];
   scanAssetRelationships: Entities.ScanAssetRelationship[];
-  assetWebAppVulnerabilityRelationships: Entities.AssetScanVulnerabilityRelationship[];
+  assetScanVulnerabilityRelationships: Entities.AssetScanVulnerabilityRelationship[];
   accountContainerRelationships: Entities.AccountContainerRelationship[];
   containerReportRelationships: Entities.ContainerReportRelationship[];
   reportMalwareRelationships: Entities.ReportMalwareRelationship[];
@@ -52,7 +52,7 @@ async function fetchEntities(
     users,
     assets,
     scans,
-    webAppVulnerabilities,
+    scanVulnerabilities,
     containers,
     reports,
     malwares,
@@ -90,7 +90,7 @@ async function fetchEntities(
     users,
     assets,
     scans,
-    webAppVulnerabilities,
+    scanVulnerabilities,
     containers,
     reports,
     malwares,
@@ -105,9 +105,9 @@ export async function fetchRelationships(
   const [
     accountUserRelationships,
     userScanRelationships,
-    scanWebAppVulnerabilityRelationships,
+    scanVulnerabilityRelationships,
     scanAssetRelationships,
-    assetWebAppVulnerabilityRelationships,
+    assetScanVulnerabilityRelationships,
     accountContainerRelationships,
     containerReportRelationships,
     reportMalwareRelationships,
@@ -149,9 +149,9 @@ export async function fetchRelationships(
   return {
     accountUserRelationships,
     userScanRelationships,
-    scanWebAppVulnerabilityRelationships,
+    scanVulnerabilityRelationships,
     scanAssetRelationships,
-    assetWebAppVulnerabilityRelationships,
+    assetScanVulnerabilityRelationships,
     accountContainerRelationships,
     containerReportRelationships,
     reportMalwareRelationships,

@@ -264,7 +264,7 @@ export interface TenableDataModel {
   users: User[];
   scans: ScanDetail[];
   assets: Asset[];
-  webAppVulnerabilities: Dictionary<ScanVulnerability[]>;
+  scanVulnerabilities: Dictionary<ScanVulnerability[]>;
   containers: Container[];
   reports: Report[];
   malwares: Dictionary<ContainerMalware[]>;
