@@ -7,7 +7,7 @@ export interface JupiterOneEntitiesData {
   users: Entities.UserEntity[];
   assets: Entities.AssetEntity[];
   scans: Entities.ScanEntity[];
-  scanVulnerabilities: Entities.ScanVulnerabilityEntity[];
+  scanVulnerabilities: Entities.TenableVulnerabilityEntity[];
   containers: Entities.ContainerEntity[];
   reports: Entities.ReportEntity[];
   malwares: Entities.MalwareVulnerabilityEntity[];
@@ -65,8 +65,8 @@ async function fetchEntities(
     graph.findEntitiesByType<Entities.UserEntity>(Entities.USER_ENTITY_TYPE),
     graph.findEntitiesByType<Entities.AssetEntity>(Entities.ASSET_ENTITY_TYPE),
     graph.findEntitiesByType<Entities.ScanEntity>(Entities.SCAN_ENTITY_TYPE),
-    graph.findEntitiesByType<Entities.ScanVulnerabilityEntity>(
-      Entities.SCAN_VULNERABILITY_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.TenableVulnerabilityEntity>(
+      Entities.TENABLE_VULNERABILITY_ENTITY_TYPE,
     ),
     graph.findEntitiesByType<Entities.ContainerEntity>(
       Entities.CONTAINER_ENTITY_TYPE,

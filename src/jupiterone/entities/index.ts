@@ -13,7 +13,7 @@ export * from "./ReportMalwareRelationship";
 export * from "./ReportUnwantedProgramRelationship";
 export * from "./ScanAssetRelationship";
 export * from "./ScanEntity";
-export * from "./ScanVulnerabilityEntity";
+export * from "./TenableVulnerabilityEntity";
 export * from "./ScanVulnerabilityRelationship";
 export * from "./UnwantedProgramEntity";
 export * from "./UserEntity";
