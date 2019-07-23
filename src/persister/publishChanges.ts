@@ -21,6 +21,7 @@ import {
   createReportUnwantedProgramRelationships,
   createScanAssetRelationships,
   createScanEntities,
+  createScanFindingRelationships,
   createScanVulnerabilityRelationships,
   createUnwantedProgramEntities,
   createUserEntities,
@@ -159,6 +160,9 @@ export function convertRelationships(
       tenableDataModel.scanVulnerabilities,
     ),
     vulnerabilityFindingRelationships: createVulnerabilityFindingRelationships(
+      tenableDataModel.scanVulnerabilities,
+    ),
+    scanFindingRelationships: createScanFindingRelationships(
       tenableDataModel.scanVulnerabilities,
     ),
     scanAssetRelationships: createScanAssetRelationships(

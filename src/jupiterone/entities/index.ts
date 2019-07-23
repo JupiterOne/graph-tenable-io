@@ -26,3 +26,8 @@ export const VULNERABILITY_FINDING_RELATIONSHIP_TYPE =
 export const VULNERABILITY_FINDING_RELATIONSHIP_CLASS = "IS";
 
 export type VulnerabilityFindingRelationship = RelationshipFromIntegration;
+
+export const SCAN_FINDING_RELATIONSHIP_TYPE = "tenable_scan_identified_finding";
+export const SCAN_FINDING_RELATIONSHIP_CLASS = "IDENTIFIED";
+
+export type ScanFindingRelationship = RelationshipFromIntegration;

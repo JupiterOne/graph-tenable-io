@@ -9,7 +9,7 @@ import { generateEntityKey } from "../utils/generateKey";
 export function createScanEntities(data: Scan[]): ScanEntity[] {
   return data.map(item => {
     const assessmentEntity: ScanEntity = {
-      _key: generateEntityKey(SCAN_ENTITY_TYPE, item.id),
+      _key: scanEntityKey(item.id),
       _type: SCAN_ENTITY_TYPE,
       _class: SCAN_ENTITY_CLASS,
       id: item.id,
@@ -35,4 +35,8 @@ export function createScanEntities(data: Scan[]): ScanEntity[] {
 
     return assessmentEntity;
   });
+}
+
+export function scanEntityKey(scanId: number): string {
+  return generateEntityKey(SCAN_ENTITY_TYPE, scanId);
 }

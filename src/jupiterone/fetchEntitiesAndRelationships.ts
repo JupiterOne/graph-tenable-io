@@ -21,6 +21,7 @@ export interface JupiterOneRelationshipsData {
   userScanRelationships: Entities.UserScanRelationship[];
   scanVulnerabilityRelationships: Entities.ScanVulnerabilityRelationship[];
   vulnerabilityFindingRelationships: Entities.VulnerabilityFindingRelationship[];
+  scanFindingRelationships: Entities.ScanFindingRelationship[];
   scanAssetRelationships: Entities.ScanAssetRelationship[];
   assetScanVulnerabilityRelationships: Entities.AssetScanVulnerabilityRelationship[];
   accountContainerRelationships: Entities.AccountContainerRelationship[];
@@ -118,6 +119,7 @@ export async function fetchRelationships(
     userScanRelationships,
     scanVulnerabilityRelationships,
     vulnerabilityFindingRelationships,
+    scanFindingRelationships,
     scanAssetRelationships,
     assetScanVulnerabilityRelationships,
     accountContainerRelationships,
@@ -137,6 +139,9 @@ export async function fetchRelationships(
     ),
     graph.findRelationshipsByType<Entities.VulnerabilityFindingRelationship>(
       Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+    ),
+    graph.findRelationshipsByType<Entities.ScanFindingRelationship>(
+      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
     ),
     graph.findRelationshipsByType<Entities.ScanAssetRelationship>(
       Entities.SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
@@ -166,6 +171,7 @@ export async function fetchRelationships(
     userScanRelationships,
     scanVulnerabilityRelationships,
     vulnerabilityFindingRelationships,
+    scanFindingRelationships,
     scanAssetRelationships,
     assetScanVulnerabilityRelationships,
     accountContainerRelationships,

@@ -1,10 +1,14 @@
 import {
-  VULNERABILITY_FINDING_ENTITY_CLASS,
-  VULNERABILITY_FINDING_ENTITY_TYPE,
+  SCAN_FINDING_RELATIONSHIP_CLASS,
+  SCAN_FINDING_RELATIONSHIP_TYPE,
+  ScanFindingRelationship,
+  VULNERABILITY_FINDING_RELATIONSHIP_CLASS,
+  VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
   VulnerabilityFindingRelationship,
 } from "../jupiterone/entities";
 import { Dictionary, ScanVulnerability } from "../tenable/types";
 import { vulnerabilityFindingEntityKey } from "./FindingEntityConverter";
+import { scanEntityKey } from "./ScanEntityConverter";
 import { tenableVulnerablilityEntityKey } from "./ScanVulnerabilityEntityConverter";
 
 export {
@@ -75,9 +79,34 @@ export function createVulnerabilityFindingRelationship(
   const vulnerabilityKey = tenableVulnerablilityEntityKey(vulnerability);
   return {
     _key: `${findingKey}_${vulnerabilityKey}`,
-    _type: VULNERABILITY_FINDING_ENTITY_TYPE,
-    _class: VULNERABILITY_FINDING_ENTITY_CLASS,
+    _type: VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+    _class: VULNERABILITY_FINDING_RELATIONSHIP_CLASS,
     _fromEntityKey: findingKey,
     _toEntityKey: vulnerabilityKey,
+  };
+}
+
+export function createScanFindingRelationships(
+  vulnerabilities: Dictionary<ScanVulnerability[]>,
+): ScanFindingRelationship[] {
+  return Object.values(vulnerabilities).reduce(
+    (acc: ScanFindingRelationship[], array) => {
+      return [...acc, ...array.map(createScanFindingRelationship)];
+    },
+    [],
+  );
+}
+
+export function createScanFindingRelationship(
+  vulnerability: ScanVulnerability,
+): ScanFindingRelationship {
+  const findingKey = vulnerabilityFindingEntityKey(vulnerability);
+  const scanKey = scanEntityKey(vulnerability.scan_id);
+  return {
+    _key: `${scanKey}_${findingKey}`,
+    _type: SCAN_FINDING_RELATIONSHIP_TYPE,
+    _class: SCAN_FINDING_RELATIONSHIP_CLASS,
+    _fromEntityKey: scanKey,
+    _toEntityKey: findingKey,
   };
 }
