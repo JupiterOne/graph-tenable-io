@@ -1,8 +1,12 @@
-import { ContainerFinding, Dictionary, Report } from "../tenable/types";
+import {
+  ContainerFinding,
+  ContainerReport,
+  Dictionary,
+} from "../tenable/types";
 import { createReportFindingRelationships } from "./ReportFindingRelationshipConverter";
 
 test("convert report container vulnerability relationship", () => {
-  const reports: Report[] = [
+  const reports: ContainerReport[] = [
     {
       malware: [],
       sha256:

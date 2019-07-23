@@ -1,4 +1,4 @@
-import { Container, Report } from "../tenable/types";
+import { Container, ContainerReport } from "../tenable/types";
 import { createContainerReportRelationships } from "./ContainerReportRelationshipConverter";
 
 test("convert container report relationship", () => {
@@ -34,7 +34,7 @@ test("convert container report relationship", () => {
       updated_at: "2019-04-18T23:35:42.765Z",
     },
   ];
-  const reports: Report[] = [
+  const reports: ContainerReport[] = [
     {
       malware: [],
       sha256:

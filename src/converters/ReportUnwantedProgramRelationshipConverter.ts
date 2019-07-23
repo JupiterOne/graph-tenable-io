@@ -5,14 +5,18 @@ import {
   ReportUnwantedProgramRelationship,
   UNWANTED_PROGRAM_ENTITY_TYPE,
 } from "../jupiterone/entities";
-import { ContainerUnwantedProgram, Dictionary, Report } from "../tenable/types";
+import {
+  ContainerReport,
+  ContainerUnwantedProgram,
+  Dictionary,
+} from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
 } from "../utils/generateKey";
 
 export function createReportUnwantedProgramRelationships(
-  reports: Report[],
+  reports: ContainerReport[],
   unwantedPrograms: Dictionary<ContainerUnwantedProgram[]>,
 ): ReportUnwantedProgramRelationship[] {
   const defaultValue: ReportUnwantedProgramRelationship[] = [];

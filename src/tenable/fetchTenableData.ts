@@ -3,9 +3,9 @@ import {
   Container,
   ContainerFinding,
   ContainerMalware,
+  ContainerReport,
   ContainerUnwantedProgram,
   Dictionary,
-  Report,
   Scan,
   ScanDetail,
   ScanVulnerability,
@@ -29,10 +29,10 @@ export default async function fetchTenableData(
   > = await fetchScanVulnerabilities(scans, client);
 
   const {
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    reports: containerReports,
+    malwares: containerMalwares,
+    findings: containerFindings,
+    unwantedPrograms: containerUnwantedPrograms,
   } = await fetchReportsWithContainerVulnerabilities(containers, client);
 
   return {
@@ -41,10 +41,10 @@ export default async function fetchTenableData(
     assets,
     scanVulnerabilities,
     containers,
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    containerReports,
+    containerMalwares,
+    containerFindings,
+    containerUnwantedPrograms,
   };
 }
 
@@ -89,7 +89,7 @@ async function fetchReportsWithContainerVulnerabilities(
   containers: Container[],
   client: TenableClient,
 ): Promise<{
-  reports: Report[];
+  reports: ContainerReport[];
   malwares: Dictionary<ContainerMalware[]>;
   findings: Dictionary<ContainerFinding[]>;
   unwantedPrograms: Dictionary<ContainerUnwantedProgram[]>;
@@ -97,9 +97,11 @@ async function fetchReportsWithContainerVulnerabilities(
   const malwares: Dictionary<ContainerMalware[]> = {};
   const findings: Dictionary<ContainerFinding[]> = {};
   const unwantedPrograms: Dictionary<ContainerUnwantedProgram[]> = {};
-  const reports: Report[] = await Promise.all(
+  const reports: ContainerReport[] = await Promise.all(
     containers.map(async item => {
-      const report: Report = await client.fetchReportByImageDigest(item.digest);
+      const report: ContainerReport = await client.fetchReportByImageDigest(
+        item.digest,
+      );
 
       if (!report.sha256) {
         return report;

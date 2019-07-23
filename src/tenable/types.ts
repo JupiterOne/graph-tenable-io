@@ -155,7 +155,7 @@ export type ContainerVulnerability =
   | ContainerFinding
   | ContainerUnwantedProgram;
 
-export interface Report {
+export interface ContainerReport {
   malware: ContainerMalware[];
   sha256: string;
   os: string;
@@ -258,7 +258,7 @@ export interface ScanVulnerabilitiesResponse {
 
 export type ContainersResponse = Container[];
 
-export type ReportResponse = Report;
+export type ReportResponse = ContainerReport;
 
 export interface TenableDataModel {
   users: User[];
@@ -266,10 +266,10 @@ export interface TenableDataModel {
   assets: Asset[];
   scanVulnerabilities: Dictionary<ScanVulnerability[]>;
   containers: Container[];
-  reports: Report[];
-  malwares: Dictionary<ContainerMalware[]>;
-  findings: Dictionary<ContainerFinding[]>;
-  unwantedPrograms: Dictionary<ContainerUnwantedProgram[]>;
+  containerReports: ContainerReport[];
+  containerMalwares: Dictionary<ContainerMalware[]>;
+  containerFindings: Dictionary<ContainerFinding[]>;
+  containerUnwantedPrograms: Dictionary<ContainerUnwantedProgram[]>;
 }
 
 export enum Method {

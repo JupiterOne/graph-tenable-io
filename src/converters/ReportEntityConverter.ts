@@ -3,11 +3,11 @@ import {
   REPORT_ENTITY_TYPE,
   ReportEntity,
 } from "../jupiterone/entities";
-import { Report } from "../tenable/types";
+import { ContainerReport } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 import getTime from "../utils/getTime";
 
-export function createReportEntities(data: Report[]): ReportEntity[] {
+export function createReportEntities(data: ContainerReport[]): ReportEntity[] {
   return data.map(report => {
     const reportId = report.sha256;
     const reportEntity: ReportEntity = {

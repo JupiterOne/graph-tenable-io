@@ -5,14 +5,18 @@ import {
   REPORT_FINDING_RELATIONSHIP_TYPE,
   ReportFindingRelationship,
 } from "../jupiterone/entities";
-import { ContainerFinding, Dictionary, Report } from "../tenable/types";
+import {
+  ContainerFinding,
+  ContainerReport,
+  Dictionary,
+} from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
 } from "../utils/generateKey";
 
 export function createReportFindingRelationships(
-  reports: Report[],
+  reports: ContainerReport[],
   findings: Dictionary<ContainerFinding[]>,
 ): ReportFindingRelationship[] {
   const defaultValue: ReportFindingRelationship[] = [];

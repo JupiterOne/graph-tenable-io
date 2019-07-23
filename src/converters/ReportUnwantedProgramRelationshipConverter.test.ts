@@ -1,8 +1,12 @@
-import { ContainerUnwantedProgram, Dictionary, Report } from "../tenable/types";
+import {
+  ContainerReport,
+  ContainerUnwantedProgram,
+  Dictionary,
+} from "../tenable/types";
 import { createReportUnwantedProgramRelationships } from "./ReportUnwantedProgramRelationshipConverter";
 
 test("convert report container vulnerability relationship", () => {
-  const reports: Report[] = [
+  const reports: ContainerReport[] = [
     {
       malware: [],
       sha256:

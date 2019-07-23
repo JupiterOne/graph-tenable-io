@@ -1,8 +1,8 @@
-import { Report } from "../tenable/types";
+import { ContainerReport } from "../tenable/types";
 import { createReportEntities } from "./ReportEntityConverter";
 
 test("convert report entity", () => {
-  const reports: Report[] = [
+  const reports: ContainerReport[] = [
     {
       malware: [],
       sha256:

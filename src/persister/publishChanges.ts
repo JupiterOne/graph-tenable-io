@@ -126,11 +126,11 @@ export function convertEntities(
       tenableDataModel.scanVulnerabilities,
     ),
     containers: createContainerEntities(tenableDataModel.containers),
-    reports: createReportEntities(tenableDataModel.reports),
-    malwares: createMalwareEntities(tenableDataModel.malwares),
-    findings: createFindingEntities(tenableDataModel.findings),
+    reports: createReportEntities(tenableDataModel.containerReports),
+    malwares: createMalwareEntities(tenableDataModel.containerMalwares),
+    findings: createFindingEntities(tenableDataModel.containerFindings),
     unwantedPrograms: createUnwantedProgramEntities(
-      tenableDataModel.unwantedPrograms,
+      tenableDataModel.containerUnwantedPrograms,
     ),
   };
 }
@@ -166,19 +166,19 @@ export function convertRelationships(
     ),
     containerReportRelationships: createContainerReportRelationships(
       tenableDataModel.containers,
-      tenableDataModel.reports,
+      tenableDataModel.containerReports,
     ),
     reportMalwareRelationships: createReportMalwareRelationships(
-      tenableDataModel.reports,
-      tenableDataModel.malwares,
+      tenableDataModel.containerReports,
+      tenableDataModel.containerMalwares,
     ),
     reportFindingRelationships: createReportFindingRelationships(
-      tenableDataModel.reports,
-      tenableDataModel.findings,
+      tenableDataModel.containerReports,
+      tenableDataModel.containerFindings,
     ),
     reportUnwantedProgramRelationships: createReportUnwantedProgramRelationships(
-      tenableDataModel.reports,
-      tenableDataModel.unwantedPrograms,
+      tenableDataModel.containerReports,
+      tenableDataModel.containerUnwantedPrograms,
     ),
   };
 }

@@ -5,7 +5,7 @@ import {
   ContainerReportRelationship,
   REPORT_ENTITY_TYPE,
 } from "../jupiterone/entities";
-import { Container, Report } from "../tenable/types";
+import { Container, ContainerReport } from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
@@ -13,7 +13,7 @@ import {
 
 export function createContainerReportRelationships(
   containers: Container[],
-  reports: Report[],
+  reports: ContainerReport[],
 ): ContainerReportRelationship[] {
   const defaultValue: ContainerReportRelationship[] = [];
 
@@ -46,6 +46,6 @@ export function createContainerReportRelationships(
   return relationships;
 }
 
-function findReport(reports: Report[], reportId: string) {
+function findReport(reports: ContainerReport[], reportId: string) {
   return reports.find(report => report.sha256 === reportId);
 }

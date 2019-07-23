@@ -1,11 +1,12 @@
 import fetch, { RequestInit } from "node-fetch";
+
 import {
   Asset,
   AssetsResponse,
   Container,
+  ContainerReport,
   ContainersResponse,
   Method,
-  Report,
   ReportResponse,
   Scan,
   ScanDetail,
@@ -83,7 +84,9 @@ export default class TenableClient {
     return containerResponse;
   }
 
-  public async fetchReportByImageDigest(digestId: string): Promise<Report> {
+  public async fetchReportByImageDigest(
+    digestId: string,
+  ): Promise<ContainerReport> {
     const reportResponse = await this.makeRequest<ReportResponse>(
       `/container-security/api/v1/reports/by_image_digest?image_digest=${digestId}`,
       Method.GET,
