@@ -1,6 +1,6 @@
 import {
-  FINDING_ENTITY_TYPE,
-  REPORT_ENTITY_TYPE,
+  CONTAINER_FINDING_ENTITY_TYPE,
+  CONTAINER_REPORT_ENTITY_TYPE,
   REPORT_FINDING_RELATIONSHIP_CLASS,
   REPORT_FINDING_RELATIONSHIP_TYPE,
   ReportFindingRelationship,
@@ -35,8 +35,8 @@ function createRelation(
   reportId: string,
 ): ReportFindingRelationship {
   const findingId = vulnerability.nvdFinding.reference_id;
-  const parentKey = generateEntityKey(REPORT_ENTITY_TYPE, reportId);
-  const childKey = generateEntityKey(FINDING_ENTITY_TYPE, findingId);
+  const parentKey = generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId);
+  const childKey = generateEntityKey(CONTAINER_FINDING_ENTITY_TYPE, findingId);
   const relationKey = generateRelationshipKey(
     parentKey,
     REPORT_FINDING_RELATIONSHIP_CLASS,

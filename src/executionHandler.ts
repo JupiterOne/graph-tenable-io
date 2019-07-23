@@ -1,7 +1,10 @@
 import {
+  GraphClient,
   IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
+  PersisterClient,
+  PersisterOperationsResult,
   summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
@@ -32,9 +35,25 @@ async function synchronize(
 
   return {
     operations: summarizePersisterOperationsResults(
+      await removeDeprecatedEntities(graph, persister),
       await publishChanges(persister, oldData, tenableData, account),
     ),
   };
+}
+
+async function removeDeprecatedEntities(
+  graph: GraphClient,
+  persister: PersisterClient,
+): Promise<PersisterOperationsResult> {
+  const results = await Promise.all(
+    ["tenable_finding"].map(async t => {
+      const entitiesToDelete = await graph.findEntitiesByType(t);
+      return persister.publishEntityOperations(
+        persister.processEntities(entitiesToDelete, []),
+      );
+    }),
+  );
+  return summarizePersisterOperationsResults(...results);
 }
 
 type ActionFunction = (

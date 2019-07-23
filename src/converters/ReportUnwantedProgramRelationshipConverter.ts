@@ -1,5 +1,5 @@
 import {
-  REPORT_ENTITY_TYPE,
+  CONTAINER_REPORT_ENTITY_TYPE,
   REPORT_UNWANTED_PROGRAM_RELATIONSHIP_CLASS,
   REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
   ReportUnwantedProgramRelationship,
@@ -35,7 +35,7 @@ function createRelation(
   reportId: string,
 ): ReportUnwantedProgramRelationship {
   const unwantedProgramId = vulnerability.md5;
-  const parentKey = generateEntityKey(REPORT_ENTITY_TYPE, reportId);
+  const parentKey = generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId);
   const childKey = generateEntityKey(
     UNWANTED_PROGRAM_ENTITY_TYPE,
     unwantedProgramId,

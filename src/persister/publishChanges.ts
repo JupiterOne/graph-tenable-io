@@ -12,8 +12,8 @@ import {
   createAssetEntities,
   createAssetScanVulnerabilityRelationships,
   createContainerEntities,
+  createContainerFindingEntities,
   createContainerReportRelationships,
-  createFindingEntities,
   createMalwareEntities,
   createReportEntities,
   createReportFindingRelationships,
@@ -26,6 +26,8 @@ import {
   createUserEntities,
   createUserScanRelationships,
   createVulnerabilityEntities,
+  createVulnerabilityFindingEntities,
+  createVulnerabilityFindingRelationships,
 } from "../converters";
 import {
   JupiterOneDataModel,
@@ -35,8 +37,8 @@ import {
 import { TenableDataModel } from "../tenable/types";
 import { Account } from "../types";
 
-type EntitiesKeys = keyof JupiterOneEntitiesData;
-type RelationshipsKeys = keyof JupiterOneRelationshipsData;
+type EntityDataNames = keyof JupiterOneEntitiesData;
+type RelationshipDataNames = keyof JupiterOneRelationshipsData;
 
 export default async function publishChanges(
   persister: PersisterClient,
@@ -65,12 +67,11 @@ function createEntitiesOperations(
   newData: JupiterOneEntitiesData,
   persister: PersisterClient,
 ): EntityOperation[] {
-  const defatultOperations: EntityOperation[] = [];
-  const entities: EntitiesKeys[] = Object.keys(oldData) as EntitiesKeys[];
+  const dataNames = Object.keys(oldData) as EntityDataNames[];
 
-  return entities.reduce((operations, entityName) => {
-    const oldEntities = oldData[entityName];
-    const newEntities = newData[entityName];
+  return dataNames.reduce((operations: EntityOperation[], dataName) => {
+    const oldEntities = oldData[dataName];
+    const newEntities = newData[dataName];
 
     return [
       ...operations,
@@ -79,7 +80,7 @@ function createEntitiesOperations(
         newEntities,
       ),
     ];
-  }, defatultOperations);
+  }, []);
 }
 
 function createRelationshipsOperations(
@@ -88,9 +89,7 @@ function createRelationshipsOperations(
   persister: PersisterClient,
 ): RelationshipOperation[] {
   const defatultOperations: RelationshipOperation[] = [];
-  const relationships: RelationshipsKeys[] = Object.keys(
-    oldData,
-  ) as RelationshipsKeys[];
+  const relationships = Object.keys(oldData) as RelationshipDataNames[];
 
   return relationships.reduce((operations, relationshipName) => {
     const oldRelationhips = oldData[relationshipName];
@@ -122,14 +121,21 @@ export function convertEntities(
     users: createUserEntities(tenableDataModel.users),
     assets: createAssetEntities(tenableDataModel.assets),
     scans: createScanEntities(tenableDataModel.scans),
-    scanVulnerabilities: createVulnerabilityEntities(
+    vulnerabilities: createVulnerabilityEntities(
+      tenableDataModel.scanVulnerabilities,
+    ),
+    vulnerabilityFindings: createVulnerabilityFindingEntities(
       tenableDataModel.scanVulnerabilities,
     ),
     containers: createContainerEntities(tenableDataModel.containers),
-    reports: createReportEntities(tenableDataModel.containerReports),
-    malwares: createMalwareEntities(tenableDataModel.containerMalwares),
-    findings: createFindingEntities(tenableDataModel.containerFindings),
-    unwantedPrograms: createUnwantedProgramEntities(
+    containerReports: createReportEntities(tenableDataModel.containerReports),
+    containerMalwares: createMalwareEntities(
+      tenableDataModel.containerMalwares,
+    ),
+    containerFindings: createContainerFindingEntities(
+      tenableDataModel.containerFindings,
+    ),
+    containerUnwantedPrograms: createUnwantedProgramEntities(
       tenableDataModel.containerUnwantedPrograms,
     ),
   };
@@ -150,6 +156,9 @@ export function convertRelationships(
     ),
     scanVulnerabilityRelationships: createScanVulnerabilityRelationships(
       tenableDataModel.scans,
+      tenableDataModel.scanVulnerabilities,
+    ),
+    vulnerabilityFindingRelationships: createVulnerabilityFindingRelationships(
       tenableDataModel.scanVulnerabilities,
     ),
     scanAssetRelationships: createScanAssetRelationships(

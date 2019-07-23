@@ -7,18 +7,20 @@ export interface JupiterOneEntitiesData {
   users: Entities.UserEntity[];
   assets: Entities.AssetEntity[];
   scans: Entities.ScanEntity[];
-  scanVulnerabilities: Entities.TenableVulnerabilityEntity[];
+  vulnerabilities: Entities.TenableVulnerabilityEntity[];
+  vulnerabilityFindings: Entities.VulnerabilityFindingEntity[];
   containers: Entities.ContainerEntity[];
-  reports: Entities.ReportEntity[];
-  malwares: Entities.MalwareVulnerabilityEntity[];
-  findings: Entities.FindingVulnerabilityEntity[];
-  unwantedPrograms: Entities.ContainerUnwantedProgramVulnerabilityEntity[];
+  containerReports: Entities.ContainerReportEntity[];
+  containerMalwares: Entities.MalwareVulnerabilityEntity[];
+  containerFindings: Entities.ContainerFindingEntity[];
+  containerUnwantedPrograms: Entities.ContainerUnwantedProgramVulnerabilityEntity[];
 }
 
 export interface JupiterOneRelationshipsData {
   accountUserRelationships: Entities.AccountUserRelationship[];
   userScanRelationships: Entities.UserScanRelationship[];
   scanVulnerabilityRelationships: Entities.ScanVulnerabilityRelationship[];
+  vulnerabilityFindingRelationships: Entities.VulnerabilityFindingRelationship[];
   scanAssetRelationships: Entities.ScanAssetRelationship[];
   assetScanVulnerabilityRelationships: Entities.AssetScanVulnerabilityRelationship[];
   accountContainerRelationships: Entities.AccountContainerRelationship[];
@@ -52,12 +54,8 @@ async function fetchEntities(
     users,
     assets,
     scans,
-    scanVulnerabilities,
-    containers,
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    vulnerabilities,
+    vulnerabilityFindings,
   ] = await Promise.all([
     graph.findEntitiesByType<Entities.AccountEntity>(
       Entities.ACCOUNT_ENTITY_TYPE,
@@ -68,17 +66,29 @@ async function fetchEntities(
     graph.findEntitiesByType<Entities.TenableVulnerabilityEntity>(
       Entities.TENABLE_VULNERABILITY_ENTITY_TYPE,
     ),
+    graph.findEntitiesByType<Entities.VulnerabilityFindingEntity>(
+      Entities.VULNERABILITY_FINDING_ENTITY_TYPE,
+    ),
+  ]);
+
+  const [
+    containers,
+    containerReports,
+    containerMalwares,
+    containerFindings,
+    containerUnwantedPrograms,
+  ] = await Promise.all([
     graph.findEntitiesByType<Entities.ContainerEntity>(
       Entities.CONTAINER_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<Entities.ReportEntity>(
-      Entities.REPORT_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.ContainerReportEntity>(
+      Entities.CONTAINER_REPORT_ENTITY_TYPE,
     ),
     graph.findEntitiesByType<Entities.MalwareVulnerabilityEntity>(
       Entities.MALWARE_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<Entities.FindingVulnerabilityEntity>(
-      Entities.FINDING_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.ContainerFindingEntity>(
+      Entities.CONTAINER_FINDING_ENTITY_TYPE,
     ),
     graph.findEntitiesByType<
       Entities.ContainerUnwantedProgramVulnerabilityEntity
@@ -90,12 +100,13 @@ async function fetchEntities(
     users,
     assets,
     scans,
-    scanVulnerabilities,
+    vulnerabilities,
+    vulnerabilityFindings,
     containers,
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    containerReports,
+    containerMalwares,
+    containerFindings,
+    containerUnwantedPrograms,
   };
 }
 
@@ -106,6 +117,7 @@ export async function fetchRelationships(
     accountUserRelationships,
     userScanRelationships,
     scanVulnerabilityRelationships,
+    vulnerabilityFindingRelationships,
     scanAssetRelationships,
     assetScanVulnerabilityRelationships,
     accountContainerRelationships,
@@ -122,6 +134,9 @@ export async function fetchRelationships(
     ),
     graph.findRelationshipsByType<Entities.ScanVulnerabilityRelationship>(
       Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    ),
+    graph.findRelationshipsByType<Entities.VulnerabilityFindingRelationship>(
+      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
     ),
     graph.findRelationshipsByType<Entities.ScanAssetRelationship>(
       Entities.SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
@@ -150,6 +165,7 @@ export async function fetchRelationships(
     accountUserRelationships,
     userScanRelationships,
     scanVulnerabilityRelationships,
+    vulnerabilityFindingRelationships,
     scanAssetRelationships,
     assetScanVulnerabilityRelationships,
     accountContainerRelationships,
