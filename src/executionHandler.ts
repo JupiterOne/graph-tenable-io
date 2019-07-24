@@ -46,7 +46,13 @@ async function removeDeprecatedEntities(
   persister: PersisterClient,
 ): Promise<PersisterOperationsResult> {
   const results = await Promise.all(
-    ["tenable_webapp_vulnerability", "tenable_finding"].map(async t => {
+    [
+      "tenable_report",
+      "tenable_finding",
+      "tenable_malware",
+      "tenable_unwanted_program",
+      "tenable_webapp_vulnerability",
+    ].map(async t => {
       const entitiesToDelete = await graph.findEntitiesByType(t);
       return persister.publishEntityOperations(
         persister.processEntities(entitiesToDelete, []),
