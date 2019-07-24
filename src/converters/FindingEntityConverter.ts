@@ -1,36 +1,67 @@
 import {
-  FINDING_ENTITY_CLASS,
-  FINDING_ENTITY_TYPE,
-  FindingVulnerabilityEntity,
+  CONTAINER_FINDING_ENTITY_CLASS,
+  CONTAINER_FINDING_ENTITY_TYPE,
+  ContainerFindingEntity,
+  VULNERABILITY_FINDING_ENTITY_CLASS,
+  VULNERABILITY_FINDING_ENTITY_TYPE,
+  VulnerabilityFindingEntity,
 } from "../jupiterone/entities";
-import { Dictionary, Finding } from "../types";
+import {
+  ContainerFinding,
+  Dictionary,
+  ScanVulnerability,
+} from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
-export function createFindingEntities(
-  data: Dictionary<Finding[]>,
-): FindingVulnerabilityEntity[] {
-  const defaultValue: FindingVulnerabilityEntity[] = [];
-  const vulnerabilityArrays = Object.values(data);
-
-  const relationships = vulnerabilityArrays.reduce((acc, array) => {
-    const relationsForOneReport: FindingVulnerabilityEntity[] = array.map(
-      createFindingEntity,
-    );
-    return acc.concat(relationsForOneReport);
-  }, defaultValue);
-
-  return relationships;
+export function createVulnerabilityFindingEntities(
+  data: Dictionary<ScanVulnerability[]>,
+): VulnerabilityFindingEntity[] {
+  return Object.values(data).reduce(
+    (acc: VulnerabilityFindingEntity[], array) => {
+      return [...acc, ...array.map(createVulnerabilityFindingEntity)];
+    },
+    [],
+  );
 }
 
-function createFindingEntity(
-  vulnerability: Finding,
-): FindingVulnerabilityEntity {
-  const { nvdFinding } = vulnerability;
-  const findingId = nvdFinding.reference_id;
+export function createContainerFindingEntities(
+  data: Dictionary<ContainerFinding[]>,
+): ContainerFindingEntity[] {
+  return Object.values(data).reduce((acc: ContainerFindingEntity[], array) => {
+    return [...acc, ...array.map(createContainerFindingEntity)];
+  }, []);
+}
+
+export function createVulnerabilityFindingEntity(
+  vulnerability: ScanVulnerability,
+): VulnerabilityFindingEntity {
   return {
-    _key: generateEntityKey(FINDING_ENTITY_TYPE, findingId),
-    _type: FINDING_ENTITY_TYPE,
-    _class: FINDING_ENTITY_CLASS,
+    _key: vulnerabilityFindingEntityKey(vulnerability),
+    _type: VULNERABILITY_FINDING_ENTITY_TYPE,
+    _class: VULNERABILITY_FINDING_ENTITY_CLASS,
+    scanId: vulnerability.scan_id,
+    hostId: vulnerability.host_id,
+    hostname: vulnerability.hostname,
+  };
+}
+
+export function vulnerabilityFindingEntityKey(
+  vulnerability: ScanVulnerability,
+) {
+  return generateEntityKey(
+    VULNERABILITY_FINDING_ENTITY_TYPE,
+    `${vulnerability.scan_id}_${vulnerability.plugin_id}_${vulnerability.host_id}`,
+  );
+}
+
+export function createContainerFindingEntity(
+  vulnerability: ContainerFinding,
+): ContainerFindingEntity {
+  const { nvdFinding } = vulnerability;
+  return {
+    _key: containerFindingEntityKey(vulnerability),
+    _type: CONTAINER_FINDING_ENTITY_TYPE,
+    _class: CONTAINER_FINDING_ENTITY_CLASS,
     referenceId: nvdFinding.reference_id,
     cve: nvdFinding.cve,
     publishedDate: nvdFinding.published_date,
@@ -46,4 +77,12 @@ function createFindingEntity(
     cwe: nvdFinding.cwe,
     remediation: nvdFinding.remediation,
   };
+}
+
+export function containerFindingEntityKey(vulnerability: ContainerFinding) {
+  const { nvdFinding } = vulnerability;
+  return generateEntityKey(
+    CONTAINER_FINDING_ENTITY_TYPE,
+    `${nvdFinding.cve}_${nvdFinding.cwe}`,
+  );
 }

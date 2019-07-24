@@ -1,6 +1,7 @@
 import nock from "nock";
 import { fetchTenableData } from "./index";
 import TenableClient from "./TenableClient";
+import { Scan } from "./types";
 
 const ACCESS_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY || "test_access_token";
@@ -60,7 +61,7 @@ describe("TenableClient fetch ok data", () => {
     const { nockDone } = await nock.back("scan-ok.json", {
       before: prepareScope,
     });
-    const scan = await client.fetchScanById(12);
+    const scan = await client.fetchScanDetail({ id: 12 } as Scan);
     nockDone();
 
     expect(scan).not.toEqual({});
@@ -111,11 +112,11 @@ describe("TenableClient fetch ok data", () => {
     expect(response.scans.length).not.toEqual(0);
     expect(response.assets.length).not.toEqual(0);
     expect(response.containers.length).not.toEqual(0);
-    expect(response.reports.length).not.toEqual(0);
-    expect(response.webAppVulnerabilities).not.toEqual({});
-    expect(response.findings).not.toEqual({});
-    expect(response.malwares).not.toEqual({});
-    expect(response.unwantedPrograms).not.toEqual({});
+    expect(response.containerReports.length).not.toEqual(0);
+    expect(response.scanVulnerabilities).not.toEqual({});
+    expect(response.containerFindings).not.toEqual({});
+    expect(response.containerMalwares).not.toEqual({});
+    expect(response.containerUnwantedPrograms).not.toEqual({});
   });
 
   afterAll(() => {

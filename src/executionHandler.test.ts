@@ -16,13 +16,14 @@ const executionContext: any = {
   persister: {
     processEntities: jest.fn().mockReturnValue([]),
     processRelationships: jest.fn().mockReturnValue([]),
+    publishEntityOperations: jest.fn().mockResolvedValue({}),
     publishPersisterOperations: jest.fn().mockResolvedValue({}),
   },
   provider: {
     fetchUsers: jest.fn().mockReturnValue([]),
     fetchScans: jest.fn().mockReturnValue([]),
     fetchAssets: jest.fn().mockReturnValue([]),
-    fetchScanById: jest.fn().mockReturnValue({}),
+    fetchScanDetail: jest.fn().mockReturnValue({}),
     fetchContainers: jest.fn().mockReturnValue([]),
     fetchReportByImageDigest: jest.fn().mockReturnValue({}),
   },
@@ -55,7 +56,10 @@ test("executionHandler INGEST action", async () => {
   expect(
     executionContext.provider.fetchReportByImageDigest,
   ).toHaveBeenCalledTimes(0);
-  expect(executionContext.persister.processEntities).toHaveBeenCalledTimes(10);
+  expect(executionContext.persister.processEntities).toHaveBeenCalledTimes(16);
+  expect(
+    executionContext.persister.publishEntityOperations,
+  ).toHaveBeenCalledTimes(5);
   expect(
     executionContext.persister.publishPersisterOperations,
   ).toHaveBeenCalledTimes(1);

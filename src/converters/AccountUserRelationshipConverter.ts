@@ -1,5 +1,3 @@
-import { Account, User } from "../types";
-
 import {
   ACCOUNT_ENTITY_TYPE,
   ACCOUNT_USER_RELATIONSHIP_CLASS,
@@ -7,7 +5,8 @@ import {
   AccountUserRelationship,
   USER_ENTITY_TYPE,
 } from "../jupiterone";
-
+import { User } from "../tenable/types";
+import { Account } from "../types";
 import {
   generateEntityKey,
   generateRelationshipKey,

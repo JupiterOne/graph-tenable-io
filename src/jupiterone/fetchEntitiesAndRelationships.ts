@@ -1,4 +1,5 @@
 import { GraphClient } from "@jupiterone/jupiter-managed-integration-sdk";
+
 import * as Entities from "./entities";
 
 export interface JupiterOneEntitiesData {
@@ -6,25 +7,28 @@ export interface JupiterOneEntitiesData {
   users: Entities.UserEntity[];
   assets: Entities.AssetEntity[];
   scans: Entities.ScanEntity[];
-  webAppVulnerabilities: Entities.WebAppVulnerabilityEntity[];
+  vulnerabilities: Entities.TenableVulnerabilityEntity[];
+  vulnerabilityFindings: Entities.VulnerabilityFindingEntity[];
   containers: Entities.ContainerEntity[];
-  reports: Entities.ReportEntity[];
-  malwares: Entities.MalwareVulnerabilityEntity[];
-  findings: Entities.FindingVulnerabilityEntity[];
-  unwantedPrograms: Entities.PotentiallyUnwantedProgramVulnerabilityEntity[];
+  containerReports: Entities.ContainerReportEntity[];
+  containerMalwares: Entities.ContainerMalwareEntity[];
+  containerFindings: Entities.ContainerFindingEntity[];
+  containerUnwantedPrograms: Entities.ContainerUnwantedProgramEntity[];
 }
 
 export interface JupiterOneRelationshipsData {
   accountUserRelationships: Entities.AccountUserRelationship[];
   userScanRelationships: Entities.UserScanRelationship[];
-  scanWebAppVulnerabilityRelationships: Entities.ScanWebAppVulnerabilityRelationship[];
+  scanVulnerabilityRelationships: Entities.ScanVulnerabilityRelationship[];
+  vulnerabilityFindingRelationships: Entities.VulnerabilityFindingRelationship[];
+  scanFindingRelationships: Entities.ScanFindingRelationship[];
   scanAssetRelationships: Entities.ScanAssetRelationship[];
-  assetWebAppVulnerabilityRelationships: Entities.AssetWebAppVulnerabilityRelationship[];
+  assetScanVulnerabilityRelationships: Entities.AssetScanVulnerabilityRelationship[];
   accountContainerRelationships: Entities.AccountContainerRelationship[];
   containerReportRelationships: Entities.ContainerReportRelationship[];
   reportMalwareRelationships: Entities.ReportMalwareRelationship[];
   reportFindingRelationships: Entities.ReportFindingRelationship[];
-  reportUnwantedProgramRelationships: Entities.ReportUnwantedProgramRelationship[];
+  reportUnwantedProgramRelationships: Entities.ContainerReportUnwantedProgramRelationship[];
 }
 
 export interface JupiterOneDataModel {
@@ -51,12 +55,8 @@ async function fetchEntities(
     users,
     assets,
     scans,
-    webAppVulnerabilities,
-    containers,
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    vulnerabilities,
+    vulnerabilityFindings,
   ] = await Promise.all([
     graph.findEntitiesByType<Entities.AccountEntity>(
       Entities.ACCOUNT_ENTITY_TYPE,
@@ -64,24 +64,36 @@ async function fetchEntities(
     graph.findEntitiesByType<Entities.UserEntity>(Entities.USER_ENTITY_TYPE),
     graph.findEntitiesByType<Entities.AssetEntity>(Entities.ASSET_ENTITY_TYPE),
     graph.findEntitiesByType<Entities.ScanEntity>(Entities.SCAN_ENTITY_TYPE),
-    graph.findEntitiesByType<Entities.WebAppVulnerabilityEntity>(
-      Entities.WEBAPP_VULNERABILITY_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.TenableVulnerabilityEntity>(
+      Entities.TENABLE_VULNERABILITY_ENTITY_TYPE,
     ),
+    graph.findEntitiesByType<Entities.VulnerabilityFindingEntity>(
+      Entities.VULNERABILITY_FINDING_ENTITY_TYPE,
+    ),
+  ]);
+
+  const [
+    containers,
+    containerReports,
+    containerMalwares,
+    containerFindings,
+    containerUnwantedPrograms,
+  ] = await Promise.all([
     graph.findEntitiesByType<Entities.ContainerEntity>(
       Entities.CONTAINER_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<Entities.ReportEntity>(
-      Entities.REPORT_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.ContainerReportEntity>(
+      Entities.CONTAINER_REPORT_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<Entities.MalwareVulnerabilityEntity>(
-      Entities.MALWARE_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.ContainerMalwareEntity>(
+      Entities.CONTAINER_MALWARE_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<Entities.FindingVulnerabilityEntity>(
-      Entities.FINDING_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.ContainerFindingEntity>(
+      Entities.CONTAINER_FINDING_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<
-      Entities.PotentiallyUnwantedProgramVulnerabilityEntity
-    >(Entities.UNWANTED_PROGRAM_ENTITY_TYPE),
+    graph.findEntitiesByType<Entities.ContainerUnwantedProgramEntity>(
+      Entities.CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
+    ),
   ]);
 
   return {
@@ -89,12 +101,13 @@ async function fetchEntities(
     users,
     assets,
     scans,
-    webAppVulnerabilities,
+    vulnerabilities,
+    vulnerabilityFindings,
     containers,
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    containerReports,
+    containerMalwares,
+    containerFindings,
+    containerUnwantedPrograms,
   };
 }
 
@@ -104,9 +117,11 @@ export async function fetchRelationships(
   const [
     accountUserRelationships,
     userScanRelationships,
-    scanWebAppVulnerabilityRelationships,
+    scanVulnerabilityRelationships,
+    vulnerabilityFindingRelationships,
+    scanFindingRelationships,
     scanAssetRelationships,
-    assetWebAppVulnerabilityRelationships,
+    assetScanVulnerabilityRelationships,
     accountContainerRelationships,
     containerReportRelationships,
     reportMalwareRelationships,
@@ -119,15 +134,21 @@ export async function fetchRelationships(
     graph.findRelationshipsByType<Entities.UserScanRelationship>(
       Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<Entities.ScanWebAppVulnerabilityRelationship>(
-      Entities.SCAN_WEBAPP_VULNERABILITY_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType<Entities.ScanVulnerabilityRelationship>(
+      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    ),
+    graph.findRelationshipsByType<Entities.VulnerabilityFindingRelationship>(
+      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+    ),
+    graph.findRelationshipsByType<Entities.ScanFindingRelationship>(
+      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
     ),
     graph.findRelationshipsByType<Entities.ScanAssetRelationship>(
       Entities.SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<
-      Entities.AssetWebAppVulnerabilityRelationship
-    >(Entities.ASSET_HAS_WEBAPP_VULNERABILITY_RELATIONSHIP_TYPE),
+    graph.findRelationshipsByType<Entities.AssetScanVulnerabilityRelationship>(
+      Entities.ASSET_SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    ),
     graph.findRelationshipsByType<Entities.AccountContainerRelationship>(
       Entities.ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
     ),
@@ -140,17 +161,19 @@ export async function fetchRelationships(
     graph.findRelationshipsByType<Entities.ReportFindingRelationship>(
       Entities.REPORT_FINDING_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<Entities.ReportUnwantedProgramRelationship>(
-      Entities.REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-    ),
+    graph.findRelationshipsByType<
+      Entities.ContainerReportUnwantedProgramRelationship
+    >(Entities.CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE),
   ]);
 
   return {
     accountUserRelationships,
     userScanRelationships,
-    scanWebAppVulnerabilityRelationships,
+    scanVulnerabilityRelationships,
+    vulnerabilityFindingRelationships,
+    scanFindingRelationships,
     scanAssetRelationships,
-    assetWebAppVulnerabilityRelationships,
+    assetScanVulnerabilityRelationships,
     accountContainerRelationships,
     containerReportRelationships,
     reportMalwareRelationships,

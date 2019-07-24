@@ -1,4 +1,4 @@
-import { User } from "../types";
+import { User } from "../tenable/types";
 import { createUserScanRelationships } from "./UserScanRelationshipConverter";
 
 const scans: any[] = [
@@ -98,21 +98,21 @@ describe("convert user assessment relationships", () => {
         _fromEntityKey: "tenable_user_2",
         _key: "tenable_user_2_owns_tenable_scan_12",
         _toEntityKey: "tenable_scan_12",
-        _type: "tenable_user_owns_tenable_scan",
+        _type: "tenable_user_owns_scan",
       },
       {
         _class: "OWNS",
         _fromEntityKey: "tenable_user_2",
         _key: "tenable_user_2_owns_tenable_scan_14",
         _toEntityKey: "tenable_scan_14",
-        _type: "tenable_user_owns_tenable_scan",
+        _type: "tenable_user_owns_scan",
       },
       {
         _class: "OWNS",
         _fromEntityKey: "tenable_user_2",
         _key: "tenable_user_2_owns_tenable_scan_10",
         _toEntityKey: "tenable_scan_10",
-        _type: "tenable_user_owns_tenable_scan",
+        _type: "tenable_user_owns_scan",
       },
     ]);
   });

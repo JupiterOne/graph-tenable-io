@@ -3,7 +3,7 @@ import {
   USER_ENTITY_TYPE,
   UserEntity,
 } from "../jupiterone/entities";
-import { User } from "../types";
+import { User } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
 export function createUserEntities(data: User[]): UserEntity[] {

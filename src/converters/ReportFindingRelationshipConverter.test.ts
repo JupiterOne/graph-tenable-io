@@ -1,8 +1,12 @@
-import { Dictionary, Finding, Report } from "../types";
+import {
+  ContainerFinding,
+  ContainerReport,
+  Dictionary,
+} from "../tenable/types";
 import { createReportFindingRelationships } from "./ReportFindingRelationshipConverter";
 
 test("convert report container vulnerability relationship", () => {
-  const reports: Report[] = [
+  const reports: ContainerReport[] = [
     {
       malware: [],
       sha256:
@@ -23,12 +27,13 @@ test("convert report container vulnerability relationship", () => {
       os_architecture: "AMD64",
     },
   ];
-  const findings: Dictionary<Finding[]> = {
+  const findings: Dictionary<ContainerFinding[]> = {
     "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc": [
       {
         nvdFinding: {
           reference_id: "findingId",
-          cve: "string",
+          cve: "cve-123",
+          cpe: ["string"],
           published_date: "string",
           modified_date: "string",
           description: "string",
@@ -39,8 +44,9 @@ test("convert report container vulnerability relationship", () => {
           availability_impact: "string",
           confidentiality_impact: "string",
           integrity_impact: "string",
-          cwe: "string",
+          cwe: "cwe-234",
           remediation: "string",
+          references: ["string"],
         },
         packages: [
           {
@@ -61,11 +67,11 @@ test("convert report container vulnerability relationship", () => {
     {
       _class: "IDENTIFIED",
       _fromEntityKey:
-        "tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
+        "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       _key:
-        "tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_finding_findingId",
-      _toEntityKey: "tenable_finding_findingId",
-      _type: "tenable_report_identified_tenable_finding",
+        "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_container_finding_cve-123_cwe-234",
+      _toEntityKey: "tenable_container_finding_cve-123_cwe-234",
+      _type: "tenable_container_report_identified_finding",
     },
   ]);
 });

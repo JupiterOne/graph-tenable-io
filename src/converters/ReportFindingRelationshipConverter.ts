@@ -1,19 +1,23 @@
 import {
-  FINDING_ENTITY_TYPE,
-  REPORT_ENTITY_TYPE,
+  CONTAINER_REPORT_ENTITY_TYPE,
   REPORT_FINDING_RELATIONSHIP_CLASS,
   REPORT_FINDING_RELATIONSHIP_TYPE,
   ReportFindingRelationship,
 } from "../jupiterone/entities";
-import { Dictionary, Finding, Report } from "../types";
+import {
+  ContainerFinding,
+  ContainerReport,
+  Dictionary,
+} from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
 } from "../utils/generateKey";
+import { containerFindingEntityKey } from "./FindingEntityConverter";
 
 export function createReportFindingRelationships(
-  reports: Report[],
-  findings: Dictionary<Finding[]>,
+  reports: ContainerReport[],
+  findings: Dictionary<ContainerFinding[]>,
 ): ReportFindingRelationship[] {
   const defaultValue: ReportFindingRelationship[] = [];
   const relationships = reports.reduce((acc, report) => {
@@ -27,12 +31,11 @@ export function createReportFindingRelationships(
 }
 
 function createRelation(
-  vulnerability: Finding,
+  vulnerability: ContainerFinding,
   reportId: string,
 ): ReportFindingRelationship {
-  const findingId = vulnerability.nvdFinding.reference_id;
-  const parentKey = generateEntityKey(REPORT_ENTITY_TYPE, reportId);
-  const childKey = generateEntityKey(FINDING_ENTITY_TYPE, findingId);
+  const parentKey = generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId);
+  const childKey = containerFindingEntityKey(vulnerability);
   const relationKey = generateRelationshipKey(
     parentKey,
     REPORT_FINDING_RELATIONSHIP_CLASS,

@@ -1,21 +1,22 @@
 import fetch, { RequestInit } from "node-fetch";
+
 import {
   Asset,
   AssetsResponse,
   Container,
+  ContainerReport,
   ContainersResponse,
   Method,
-  Report,
   ReportResponse,
   Scan,
   ScanDetail,
   ScanResponse,
   ScansResponse,
+  ScanVulnerabilitiesResponse,
+  ScanVulnerability,
   User,
   UsersResponse,
-  WebAppVulnerability,
-  WebAppVulnerabilityResponse,
-} from "../types";
+} from "./types";
 
 export default class TenableClient {
   private readonly host: string = "https://cloud.tenable.com";
@@ -45,22 +46,22 @@ export default class TenableClient {
     return scansResponse.scans;
   }
 
-  public async fetchScanById(id: number): Promise<ScanDetail> {
+  public async fetchScanDetail(scan: Scan): Promise<ScanDetail> {
     const scanResponse = await this.makeRequest<ScanResponse>(
-      `/scans/${id}`,
+      `/scans/${scan.id}`,
       Method.GET,
       {},
     );
     const { hosts, info, vulnerabilities } = scanResponse;
-    return { hosts, info, vulnerabilities };
+    return { ...scan, hosts: hosts || [], info, vulnerabilities };
   }
 
   public async fetchVulnerabilities(
     scanId: number,
     hostId: number,
-  ): Promise<WebAppVulnerability[]> {
+  ): Promise<ScanVulnerability[]> {
     const vulnerabilitiesResponse = await this.makeRequest<
-      WebAppVulnerabilityResponse
+      ScanVulnerabilitiesResponse
     >(`/scans/${scanId}/hosts/${hostId}`, Method.GET, {});
     return vulnerabilitiesResponse.vulnerabilities;
   }
@@ -83,7 +84,9 @@ export default class TenableClient {
     return containerResponse;
   }
 
-  public async fetchReportByImageDigest(digestId: string): Promise<Report> {
+  public async fetchReportByImageDigest(
+    digestId: string,
+  ): Promise<ContainerReport> {
     const reportResponse = await this.makeRequest<ReportResponse>(
       `/container-security/api/v1/reports/by_image_digest?image_digest=${digestId}`,
       Method.GET,
@@ -103,15 +106,25 @@ export default class TenableClient {
         "Content-type": "application/json",
         Accept: "application/json",
         "Accept-encoding": "identity",
-        "X-ApiKeys": `accessKey=${this.accessToken}; secretKey=${
-          this.secretToken
-        };`,
+        "X-ApiKeys": `accessKey=${this.accessToken}; secretKey=${this.secretToken};`,
         ...headers,
       },
     };
 
     const response = await fetch(this.host + url, options);
 
-    return response.json();
+    if (response.status >= 400) {
+      const cause = {
+        name: "TenableClientApiError",
+        message: response.statusText,
+        statusCode: response.status,
+      };
+
+      Error.captureStackTrace(cause, this.makeRequest);
+
+      throw cause;
+    } else {
+      return response.json();
+    }
   }
 }

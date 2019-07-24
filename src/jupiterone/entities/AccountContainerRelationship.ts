@@ -3,5 +3,5 @@ import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integra
 export type AccountContainerRelationship = RelationshipFromIntegration;
 
 export const ACCOUNT_CONTAINER_RELATIONSHIP_TYPE =
-  "tenable_account_has_tenable_container";
+  "tenable_account_has_container";
 export const ACCOUNT_CONTAINER_RELATIONSHIP_CLASS = "HAS";

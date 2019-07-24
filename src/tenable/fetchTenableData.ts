@@ -1,118 +1,107 @@
+import TenableClient from "./TenableClient";
 import {
   Container,
+  ContainerFinding,
+  ContainerMalware,
+  ContainerReport,
+  ContainerUnwantedProgram,
   Dictionary,
-  Finding,
-  Malware,
-  PotentiallyUnwantedProgram,
-  Report,
   Scan,
   ScanDetail,
+  ScanVulnerability,
   TenableDataModel,
-  WebAppVulnerability,
-} from "../types";
-import TenableClient from "./TenableClient";
+} from "./types";
 
 export default async function fetchTenableData(
   client: TenableClient,
 ): Promise<TenableDataModel> {
-  const [users, scans, assets, containers] = await Promise.all([
+  const [users, scanSummaries, assets, containers] = await Promise.all([
     client.fetchUsers(),
     client.fetchScans(),
     client.fetchAssets(),
     client.fetchContainers(),
   ]);
 
-  const scansWithFullInfo: Scan[] = await fetchScansWithFullInfo(scans, client);
+  const scans = await fetchScanDetails(scanSummaries, client);
 
-  const webAppVulnerabilities: Dictionary<
-    WebAppVulnerability[]
-  > = await fillWebAppVulnerabilities(scansWithFullInfo, client);
+  const scanVulnerabilities: Dictionary<
+    ScanVulnerability[]
+  > = await fetchScanVulnerabilities(scans, client);
 
   const {
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    reports: containerReports,
+    malwares: containerMalwares,
+    findings: containerFindings,
+    unwantedPrograms: containerUnwantedPrograms,
   } = await fetchReportsWithContainerVulnerabilities(containers, client);
 
   return {
     users,
-    scans: scansWithFullInfo,
+    scans,
     assets,
-    webAppVulnerabilities,
+    scanVulnerabilities,
     containers,
-    reports,
-    malwares,
-    findings,
-    unwantedPrograms,
+    containerReports,
+    containerMalwares,
+    containerFindings,
+    containerUnwantedPrograms,
   };
 }
 
-async function fetchScansWithFullInfo(
+async function fetchScanDetails(
   scans: Scan[],
   client: TenableClient,
-): Promise<Scan[]> {
-  const scansWithFullInfo = await Promise.all(
-    scans.map(async scan => {
-      const fullScanInfo: ScanDetail = await client.fetchScanById(scan.id);
-      return {
-        ...scan,
-        scanDetail: fullScanInfo,
-      };
-    }),
-  );
-  return scansWithFullInfo;
+): Promise<ScanDetail[]> {
+  return Promise.all(scans.map(scan => client.fetchScanDetail(scan)));
 }
 
-async function fillWebAppVulnerabilities(
-  scans: Scan[],
+async function fetchScanVulnerabilities(
+  scans: ScanDetail[],
   client: TenableClient,
-): Promise<Dictionary<WebAppVulnerability[]>> {
-  const webAppVulnerabilities: Dictionary<WebAppVulnerability[]> = {};
+): Promise<Dictionary<ScanVulnerability[]>> {
+  const scanVulnerabilities: Dictionary<ScanVulnerability[]> = {};
   await scans.forEach(async scan => {
-    if (!scan.scanDetail || !scan.scanDetail.hosts) {
-      return;
-    }
-    await scan.scanDetail.hosts.forEach(async host => {
+    await scan.hosts.forEach(async host => {
       const fetchedVulnerabilities = await client.fetchVulnerabilities(
         scan.id,
         host.host_id,
       );
-
       const vulnerabilityWithScanId = fetchedVulnerabilities.map(value => ({
         ...value,
         scan_id: scan.id,
       }));
 
-      if (!webAppVulnerabilities[host.hostname]) {
-        webAppVulnerabilities[host.hostname] = vulnerabilityWithScanId;
+      if (!scanVulnerabilities[host.hostname]) {
+        scanVulnerabilities[host.hostname] = vulnerabilityWithScanId;
         return;
       }
 
-      webAppVulnerabilities[host.hostname] = webAppVulnerabilities[
+      scanVulnerabilities[host.hostname] = scanVulnerabilities[
         host.hostname
       ].concat(vulnerabilityWithScanId);
       return;
     });
   });
-  return webAppVulnerabilities;
+  return scanVulnerabilities;
 }
 
 async function fetchReportsWithContainerVulnerabilities(
   containers: Container[],
   client: TenableClient,
 ): Promise<{
-  reports: Report[];
-  malwares: Dictionary<Malware[]>;
-  findings: Dictionary<Finding[]>;
-  unwantedPrograms: Dictionary<PotentiallyUnwantedProgram[]>;
+  reports: ContainerReport[];
+  malwares: Dictionary<ContainerMalware[]>;
+  findings: Dictionary<ContainerFinding[]>;
+  unwantedPrograms: Dictionary<ContainerUnwantedProgram[]>;
 }> {
-  const malwares: Dictionary<Malware[]> = {};
-  const findings: Dictionary<Finding[]> = {};
-  const unwantedPrograms: Dictionary<PotentiallyUnwantedProgram[]> = {};
-  const reports: Report[] = await Promise.all(
+  const malwares: Dictionary<ContainerMalware[]> = {};
+  const findings: Dictionary<ContainerFinding[]> = {};
+  const unwantedPrograms: Dictionary<ContainerUnwantedProgram[]> = {};
+  const reports: ContainerReport[] = await Promise.all(
     containers.map(async item => {
-      const report: Report = await client.fetchReportByImageDigest(item.digest);
+      const report: ContainerReport = await client.fetchReportByImageDigest(
+        item.digest,
+      );
 
       if (!report.sha256) {
         return report;

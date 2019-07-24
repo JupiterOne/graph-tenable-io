@@ -15,9 +15,9 @@ test("convert container vulnerability entity", () => {
 
   expect(entities).toEqual([
     {
-      _class: "Vulnerability",
-      _key: "tenable_unwanted_program_unwantedProgramMd5",
-      _type: "tenable_unwanted_program",
+      _class: "Finding",
+      _key: "tenable_container_unwanted_program_unwantedProgramMd5",
+      _type: "tenable_container_unwanted_program",
       file: "file",
       md5: "unwantedProgramMd5",
       sha256: "string",

@@ -1,4 +1,5 @@
-import { Account, User } from "../types";
+import { User } from "../tenable/types";
+import { Account } from "../types";
 import { createAccountUserRelationships } from "./AccountUserRelationshipConverter";
 
 const account: Account = {
@@ -34,7 +35,7 @@ test("convert account user relationships", () => {
       _fromEntityKey: "tenable_account_TestId",
       _key: "tenable_account_TestId_has_tenable_user_2",
       _toEntityKey: "tenable_user_2",
-      _type: "tenable_account_has_tenable_user",
+      _type: "tenable_account_has_user",
     },
   ]);
 });

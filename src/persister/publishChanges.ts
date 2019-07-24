@@ -4,39 +4,42 @@ import {
   PersisterClient,
   RelationshipOperation,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+
 import {
   createAccountContainerRelationships,
   createAccountEntity,
   createAccountUserRelationships,
   createAssetEntities,
-  createAssetWebAppVulnerabilityRelationships,
+  createAssetScanVulnerabilityRelationships,
   createContainerEntities,
+  createContainerFindingEntities,
   createContainerReportRelationships,
+  createContainerReportUnwantedProgramRelationships,
+  createMalwareEntities,
   createReportEntities,
+  createReportFindingRelationships,
+  createReportMalwareRelationships,
   createScanAssetRelationships,
   createScanEntities,
-  createScanWebAppVulnerabilityRelationships,
+  createScanFindingRelationships,
+  createScanVulnerabilityRelationships,
+  createUnwantedProgramEntities,
   createUserEntities,
   createUserScanRelationships,
   createVulnerabilityEntities,
+  createVulnerabilityFindingEntities,
+  createVulnerabilityFindingRelationships,
 } from "../converters";
-import { createFindingEntities } from "../converters/FindingEntityConverter";
-import { createMalwareEntities } from "../converters/MalwareEntityConverter";
-import { createReportFindingRelationships } from "../converters/ReportFindingRelationshipConverter";
-import { createReportMalwareRelationships } from "../converters/ReportMalwareRelationshipConverter";
-import { createReportUnwantedProgramRelationships } from "../converters/ReportUnwantedProgramRelationshipConverter";
-import { createUnwantedProgramEntities } from "../converters/UnwantedProgramEntityConverter";
-
 import {
   JupiterOneDataModel,
   JupiterOneEntitiesData,
   JupiterOneRelationshipsData,
 } from "../jupiterone";
+import { TenableDataModel } from "../tenable/types";
+import { Account } from "../types";
 
-import { Account, TenableDataModel } from "../types";
-
-type EntitiesKeys = keyof JupiterOneEntitiesData;
-type RelationshipsKeys = keyof JupiterOneRelationshipsData;
+type EntityDataNames = keyof JupiterOneEntitiesData;
+type RelationshipDataNames = keyof JupiterOneRelationshipsData;
 
 export default async function publishChanges(
   persister: PersisterClient,
@@ -65,12 +68,11 @@ function createEntitiesOperations(
   newData: JupiterOneEntitiesData,
   persister: PersisterClient,
 ): EntityOperation[] {
-  const defatultOperations: EntityOperation[] = [];
-  const entities: EntitiesKeys[] = Object.keys(oldData) as EntitiesKeys[];
+  const dataNames = Object.keys(oldData) as EntityDataNames[];
 
-  return entities.reduce((operations, entityName) => {
-    const oldEntities = oldData[entityName];
-    const newEntities = newData[entityName];
+  return dataNames.reduce((operations: EntityOperation[], dataName) => {
+    const oldEntities = oldData[dataName];
+    const newEntities = newData[dataName];
 
     return [
       ...operations,
@@ -79,7 +81,7 @@ function createEntitiesOperations(
         newEntities,
       ),
     ];
-  }, defatultOperations);
+  }, []);
 }
 
 function createRelationshipsOperations(
@@ -88,9 +90,7 @@ function createRelationshipsOperations(
   persister: PersisterClient,
 ): RelationshipOperation[] {
   const defatultOperations: RelationshipOperation[] = [];
-  const relationships: RelationshipsKeys[] = Object.keys(
-    oldData,
-  ) as RelationshipsKeys[];
+  const relationships = Object.keys(oldData) as RelationshipDataNames[];
 
   return relationships.reduce((operations, relationshipName) => {
     const oldRelationhips = oldData[relationshipName];
@@ -122,15 +122,22 @@ export function convertEntities(
     users: createUserEntities(tenableDataModel.users),
     assets: createAssetEntities(tenableDataModel.assets),
     scans: createScanEntities(tenableDataModel.scans),
-    webAppVulnerabilities: createVulnerabilityEntities(
-      tenableDataModel.webAppVulnerabilities,
+    vulnerabilities: createVulnerabilityEntities(
+      tenableDataModel.scanVulnerabilities,
+    ),
+    vulnerabilityFindings: createVulnerabilityFindingEntities(
+      tenableDataModel.scanVulnerabilities,
     ),
     containers: createContainerEntities(tenableDataModel.containers),
-    reports: createReportEntities(tenableDataModel.reports),
-    malwares: createMalwareEntities(tenableDataModel.malwares),
-    findings: createFindingEntities(tenableDataModel.findings),
-    unwantedPrograms: createUnwantedProgramEntities(
-      tenableDataModel.unwantedPrograms,
+    containerReports: createReportEntities(tenableDataModel.containerReports),
+    containerMalwares: createMalwareEntities(
+      tenableDataModel.containerMalwares,
+    ),
+    containerFindings: createContainerFindingEntities(
+      tenableDataModel.containerFindings,
+    ),
+    containerUnwantedPrograms: createUnwantedProgramEntities(
+      tenableDataModel.containerUnwantedPrograms,
     ),
   };
 }
@@ -148,17 +155,22 @@ export function convertRelationships(
       tenableDataModel.scans,
       tenableDataModel.users,
     ),
-    scanWebAppVulnerabilityRelationships: createScanWebAppVulnerabilityRelationships(
+    scanVulnerabilityRelationships: createScanVulnerabilityRelationships(
       tenableDataModel.scans,
-      tenableDataModel.webAppVulnerabilities,
+    ),
+    vulnerabilityFindingRelationships: createVulnerabilityFindingRelationships(
+      tenableDataModel.scanVulnerabilities,
+    ),
+    scanFindingRelationships: createScanFindingRelationships(
+      tenableDataModel.scanVulnerabilities,
     ),
     scanAssetRelationships: createScanAssetRelationships(
       tenableDataModel.scans,
       tenableDataModel.assets,
     ),
-    assetWebAppVulnerabilityRelationships: createAssetWebAppVulnerabilityRelationships(
+    assetScanVulnerabilityRelationships: createAssetScanVulnerabilityRelationships(
       tenableDataModel.assets,
-      tenableDataModel.webAppVulnerabilities,
+      tenableDataModel.scanVulnerabilities,
     ),
     accountContainerRelationships: createAccountContainerRelationships(
       account,
@@ -166,19 +178,19 @@ export function convertRelationships(
     ),
     containerReportRelationships: createContainerReportRelationships(
       tenableDataModel.containers,
-      tenableDataModel.reports,
+      tenableDataModel.containerReports,
     ),
     reportMalwareRelationships: createReportMalwareRelationships(
-      tenableDataModel.reports,
-      tenableDataModel.malwares,
+      tenableDataModel.containerReports,
+      tenableDataModel.containerMalwares,
     ),
     reportFindingRelationships: createReportFindingRelationships(
-      tenableDataModel.reports,
-      tenableDataModel.findings,
+      tenableDataModel.containerReports,
+      tenableDataModel.containerFindings,
     ),
-    reportUnwantedProgramRelationships: createReportUnwantedProgramRelationships(
-      tenableDataModel.reports,
-      tenableDataModel.unwantedPrograms,
+    reportUnwantedProgramRelationships: createContainerReportUnwantedProgramRelationships(
+      tenableDataModel.containerReports,
+      tenableDataModel.containerUnwantedPrograms,
     ),
   };
 }
