@@ -1,5 +1,4 @@
 import {
-  CONTAINER_FINDING_ENTITY_TYPE,
   CONTAINER_REPORT_ENTITY_TYPE,
   REPORT_FINDING_RELATIONSHIP_CLASS,
   REPORT_FINDING_RELATIONSHIP_TYPE,
@@ -14,6 +13,7 @@ import {
   generateEntityKey,
   generateRelationshipKey,
 } from "../utils/generateKey";
+import { containerFindingEntityKey } from "./FindingEntityConverter";
 
 export function createReportFindingRelationships(
   reports: ContainerReport[],
@@ -34,9 +34,8 @@ function createRelation(
   vulnerability: ContainerFinding,
   reportId: string,
 ): ReportFindingRelationship {
-  const findingId = vulnerability.nvdFinding.reference_id;
   const parentKey = generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId);
-  const childKey = generateEntityKey(CONTAINER_FINDING_ENTITY_TYPE, findingId);
+  const childKey = containerFindingEntityKey(vulnerability);
   const relationKey = generateRelationshipKey(
     parentKey,
     REPORT_FINDING_RELATIONSHIP_CLASS,

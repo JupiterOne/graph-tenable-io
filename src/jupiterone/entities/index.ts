@@ -34,7 +34,7 @@ export const CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE =
 export const CONTAINER_UNWANTED_PROGRAM_ENTITY_CLASS = "Finding";
 
 export const VULNERABILITY_FINDING_RELATIONSHIP_TYPE =
-  "tenable_container_finding_is_vulnerability";
+  "tenable_vulnerability_finding_is_vulnerability";
 export const VULNERABILITY_FINDING_RELATIONSHIP_CLASS = "IS";
 
 export const SCAN_FINDING_RELATIONSHIP_TYPE = "tenable_scan_identified_finding";

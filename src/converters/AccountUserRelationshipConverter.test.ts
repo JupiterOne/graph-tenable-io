@@ -35,7 +35,7 @@ test("convert account user relationships", () => {
       _fromEntityKey: "tenable_account_TestId",
       _key: "tenable_account_TestId_has_tenable_user_2",
       _toEntityKey: "tenable_user_2",
-      _type: "tenable_account_has_tenable_user",
+      _type: "tenable_account_has_user",
     },
   ]);
 });

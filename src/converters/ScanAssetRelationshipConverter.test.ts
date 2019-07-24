@@ -47,7 +47,7 @@ describe("createScanAssetRelationship", () => {
         _key:
           "tenable_scan_1234_has_tenable_asset_df0f891f-f18b-4047-8fe1-6e15ca7798a8",
         _toEntityKey: "tenable_asset_df0f891f-f18b-4047-8fe1-6e15ca7798a8",
-        _type: "tenable_scan_has_tenable_asset",
+        _type: "tenable_scan_has_asset",
       },
     ]);
   });

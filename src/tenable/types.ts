@@ -182,11 +182,11 @@ export interface ContainerMalware {
 
 export interface ContainerFinding {
   nvdFinding: {
-    reference_id: string;
+    reference_id?: string;
     cve: string;
     cpe: string[];
     published_date: string;
-    modified_date: string;
+    modified_date: string; // possibly blank
     description: string;
     cvss_score: string;
     access_vector: string;
@@ -196,8 +196,8 @@ export interface ContainerFinding {
     confidentiality_impact: string;
     integrity_impact: string;
     cwe: string;
-    remediation: string;
-    references: string[];
+    remediation: string; // possibly blank
+    references: string[]; // possibly empty
   };
   packages: Package[];
 }

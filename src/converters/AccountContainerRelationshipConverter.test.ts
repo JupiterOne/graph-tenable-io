@@ -51,14 +51,14 @@ test("convert account container relationship", () => {
       _fromEntityKey: "tenable_account_TestId",
       _key: "tenable_account_TestId_has_tenable_container_6549098203417933758",
       _toEntityKey: "tenable_container_6549098203417933758",
-      _type: "tenable_account_has_tenable_container",
+      _type: "tenable_account_has_container",
     },
     {
       _class: "HAS",
       _fromEntityKey: "tenable_account_TestId",
       _key: "tenable_account_TestId_has_tenable_container_4885572231367640552",
       _toEntityKey: "tenable_container_4885572231367640552",
-      _type: "tenable_account_has_tenable_container",
+      _type: "tenable_account_has_container",
     },
   ]);
 });

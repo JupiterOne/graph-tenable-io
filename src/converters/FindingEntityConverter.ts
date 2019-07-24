@@ -58,9 +58,8 @@ export function createContainerFindingEntity(
   vulnerability: ContainerFinding,
 ): ContainerFindingEntity {
   const { nvdFinding } = vulnerability;
-  const findingId = nvdFinding.reference_id;
   return {
-    _key: generateEntityKey(CONTAINER_FINDING_ENTITY_TYPE, findingId),
+    _key: containerFindingEntityKey(vulnerability),
     _type: CONTAINER_FINDING_ENTITY_TYPE,
     _class: CONTAINER_FINDING_ENTITY_CLASS,
     referenceId: nvdFinding.reference_id,
@@ -78,4 +77,12 @@ export function createContainerFindingEntity(
     cwe: nvdFinding.cwe,
     remediation: nvdFinding.remediation,
   };
+}
+
+export function containerFindingEntityKey(vulnerability: ContainerFinding) {
+  const { nvdFinding } = vulnerability;
+  return generateEntityKey(
+    CONTAINER_FINDING_ENTITY_TYPE,
+    `${nvdFinding.cve}_${nvdFinding.cwe}`,
+  );
 }

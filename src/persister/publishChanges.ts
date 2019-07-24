@@ -157,7 +157,6 @@ export function convertRelationships(
     ),
     scanVulnerabilityRelationships: createScanVulnerabilityRelationships(
       tenableDataModel.scans,
-      tenableDataModel.scanVulnerabilities,
     ),
     vulnerabilityFindingRelationships: createVulnerabilityFindingRelationships(
       tenableDataModel.scanVulnerabilities,

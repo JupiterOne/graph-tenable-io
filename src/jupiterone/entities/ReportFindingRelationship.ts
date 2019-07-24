@@ -3,5 +3,5 @@ import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integra
 export type ReportFindingRelationship = RelationshipFromIntegration;
 
 export const REPORT_FINDING_RELATIONSHIP_TYPE =
-  "tenable_container_report_identified_tenable_finding";
+  "tenable_container_report_identified_finding";
 export const REPORT_FINDING_RELATIONSHIP_CLASS = "IDENTIFIED";

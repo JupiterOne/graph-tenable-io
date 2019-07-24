@@ -113,6 +113,18 @@ export default class TenableClient {
 
     const response = await fetch(this.host + url, options);
 
-    return response.json();
+    if (response.status >= 400) {
+      const cause = {
+        name: "TenableClientApiError",
+        message: response.statusText,
+        statusCode: response.status,
+      };
+
+      Error.captureStackTrace(cause, this.makeRequest);
+
+      throw cause;
+    } else {
+      return response.json();
+    }
   }
 }

@@ -32,7 +32,7 @@ test("convert report container vulnerability relationship", () => {
       {
         nvdFinding: {
           reference_id: "findingId",
-          cve: "string",
+          cve: "cve-123",
           cpe: ["string"],
           published_date: "string",
           modified_date: "string",
@@ -44,7 +44,7 @@ test("convert report container vulnerability relationship", () => {
           availability_impact: "string",
           confidentiality_impact: "string",
           integrity_impact: "string",
-          cwe: "string",
+          cwe: "cwe-234",
           remediation: "string",
           references: ["string"],
         },
@@ -69,9 +69,9 @@ test("convert report container vulnerability relationship", () => {
       _fromEntityKey:
         "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       _key:
-        "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_container_finding_findingId",
-      _toEntityKey: "tenable_container_finding_findingId",
-      _type: "tenable_container_report_identified_tenable_finding",
+        "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_container_finding_cve-123_cwe-234",
+      _toEntityKey: "tenable_container_finding_cve-123_cwe-234",
+      _type: "tenable_container_report_identified_finding",
     },
   ]);
 });

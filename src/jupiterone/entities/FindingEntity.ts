@@ -14,7 +14,7 @@ export interface VulnerabilityFindingEntity extends EntityFromIntegration {
 }
 
 export interface ContainerFindingEntity extends EntityFromIntegration {
-  referenceId: string;
+  referenceId?: string;
   cve: string;
   publishedDate: string;
   modifiedDate: string;
