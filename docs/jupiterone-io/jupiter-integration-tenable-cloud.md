@@ -36,18 +36,21 @@ The following entity resources are ingested when the integration runs:
 
 The following relationships are created/mapped:
 
-| From                       | Type           | To                                   |
-| -------------------------- | -------------- | ------------------------------------ |
-| `tenable_account`          | **HAS**        | `tenable_user`                       |
-| `tenable_user`             | **OWNS**       | `tenable_scan`                       |
-| `tenable_scan`             | **HAS**        | `tenable_asset`                      |
-| `tenable_scan`             | **IDENTIFIED** | `tenable_vulnerability`              |
-| `tenable_asset`            | **HAS**        | `tenable_vulnerability`              |
-| `tenable_account`          | **HAS**        | `tenable_container`                  |
-| `tenable_container`        | **HAS**        | `tenable_container_report`           |
-| `tenable_container_report` | **IDENTIFIED** | `tenable_container_finding`          |
-| `tenable_container_report` | **IDENTIFIED** | `tenable_container_malware`          |
-| `tenable_container_report` | **IDENTIFIED** | `tenable_container_unwanted_program` |
+| From                            | Type           | To                                   |
+| ------------------------------- | -------------- | ------------------------------------ |
+| `tenable_account`               | **HAS**        | `tenable_user`                       |
+| `tenable_account`               | **HAS**        | `tenable_container`                  |
+| `tenable_account`               | **HAS**        | `tenable_user`                       |
+| `tenable_asset`                 | **HAS**        | `tenable_vulnerability_finding`      |
+| `tenable_user`                  | **OWNS**       | `tenable_scan`                       |
+| `tenable_scan`                  | **HAS**        | `tenable_asset`                      |
+| `tenable_scan`                  | **IDENTIFIED** | `tenable_vulnerability`              |
+| `tenable_scan`                  | **IDENTIFIED** | `tenable_vulnerability_finding`      |
+| `tenable_vulnerability_finding` | **IS**         | `tenable_vulnerability`              |
+| `tenable_container`             | **HAS**        | `tenable_container_report`           |
+| `tenable_container_report`      | **IDENTIFIED** | `tenable_container_finding`          |
+| `tenable_container_report`      | **IDENTIFIED** | `tenable_container_malware`          |
+| `tenable_container_report`      | **IDENTIFIED** | `tenable_container_unwanted_program` |
 
 [1]: https://www.tenable.com/products/tenable-io
 [2]: https://developer.tenable.com
