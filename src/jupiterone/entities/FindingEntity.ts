@@ -2,10 +2,10 @@ import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-s
 
 export const VULNERABILITY_FINDING_ENTITY_TYPE =
   "tenable_vulnerability_finding";
-export const VULNERABILITY_FINDING_ENTITY_CLASS = ["Finding", "Vulnerability"];
+export const VULNERABILITY_FINDING_ENTITY_CLASS = "Finding";
 
 export const CONTAINER_FINDING_ENTITY_TYPE = "tenable_container_finding";
-export const CONTAINER_FINDING_ENTITY_CLASS = ["Finding", "Vulnerability"];
+export const CONTAINER_FINDING_ENTITY_CLASS = "Finding";
 
 export interface VulnerabilityFindingEntity extends EntityFromIntegration {
   scanId: number;

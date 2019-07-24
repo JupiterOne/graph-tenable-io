@@ -11,9 +11,9 @@ export interface JupiterOneEntitiesData {
   vulnerabilityFindings: Entities.VulnerabilityFindingEntity[];
   containers: Entities.ContainerEntity[];
   containerReports: Entities.ContainerReportEntity[];
-  containerMalwares: Entities.MalwareVulnerabilityEntity[];
+  containerMalwares: Entities.ContainerMalwareEntity[];
   containerFindings: Entities.ContainerFindingEntity[];
-  containerUnwantedPrograms: Entities.ContainerUnwantedProgramVulnerabilityEntity[];
+  containerUnwantedPrograms: Entities.ContainerUnwantedProgramEntity[];
 }
 
 export interface JupiterOneRelationshipsData {
@@ -28,7 +28,7 @@ export interface JupiterOneRelationshipsData {
   containerReportRelationships: Entities.ContainerReportRelationship[];
   reportMalwareRelationships: Entities.ReportMalwareRelationship[];
   reportFindingRelationships: Entities.ReportFindingRelationship[];
-  reportUnwantedProgramRelationships: Entities.ReportUnwantedProgramRelationship[];
+  reportUnwantedProgramRelationships: Entities.ContainerReportUnwantedProgramRelationship[];
 }
 
 export interface JupiterOneDataModel {
@@ -85,15 +85,15 @@ async function fetchEntities(
     graph.findEntitiesByType<Entities.ContainerReportEntity>(
       Entities.CONTAINER_REPORT_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<Entities.MalwareVulnerabilityEntity>(
-      Entities.MALWARE_ENTITY_TYPE,
+    graph.findEntitiesByType<Entities.ContainerMalwareEntity>(
+      Entities.CONTAINER_MALWARE_ENTITY_TYPE,
     ),
     graph.findEntitiesByType<Entities.ContainerFindingEntity>(
       Entities.CONTAINER_FINDING_ENTITY_TYPE,
     ),
-    graph.findEntitiesByType<
-      Entities.ContainerUnwantedProgramVulnerabilityEntity
-    >(Entities.UNWANTED_PROGRAM_ENTITY_TYPE),
+    graph.findEntitiesByType<Entities.ContainerUnwantedProgramEntity>(
+      Entities.CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
+    ),
   ]);
 
   return {
@@ -161,9 +161,9 @@ export async function fetchRelationships(
     graph.findRelationshipsByType<Entities.ReportFindingRelationship>(
       Entities.REPORT_FINDING_RELATIONSHIP_TYPE,
     ),
-    graph.findRelationshipsByType<Entities.ReportUnwantedProgramRelationship>(
-      Entities.REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-    ),
+    graph.findRelationshipsByType<
+      Entities.ContainerReportUnwantedProgramRelationship
+    >(Entities.CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE),
   ]);
 
   return {

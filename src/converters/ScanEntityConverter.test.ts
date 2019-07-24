@@ -81,7 +81,7 @@ test("convert assessment entities", () => {
 
   expect(entities).toEqual([
     {
-      _class: "Assessment",
+      _class: ["Assessment", "Service"],
       _key: "tenable_scan_TestId",
       _type: "tenable_scan",
       id: "TestId",

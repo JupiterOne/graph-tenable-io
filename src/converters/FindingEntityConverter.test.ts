@@ -26,7 +26,7 @@ describe("scan vulnerabilities", () => {
     const entity = createVulnerabilityFindingEntity(data);
 
     expect(entity).toEqual({
-      _class: "Vulnerability",
+      _class: "Finding",
       _key: "tenable_vulnerability_finding_4_3_2",
       _type: "tenable_vulnerability_finding",
       scanId: 4,
@@ -75,7 +75,7 @@ describe("container vulnerabilities", () => {
     const entity = createContainerFindingEntity(data);
 
     expect(entity).toEqual({
-      _class: "Vulnerability",
+      _class: "Finding",
       _key: "tenable_container_finding_findingId",
       _type: "tenable_container_finding",
       accessComplexity: "string",

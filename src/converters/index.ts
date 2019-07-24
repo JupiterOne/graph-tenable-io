@@ -41,7 +41,7 @@ export {
   createReportMalwareRelationships,
 } from "../converters/ReportMalwareRelationshipConverter";
 export {
-  createReportUnwantedProgramRelationships,
+  createContainerReportUnwantedProgramRelationships,
 } from "../converters/ReportUnwantedProgramRelationshipConverter";
 export {
   createScanAssetRelationships,

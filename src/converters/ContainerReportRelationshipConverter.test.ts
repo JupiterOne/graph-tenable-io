@@ -63,10 +63,10 @@ test("convert container report relationship", () => {
       _class: "HAS",
       _fromEntityKey: "tenable_container_6549098203417933758",
       _key:
-        "tenable_container_6549098203417933758_has_tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
+        "tenable_container_6549098203417933758_has_tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       _toEntityKey:
-        "tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
-      _type: "tenable_container_has_tenable_report",
+        "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
+      _type: "tenable_container_has_tenable_container_report",
     },
   ]);
 });

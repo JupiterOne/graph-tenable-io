@@ -14,11 +14,11 @@ import {
   createContainerEntities,
   createContainerFindingEntities,
   createContainerReportRelationships,
+  createContainerReportUnwantedProgramRelationships,
   createMalwareEntities,
   createReportEntities,
   createReportFindingRelationships,
   createReportMalwareRelationships,
-  createReportUnwantedProgramRelationships,
   createScanAssetRelationships,
   createScanEntities,
   createScanFindingRelationships,
@@ -189,7 +189,7 @@ export function convertRelationships(
       tenableDataModel.containerReports,
       tenableDataModel.containerFindings,
     ),
-    reportUnwantedProgramRelationships: createReportUnwantedProgramRelationships(
+    reportUnwantedProgramRelationships: createContainerReportUnwantedProgramRelationships(
       tenableDataModel.containerReports,
       tenableDataModel.containerUnwantedPrograms,
     ),

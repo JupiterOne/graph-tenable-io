@@ -67,11 +67,11 @@ test("convert report container vulnerability relationship", () => {
     {
       _class: "IDENTIFIED",
       _fromEntityKey:
-        "tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
+        "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
       _key:
-        "tenable_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_container_finding_findingId",
+        "tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_container_finding_findingId",
       _toEntityKey: "tenable_container_finding_findingId",
-      _type: "tenable_report_identified_tenable_finding",
+      _type: "tenable_container_report_identified_tenable_finding",
     },
   ]);
 });
