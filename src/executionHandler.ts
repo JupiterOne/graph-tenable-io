@@ -13,6 +13,7 @@ import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelation
 import publishChanges from "./persister/publishChanges";
 import fetchTenableData from "./tenable/fetchTenableData";
 import { TenableIntegrationContext } from "./types";
+import logObjectCounts from "./utils/logObjectCounts";
 
 export default async function executionHandler(
   context: IntegrationExecutionContext,
@@ -32,6 +33,8 @@ async function synchronize(
 
   const oldData = await fetchEntitiesAndRelationships(graph);
   const tenableData = await fetchTenableData(provider);
+
+  logObjectCounts(context, oldData, tenableData);
 
   return {
     operations: summarizePersisterOperationsResults(

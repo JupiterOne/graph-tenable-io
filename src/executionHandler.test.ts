@@ -31,6 +31,9 @@ const executionContext: any = {
     id: "TestId",
     name: "TestName",
   },
+  logger: {
+    info: jest.fn(),
+  },
 };
 
 (initializeContext as jest.Mock).mockReturnValue(executionContext);

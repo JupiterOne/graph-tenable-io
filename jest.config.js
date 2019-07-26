@@ -11,6 +11,7 @@ module.exports = {
     "!src/index.ts",
     "!src/TenableClient.ts",
     "!src/converters.ts",
+    "!src/utils/logObjectCounts.ts",
   ],
   moduleFileExtensions: [...defaults.moduleFileExtensions, "ts"],
   testEnvironment: "node",
