@@ -61,7 +61,7 @@ export interface ScanDetail extends Scan {
   /**
    * Vulnerabilities found during the current/recent execution of the scan.
    */
-  vulnerabilities: VulnerabilitySummary[];
+  vulnerabilities?: VulnerabilitySummary[];
 }
 
 export interface VulnerabilitySummary {
