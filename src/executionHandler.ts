@@ -10,7 +10,7 @@ import {
 
 import initializeContext from "./initializeContext";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
-import publishChanges from "./persister/publishChanges";
+import { publishChanges } from "./persister";
 import fetchTenableData from "./tenable/fetchTenableData";
 import { TenableIntegrationContext } from "./types";
 import logObjectCounts from "./utils/logObjectCounts";
