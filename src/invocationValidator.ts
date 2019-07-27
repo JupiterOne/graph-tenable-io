@@ -24,14 +24,21 @@ import TenableClient from "./tenable/TenableClient";
 export default async function invocationValidator(
   executionContext: IntegrationValidationContext,
 ) {
-  const { config } = executionContext.instance;
+  const {
+    logger,
+    instance: { config },
+  } = executionContext;
   if (!config.accessKey || !config.secretKey) {
     throw new IntegrationInstanceConfigError(
       "config requires all of { accessKey, secretKey }",
     );
   }
 
-  const provider = new TenableClient(config.accessKey, config.secretKey);
+  const provider = new TenableClient(
+    logger,
+    config.accessKey,
+    config.secretKey,
+  );
 
   try {
     await provider.fetchUsers();

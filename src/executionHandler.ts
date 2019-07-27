@@ -39,7 +39,7 @@ async function synchronize(
   return {
     operations: summarizePersisterOperationsResults(
       await removeDeprecatedEntities(graph, persister),
-      await publishChanges(persister, oldData, tenableData, account),
+      await publishChanges({ persister, oldData, tenableData, account }),
     ),
   };
 }

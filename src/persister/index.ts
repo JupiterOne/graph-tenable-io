@@ -41,13 +41,18 @@ import { Account } from "../types";
 type EntityDataNames = keyof JupiterOneEntitiesData;
 type RelationshipDataNames = keyof JupiterOneRelationshipsData;
 
-export async function publishChanges(
-  persister: PersisterClient,
-  oldData: JupiterOneDataModel,
-  tenableDataModel: TenableDataModel,
-  account: Account,
-) {
-  const newData = convert(tenableDataModel, account);
+export async function publishChanges({
+  persister,
+  account,
+  oldData,
+  tenableData,
+}: {
+  persister: PersisterClient;
+  account: Account;
+  oldData: JupiterOneDataModel;
+  tenableData: TenableDataModel;
+}) {
+  const newData = convert(tenableData, account);
 
   const entities = createEntitiesOperations(
     oldData.entities,
