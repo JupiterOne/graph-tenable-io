@@ -5,9 +5,16 @@ import { Account, TenableIntegrationContext } from "./types";
 export default async function initializeContext(
   context: IntegrationExecutionContext,
 ): Promise<TenableIntegrationContext> {
-  const { config } = context.instance;
+  const {
+    logger,
+    instance: { config },
+  } = context;
 
-  const provider = new TenableClient(config.accessKey, config.secretKey);
+  const provider = new TenableClient(
+    logger,
+    config.accessKey,
+    config.secretKey,
+  );
 
   const { persister, graph } = context.clients.getClients();
 

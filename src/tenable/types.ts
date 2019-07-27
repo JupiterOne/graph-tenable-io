@@ -243,7 +243,7 @@ interface Folder {
 
 export interface ScanResponse {
   info: ScanInfo;
-  hosts: Host[];
+  hosts?: Host[];
   vulnerabilities: VulnerabilitySummary[];
 }
 

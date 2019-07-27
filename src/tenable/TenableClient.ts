@@ -1,6 +1,11 @@
 import fetch, { RequestInit } from "node-fetch";
 
 import {
+  IntegrationError,
+  IntegrationLogger,
+} from "@jupiterone/jupiter-managed-integration-sdk";
+
+import {
   Asset,
   AssetsResponse,
   Container,
@@ -18,12 +23,22 @@ import {
   UsersResponse,
 } from "./types";
 
+function length(resources?: any[]): number {
+  return resources ? resources.length : 0;
+}
+
 export default class TenableClient {
+  private readonly logger: IntegrationLogger;
   private readonly host: string = "https://cloud.tenable.com";
   private readonly accessToken: string;
   private readonly secretToken: string;
 
-  constructor(accessToken: string, secretToken: string) {
+  constructor(
+    logger: IntegrationLogger,
+    accessToken: string,
+    secretToken: string,
+  ) {
+    this.logger = logger;
     this.accessToken = accessToken;
     this.secretToken = secretToken;
   }
@@ -34,6 +49,10 @@ export default class TenableClient {
       Method.GET,
       {},
     );
+    this.logger.trace(
+      { users: length(usersResponse.users) },
+      "Fetched Tenable users",
+    );
     return usersResponse.users;
   }
 
@@ -42,6 +61,10 @@ export default class TenableClient {
       "/scans",
       Method.GET,
       {},
+    );
+    this.logger.trace(
+      { users: length(scansResponse.scans) },
+      "Fetched Tenable scans",
     );
     return scansResponse.scans;
   }
@@ -52,8 +75,20 @@ export default class TenableClient {
       Method.GET,
       {},
     );
-    const { hosts, info, vulnerabilities } = scanResponse;
-    return { ...scan, hosts: hosts || [], info, vulnerabilities };
+
+    const { info, vulnerabilities } = scanResponse;
+    const hosts = scanResponse.hosts || [];
+
+    this.logger.trace(
+      {
+        scan: { id: scan.id, uuid: scan.uuid },
+        hosts: length(hosts),
+        vulnerabilities: length(vulnerabilities),
+      },
+      "Fetched Tenable scan details",
+    );
+
+    return { ...scan, hosts, info, vulnerabilities };
   }
 
   public async fetchVulnerabilities(
@@ -63,6 +98,16 @@ export default class TenableClient {
     const vulnerabilitiesResponse = await this.makeRequest<
       ScanVulnerabilitiesResponse
     >(`/scans/${scanId}/hosts/${hostId}`, Method.GET, {});
+
+    this.logger.trace(
+      {
+        scan: { id: scanId },
+        host: { id: hostId },
+        vulnerabilities: length(vulnerabilitiesResponse.vulnerabilities),
+      },
+      "Fetched Tenable scan host vulnerabilities",
+    );
+
     return vulnerabilitiesResponse.vulnerabilities;
   }
 
@@ -72,16 +117,28 @@ export default class TenableClient {
       Method.GET,
       {},
     );
+
+    this.logger.trace(
+      { assets: length(assetsResponse.assets) },
+      "Fetched Tenable assets",
+    );
+
     return assetsResponse.assets;
   }
 
   public async fetchContainers(): Promise<Container[]> {
-    const containerResponse = await this.makeRequest<ContainersResponse>(
+    const containersResponse = await this.makeRequest<ContainersResponse>(
       "/container-security/api/v1/container/list",
       Method.GET,
       {},
     );
-    return containerResponse;
+
+    this.logger.trace(
+      { containers: length(containersResponse) },
+      "Fetched Tenable assets",
+    );
+
+    return containersResponse;
   }
 
   public async fetchReportByImageDigest(
@@ -92,6 +149,17 @@ export default class TenableClient {
       Method.GET,
       {},
     );
+
+    this.logger.trace(
+      {
+        digestId,
+        malware: length(reportResponse.malware),
+        findings: length(reportResponse.findings),
+        unwantedPrograms: length(reportResponse.potentially_unwanted_programs),
+      },
+      "Fetched Tenable container report",
+    );
+
     return reportResponse;
   }
 
@@ -111,18 +179,16 @@ export default class TenableClient {
       },
     };
 
+    this.logger.trace({ method, url }, "Fetching Tenable data...");
+
     const response = await fetch(this.host + url, options);
 
     if (response.status >= 400) {
-      const cause = {
-        name: "TenableClientApiError",
+      throw new IntegrationError({
+        code: "TenableClientApiError",
         message: response.statusText,
         statusCode: response.status,
-      };
-
-      Error.captureStackTrace(cause, this.makeRequest);
-
-      throw cause;
+      });
     } else {
       return response.json();
     }
