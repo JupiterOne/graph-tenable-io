@@ -60,28 +60,36 @@ async function fetchScanVulnerabilities(
   client: TenableClient,
 ): Promise<Dictionary<ScanVulnerability[]>> {
   const scanVulnerabilities: Dictionary<ScanVulnerability[]> = {};
-  await scans.forEach(async scan => {
-    await scan.hosts.forEach(async host => {
-      const fetchedVulnerabilities = await client.fetchVulnerabilities(
-        scan.id,
-        host.host_id,
+  const hostFetches = [];
+
+  for (const scan of scans) {
+    for (const host of scan.hosts) {
+      hostFetches.push(
+        (async () => {
+          let vulnerabilitiesWithScanId = scanVulnerabilities[host.hostname];
+          if (!vulnerabilitiesWithScanId) {
+            vulnerabilitiesWithScanId = [];
+            scanVulnerabilities[host.hostname] = vulnerabilitiesWithScanId;
+          }
+
+          const fetchedVulnerabilities = await client.fetchVulnerabilities(
+            scan.id,
+            host.host_id,
+          );
+
+          vulnerabilitiesWithScanId.push(
+            ...fetchedVulnerabilities.map(value => ({
+              ...value,
+              scan_id: scan.id,
+            })),
+          );
+        })(),
       );
-      const vulnerabilityWithScanId = fetchedVulnerabilities.map(value => ({
-        ...value,
-        scan_id: scan.id,
-      }));
+    }
+  }
 
-      if (!scanVulnerabilities[host.hostname]) {
-        scanVulnerabilities[host.hostname] = vulnerabilityWithScanId;
-        return;
-      }
+  await Promise.all(hostFetches);
 
-      scanVulnerabilities[host.hostname] = scanVulnerabilities[
-        host.hostname
-      ].concat(vulnerabilityWithScanId);
-      return;
-    });
-  });
   return scanVulnerabilities;
 }
 
