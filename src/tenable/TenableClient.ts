@@ -186,7 +186,7 @@ export default class TenableClient {
     if (response.status >= 400) {
       throw new IntegrationError({
         code: "TenableClientApiError",
-        message: response.statusText,
+        message: `${response.statusText}: ${method} ${url}`,
         statusCode: response.status,
       });
     } else {
