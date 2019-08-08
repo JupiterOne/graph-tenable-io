@@ -2,18 +2,19 @@ import nock from "nock";
 
 import { fetchTenableData } from "./index";
 import TenableClient from "./TenableClient";
-import { Scan } from "./types";
+import { Scan, ScanDetail } from "./types";
 
 const ACCESS_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY || "test_access_token";
 const SECRET_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY || "test_secret_token";
-const CLUSTER = "cloud.tenable.com";
+const TENABLE_COM = "cloud.tenable.com";
 
 function prepareScope(def: nock.NockDefinition) {
-  def.scope = `https://${CLUSTER}`;
+  def.scope = `https://${TENABLE_COM}`;
 }
 
+// See docs/tenable-cloud/fixture-data.md
 describe("TenableClient fetch ok data", () => {
   beforeAll(() => {
     nock.back.fixtures = `${__dirname}/../../test/fixtures/`;
@@ -31,11 +32,21 @@ describe("TenableClient fetch ok data", () => {
   }
 
   test("fetch error", async () => {
-    nock(`https://${CLUSTER}`)
+    nock(`https://${TENABLE_COM}`)
       .get("/users")
       .reply(404);
     const client = getClient();
     await expect(client.fetchUsers()).rejects.toThrow();
+  });
+
+  test("fetchUserPermissions ok", async () => {
+    const { nockDone } = await nock.back("user-permissions-ok.json", {
+      before: prepareScope,
+    });
+    const client = getClient();
+    const response = await client.fetchUserPermissions();
+    expect(response).not.toEqual({});
+    nockDone();
   });
 
   test("fetchUsers ok", async () => {
@@ -68,16 +79,56 @@ describe("TenableClient fetch ok data", () => {
     nockDone();
   });
 
-  test("fetchScan ok", async () => {
+  test("fetchScanDetail ok", async () => {
     const client = getClient();
 
     const { nockDone } = await nock.back("scan-ok.json", {
       before: prepareScope,
     });
+    const scan = await client.fetchScanDetail({ id: 6 } as Scan);
+    nockDone();
+
+    expect(scan).toMatchObject({
+      detailsForbidden: false,
+    });
+  });
+
+  test("fetchScanDetail never executed", async () => {
+    const client = getClient();
+
+    const { nockDone } = await nock.back("scan-never-executed.json", {
+      before: prepareScope,
+    });
+    const scan = await client.fetchScanDetail({ id: 14 } as Scan);
+    nockDone();
+
+    expect(scan).toMatchObject({
+      detailsForbidden: false,
+      hosts: undefined,
+      vulnerabilities: undefined,
+    } as ScanDetail);
+  });
+
+  test("fetchScanDetail forbidden", async () => {
+    const client = getClient();
+
+    const { nockDone } = await nock.back("scan-forbidden.json", {
+      before: prepareScope,
+    });
     const scan = await client.fetchScanDetail({ id: 12 } as Scan);
     nockDone();
 
-    expect(scan).not.toEqual({});
+    expect(scan).toMatchObject({
+      detailsForbidden: true,
+    });
+  });
+
+  test("fetchScanDetail unknown error", async () => {
+    nock(`https://${TENABLE_COM}`)
+      .get("/scans/199")
+      .reply(401);
+    const client = getClient();
+    await expect(client.fetchScanDetail({ id: 199 } as Scan)).rejects.toThrow();
   });
 
   test("fetchVulnerabilities ok", async () => {
@@ -86,7 +137,7 @@ describe("TenableClient fetch ok data", () => {
     const { nockDone } = await nock.back("vulnerabilities-ok.json", {
       before: prepareScope,
     });
-    const vulnerabilities = await client.fetchVulnerabilities(12, 1);
+    const vulnerabilities = await client.fetchVulnerabilities(6, 2);
     nockDone();
 
     expect(vulnerabilities.length).not.toEqual(0);
@@ -102,13 +153,25 @@ describe("TenableClient fetch ok data", () => {
     nockDone();
   });
 
-  test("fetchReports ok", async () => {
-    const { nockDone } = await nock.back("reports-ok.json", {
+  test("fetchReportByImageDigest image with vulnerabilties", async () => {
+    const { nockDone } = await nock.back("container-report-vulns.json", {
       before: prepareScope,
     });
     const client = getClient();
     const response = await client.fetchReportByImageDigest(
-      "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
+      "sha256:5887b9b394294f66c2f8ef1b4bdddbdd7fcc4512df5ee470c5e74f6e8ed603c6",
+    );
+    nockDone();
+    expect(response).not.toEqual({});
+  });
+
+  test("fetchReportByImageDigest image with no vulnerabilties", async () => {
+    const { nockDone } = await nock.back("container-report-no-vulns.json", {
+      before: prepareScope,
+    });
+    const client = getClient();
+    const response = await client.fetchReportByImageDigest(
+      "sha256:1edb77942782fc99d6b1ad53c78dd602ae5ee4f26e49edb49555faf749574ae9",
     );
     nockDone();
     expect(response).not.toEqual({});
@@ -130,7 +193,7 @@ describe("TenableClient fetch ok data", () => {
     expect(response.containerFindings).not.toEqual({});
     expect(response.containerMalwares).not.toEqual({});
     expect(response.containerUnwantedPrograms).not.toEqual({});
-  });
+  }, 10000);
 
   afterAll(() => {
     nock.restore();

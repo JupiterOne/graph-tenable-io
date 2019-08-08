@@ -41,7 +41,7 @@ export default async function invocationValidator(
   );
 
   try {
-    await provider.fetchUsers();
+    await provider.fetchUserPermissions();
   } catch (err) {
     throw new IntegrationInstanceAuthenticationError(err);
   }

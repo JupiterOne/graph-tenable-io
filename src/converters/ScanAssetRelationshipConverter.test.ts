@@ -10,6 +10,9 @@ const scans: Array<Partial<ScanDetail>> = [
       },
     ] as Host[],
   },
+  {
+    id: 9101,
+  },
 ];
 
 const assets: Array<Partial<Asset>> = [
@@ -35,7 +38,7 @@ const unscannedAsset: Array<Partial<Asset>> = [
 ];
 
 describe("createScanAssetRelationship", () => {
-  test("uses fqdn", () => {
+  test("hosts", () => {
     const relationships = createScanAssetRelationships(
       scans as ScanDetail[],
       assets as Asset[],

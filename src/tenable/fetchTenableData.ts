@@ -52,7 +52,11 @@ async function fetchScanDetails(
   scans: Scan[],
   client: TenableClient,
 ): Promise<ScanDetail[]> {
-  return Promise.all(scans.map(scan => client.fetchScanDetail(scan)));
+  return Promise.all(
+    scans.map(scan => {
+      return client.fetchScanDetail(scan);
+    }),
+  );
 }
 
 async function fetchScanVulnerabilities(
@@ -63,28 +67,30 @@ async function fetchScanVulnerabilities(
   const hostFetches = [];
 
   for (const scan of scans) {
-    for (const host of scan.hosts) {
-      hostFetches.push(
-        (async () => {
-          let vulnerabilitiesWithScanId = scanVulnerabilities[host.hostname];
-          if (!vulnerabilitiesWithScanId) {
-            vulnerabilitiesWithScanId = [];
-            scanVulnerabilities[host.hostname] = vulnerabilitiesWithScanId;
-          }
+    if (scan.hosts) {
+      for (const host of scan.hosts) {
+        hostFetches.push(
+          (async () => {
+            let vulnerabilitiesWithScanId = scanVulnerabilities[host.hostname];
+            if (!vulnerabilitiesWithScanId) {
+              vulnerabilitiesWithScanId = [];
+              scanVulnerabilities[host.hostname] = vulnerabilitiesWithScanId;
+            }
 
-          const fetchedVulnerabilities = await client.fetchVulnerabilities(
-            scan.id,
-            host.host_id,
-          );
+            const fetchedVulnerabilities = await client.fetchVulnerabilities(
+              scan.id,
+              host.host_id,
+            );
 
-          vulnerabilitiesWithScanId.push(
-            ...fetchedVulnerabilities.map(value => ({
-              ...value,
-              scan_id: scan.id,
-            })),
-          );
-        })(),
-      );
+            vulnerabilitiesWithScanId.push(
+              ...fetchedVulnerabilities.map(value => ({
+                ...value,
+                scan_id: scan.id,
+              })),
+            );
+          })(),
+        );
+      }
     }
   }
 
@@ -111,9 +117,6 @@ async function fetchReportsWithContainerVulnerabilities(
         item.digest,
       );
 
-      if (!report.sha256) {
-        return report;
-      }
       if (!malwares[report.sha256]) {
         malwares[report.sha256] = [];
       }

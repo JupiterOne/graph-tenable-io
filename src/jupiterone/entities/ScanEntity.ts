@@ -4,6 +4,7 @@ export const SCAN_ENTITY_TYPE = "tenable_scan";
 export const SCAN_ENTITY_CLASS = ["Assessment", "Service"];
 
 export interface ScanEntity extends EntityFromIntegration {
+  detailsForbidden?: boolean;
   id: number;
   legacy: boolean;
   permissions: number;

@@ -5,57 +5,60 @@ import {
   SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
   ScanAssetRelationship,
 } from "../jupiterone/entities";
-import { Asset, ScanDetail } from "../tenable/types";
+import { Asset, Host, Scan, ScanDetail } from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
 } from "../utils/generateKey";
 
-const defaultValue: ScanAssetRelationship[] = [];
-
 export function createScanAssetRelationships(
   scans: ScanDetail[],
   assets: Asset[],
 ): ScanAssetRelationship[] {
-  const relationships: ScanAssetRelationship[] = scans.reduce((acc, scan) => {
-    const hostRelationships = createScanHostAssetRelationships(scan, assets);
+  const relationships: ScanAssetRelationship[] = [];
 
-    return acc.concat(hostRelationships);
-  }, defaultValue);
+  for (const scan of scans) {
+    if (scan.hosts) {
+      relationships.push(
+        ...createScanHostAssetRelationships(scan, scan.hosts, assets),
+      );
+    }
+  }
 
   return relationships;
 }
 
 function createScanHostAssetRelationships(
-  scanDetail: ScanDetail,
+  scan: ScanDetail,
+  hosts: Host[],
   assets: Asset[],
 ): ScanAssetRelationship[] {
-  const relationships = scanDetail.hosts.reduce((acc, host) => {
+  const relationships: ScanAssetRelationship[] = [];
+  for (const host of hosts) {
     const asset = findAsset(assets, host.hostname);
-
-    if (!asset) {
-      return acc;
+    if (asset) {
+      relationships.push(createScanHostAssetRelationship(scan, host, asset));
     }
-
-    const parentKey = generateEntityKey(SCAN_ENTITY_TYPE, scanDetail.id);
-    const childKey = generateEntityKey(ASSET_ENTITY_TYPE, asset.id);
-    const relationKey = generateRelationshipKey(
-      parentKey,
-      SCAN_HAS_ASSET_RELATIONSHIP_CLASS,
-      childKey,
-    );
-
-    const relationship: ScanAssetRelationship = {
-      _class: SCAN_HAS_ASSET_RELATIONSHIP_CLASS,
-      _type: SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
-      _fromEntityKey: parentKey,
-      _key: relationKey,
-      _toEntityKey: childKey,
-    };
-    return acc.concat(relationship);
-  }, defaultValue);
-
+  }
   return relationships;
+}
+
+function createScanHostAssetRelationship(scan: Scan, host: Host, asset: Asset) {
+  const parentKey = generateEntityKey(SCAN_ENTITY_TYPE, scan.id);
+  const childKey = generateEntityKey(ASSET_ENTITY_TYPE, asset.id);
+  const relationKey = generateRelationshipKey(
+    parentKey,
+    SCAN_HAS_ASSET_RELATIONSHIP_CLASS,
+    childKey,
+  );
+
+  return {
+    _class: SCAN_HAS_ASSET_RELATIONSHIP_CLASS,
+    _type: SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
+    _fromEntityKey: parentKey,
+    _key: relationKey,
+    _toEntityKey: childKey,
+  };
 }
 
 function findAsset(assets: Asset[], assetName: string): Asset | undefined {

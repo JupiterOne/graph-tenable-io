@@ -8,24 +8,19 @@
     "response": {
       "assets": [
         {
-          "id": "df0f891f-f18b-4047-8fe1-6e15ca7798a8",
+          "id": "289eb1bd-6a15-406e-9dbd-8209dcf7de34",
           "has_agent": false,
-          "last_seen": "2019-04-15T12:16:15.622Z",
+          "last_seen": "2019-07-18T16:59:07.920Z",
           "sources": [
             {
               "name": "WAS",
-              "first_seen": "2019-04-12T10:48:54.822Z",
-              "last_seen": "2019-04-12T10:48:54.822Z"
-            },
-            {
-              "name": "NESSUS_SCAN",
-              "first_seen": "2019-04-15T12:16:15.622Z",
-              "last_seen": "2019-04-15T12:16:15.622Z"
+              "first_seen": "2019-07-18T16:59:07.920Z",
+              "last_seen": "2019-07-18T16:59:07.920Z"
             }
           ],
-          "ipv4": ["185.203.72.17"],
+          "ipv4": [],
           "ipv6": [],
-          "fqdn": ["dualbootpartners.com"],
+          "fqdn": ["apps.dev.jupiterone.io"],
           "netbios_name": [],
           "operating_system": [],
           "agent_name": [],
@@ -33,48 +28,57 @@
           "mac_address": []
         },
         {
-          "id": "5cf9ecff-6867-46df-bf8f-d819fc8ed0b0",
+          "id": "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
           "has_agent": false,
-          "last_seen": "2019-04-15T12:16:15.622Z",
+          "last_seen": "2019-08-07T11:53:25.911Z",
           "sources": [
             {
-              "name": "WAS",
-              "first_seen": "2019-04-12T10:48:00.711Z",
-              "last_seen": "2019-04-12T10:48:00.711Z"
-            },
-            {
               "name": "NESSUS_SCAN",
-              "first_seen": "2019-04-15T12:16:15.622Z",
-              "last_seen": "2019-04-15T12:16:15.622Z"
+              "first_seen": "2019-07-18T15:22:59.649Z",
+              "last_seen": "2019-08-07T11:53:25.911Z"
             }
           ],
-          "ipv4": ["18.221.79.150"],
+          "ipv4": ["52.23.17.146"],
           "ipv6": [],
-          "fqdn": ["dualboot.ru"],
+          "fqdn": ["vpn.dev.jupiterone.io"],
           "netbios_name": [],
-          "operating_system": [
-            "Linux Kernel 2.2",
-            "Linux Kernel 2.4",
-            "Linux Kernel 2.6"
+          "operating_system": [],
+          "agent_name": [],
+          "aws_ec2_name": [],
+          "mac_address": []
+        },
+        {
+          "id": "a2526234-16ab-4043-bf4b-c3b142d6a50b",
+          "has_agent": false,
+          "last_seen": "2019-08-07T17:40:51.844Z",
+          "sources": [
+            {
+              "name": "NESSUS_SCAN",
+              "first_seen": "2019-08-07T17:40:51.844Z",
+              "last_seen": "2019-08-07T17:40:51.844Z"
+            }
           ],
+          "ipv4": ["34.193.139.23"],
+          "ipv6": [],
+          "fqdn": ["vpn.dev.example.com"],
+          "netbios_name": [],
+          "operating_system": ["Linux Kernel 2.6"],
           "agent_name": [],
           "aws_ec2_name": [],
           "mac_address": []
         }
       ],
-      "total": 2
+      "total": 3
     },
     "rawHeaders": [
       "Date",
-      "Tue, 16 Apr 2019 19:37:54 GMT",
+      "Wed, 07 Aug 2019 20:47:39 GMT",
       "Content-Type",
       "application/json; charset=utf-8",
       "Content-Length",
-      "1007",
+      "1144",
       "Connection",
       "close",
-      "Set-Cookie",
-      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
       "Set-Cookie",
       "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
       "Cache-Control",
@@ -88,15 +92,15 @@
       "X-Frame-Options",
       "DENY",
       "X-Xss-Protection",
-      "mode=block",
+      "1; mode=block",
+      "Server",
+      "tenable.io",
       "X-Request-Uuid",
-      "fbce2983ca7f25774706f05225e709b3",
+      "49b344d20e3a7f8e8929e99a95a1c1e9",
       "Strict-Transport-Security",
       "max-age=63072000; includeSubDomains",
       "X-Gateway-Site-ID",
-      "nginx-router-b-prod-eu-west-2",
-      "Server",
-      "tenable.io"
+      "nginx-router-b-prod-us-east-1"
     ]
   }
 ]

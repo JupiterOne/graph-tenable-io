@@ -8,56 +8,50 @@
     "response": {
       "users": [
         {
-          "uuid": "671e65d5-4101-4e97-8448-f86272407b46",
+          "uuid": "cb5c6780-6241-435d-b997-622b168a8e77",
           "id": 2,
-          "user_name": "denis.arkhireev@dualbootpartners.com",
-          "username": "denis.arkhireev@dualbootpartners.com",
-          "email": "denis.arkhireev@dualbootpartners.com",
-          "name": "Denis Arkhireev",
-          "type": "local",
-          "container_uuid": "a01249a3-3547-4961-9d5d-9c74d296169d",
-          "permissions": 64,
-          "login_fail_count": 0,
-          "login_fail_total": 0,
-          "enabled": true,
-          "lastlogin": 1555420696094,
-          "uuid_id": "671e65d5-4101-4e97-8448-f86272407b46"
+          "username": "orgadmin@example.com",
+          "email": "orgadmin@example.com"
+        },
+        {
+          "uuid": "0d95e330-4fa9-40a7-8408-b9536a2b3b88",
+          "id": 3,
+          "username": "basic@example.com",
+          "email": "basic@example.com"
         }
       ]
     },
     "rawHeaders": [
       "Date",
-      "Tue, 16 Apr 2019 19:35:04 GMT",
+      "Wed, 07 Aug 2019 20:47:39 GMT",
       "Content-Type",
       "application/json; charset=utf-8",
       "Content-Length",
-      "459",
+      "277",
       "Connection",
       "close",
       "Set-Cookie",
       "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
-      "Set-Cookie",
-      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
       "X-Request-Uuid",
-      "eb63446eeb129402da0b9268f86284c5",
+      "41206f7d52d96a55d51d8ce663e7ad1c",
       "X-Content-Type-Options",
       "nosniff",
       "X-Frame-Options",
       "DENY",
       "X-Xss-Protection",
-      "mode=block",
+      "1; mode=block",
       "Cache-Control",
       "no-cache",
       "Vary",
       "accept-encoding",
       "Accept-Ranges",
       "bytes",
+      "Server",
+      "tenable.io",
       "Strict-Transport-Security",
       "max-age=63072000; includeSubDomains",
       "X-Gateway-Site-ID",
-      "nginx-router-b-prod-eu-west-2",
-      "Server",
-      "tenable.io"
+      "nginx-router-b-prod-us-east-1"
     ]
   }
 ]
