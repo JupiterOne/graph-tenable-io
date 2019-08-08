@@ -12,6 +12,7 @@ export function createScanEntities(data: Scan[]): ScanEntity[] {
       _key: scanEntityKey(item.id),
       _type: SCAN_ENTITY_TYPE,
       _class: SCAN_ENTITY_CLASS,
+      detailsForbidden: item.detailsForbidden,
       id: item.id,
       legacy: item.legacy,
       permissions: item.permissions,

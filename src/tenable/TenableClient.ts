@@ -1,10 +1,8 @@
-import fetch, { RequestInit } from "node-fetch";
-
 import {
   IntegrationError,
   IntegrationLogger,
 } from "@jupiterone/jupiter-managed-integration-sdk";
-
+import fetch, { RequestInit } from "node-fetch";
 import {
   Asset,
   AssetsResponse,
@@ -20,6 +18,7 @@ import {
   ScanVulnerabilitiesResponse,
   ScanVulnerability,
   User,
+  UserPermissionsResponse,
   UsersResponse,
 } from "./types";
 
@@ -41,6 +40,19 @@ export default class TenableClient {
     this.logger = logger;
     this.accessToken = accessToken;
     this.secretToken = secretToken;
+  }
+
+  public async fetchUserPermissions() {
+    const response = await this.makeRequest<UserPermissionsResponse>(
+      "/session",
+      Method.GET,
+      {},
+    );
+    this.logger.trace(
+      { permissions: response.permissions },
+      "Fetched Tenable user's permissions",
+    );
+    return response;
   }
 
   public async fetchUsers(): Promise<User[]> {
@@ -70,25 +82,38 @@ export default class TenableClient {
   }
 
   public async fetchScanDetail(scan: Scan): Promise<ScanDetail> {
-    const scanResponse = await this.makeRequest<ScanResponse>(
-      `/scans/${scan.id}`,
-      Method.GET,
-      {},
-    );
+    try {
+      const scanResponse = await this.makeRequest<ScanResponse>(
+        `/scans/${scan.id}`,
+        Method.GET,
+        {},
+      );
 
-    const { info, vulnerabilities } = scanResponse;
-    const hosts = scanResponse.hosts || [];
+      const { info, hosts, vulnerabilities } = scanResponse;
 
-    this.logger.trace(
-      {
-        scan: { id: scan.id, uuid: scan.uuid },
-        hosts: length(hosts),
-        vulnerabilities: length(vulnerabilities),
-      },
-      "Fetched Tenable scan details",
-    );
+      this.logger.trace(
+        {
+          scan: { id: scan.id, uuid: scan.uuid },
+          hosts: length(hosts),
+          vulnerabilities: length(vulnerabilities),
+        },
+        "Fetched Tenable scan details",
+      );
 
-    return { ...scan, hosts, info, vulnerabilities };
+      return {
+        ...scan,
+        hosts,
+        info,
+        vulnerabilities,
+        detailsForbidden: false,
+      };
+    } catch (err) {
+      if (err.statusCode === 403) {
+        return { ...scan, detailsForbidden: true };
+      } else {
+        throw err;
+      }
+    }
   }
 
   public async fetchVulnerabilities(

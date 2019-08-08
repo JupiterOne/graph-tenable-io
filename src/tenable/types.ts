@@ -25,6 +25,13 @@ export interface User {
  * history of execution, which is not represented by this type.
  */
 export interface Scan {
+  /**
+   * When not `undefined`, a request for details was made for a scan but was
+   * forbidden by the server. This seems to occur when a scan is listed but for
+   * whatever reason is no longer accessible, even to an `Administrator`.
+   */
+  detailsForbidden?: boolean;
+
   id: number;
   legacy: boolean;
   permissions: number;
@@ -48,18 +55,26 @@ export interface Scan {
 
 /**
  * A `Scan`, but filled out with more details to provide information about the
- * current/recent execution.
+ * current/recent execution. This is the combination of the `Scan` summary
+ * information and additional details.
  */
 export interface ScanDetail extends Scan {
-  info: ScanInfo;
-
   /**
-   * The hosts that were included in the current/recent exection of the scan.
+   * Information about the scan, `undefined` when `detailsForbidden`.
    */
-  hosts: Host[];
+  info?: ScanInfo;
 
   /**
-   * Vulnerabilities found during the current/recent execution of the scan.
+   * The hosts that were included in the current/recent exection of the scan,
+   * `undefined` when `detailsForbidden` or there are no hosts returned by the
+   * API.
+   */
+  hosts?: Host[];
+
+  /**
+   * Vulnerabilities found during the current/recent execution of the scan,
+   * `undefined` when `detailsForbidden` or there are no vulnerabilities
+   * returned by the API.
    */
   vulnerabilities?: VulnerabilitySummary[];
 }
@@ -220,6 +235,12 @@ interface Source {
   name: string;
   first_seen: string;
   last_seen: string;
+}
+
+export interface UserPermissionsResponse {
+  type: string;
+  permissions: number;
+  enabled: boolean;
 }
 
 export interface UsersResponse {

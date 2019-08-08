@@ -2,64 +2,268 @@
   {
     "scope": "https://cloud.tenable.com:443",
     "method": "GET",
-    "path": "/scans/12",
+    "path": "/scans/6",
     "body": "",
     "status": 200,
     "response": {
       "info": {
-        "owner": "denis.arkhireev@dualbootpartners.com",
-        "name": ".com",
+        "owner": "orgadmin@example.com",
+        "name": "Basic Network Scan of VPN Server",
         "no_target": false,
-        "folder_id": 8,
+        "folder_id": null,
         "control": true,
-        "user_permissions": 128,
-        "schedule_uuid": "template-2a48d3bb-1cd9-28a1-7742-c26c40ac09f7591cd108d64699c9",
+        "user_permissions": 64,
+        "schedule_uuid": "template-5f80aa50-4ae2-b3ca-c9ae-961115e35b3d841de40b690dbdf2",
         "edit_allowed": false,
         "scanner_name": "US Cloud Scanner",
-        "policy": "Web App Scan",
-        "shared": null,
-        "object_id": 12,
-        "acls": [
-          {
-            "permissions": 0,
-            "owner": null,
-            "display_name": null,
-            "name": null,
-            "id": null,
-            "type": "default"
-          },
-          {
-            "permissions": 128,
-            "owner": 1,
-            "display_name": "Denis Arkhireev",
-            "name": "denis.arkhireev@dualbootpartners.com",
-            "id": 2,
-            "type": "user"
-          }
-        ],
-        "hostcount": 0,
-        "uuid": "32c22094-3343-4163-a3ac-3863926b96e9",
+        "policy": "Basic Network Scan",
+        "shared": true,
+        "object_id": null,
+        "tag_targets": null,
+        "acls": null,
+        "hostcount": 1,
+        "uuid": "87433e9a-1a75-498b-98b8-2d1305fcc37a",
         "status": "completed",
-        "scan_type": "webapp",
-        "targets": "https://dualbootpartners.com",
+        "scan_type": "ps",
+        "targets": "vpn.dev.jupiterone.io",
         "alt_targets_used": false,
         "pci-can-upload": false,
-        "scan_start": 1555066123,
-        "timestamp": 1555068471,
-        "scan_end": 1555068471,
-        "haskb": false,
+        "scan_start": 1565177502,
+        "timestamp": 1565178889,
+        "scan_end": 1565178889,
+        "haskb": true,
         "hasaudittrail": true,
         "scanner_start": null,
         "scanner_end": null
       },
       "history": [
         {
-          "history_id": 12356240,
+          "history_id": 13712853,
           "owner_id": 2,
-          "creation_date": 1555066123,
-          "last_modification_date": 1555068471,
-          "uuid": "32c22094-3343-4163-a3ac-3863926b96e9",
-          "type": "webapp",
+          "creation_date": 1565177502,
+          "last_modification_date": 1565178889,
+          "uuid": "87433e9a-1a75-498b-98b8-2d1305fcc37a",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13700685,
+          "owner_id": 2,
+          "creation_date": 1565091018,
+          "last_modification_date": 1565092097,
+          "uuid": "24d8dd64-ce02-4926-8374-e5d63d3915af",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13689941,
+          "owner_id": 2,
+          "creation_date": 1565004636,
+          "last_modification_date": 1565005248,
+          "uuid": "e67c1d48-fa62-482d-860b-246e3f682ff8",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13678667,
+          "owner_id": 2,
+          "creation_date": 1564918287,
+          "last_modification_date": 1564919597,
+          "uuid": "00e311db-5920-4a84-a9cc-0685d4a00f34",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13667182,
+          "owner_id": 2,
+          "creation_date": 1564831861,
+          "last_modification_date": 1564832659,
+          "uuid": "58924860-d36b-41a0-baa3-402824280b79",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13657989,
+          "owner_id": 2,
+          "creation_date": 1564745480,
+          "last_modification_date": 1564748328,
+          "uuid": "9eb57c70-de27-473f-9a47-4bde33e0c282",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13651956,
+          "owner_id": 2,
+          "creation_date": 1564659014,
+          "last_modification_date": 1564659647,
+          "uuid": "c098b05c-9341-453d-b20f-45772c4e2c20",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13645947,
+          "owner_id": 2,
+          "creation_date": 1564572709,
+          "last_modification_date": 1564573714,
+          "uuid": "18070962-d305-418b-ae51-db330832c773",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13634506,
+          "owner_id": 2,
+          "creation_date": 1564486279,
+          "last_modification_date": 1564488544,
+          "uuid": "dc97438b-5099-40c9-b9e8-5f74024db1cc",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13622584,
+          "owner_id": 2,
+          "creation_date": 1564399910,
+          "last_modification_date": 1564402081,
+          "uuid": "09877799-aaf8-439c-9bf5-2e932ed9d3ee",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13611140,
+          "owner_id": 2,
+          "creation_date": 1564313469,
+          "last_modification_date": 1564314050,
+          "uuid": "9138e1a0-2066-4abe-b7a5-ba3920b1116b",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13599276,
+          "owner_id": 2,
+          "creation_date": 1564227028,
+          "last_modification_date": 1564228917,
+          "uuid": "0f208011-58ee-4241-9786-c06719faa5b9",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13586493,
+          "owner_id": 2,
+          "creation_date": 1564140669,
+          "last_modification_date": 1564141466,
+          "uuid": "c14fe28e-b5e5-4ae2-8766-948aade424d9",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13574738,
+          "owner_id": 2,
+          "creation_date": 1564054281,
+          "last_modification_date": 1564056178,
+          "uuid": "11f1fca9-22cb-46f9-83c9-cac3247efc0e",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13564069,
+          "owner_id": 2,
+          "creation_date": 1563967864,
+          "last_modification_date": 1563969508,
+          "uuid": "b59d7a9e-3c4d-4228-9040-9c52325ded78",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13552453,
+          "owner_id": 2,
+          "creation_date": 1563881492,
+          "last_modification_date": 1563883104,
+          "uuid": "cd4820a6-10b4-4ec8-bfe8-476510db9932",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13540757,
+          "owner_id": 2,
+          "creation_date": 1563795057,
+          "last_modification_date": 1563795627,
+          "uuid": "c796568f-5e0f-4a9c-9796-9ae5830f7ec8",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13528832,
+          "owner_id": 2,
+          "creation_date": 1563708697,
+          "last_modification_date": 1563709287,
+          "uuid": "ab700d93-3272-4b74-bd19-b314ca5556e0",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13517016,
+          "owner_id": 2,
+          "creation_date": 1563622241,
+          "last_modification_date": 1563622977,
+          "uuid": "9b0def35-75b4-4c50-bc03-3acf41f64e48",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13504757,
+          "owner_id": 2,
+          "creation_date": 1563535871,
+          "last_modification_date": 1563537581,
+          "uuid": "0e33bc95-30f4-4273-b3f7-7be8bc573286",
+          "type": "ps",
+          "status": "completed",
+          "scheduler": 0,
+          "alt_targets_used": false
+        },
+        {
+          "history_id": 13494451,
+          "owner_id": 2,
+          "creation_date": 1563462774,
+          "last_modification_date": 1563463511,
+          "uuid": "4706eff9-b033-4bda-8570-af8e1b91cbb4",
+          "type": "ps",
           "status": "completed",
           "scheduler": 0,
           "alt_targets_used": false
@@ -67,178 +271,105 @@
       ],
       "hosts": [
         {
-          "host_index": 0,
-          "critical": 0,
+          "asset_id": 2,
+          "host_id": 2,
+          "uuid": "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+          "hostname": "vpn.dev.jupiterone.io",
+          "progress": "100-100/200-200",
+          "scanprogresscurrent": 100,
+          "scanprogresstotal": 100,
+          "numchecksconsidered": 100,
+          "totalchecksconsidered": 100,
+          "severitycount": {
+            "item": [
+              {
+                "count": 7,
+                "severitylevel": 0
+              },
+              {
+                "count": 0,
+                "severitylevel": 1
+              },
+              {
+                "count": 0,
+                "severitylevel": 2
+              },
+              {
+                "count": 0,
+                "severitylevel": 3
+              },
+              {
+                "count": 0,
+                "severitylevel": 4
+              }
+            ]
+          },
+          "severity": 7,
+          "score": 7,
+          "info": 7,
+          "low": 0,
+          "medium": 0,
           "high": 0,
-          "medium": 4,
-          "low": 9,
-          "info": 12,
-          "severity": 25,
-          "host_id": 1,
-          "hostname": "dualbootpartners.com"
+          "critical": 0,
+          "host_index": 0
         }
       ],
       "vulnerabilities": [
         {
           "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 112526,
-          "plugin_name": "Missing 'X-XSS-Protection' Header",
-          "severity": 1
-        },
-        {
-          "count": 1,
+          "plugin_id": 10386,
+          "plugin_name": "Web Server No 404 Error Code Check",
+          "severity": 0,
           "plugin_family": "Web Servers",
-          "plugin_id": 112530,
-          "plugin_name": "SSL/TLS Versions Supported",
-          "severity": 0
+          "vuln_index": 1
         },
         {
           "count": 1,
-          "plugin_family": "Web Servers",
-          "plugin_id": 115491,
-          "plugin_name": "SSL/TLS Cipher Suites Supported",
-          "severity": 0
+          "plugin_id": 11219,
+          "plugin_name": "Nessus SYN scanner",
+          "severity": 0,
+          "plugin_family": "Port scanners",
+          "vuln_index": 2
         },
         {
           "count": 1,
+          "plugin_id": 12053,
+          "plugin_name": "Host Fully Qualified Domain Name (FQDN) Resolution",
+          "severity": 0,
           "plugin_family": "General",
-          "plugin_id": 98138,
-          "plugin_name": "Screenshot",
-          "severity": 0
+          "vuln_index": 3
         },
         {
           "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 98056,
-          "plugin_name": "Missing 'Strict-Transport-Security' header",
-          "severity": 2
+          "plugin_id": 19506,
+          "plugin_name": "Nessus Scan Information",
+          "severity": 0,
+          "plugin_family": "Settings",
+          "vuln_index": 4
         },
         {
           "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 112551,
-          "plugin_name": "Missing Content Security Policy",
-          "severity": 1
-        },
-        {
-          "count": 3,
-          "plugin_family": "Web Applications",
-          "plugin_id": 98050,
-          "plugin_name": "Interesting response",
-          "severity": 0
+          "plugin_id": 22964,
+          "plugin_name": "Service Detection",
+          "severity": 0,
+          "plugin_family": "Service detection",
+          "vuln_index": 5
         },
         {
           "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 98064,
-          "plugin_name": "Cookie Without Secure Flag Detected",
-          "severity": 1
+          "plugin_id": 24260,
+          "plugin_name": "HyperText Transfer Protocol (HTTP) Information",
+          "severity": 0,
+          "plugin_family": "Web Servers",
+          "vuln_index": 6
         },
         {
           "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 115540,
-          "plugin_name": "Cookie Without SameSite Flag Detected",
-          "severity": 1
-        },
-        {
-          "count": 1,
-          "plugin_family": "Component Vulnerability",
-          "plugin_id": 112376,
-          "plugin_name": "Bootstrap 4.x < 4.3.1 Cross-site Scripting",
-          "severity": 2
-        },
-        {
-          "count": 1,
-          "plugin_family": "Component Vulnerability",
-          "plugin_id": 112374,
-          "plugin_name": "Bootstrap 4.0.0 < 4.1.2 Cross-site Scripting",
-          "severity": 2
-        },
-        {
-          "count": 1,
+          "plugin_id": 25220,
+          "plugin_name": "TCP/IP Timestamps Supported",
+          "severity": 0,
           "plugin_family": "General",
-          "plugin_id": 98000,
-          "plugin_name": "Scan Information",
-          "severity": 0
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 98063,
-          "plugin_name": "Cookie Without HttpOnly Flag Detected",
-          "severity": 1
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Servers",
-          "plugin_id": 112491,
-          "plugin_name": "SSL/TLS Certificate Information",
-          "severity": 0
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 98059,
-          "plugin_name": "Technologies Detected",
-          "severity": 0
-        },
-        {
-          "count": 1,
-          "plugin_family": "General",
-          "plugin_id": 98009,
-          "plugin_name": "Web Application Sitemap",
-          "severity": 0
-        },
-        {
-          "count": 1,
-          "plugin_family": "General",
-          "plugin_id": 98136,
-          "plugin_name": "Target Information",
-          "severity": 0
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 112529,
-          "plugin_name": "Missing 'X-Content-Type-Options' Header",
-          "severity": 1
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Applications",
-          "plugin_id": 98060,
-          "plugin_name": "Missing 'X-Frame-Options' header",
-          "severity": 1
-        },
-        {
-          "count": 1,
-          "plugin_family": "Component Vulnerability",
-          "plugin_id": 112434,
-          "plugin_name": "jQuery 1.4.0 < 1.12.0 Cross-site Scripting",
-          "severity": 2
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Servers",
-          "plugin_id": 112496,
-          "plugin_name": "TLS 1.0 Weak Protocol",
-          "severity": 1
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Servers",
-          "plugin_id": 112546,
-          "plugin_name": "TLS 1.1 Deprecated Protocol",
-          "severity": 0
-        },
-        {
-          "count": 1,
-          "plugin_family": "Web Servers",
-          "plugin_id": 112539,
-          "plugin_name": "SSL/TLS Weak Cipher Suites Supported",
-          "severity": 1
+          "vuln_index": 7
         }
       ],
       "comphosts": [],
@@ -953,6 +1084,10 @@
               {
                 "name": "Virtuozzo Local Security Checks",
                 "id": 60
+              },
+              {
+                "name": "NewStart CGSL Local Security Checks",
+                "id": 61
               }
             ]
           },
@@ -1223,15 +1358,13 @@
     },
     "rawHeaders": [
       "Date",
-      "Tue, 16 Apr 2019 20:03:19 GMT",
+      "Wed, 07 Aug 2019 21:37:15 GMT",
       "Content-Type",
       "application/json; charset=utf-8",
       "Content-Length",
-      "21535",
+      "24243",
       "Connection",
       "close",
-      "Set-Cookie",
-      "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
       "Set-Cookie",
       "nginx-cloud-site-id=us-2a; path=/; HttpOnly",
       "Cache-Control",
@@ -1240,16 +1373,16 @@
       "accept-encoding",
       "Accept-Ranges",
       "bytes",
+      "Server",
+      "tenable.io",
       "X-Request-Uuid",
-      "f8e96a07f3ccdc85f3118d31e256b123",
+      "2de3ec5d94f76e07f1ec8131b7651519",
       "Strict-Transport-Security",
       "max-age=63072000; includeSubDomains",
       "X-Content-Type-Options",
       "nosniff",
       "X-Gateway-Site-ID",
-      "nginx-router-b-prod-eu-west-2",
-      "Server",
-      "tenable.io"
+      "nginx-router-a-prod-us-east-1"
     ]
   }
 ]

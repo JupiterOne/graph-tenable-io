@@ -13,6 +13,7 @@ module.exports = {
     "!src/converters.ts",
     "!src/utils/logObjectCounts.ts",
   ],
+  setupFiles: ["dotenv/config"],
   moduleFileExtensions: [...defaults.moduleFileExtensions, "ts"],
   testEnvironment: "node",
   clearMocks: true,
