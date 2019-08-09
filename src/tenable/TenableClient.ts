@@ -1,8 +1,11 @@
+import fetch, { RequestInit } from "node-fetch";
+
 import {
   IntegrationError,
   IntegrationLogger,
 } from "@jupiterone/jupiter-managed-integration-sdk";
-import fetch, { RequestInit } from "node-fetch";
+import * as attempt from "@lifeomic/attempt";
+
 import {
   Asset,
   AssetsResponse,
@@ -31,15 +34,24 @@ export default class TenableClient {
   private readonly host: string = "https://cloud.tenable.com";
   private readonly accessToken: string;
   private readonly secretToken: string;
+  private readonly retryMaxAttempts: number;
 
-  constructor(
-    logger: IntegrationLogger,
-    accessToken: string,
-    secretToken: string,
-  ) {
+  constructor({
+    logger,
+    accessToken,
+    secretToken,
+    retryMaxAttempts,
+  }: {
+    logger: IntegrationLogger;
+    accessToken: string;
+    secretToken: string;
+    retryMaxAttempts?: number;
+  }) {
     this.logger = logger;
     this.accessToken = accessToken;
     this.secretToken = secretToken;
+    this.retryMaxAttempts =
+      retryMaxAttempts === undefined ? 10 : retryMaxAttempts;
   }
 
   public async fetchUserPermissions() {
@@ -193,7 +205,7 @@ export default class TenableClient {
     method: Method,
     headers: {},
   ): Promise<T> {
-    const options: RequestInit = {
+    const requestOptions: RequestInit = {
       method,
       headers: {
         "Content-type": "application/json",
@@ -206,16 +218,40 @@ export default class TenableClient {
 
     this.logger.trace({ method, url }, "Fetching Tenable data...");
 
-    const response = await fetch(this.host + url, options);
+    let retryDelay = 0;
 
-    if (response.status >= 400) {
-      throw new IntegrationError({
-        code: "TenableClientApiError",
-        message: `${response.statusText}: ${method} ${url}`,
-        statusCode: response.status,
-      });
-    } else {
-      return response.json();
-    }
+    return attempt.retry(
+      async () => {
+        const response = await fetch(this.host + url, requestOptions);
+
+        if (response.status === 429) {
+          const serverRetryDelay = response.headers.get("retry-after");
+          if (serverRetryDelay) {
+            retryDelay = Number.parseInt(serverRetryDelay, 10) * 1000;
+          }
+        }
+
+        if (response.status >= 400) {
+          throw new IntegrationError({
+            code: "TenableClientApiError",
+            message: `${response.statusText}: ${method} ${url}`,
+            statusCode: response.status,
+          });
+        } else {
+          return response.json();
+        }
+      },
+      {
+        maxAttempts: this.retryMaxAttempts,
+        calculateDelay: () => {
+          return retryDelay;
+        },
+        handleError: (err, context) => {
+          if (err.statusCode !== 429) {
+            context.abort();
+          }
+        },
+      },
+    );
   }
 }

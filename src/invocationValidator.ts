@@ -34,11 +34,11 @@ export default async function invocationValidator(
     );
   }
 
-  const provider = new TenableClient(
+  const provider = new TenableClient({
     logger,
-    config.accessKey,
-    config.secretKey,
-  );
+    accessToken: config.accessKey,
+    secretToken: config.secretKey,
+  });
 
   try {
     await provider.fetchUserPermissions();

@@ -10,11 +10,11 @@ export default async function initializeContext(
     instance: { config },
   } = context;
 
-  const provider = new TenableClient(
+  const provider = new TenableClient({
     logger,
-    config.accessKey,
-    config.secretKey,
-  );
+    accessToken: config.accessKey,
+    secretToken: config.secretKey,
+  });
 
   const { persister, graph } = context.clients.getClients();
 
