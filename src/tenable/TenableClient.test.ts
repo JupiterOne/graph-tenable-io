@@ -9,34 +9,79 @@ const ACCESS_KEY =
 const SECRET_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY || "test_secret_token";
 const TENABLE_COM = "cloud.tenable.com";
+const RETRY_MAX_ATTEMPTS = 2;
 
 function prepareScope(def: nock.NockDefinition) {
   def.scope = `https://${TENABLE_COM}`;
 }
 
+function getClient() {
+  return new TenableClient({
+    logger: { trace: jest.fn() } as any,
+    accessToken: ACCESS_KEY,
+    secretToken: SECRET_KEY,
+    retryMaxAttempts: RETRY_MAX_ATTEMPTS,
+  });
+}
+
+describe("new TenableClient", () => {
+  test("accepts 0 retryMaxAttempts", () => {
+    const client = new TenableClient({
+      logger: { trace: jest.fn() } as any,
+      accessToken: ACCESS_KEY,
+      secretToken: SECRET_KEY,
+      retryMaxAttempts: 0,
+    });
+
+    expect((client as any).retryMaxAttempts).toEqual(0);
+  });
+});
+
 // See docs/tenable-cloud/fixture-data.md
-describe("TenableClient fetch ok data", () => {
+
+describe("TenableClient fetch errors", () => {
+  test("fetch error", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get(/.*/)
+      .reply(404);
+    const client = getClient();
+    await expect(client.fetchUsers()).rejects.toThrow(/404/);
+    scope.done();
+  });
+
+  test("fetch 429 waits Retry-After time max times", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get("/users")
+      .times(RETRY_MAX_ATTEMPTS - 1)
+      .reply(429, "Too Many Requests", {
+        "Content-Type": "text/html",
+        "Retry-After": "1",
+      })
+      .get("/users")
+      .reply(404);
+    const client = getClient();
+    await expect(client.fetchUsers()).rejects.toThrow(/404/);
+    scope.done();
+  });
+
+  test("fetchScanDetail unknown error", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get("/scans/199")
+      .reply(401);
+    const client = getClient();
+    await expect(client.fetchScanDetail({ id: 199 } as Scan)).rejects.toThrow(
+      /401/,
+    );
+    scope.done();
+  });
+});
+
+describe("TenableClient data fetch", () => {
   beforeAll(() => {
     nock.back.fixtures = `${__dirname}/../../test/fixtures/`;
     process.env.CI
       ? nock.back.setMode("lockdown")
       : nock.back.setMode("record");
-  });
-
-  function getClient() {
-    return new TenableClient(
-      { trace: jest.fn() } as any,
-      ACCESS_KEY,
-      SECRET_KEY,
-    );
-  }
-
-  test("fetch error", async () => {
-    nock(`https://${TENABLE_COM}`)
-      .get("/users")
-      .reply(404);
-    const client = getClient();
-    await expect(client.fetchUsers()).rejects.toThrow();
   });
 
   test("fetchUserPermissions ok", async () => {
@@ -121,14 +166,6 @@ describe("TenableClient fetch ok data", () => {
     expect(scan).toMatchObject({
       detailsForbidden: true,
     });
-  });
-
-  test("fetchScanDetail unknown error", async () => {
-    nock(`https://${TENABLE_COM}`)
-      .get("/scans/199")
-      .reply(401);
-    const client = getClient();
-    await expect(client.fetchScanDetail({ id: 199 } as Scan)).rejects.toThrow();
   });
 
   test("fetchVulnerabilities ok", async () => {
