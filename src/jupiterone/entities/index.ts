@@ -1,20 +1,18 @@
 import {
   EntityFromIntegration,
+  MappedRelationshipFromIntegration,
   RelationshipFromIntegration,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
 export * from "./AccountContainerRelationship";
 export * from "./AccountEntity";
 export * from "./AccountUserRelationship";
-export * from "./AssetEntity";
-export * from "./AssetScanVulnerabilityRelationship";
 export * from "./ContainerEntity";
 export * from "./ContainerReportRelationship";
 export * from "./FindingEntity";
 export * from "./ContainerReportEntity";
 export * from "./ReportFindingRelationship";
 export * from "./ReportMalwareRelationship";
-export * from "./ScanAssetRelationship";
 export * from "./ScanEntity";
 export * from "./TenableVulnerabilityEntity";
 export * from "./ScanVulnerabilityRelationship";
@@ -55,6 +53,17 @@ export interface ContainerUnwantedProgramEntity extends EntityFromIntegration {
   sha256: string;
 }
 
-export type ScanFindingRelationship = RelationshipFromIntegration;
+export interface ScanFindingRelationship extends RelationshipFromIntegration {
+  scanId: number;
+  scanUuid: string;
+  pluginId: number;
+  assetUuid: string;
+}
 
-export type VulnerabilityFindingRelationship = RelationshipFromIntegration;
+export interface VulnerabilityFindingRelationship
+  extends MappedRelationshipFromIntegration {
+  scanId: number;
+  scanUuid: string;
+  pluginId: number;
+  assetUuid: string;
+}

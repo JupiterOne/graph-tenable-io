@@ -3,12 +3,6 @@ import { GraphClient } from "@jupiterone/jupiter-managed-integration-sdk";
 import * as Entities from "./entities";
 
 export interface JupiterOneEntitiesData {
-  accounts: Entities.AccountEntity[];
-  users: Entities.UserEntity[];
-  assets: Entities.AssetEntity[];
-  scans: Entities.ScanEntity[];
-  vulnerabilities: Entities.TenableVulnerabilityEntity[];
-  vulnerabilityFindings: Entities.VulnerabilityFindingEntity[];
   containers: Entities.ContainerEntity[];
   containerReports: Entities.ContainerReportEntity[];
   containerMalwares: Entities.ContainerMalwareEntity[];
@@ -17,13 +11,6 @@ export interface JupiterOneEntitiesData {
 }
 
 export interface JupiterOneRelationshipsData {
-  accountUserRelationships: Entities.AccountUserRelationship[];
-  userScanRelationships: Entities.UserScanRelationship[];
-  scanVulnerabilityRelationships: Entities.ScanVulnerabilityRelationship[];
-  vulnerabilityFindingRelationships: Entities.VulnerabilityFindingRelationship[];
-  scanFindingRelationships: Entities.ScanFindingRelationship[];
-  scanAssetRelationships: Entities.ScanAssetRelationship[];
-  assetScanVulnerabilityRelationships: Entities.AssetScanVulnerabilityRelationship[];
   accountContainerRelationships: Entities.AccountContainerRelationship[];
   containerReportRelationships: Entities.ContainerReportRelationship[];
   reportMalwareRelationships: Entities.ReportMalwareRelationship[];
@@ -51,28 +38,6 @@ async function fetchEntities(
   graph: GraphClient,
 ): Promise<JupiterOneEntitiesData> {
   const [
-    accounts,
-    users,
-    assets,
-    scans,
-    vulnerabilities,
-    vulnerabilityFindings,
-  ] = await Promise.all([
-    graph.findEntitiesByType<Entities.AccountEntity>(
-      Entities.ACCOUNT_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.UserEntity>(Entities.USER_ENTITY_TYPE),
-    graph.findEntitiesByType<Entities.AssetEntity>(Entities.ASSET_ENTITY_TYPE),
-    graph.findEntitiesByType<Entities.ScanEntity>(Entities.SCAN_ENTITY_TYPE),
-    graph.findEntitiesByType<Entities.TenableVulnerabilityEntity>(
-      Entities.TENABLE_VULNERABILITY_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.VulnerabilityFindingEntity>(
-      Entities.VULNERABILITY_FINDING_ENTITY_TYPE,
-    ),
-  ]);
-
-  const [
     containers,
     containerReports,
     containerMalwares,
@@ -97,12 +62,6 @@ async function fetchEntities(
   ]);
 
   return {
-    accounts,
-    users,
-    assets,
-    scans,
-    vulnerabilities,
-    vulnerabilityFindings,
     containers,
     containerReports,
     containerMalwares,
@@ -115,40 +74,12 @@ export async function fetchRelationships(
   graph: GraphClient,
 ): Promise<JupiterOneRelationshipsData> {
   const [
-    accountUserRelationships,
-    userScanRelationships,
-    scanVulnerabilityRelationships,
-    vulnerabilityFindingRelationships,
-    scanFindingRelationships,
-    scanAssetRelationships,
-    assetScanVulnerabilityRelationships,
     accountContainerRelationships,
     containerReportRelationships,
     reportMalwareRelationships,
     reportFindingRelationships,
     reportUnwantedProgramRelationships,
   ] = await Promise.all([
-    graph.findRelationshipsByType<Entities.AccountUserRelationship>(
-      Entities.ACCOUNT_USER_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<Entities.UserScanRelationship>(
-      Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<Entities.ScanVulnerabilityRelationship>(
-      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<Entities.VulnerabilityFindingRelationship>(
-      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<Entities.ScanFindingRelationship>(
-      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<Entities.ScanAssetRelationship>(
-      Entities.SCAN_HAS_ASSET_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<Entities.AssetScanVulnerabilityRelationship>(
-      Entities.ASSET_SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
-    ),
     graph.findRelationshipsByType<Entities.AccountContainerRelationship>(
       Entities.ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
     ),
@@ -167,13 +98,6 @@ export async function fetchRelationships(
   ]);
 
   return {
-    accountUserRelationships,
-    userScanRelationships,
-    scanVulnerabilityRelationships,
-    vulnerabilityFindingRelationships,
-    scanFindingRelationships,
-    scanAssetRelationships,
-    assetScanVulnerabilityRelationships,
     accountContainerRelationships,
     containerReportRelationships,
     reportMalwareRelationships,

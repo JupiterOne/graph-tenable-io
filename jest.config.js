@@ -9,8 +9,6 @@ module.exports = {
     "src/**/*.ts",
     "!src/**/index.ts",
     "!src/index.ts",
-    "!src/TenableClient.ts",
-    "!src/converters.ts",
     "!src/utils/logObjectCounts.ts",
   ],
   setupFiles: ["dotenv/config"],

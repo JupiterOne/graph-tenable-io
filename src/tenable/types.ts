@@ -2,6 +2,8 @@ export interface Dictionary<T> {
   [key: string]: T;
 }
 
+// -- https://cloud.tenable.com/users
+
 export interface User {
   uuid: string;
   id: number;
@@ -19,12 +21,15 @@ export interface User {
   uuid_id: string;
 }
 
+// -- https://cloud.tenable.com/scans
+//    https://developer.tenable.com/reference#scans-list
+
 /**
  * A scan is a configuration to perform scans on a set of targets, and it
  * provides access to the current/most recent execution. Scans also have a
  * history of execution, which is not represented by this type.
  */
-export interface Scan {
+export interface RecentScanSummary {
   /**
    * When not `undefined`, a request for details was made for a scan but was
    * forbidden by the server. This seems to occur when a scan is listed but for
@@ -45,57 +50,38 @@ export interface Scan {
   user_permissions: number;
   owner: string;
   schedule_uuid: string;
-  timezone: string;
-  rrules: string;
-  starttime: string;
+  timezone?: string;
+  rrules?: string;
+  starttime?: string;
   enabled: boolean;
   control: boolean;
   name: string;
 }
 
+// -- https://cloud.tenable.com/scans/:scanId
+//    https://developer.tenable.com/reference#scans-details
+
 /**
- * A `Scan`, but filled out with more details to provide information about the
- * current/recent execution. This is the combination of the `Scan` summary
- * information and additional details.
+ * Details of a scan, providing a lot more information about the current/recent
+ * execution.
  */
-export interface ScanDetail extends Scan {
+export interface RecentScanDetail {
   /**
-   * Information about the scan, `undefined` when `detailsForbidden`.
+   * Details about the scan itself.
    */
-  info?: ScanInfo;
+  info: ScanInfo;
 
   /**
    * The hosts that were included in the current/recent exection of the scan,
-   * `undefined` when `detailsForbidden` or there are no hosts returned by the
-   * API.
+   * `undefined` when there are no hosts returned by the API.
    */
-  hosts?: Host[];
+  hosts?: ScanHost[];
 
   /**
    * Vulnerabilities found during the current/recent execution of the scan,
-   * `undefined` when `detailsForbidden` or there are no vulnerabilities
-   * returned by the API.
+   * `undefined` when there are no vulnerabilities returned by the API.
    */
-  vulnerabilities?: VulnerabilitySummary[];
-}
-
-export interface VulnerabilitySummary {
-  count: number;
-  plugin_family: string;
-  plugin_id: number;
-  plugin_name: string;
-  severity: number;
-}
-
-export interface ScanVulnerability {
-  scan_id: number;
-  count: number;
-  plugin_family: string;
-  plugin_id: number;
-  plugin_name: string;
-  severity: number;
-  host_id: number;
-  hostname: string;
+  vulnerabilities?: ScanVulnerabilitySummary[];
 }
 
 export interface ScanInfo {
@@ -123,8 +109,12 @@ export interface ScanInfo {
   hasaudittrail: boolean;
 }
 
-export interface Host {
-  host_index: number;
+export interface ScanHost {
+  /**
+   * The UUID of the scan host entry. As of Aug. 22, 2019, this is not included
+   * in "webapp" `ScanDetail.hosts` entries.
+   */
+  uuid?: string;
   critical: number;
   high: number;
   medium: number;
@@ -135,11 +125,49 @@ export interface Host {
   hostname: string;
 }
 
-export interface Asset {
-  id: string;
+export interface ScanVulnerabilitySummary {
+  count: number;
+  plugin_family: string;
+  plugin_id: number;
+  plugin_name: string;
+  severity: number;
+}
+
+// -- https://cloud.tenable.com/scans/:scanId/hosts/:hostId
+//    https://developer.tenable.com/reference#scans-host-details
+
+export interface ScanVulnerabilitiesResponse {
+  vulnerabilities: ScanHostVulnerability[];
+}
+
+export interface ScanHostVulnerability {
+  count: number;
+  plugin_family: string;
+  plugin_id: number;
+  plugin_name: string;
+  severity: number;
+  host_id: number;
+  hostname: string;
+}
+
+// -- https://cloud.tenable.com/assets
+
+export interface AssetsResponse {
+  assets: AssetSummary[];
+  total: number;
+}
+
+export interface AssetSummary {
+  id: string; // uuid
   has_agent: boolean;
   last_seen: string;
-  sources: Source[];
+  sources: [
+    {
+      name: string;
+      first_seen: string;
+      last_seen: string;
+    },
+  ];
   ipv4: string[];
   ipv6: string[];
   fqdn: string[];
@@ -149,6 +177,13 @@ export interface Asset {
   aws_ec2_name: string[];
   mac_address: string[];
 }
+
+// -- https://cloud.tenable.com/assets/:uuid
+//    https://developer.tenable.com/reference#assets-list-assets
+
+// Not yet ingested, though there are LOTS of details available.
+
+// --
 
 export interface Container {
   number_of_vulnerabilities: string;
@@ -231,12 +266,6 @@ export interface ContainerUnwantedProgram {
   sha256: string;
 }
 
-interface Source {
-  name: string;
-  first_seen: string;
-  last_seen: string;
-}
-
 export interface UserPermissionsResponse {
   type: string;
   permissions: number;
@@ -249,7 +278,7 @@ export interface UsersResponse {
 
 export interface ScansResponse {
   folders: Folder[];
-  scans: Scan[];
+  scans: RecentScanSummary[];
   timestamp: number;
 }
 
@@ -264,28 +293,83 @@ interface Folder {
 
 export interface ScanResponse {
   info: ScanInfo;
-  hosts?: Host[];
-  vulnerabilities: VulnerabilitySummary[];
+  hosts?: ScanHost[];
+  vulnerabilities: ScanVulnerabilitySummary[];
 }
 
-export interface AssetsResponse {
-  assets: Asset[];
-  total: number;
+// -- https://cloud.tenable.com/workbenches/assets/:assetId/vulnerabilities/:pluginId/info
+
+export interface AssetVulnerabilityResponse {
+  info: AssetVulnerabilityInfo;
 }
 
-export interface ScanVulnerabilitiesResponse {
-  vulnerabilities: ScanVulnerability[];
+/**
+ * Detailed vulnerability information for a scanned asset/host.
+ */
+export interface AssetVulnerabilityInfo {
+  count: number;
+  vuln_count: number;
+  description: string;
+  synopsis: string;
+  solution: string;
+  discovery: {
+    seen_first: string;
+    seen_last: string;
+  };
+  severity: number;
+  plugin_details: {
+    family: string;
+    name: string;
+    severity: number;
+  };
+  reference_information: AssetVulnerabilityReferenceInfo;
+  risk_information: AssetVulnerabilityRiskInfo;
+  vulnerability_information: any;
+  vpr: {
+    score: number;
+    drivers: any;
+  };
 }
+
+/**
+ * Stores vulnerability reference information such as:
+ *
+ * ```js
+ * {
+ *  "name":"cve"
+ *  "url":"http://web.nvd.nist.gov/view/vuln/detail?vulnId="
+ *  "values":[
+ *    "CVE-2010-3190"
+ *  ]
+ * }
+ * ```
+ */
+export interface AssetVulnerabilityReferenceInfo {
+  name: string;
+  url: string;
+  values: string[];
+}
+
+export interface AssetVulnerabilityRiskInfo {
+  risk_factor?: string;
+  cvss_vector?: string;
+  cvss_base_score?: string;
+  cvss_temporal_vector?: string;
+  cvss_temporal_score?: string;
+  cvss3_vector: any;
+  cvss3_base_score: any;
+  cvss3_temporal_vector: any;
+  cvss3_temporal_score: any;
+  stig_severity: any;
+}
+
+// --
 
 export type ContainersResponse = Container[];
 
 export type ReportResponse = ContainerReport;
 
 export interface TenableDataModel {
-  users: User[];
-  scans: ScanDetail[];
-  assets: Asset[];
-  scanVulnerabilities: Dictionary<ScanVulnerability[]>;
   containers: Container[];
   containerReports: ContainerReport[];
   containerMalwares: Dictionary<ContainerMalware[]>;

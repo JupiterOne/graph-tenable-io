@@ -7,10 +7,6 @@ import {
 
 import {
   createAccountContainerRelationships,
-  createAccountEntity,
-  createAccountUserRelationships,
-  createAssetEntities,
-  createAssetScanVulnerabilityRelationships,
   createContainerEntities,
   createContainerFindingEntities,
   createContainerReportRelationships,
@@ -19,16 +15,7 @@ import {
   createReportEntities,
   createReportFindingRelationships,
   createReportMalwareRelationships,
-  createScanAssetRelationships,
-  createScanEntities,
-  createScanFindingRelationships,
-  createScanVulnerabilityRelationships,
   createUnwantedProgramEntities,
-  createUserEntities,
-  createUserScanRelationships,
-  createVulnerabilityEntities,
-  createVulnerabilityFindingEntities,
-  createVulnerabilityFindingRelationships,
 } from "../converters";
 import {
   JupiterOneDataModel,
@@ -94,7 +81,7 @@ function createRelationshipsOperations(
   newData: JupiterOneRelationshipsData,
   persister: PersisterClient,
 ): RelationshipOperation[] {
-  const defatultOperations: RelationshipOperation[] = [];
+  const defaultOperations: RelationshipOperation[] = [];
   const relationships = Object.keys(oldData) as RelationshipDataNames[];
 
   return relationships.reduce((operations, relationshipName) => {
@@ -105,7 +92,7 @@ function createRelationshipsOperations(
       ...operations,
       ...persister.processRelationships(oldRelationhips, newRelationhips),
     ];
-  }, defatultOperations);
+  }, defaultOperations);
 }
 
 export function convert(
@@ -113,26 +100,15 @@ export function convert(
   account: Account,
 ): JupiterOneDataModel {
   return {
-    entities: convertEntities(tenableDataModel, account),
+    entities: convertEntities(tenableDataModel),
     relationships: convertRelationships(tenableDataModel, account),
   };
 }
 
 export function convertEntities(
   tenableDataModel: TenableDataModel,
-  account: Account,
 ): JupiterOneEntitiesData {
   return {
-    accounts: [createAccountEntity(account)],
-    users: createUserEntities(tenableDataModel.users),
-    assets: createAssetEntities(tenableDataModel.assets),
-    scans: createScanEntities(tenableDataModel.scans),
-    vulnerabilities: createVulnerabilityEntities(
-      tenableDataModel.scanVulnerabilities,
-    ),
-    vulnerabilityFindings: createVulnerabilityFindingEntities(
-      tenableDataModel.scanVulnerabilities,
-    ),
     containers: createContainerEntities(tenableDataModel.containers),
     containerReports: createReportEntities(tenableDataModel.containerReports),
     containerMalwares: createMalwareEntities(
@@ -152,31 +128,6 @@ export function convertRelationships(
   account: Account,
 ): JupiterOneRelationshipsData {
   return {
-    accountUserRelationships: createAccountUserRelationships(
-      account,
-      tenableDataModel.users,
-    ),
-    userScanRelationships: createUserScanRelationships(
-      tenableDataModel.scans,
-      tenableDataModel.users,
-    ),
-    scanVulnerabilityRelationships: createScanVulnerabilityRelationships(
-      tenableDataModel.scans,
-    ),
-    vulnerabilityFindingRelationships: createVulnerabilityFindingRelationships(
-      tenableDataModel.scanVulnerabilities,
-    ),
-    scanFindingRelationships: createScanFindingRelationships(
-      tenableDataModel.scanVulnerabilities,
-    ),
-    scanAssetRelationships: createScanAssetRelationships(
-      tenableDataModel.scans,
-      tenableDataModel.assets,
-    ),
-    assetScanVulnerabilityRelationships: createAssetScanVulnerabilityRelationships(
-      tenableDataModel.assets,
-      tenableDataModel.scanVulnerabilities,
-    ),
     accountContainerRelationships: createAccountContainerRelationships(
       account,
       tenableDataModel.containers,

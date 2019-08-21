@@ -1,17 +1,37 @@
 import {
-  GraphClient,
   IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
-  PersisterClient,
   PersisterOperationsResult,
   summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
+import {
+  createAccountEntity,
+  createAccountUserRelationships,
+  createUserEntities,
+  createUserScanRelationships,
+} from "./converters";
+import { createScanEntity } from "./converters/scans";
+import {
+  createScanFindingRelationship,
+  createScanVulnerabilityRelationship,
+  createVulnerabilityFindingEntity,
+  createVulnerabilityFindingRelationship,
+} from "./converters/vulnerabilities";
 import initializeContext from "./initializeContext";
+import * as Entities from "./jupiterone/entities";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
 import { publishChanges } from "./persister";
+import { TenableAssetCache } from "./tenable";
+import createTenableAssetCache from "./tenable/createTenableAssetCache";
 import fetchTenableData from "./tenable/fetchTenableData";
+import {
+  AssetVulnerabilityInfo,
+  RecentScanSummary,
+  ScanHost,
+  ScanVulnerabilitySummary,
+} from "./tenable/types";
 import { TenableIntegrationContext } from "./types";
 import logObjectCounts from "./utils/logObjectCounts";
 
@@ -36,20 +56,34 @@ async function synchronize(
 
   logObjectCounts(context, oldData, tenableData);
 
+  const operationResults: PersisterOperationsResult[] = [];
+
+  const scans = await provider.fetchScans();
+
+  operationResults.push(await synchronizeAccount(context));
+  operationResults.push(await synchronizeScans(context, scans));
+  operationResults.push(await synchronizeUsers(context, scans));
+  operationResults.push(await synchronizeHosts(context, scans));
+
+  // TODO make a release that adds scanUuid to findings and finding
+  // relationships. These are used to allow synchronizing one scan at a time.
+
   return {
     operations: summarizePersisterOperationsResults(
-      await removeDeprecatedEntities(graph, persister),
+      await removeDeprecatedEntities(context),
       await publishChanges({ persister, oldData, tenableData, account }),
+      ...operationResults,
     ),
   };
 }
 
 async function removeDeprecatedEntities(
-  graph: GraphClient,
-  persister: PersisterClient,
+  context: TenableIntegrationContext,
 ): Promise<PersisterOperationsResult> {
+  const { graph, persister } = context;
   const results = await Promise.all(
     [
+      "tenable_asset",
       "tenable_report",
       "tenable_finding",
       "tenable_malware",
@@ -63,6 +97,221 @@ async function removeDeprecatedEntities(
     }),
   );
   return summarizePersisterOperationsResults(...results);
+}
+
+async function synchronizeAccount(
+  context: TenableIntegrationContext,
+): Promise<PersisterOperationsResult> {
+  const { graph, persister, account } = context;
+  const existingAccounts = await graph.findEntitiesByType(
+    Entities.ACCOUNT_ENTITY_TYPE,
+  );
+  return persister.publishEntityOperations(
+    persister.processEntities(existingAccounts, [createAccountEntity(account)]),
+  );
+}
+
+async function synchronizeScans(
+  context: TenableIntegrationContext,
+  scanSummaries: RecentScanSummary[],
+): Promise<PersisterOperationsResult> {
+  const { graph, persister } = context;
+
+  const existingScans = await graph.findEntitiesByType(
+    Entities.SCAN_ENTITY_TYPE,
+  );
+
+  const scanEntities = [];
+  for (const scan of scanSummaries) {
+    scanEntities.push(createScanEntity(scan));
+  }
+
+  return persister.publishEntityOperations(
+    persister.processEntities(existingScans, scanEntities),
+  );
+}
+
+async function synchronizeUsers(
+  context: TenableIntegrationContext,
+  scanSummaries: RecentScanSummary[],
+): Promise<PersisterOperationsResult> {
+  const { graph, persister, provider, account } = context;
+
+  const [
+    users,
+    existingUsers,
+    existingAccountUsers,
+    existingUserScans,
+  ] = await Promise.all([
+    provider.fetchUsers(),
+    graph.findEntitiesByType(Entities.USER_ENTITY_TYPE),
+    graph.findRelationshipsByType(Entities.ACCOUNT_USER_RELATIONSHIP_TYPE),
+    graph.findRelationshipsByType(Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE),
+  ]);
+
+  return persister.publishPersisterOperations([
+    persister.processEntities(existingUsers, createUserEntities(users)),
+    [
+      ...persister.processRelationships(
+        existingAccountUsers,
+        createAccountUserRelationships(account, users),
+      ),
+      ...persister.processRelationships(
+        existingUserScans,
+        createUserScanRelationships(scanSummaries, users),
+      ),
+    ],
+  ]);
+}
+
+async function synchronizeHosts(
+  context: TenableIntegrationContext,
+  scanSummaries: RecentScanSummary[],
+): Promise<PersisterOperationsResult> {
+  const { provider } = context;
+
+  const assetCache = await createTenableAssetCache(provider);
+
+  const operationResults: PersisterOperationsResult[] = [];
+
+  for (const scanSummary of scanSummaries) {
+    const scanDetail = await provider.fetchScanDetail(scanSummary);
+    if (scanDetail) {
+      if (scanDetail.vulnerabilities) {
+        operationResults.push(
+          await synchronizeScanVulnerabilities(
+            context,
+            scanSummary,
+            scanDetail.vulnerabilities,
+          ),
+        );
+      }
+      if (scanDetail.hosts) {
+        for (const host of scanDetail.hosts) {
+          operationResults.push(
+            await synchronizeHostVulnerabilities(
+              context,
+              assetCache,
+              scanSummary,
+              host,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  return summarizePersisterOperationsResults(...operationResults);
+}
+
+async function synchronizeScanVulnerabilities(
+  context: TenableIntegrationContext,
+  scan: RecentScanSummary,
+  vulnerabilties: ScanVulnerabilitySummary[],
+): Promise<PersisterOperationsResult> {
+  const { graph, persister } = context;
+
+  const scanVulnerabilityRelationships = [];
+  for (const vuln of vulnerabilties) {
+    scanVulnerabilityRelationships.push(
+      createScanVulnerabilityRelationship(scan, vuln),
+    );
+  }
+
+  const existingScanVulnerabilityRelationships = await graph.findRelationshipsByType(
+    Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    { scanId: scan.id },
+  );
+
+  return persister.publishRelationshipOperations(
+    persister.processRelationships(
+      existingScanVulnerabilityRelationships,
+      scanVulnerabilityRelationships,
+    ),
+  );
+}
+
+/**
+ * Creates findings for each host vulnerability identified by the scan. Note
+ * that multiple different scans may identify the same vulnerability; the graph
+ * will have a finding of the vulnerability for each scan because they are
+ * different findings.
+ */
+async function synchronizeHostVulnerabilities(
+  context: TenableIntegrationContext,
+  assetCache: TenableAssetCache,
+  scan: RecentScanSummary,
+  scanHost: ScanHost,
+): Promise<PersisterOperationsResult> {
+  const { graph, persister, provider } = context;
+
+  const [
+    scanHostVulnerabilities,
+    existingFindingEntities,
+    existingVulnerabilityFindingRelationships,
+    existingScanFindingRelationships,
+  ] = await Promise.all([
+    provider.fetchScanHostVulnerabilities(scan.id, scanHost.host_id),
+    graph.findEntitiesByType(Entities.VULNERABILITY_FINDING_ENTITY_TYPE, {
+      scanUuid: scan.uuid,
+    }),
+    graph.findRelationshipsByType(
+      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+      { scanUuid: scan.uuid },
+    ),
+    graph.findRelationshipsByType(Entities.SCAN_FINDING_RELATIONSHIP_TYPE, {
+      scanUuid: scan.uuid,
+    }),
+  ]);
+
+  const findingEntities = [];
+  const vulnerabilityFindingRelationships = [];
+  const scanFindingRelationships = [];
+
+  const hostAsset = assetCache.findAsset(scanHost);
+
+  for (const vulnerability of scanHostVulnerabilities) {
+    let vulnerabilityDetails: AssetVulnerabilityInfo | undefined;
+    // TODO: find a better way to determine whether we should expect
+    // `fetchAssetVulnerabilityInfo` to work. This assumes no `scanHost.uuid`
+    // means it will not. If that holds, then document the reason.
+    if (scanHost.uuid) {
+      vulnerabilityDetails = await provider.fetchAssetVulnerabilityInfo(
+        hostAsset,
+        vulnerability,
+      );
+    }
+
+    const finding = createVulnerabilityFindingEntity({
+      scan,
+      asset: hostAsset,
+      vulnerability,
+      vulnerabilityDetails,
+    });
+    findingEntities.push(finding);
+
+    vulnerabilityFindingRelationships.push(
+      createVulnerabilityFindingRelationship(scan, hostAsset, vulnerability),
+    );
+
+    scanFindingRelationships.push(
+      createScanFindingRelationship(scan, hostAsset, vulnerability),
+    );
+  }
+
+  return persister.publishPersisterOperations([
+    persister.processEntities(existingFindingEntities, findingEntities),
+    [
+      ...persister.processRelationships(
+        existingVulnerabilityFindingRelationships,
+        vulnerabilityFindingRelationships,
+      ),
+      ...persister.processRelationships(
+        existingScanFindingRelationships,
+        scanFindingRelationships,
+      ),
+    ],
+  ]);
 }
 
 type ActionFunction = (
