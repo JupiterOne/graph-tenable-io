@@ -31,11 +31,11 @@ The following entity resources are ingested when the integration runs:
 | Container Malware          | `tenable_container_malware` : `Finding`          |
 | Container Unwanted Program | `tenable_container_unwanted_program` : `Finding` |
 
-Tenable "assets" are not ingested, however `Findings` include some asset
-details, including asset identifiers on the `targets` property that will be used
-by the system to related findings to entities ingested through other
-integrations. This avoids duplicating corporate asset entities (reducing billing
-costs!) and leaves asset ingestion to integrations such as AWS, Wazuh, etc.
+Tenable "assets" are not ingested. `Findings` include some asset details,
+including asset identifiers on the `targets` property that will be used by the
+system to relate findings to entities ingested through other integrations. This
+avoids duplicating corporate asset entities (reducing billing costs!) and leaves
+asset ingestion to integrations such as AWS, Wazuh, etc.
 
 ## Relationships
 
