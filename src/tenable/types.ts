@@ -30,13 +30,6 @@ export interface User {
  * history of execution, which is not represented by this type.
  */
 export interface RecentScanSummary {
-  /**
-   * When not `undefined`, a request for details was made for a scan but was
-   * forbidden by the server. This seems to occur when a scan is listed but for
-   * whatever reason is no longer accessible, even to an `Administrator`.
-   */
-  detailsForbidden?: boolean;
-
   id: number;
   legacy: boolean;
   permissions: number;

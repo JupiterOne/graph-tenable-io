@@ -123,7 +123,14 @@ export default class TenableClient {
         vulnerabilities,
       };
     } catch (err) {
-      if (err.statusCode !== 403) {
+      // This seems to occur when a scan is listed but for whatever reason is no
+      // longer accessible, even to an `Administrator`.
+      if (err.statusCode === 403) {
+        this.logger.warn(
+          { err, scan: { uuid: scan.uuid, id: scan.id } },
+          "Scan details forbidden",
+        );
+      } else {
         throw err;
       }
     }

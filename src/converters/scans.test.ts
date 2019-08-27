@@ -49,7 +49,6 @@ describe("createScanEntity", () => {
       enabled: false,
       control: true,
       name: "scan-name",
-      detailsForbidden: undefined,
     } as ScanEntity);
   });
 });

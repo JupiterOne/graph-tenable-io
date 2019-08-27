@@ -17,7 +17,7 @@ function prepareScope(def: nock.NockDefinition) {
 
 function getClient() {
   return new TenableClient({
-    logger: { trace: jest.fn() } as any,
+    logger: { trace: jest.fn(), warn: jest.fn() } as any,
     accessToken: ACCESS_KEY,
     secretToken: SECRET_KEY,
     retryMaxAttempts: RETRY_MAX_ATTEMPTS,
