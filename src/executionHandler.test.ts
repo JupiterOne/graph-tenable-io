@@ -93,6 +93,11 @@ describe("executionHandler", () => {
       "tenable_webapp_vulnerability",
     ];
 
+    const deprecatedRelationshipsWithoutUuid = [
+      "tenable_scan_identified_vulnerability",
+      "tenable_scan_identified_finding",
+    ];
+
     const numScansWithHosts = 2;
 
     const processEntitiesCount =
@@ -102,7 +107,8 @@ describe("executionHandler", () => {
 
     const processRelationshipsCount =
       relationshipsProcessedAsSingleSet.length +
-      numScansWithHosts * relationshipsProcessedAsScanSet.length;
+      numScansWithHosts * relationshipsProcessedAsScanSet.length +
+      deprecatedRelationshipsWithoutUuid.length;
 
     expect(persister.processEntities).toHaveBeenCalledTimes(
       processEntitiesCount,

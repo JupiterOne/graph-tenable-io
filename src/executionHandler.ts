@@ -95,25 +95,29 @@ async function removeDeprecatedEntities(
   );
 
   results.push(
-    await removeEntitiesWithoutScanUuid(
+    await removeRelationshipsWithoutScanUuid(
       context,
-      Entities.VULNERABILITY_FINDING_ENTITY_TYPE,
+      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    ),
+    await removeRelationshipsWithoutScanUuid(
+      context,
+      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
     ),
   );
 
   return summarizePersisterOperationsResults(...results);
 }
 
-async function removeEntitiesWithoutScanUuid(
+async function removeRelationshipsWithoutScanUuid(
   context: TenableIntegrationContext,
   type: string,
 ) {
   const { graph, persister } = context;
-  const entities = await graph.findEntitiesByType(type, {}, ["scanUuid"]);
-  // tslint:disable-next-line:no-console
-  console.log(JSON.stringify(entities, null, 2), "Going to DELETE");
-  return persister.publishEntityOperations(
-    persister.processEntities(entities, []),
+  const relationships = await graph.findRelationshipsByType(type, {}, [
+    "scanUuid",
+  ]);
+  return persister.publishRelationshipOperations(
+    persister.processRelationships(relationships, []),
   );
 }
 
@@ -238,7 +242,7 @@ async function synchronizeScanVulnerabilities(
 
   const existingScanVulnerabilityRelationships = await graph.findRelationshipsByType(
     Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
-    { scanId: scan.id },
+    { scanUuid: scan.uuid },
   );
 
   return persister.publishRelationshipOperations(
