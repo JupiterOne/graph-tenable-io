@@ -51,6 +51,9 @@ const vulnerabilityInfo = {
     seen_first: "2019-03-08T17:15:52.000Z",
     seen_last: "2019-03-08T17:15:52.001Z",
   },
+  vpr: {
+    score: 5.9,
+  },
 } as AssetVulnerabilityInfo;
 
 describe("normalizeTenableSeverity", () => {
@@ -199,6 +202,7 @@ describe("createVulnerabilityFindingEntity", () => {
       numericSeverity: 1,
       severity: "Low",
       tenableSeverity: 3,
+      vprScore: 5.9,
       firstSeenOn: 1552065352000,
       lastSeenOn: 1552065352001,
       open: true,
@@ -208,6 +212,18 @@ describe("createVulnerabilityFindingEntity", () => {
       // may be necessary, see if placing all in targets will create
       // relationships
       targets: ["vpn.corporate.com", "127.0.0.1", "::1", "00:0a:95:9d:68:16"],
+    });
+  });
+
+  test("handles no vulnerability vpr data", () => {
+    const entity = createVulnerabilityFindingEntity({
+      scan: scanSummary,
+      asset: assetSummary,
+      vulnerability: hostVulnerability,
+      vulnerabilityDetails: { ...vulnerabilityInfo, vpr: undefined },
+    });
+    expect(entity).toMatchObject({
+      vprScore: undefined,
     });
   });
 });

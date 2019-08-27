@@ -27,6 +27,7 @@ export interface VulnerabilityFindingEntity extends EntityFromIntegration {
   tenableSeverity: number;
   numericSeverity: FindingSeverityNormal;
   severity: FindingSeverityNormalName;
+  vprScore: number | undefined;
 
   open: boolean;
   targets: string[] | undefined;

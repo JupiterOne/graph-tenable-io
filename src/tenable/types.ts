@@ -318,7 +318,7 @@ export interface AssetVulnerabilityInfo {
   reference_information: AssetVulnerabilityReferenceInfo;
   risk_information: AssetVulnerabilityRiskInfo;
   vulnerability_information: any;
-  vpr: {
+  vpr?: {
     score: number;
     drivers: any;
   };
