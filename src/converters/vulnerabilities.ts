@@ -210,7 +210,7 @@ export function createVulnerabilityFindingEntity({
     numericSeverity,
     severity,
     tenableSeverity: vulnerability.severity,
-    vprScore:
+    tenablePriority:
       vulnerabilityDetails &&
       vulnerabilityDetails.vpr &&
       vulnerabilityDetails.vpr.score,

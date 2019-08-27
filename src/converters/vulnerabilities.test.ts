@@ -202,7 +202,7 @@ describe("createVulnerabilityFindingEntity", () => {
       numericSeverity: 1,
       severity: "Low",
       tenableSeverity: 3,
-      vprScore: 5.9,
+      tenablePriority: 5.9,
       firstSeenOn: 1552065352000,
       lastSeenOn: 1552065352001,
       open: true,
@@ -223,7 +223,7 @@ describe("createVulnerabilityFindingEntity", () => {
       vulnerabilityDetails: { ...vulnerabilityInfo, vpr: undefined },
     });
     expect(entity).toMatchObject({
-      vprScore: undefined,
+      tenablePriority: undefined,
     });
   });
 });
