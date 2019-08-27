@@ -199,6 +199,12 @@ describe("createVulnerabilityFindingEntity", () => {
       firstSeenOn: 1552065352000,
       lastSeenOn: 1552065352001,
       open: true,
+
+      // TODO something similar to https://bitbucket.org/lifeomic/jupiter-docs/pull-requests/217#Lguides/entity-relationship-mappings.mdT311
+      // may be necessary, see if placing all in targets will create relationships
+      // targetIps: string[],
+      // targetFqdns: string[],
+      // include fqdn, ip addresses - everything
       targets: ["vpn.corporate.com"],
     });
   });

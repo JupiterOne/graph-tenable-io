@@ -65,9 +65,6 @@ async function synchronize(
   operationResults.push(await synchronizeUsers(context, scans));
   operationResults.push(await synchronizeHosts(context, scans));
 
-  // TODO make a release that adds scanUuid to findings and finding
-  // relationships. These are used to allow synchronizing one scan at a time.
-
   return {
     operations: summarizePersisterOperationsResults(
       await removeDeprecatedEntities(context),
@@ -96,7 +93,28 @@ async function removeDeprecatedEntities(
       );
     }),
   );
+
+  results.push(
+    await removeEntitiesWithoutScanUuid(
+      context,
+      Entities.VULNERABILITY_FINDING_ENTITY_TYPE,
+    ),
+  );
+
   return summarizePersisterOperationsResults(...results);
+}
+
+async function removeEntitiesWithoutScanUuid(
+  context: TenableIntegrationContext,
+  type: string,
+) {
+  const { graph, persister } = context;
+  const entities = await graph.findEntitiesByType(type, {}, ["scanUuid"]);
+  // tslint:disable-next-line:no-console
+  console.log(JSON.stringify(entities, null, 2), "Going to DELETE");
+  return persister.publishEntityOperations(
+    persister.processEntities(entities, []),
+  );
 }
 
 async function synchronizeAccount(

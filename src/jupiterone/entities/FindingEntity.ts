@@ -29,11 +29,6 @@ export interface VulnerabilityFindingEntity extends EntityFromIntegration {
   severity: FindingSeverityNormalName;
 
   open: boolean;
-  // TODO something similar to https://bitbucket.org/lifeomic/jupiter-docs/pull-requests/217#Lguides/entity-relationship-mappings.mdT311
-  // may be necessary, see if placing all in targets will create relationships
-  // targetIps: string[],
-  // targetFqdns: string[],
-  // include fqdn, ip addresses - everything
   targets: string[] | undefined;
   firstSeenOn: number | undefined;
   lastSeenOn: number | undefined;
