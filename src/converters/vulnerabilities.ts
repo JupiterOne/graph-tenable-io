@@ -215,10 +215,11 @@ export function createVulnerabilityFindingEntity({
       getTime(vulnerabilityDetails.discovery.seen_first),
     lastSeenOn:
       vulnerabilityDetails && getTime(vulnerabilityDetails.discovery.seen_last),
-    // TODO: Is it open if it is returned in the API?
+    // Set open to true because we are only collecting findings from the latest assessment run
     open: true,
-    // TODO: include IP addresses, other target identifiers
-    targets: asset.fqdn,
+    targets: [asset.fqdn, asset.ipv4, asset.ipv6, asset.mac_address].reduce(
+      (a, e) => [...a, ...e],
+    ),
   };
 }
 

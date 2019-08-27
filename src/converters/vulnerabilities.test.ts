@@ -31,6 +31,9 @@ const vulnerabilitySummary = {
 const assetSummary = {
   id: "asset-uuid",
   fqdn: ["vpn.corporate.com"],
+  ipv4: ["127.0.0.1"],
+  ipv6: ["::1"],
+  mac_address: ["00:0a:95:9d:68:16"],
 } as AssetSummary;
 
 const hostVulnerability = {
@@ -200,12 +203,11 @@ describe("createVulnerabilityFindingEntity", () => {
       lastSeenOn: 1552065352001,
       open: true,
 
-      // TODO something similar to https://bitbucket.org/lifeomic/jupiter-docs/pull-requests/217#Lguides/entity-relationship-mappings.mdT311
-      // may be necessary, see if placing all in targets will create relationships
-      // targetIps: string[],
-      // targetFqdns: string[],
-      // include fqdn, ip addresses - everything
-      targets: ["vpn.corporate.com"],
+      // Something similar to
+      // https://bitbucket.org/lifeomic/jupiter-docs/pull-requests/217#Lguides/entity-relationship-mappings.mdT311
+      // may be necessary, see if placing all in targets will create
+      // relationships
+      targets: ["vpn.corporate.com", "127.0.0.1", "::1", "00:0a:95:9d:68:16"],
     });
   });
 });
