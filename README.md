@@ -1,7 +1,6 @@
 # JupiterOne Managed Integration for Tenable.io
 
 [![Build Status](https://travis-ci.org/JupiterOne/jupiter-integration-tenable-cloud.svg?branch=master)](https://travis-ci.org/JupterOne/jupiter-integration-tenable-cloud)
-[![Greenkeeper badge](https://badges.greenkeeper.io/JupiterOne/jupiter-integration-tenable-cloud.svg)](https://greenkeeper.io/)
 
 A JupiterOne integration ingests information such as configurations and other
 metadata about digital and physical assets belonging to an organization. The

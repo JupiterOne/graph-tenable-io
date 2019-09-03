@@ -1,95 +1,149 @@
+import nock from "nock";
+
 import {
+  createTestIntegrationExecutionContext,
   IntegrationActionName,
-  IntegrationExecutionContext,
+  IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
 import executionHandler from "./executionHandler";
-import initializeContext from "./initializeContext";
+import * as Entities from "./jupiterone/entities";
 
-jest.mock("./initializeContext");
-
-const executionContext: any = {
-  graph: {
-    findEntitiesByType: jest.fn().mockResolvedValue([]),
-    findRelationshipsByType: jest.fn().mockResolvedValue([]),
-  },
-  persister: {
-    processEntities: jest.fn().mockReturnValue([]),
-    processRelationships: jest.fn().mockReturnValue([]),
-    publishEntityOperations: jest.fn().mockResolvedValue({}),
-    publishPersisterOperations: jest.fn().mockResolvedValue({}),
-  },
-  provider: {
-    fetchUsers: jest.fn().mockReturnValue([]),
-    fetchScans: jest.fn().mockReturnValue([]),
-    fetchAssets: jest.fn().mockReturnValue([]),
-    fetchScanDetail: jest.fn().mockReturnValue({}),
-    fetchContainers: jest.fn().mockReturnValue([]),
-    fetchReportByImageDigest: jest.fn().mockReturnValue({}),
-  },
-  account: {
-    id: "TestId",
-    name: "TestName",
-  },
-  logger: {
-    info: jest.fn(),
-  },
+const tenableConfig = {
+  accessKey:
+    process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY || "test_access_token",
+  secretKey:
+    process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY || "test_secret_key",
 };
 
-(initializeContext as jest.Mock).mockReturnValue(executionContext);
+describe("executionHandler", () => {
+  function prepareScope(def: nock.NockDefinition) {
+    def.scope = "https://cloud.tenable.com";
+  }
 
-test("executionHandler INGEST action", async () => {
-  const invocationContext = {
-    instance: {
-      config: {},
-    },
-    event: {
-      action: {
-        name: IntegrationActionName.INGEST,
+  beforeAll(() => {
+    nock.back.fixtures = `${__dirname}/../test/fixtures/`;
+    process.env.CI
+      ? nock.back.setMode("lockdown")
+      : nock.back.setMode("record");
+  });
+
+  test("INGEST action with no data", async () => {
+    const { nockDone } = await nock.back(
+      "execution-handler-no-graph-data.json",
+      {
+        before: prepareScope,
       },
-    },
-  } as IntegrationExecutionContext;
-  await executionHandler(invocationContext);
+    );
 
-  expect(initializeContext).toHaveBeenCalledWith(invocationContext);
-  expect(executionContext.provider.fetchUsers).toHaveBeenCalledTimes(1);
-  expect(executionContext.provider.fetchScans).toHaveBeenCalledTimes(1);
-  expect(executionContext.provider.fetchAssets).toHaveBeenCalledTimes(1);
-  expect(executionContext.provider.fetchContainers).toHaveBeenCalledTimes(1);
-  expect(
-    executionContext.provider.fetchReportByImageDigest,
-  ).toHaveBeenCalledTimes(0);
-  expect(executionContext.persister.processEntities).toHaveBeenCalledTimes(16);
-  expect(
-    executionContext.persister.publishEntityOperations,
-  ).toHaveBeenCalledTimes(5);
-  expect(
-    executionContext.persister.publishPersisterOperations,
-  ).toHaveBeenCalledTimes(1);
-});
-
-test("executionHandler unhandled action", async () => {
-  const invocationContext = {
-    instance: {
-      config: {},
-    },
-    event: {
-      action: {
-        name: IntegrationActionName.CREATE_ENTITY,
+    const invocationContext = createTestIntegrationExecutionContext({
+      instance: {
+        config: tenableConfig,
       },
-    },
-  } as IntegrationExecutionContext;
+    });
 
-  await executionHandler(invocationContext);
+    const { persister } = invocationContext.clients.getClients();
+    jest.spyOn(persister, "processEntities");
+    jest.spyOn(persister, "processRelationships");
+    jest.spyOn(persister, "publishEntityOperations");
+    jest.spyOn(persister, "publishRelationshipOperations");
+    jest.spyOn(persister, "publishPersisterOperations");
 
-  expect(executionContext.provider.fetchUsers).not.toHaveBeenCalled();
-  expect(executionContext.provider.fetchScans).not.toHaveBeenCalled();
-  expect(executionContext.provider.fetchAssets).not.toHaveBeenCalled();
-  expect(executionContext.persister.processEntities).not.toHaveBeenCalled();
-  expect(
-    executionContext.persister.processRelationships,
-  ).not.toHaveBeenCalled();
-  expect(
-    executionContext.persister.publishPersisterOperations,
-  ).not.toHaveBeenCalled();
+    await executionHandler(invocationContext);
+
+    nockDone();
+
+    const entitiesProcessedAsSingleSet = [
+      Entities.ACCOUNT_ENTITY_TYPE,
+      Entities.SCAN_ENTITY_TYPE,
+      Entities.USER_ENTITY_TYPE,
+      Entities.CONTAINER_ENTITY_TYPE,
+      Entities.CONTAINER_REPORT_ENTITY_TYPE,
+      Entities.CONTAINER_MALWARE_ENTITY_TYPE,
+      Entities.CONTAINER_FINDING_ENTITY_TYPE,
+      Entities.CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
+    ];
+
+    const entitiesProcessedAsScanSet = [
+      Entities.VULNERABILITY_FINDING_ENTITY_TYPE,
+    ];
+
+    const relationshipsProcessedAsSingleSet = [
+      Entities.ACCOUNT_USER_RELATIONSHIP_TYPE,
+      Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE,
+      Entities.ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
+      Entities.CONTAINER_REPORT_RELATIONSHIP_TYPE,
+      Entities.CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
+      Entities.REPORT_MALWARE_RELATIONSHIP_TYPE,
+      Entities.REPORT_FINDING_RELATIONSHIP_TYPE,
+    ];
+
+    const relationshipsProcessedAsScanSet = [
+      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
+      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+    ];
+
+    const deprecatedEntityTypes = [
+      "tenable_asset",
+      "tenable_report",
+      "tenable_finding",
+      "tenable_malware",
+      "tenable_unwanted_program",
+      "tenable_webapp_vulnerability",
+    ];
+
+    const deprecatedRelationshipsWithoutUuid = [
+      "tenable_scan_identified_vulnerability",
+      "tenable_scan_identified_finding",
+    ];
+
+    const numScansWithHosts = 2;
+
+    const processEntitiesCount =
+      entitiesProcessedAsSingleSet.length +
+      numScansWithHosts * entitiesProcessedAsScanSet.length +
+      deprecatedEntityTypes.length;
+
+    const processRelationshipsCount =
+      relationshipsProcessedAsSingleSet.length +
+      numScansWithHosts * relationshipsProcessedAsScanSet.length +
+      deprecatedRelationshipsWithoutUuid.length;
+
+    expect(persister.processEntities).toHaveBeenCalledTimes(
+      processEntitiesCount,
+    );
+
+    expect(persister.processRelationships).toHaveBeenCalledTimes(
+      processRelationshipsCount,
+    );
+
+    // TODO check the operations published instead of the call count
+    expect(persister.publishEntityOperations).toHaveBeenCalledTimes(12);
+    expect(persister.publishPersisterOperations).toHaveBeenCalledTimes(4);
+  }, 60000);
+
+  test("action unknown", async () => {
+    const invocationContext = createTestIntegrationExecutionContext({
+      instance: {
+        config: tenableConfig,
+      },
+      event: {
+        action: {
+          name: IntegrationActionName.CREATE_ENTITY,
+        },
+      } as IntegrationInvocationEvent,
+    });
+
+    const { persister } = invocationContext.clients.getClients();
+    jest.spyOn(persister, "processEntities");
+    jest.spyOn(persister, "processRelationships");
+    jest.spyOn(persister, "publishPersisterOperations");
+
+    await executionHandler(invocationContext);
+
+    expect(persister.processEntities).not.toHaveBeenCalled();
+    expect(persister.processRelationships).not.toHaveBeenCalled();
+    expect(persister.publishPersisterOperations).not.toHaveBeenCalled();
+  });
 });

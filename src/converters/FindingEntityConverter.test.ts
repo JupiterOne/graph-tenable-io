@@ -1,40 +1,8 @@
-import { ContainerFinding, ScanVulnerability } from "../tenable/types";
+import { ContainerFinding } from "../tenable/types";
 import {
   createContainerFindingEntities,
   createContainerFindingEntity,
-  createVulnerabilityFindingEntities,
-  createVulnerabilityFindingEntity,
 } from "./FindingEntityConverter";
-
-describe("scan vulnerabilities", () => {
-  const data: ScanVulnerability = {
-    count: 1,
-    host_id: 2,
-    hostname: "host.name",
-    plugin_family: "Web Scanner",
-    plugin_id: 3,
-    plugin_name: "Scanner Plugin",
-    scan_id: 4,
-    severity: 0,
-  };
-
-  test("convert many", () => {
-    createVulnerabilityFindingEntities({ "host.name": [data] });
-  });
-
-  test("convert one", () => {
-    const entity = createVulnerabilityFindingEntity(data);
-
-    expect(entity).toEqual({
-      _class: "Finding",
-      _key: "tenable_vulnerability_finding_4_3_2",
-      _type: "tenable_vulnerability_finding",
-      scanId: 4,
-      hostId: 2,
-      hostname: "host.name",
-    });
-  });
-});
 
 describe("container vulnerabilities", () => {
   const data: ContainerFinding = {

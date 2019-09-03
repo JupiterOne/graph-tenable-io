@@ -6,27 +6,13 @@ import {
   ContainerReport,
   ContainerUnwantedProgram,
   Dictionary,
-  Scan,
-  ScanDetail,
-  ScanVulnerability,
   TenableDataModel,
 } from "./types";
 
 export default async function fetchTenableData(
   client: TenableClient,
 ): Promise<TenableDataModel> {
-  const [users, scanSummaries, assets, containers] = await Promise.all([
-    client.fetchUsers(),
-    client.fetchScans(),
-    client.fetchAssets(),
-    client.fetchContainers(),
-  ]);
-
-  const scans = await fetchScanDetails(scanSummaries, client);
-
-  const scanVulnerabilities: Dictionary<
-    ScanVulnerability[]
-  > = await fetchScanVulnerabilities(scans, client);
+  const [containers] = await Promise.all([client.fetchContainers()]);
 
   const {
     reports: containerReports,
@@ -36,67 +22,12 @@ export default async function fetchTenableData(
   } = await fetchReportsWithContainerVulnerabilities(containers, client);
 
   return {
-    users,
-    scans,
-    assets,
-    scanVulnerabilities,
     containers,
     containerReports,
     containerMalwares,
     containerFindings,
     containerUnwantedPrograms,
   };
-}
-
-async function fetchScanDetails(
-  scans: Scan[],
-  client: TenableClient,
-): Promise<ScanDetail[]> {
-  return Promise.all(
-    scans.map(scan => {
-      return client.fetchScanDetail(scan);
-    }),
-  );
-}
-
-async function fetchScanVulnerabilities(
-  scans: ScanDetail[],
-  client: TenableClient,
-): Promise<Dictionary<ScanVulnerability[]>> {
-  const scanVulnerabilities: Dictionary<ScanVulnerability[]> = {};
-  const hostFetches = [];
-
-  for (const scan of scans) {
-    if (scan.hosts) {
-      for (const host of scan.hosts) {
-        hostFetches.push(
-          (async () => {
-            let vulnerabilitiesWithScanId = scanVulnerabilities[host.hostname];
-            if (!vulnerabilitiesWithScanId) {
-              vulnerabilitiesWithScanId = [];
-              scanVulnerabilities[host.hostname] = vulnerabilitiesWithScanId;
-            }
-
-            const fetchedVulnerabilities = await client.fetchVulnerabilities(
-              scan.id,
-              host.host_id,
-            );
-
-            vulnerabilitiesWithScanId.push(
-              ...fetchedVulnerabilities.map(value => ({
-                ...value,
-                scan_id: scan.id,
-              })),
-            );
-          })(),
-        );
-      }
-    }
-  }
-
-  await Promise.all(hostFetches);
-
-  return scanVulnerabilities;
 }
 
 async function fetchReportsWithContainerVulnerabilities(

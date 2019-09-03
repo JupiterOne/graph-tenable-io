@@ -5,11 +5,11 @@ import {
   USER_OWNS_SCAN_RELATIONSHIP_TYPE,
   UserScanRelationship,
 } from "../jupiterone/entities";
-import { Scan, User } from "../tenable/types";
+import { RecentScanSummary, User } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
 export function createUserScanRelationships(
-  scans: Scan[],
+  scans: RecentScanSummary[],
   users: User[],
 ): UserScanRelationship[] {
   const defaultValue: UserScanRelationship[] = [];

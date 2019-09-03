@@ -25,16 +25,12 @@ export default function logObjectCounts(
     Object.values(dict).reduce((c, h) => c + h.length, 0);
 
   const tenableDataCounts = {
-    assets: tenableData.assets.length,
     containers: tenableData.containers.length,
-    scans: tenableData.scans.length,
-    users: tenableData.users.length,
     containerFindings: countDictionary(tenableData.containerFindings),
     containerMalwares: countDictionary(tenableData.containerMalwares),
     containerUnwantedPrograms: countDictionary(
       tenableData.containerUnwantedPrograms,
     ),
-    scanVulnerabilities: countDictionary(tenableData.scanVulnerabilities),
   };
 
   context.logger.info(
@@ -43,6 +39,6 @@ export default function logObjectCounts(
       graphRelationshipCounts,
       tenableDataCounts,
     },
-    "Loaded data for synchronization",
+    "Loaded container data for synchronization",
   );
 }

@@ -4,7 +4,6 @@ export const SCAN_ENTITY_TYPE = "tenable_scan";
 export const SCAN_ENTITY_CLASS = ["Assessment", "Service"];
 
 export interface ScanEntity extends EntityFromIntegration {
-  detailsForbidden?: boolean;
   id: number;
   legacy: boolean;
   permissions: number;
@@ -18,9 +17,9 @@ export interface ScanEntity extends EntityFromIntegration {
   userPermissions: number;
   owner: string;
   scheduleUuid: string;
-  timezone: string;
-  rrules: string;
-  starttime: string;
+  timezone: string | undefined;
+  rrules: string | undefined;
+  starttime: string | undefined;
   enabled: boolean;
   control: boolean;
   name: string;

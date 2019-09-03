@@ -28,7 +28,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@jupiterone/jupiter-managed-integration-sdk": "^24.0.3",
+    "@jupiterone/jupiter-managed-integration-sdk": "^24.1.2",
     "@lifeomic/attempt": "^3.0.0"
   },
   "devDependencies": {

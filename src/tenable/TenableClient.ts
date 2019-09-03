@@ -7,19 +7,21 @@ import {
 import * as attempt from "@lifeomic/attempt";
 
 import {
-  Asset,
   AssetsResponse,
+  AssetSummary,
+  AssetVulnerabilityInfo,
+  AssetVulnerabilityResponse,
   Container,
   ContainerReport,
   ContainersResponse,
   Method,
+  RecentScanDetail,
+  RecentScanSummary,
   ReportResponse,
-  Scan,
-  ScanDetail,
+  ScanHostVulnerability,
   ScanResponse,
   ScansResponse,
   ScanVulnerabilitiesResponse,
-  ScanVulnerability,
   User,
   UserPermissionsResponse,
   UsersResponse,
@@ -80,7 +82,7 @@ export default class TenableClient {
     return usersResponse.users;
   }
 
-  public async fetchScans(): Promise<Scan[]> {
+  public async fetchScans(): Promise<RecentScanSummary[]> {
     const scansResponse = await this.makeRequest<ScansResponse>(
       "/scans",
       Method.GET,
@@ -93,7 +95,9 @@ export default class TenableClient {
     return scansResponse.scans;
   }
 
-  public async fetchScanDetail(scan: Scan): Promise<ScanDetail> {
+  public async fetchScanDetail(
+    scan: RecentScanSummary,
+  ): Promise<RecentScanDetail | undefined> {
     try {
       const scanResponse = await this.makeRequest<ScanResponse>(
         `/scans/${scan.id}`,
@@ -117,21 +121,48 @@ export default class TenableClient {
         hosts,
         info,
         vulnerabilities,
-        detailsForbidden: false,
       };
     } catch (err) {
+      // This seems to occur when a scan is listed but for whatever reason is no
+      // longer accessible, even to an `Administrator`.
       if (err.statusCode === 403) {
-        return { ...scan, detailsForbidden: true };
+        this.logger.warn(
+          { err, scan: { uuid: scan.uuid, id: scan.id } },
+          "Scan details forbidden",
+        );
       } else {
         throw err;
       }
     }
   }
 
-  public async fetchVulnerabilities(
+  public async fetchAssetVulnerabilityInfo(
+    asset: AssetSummary,
+    vulnerability: ScanHostVulnerability,
+  ): Promise<AssetVulnerabilityInfo> {
+    const vulnerabilitiesResponse = await this.makeRequest<
+      AssetVulnerabilityResponse
+    >(
+      `/workbenches/assets/${asset.id}/vulnerabilities/${vulnerability.plugin_id}/info`,
+      Method.GET,
+      {},
+    );
+
+    this.logger.trace(
+      {
+        assetId: asset.id,
+        plugingId: vulnerability.plugin_id,
+      },
+      "Fetched Tenable asset vulnerability info",
+    );
+
+    return vulnerabilitiesResponse.info;
+  }
+
+  public async fetchScanHostVulnerabilities(
     scanId: number,
     hostId: number,
-  ): Promise<ScanVulnerability[]> {
+  ): Promise<ScanHostVulnerability[]> {
     const vulnerabilitiesResponse = await this.makeRequest<
       ScanVulnerabilitiesResponse
     >(`/scans/${scanId}/hosts/${hostId}`, Method.GET, {});
@@ -148,7 +179,7 @@ export default class TenableClient {
     return vulnerabilitiesResponse.vulnerabilities;
   }
 
-  public async fetchAssets(): Promise<Asset[]> {
+  public async fetchAssets(): Promise<AssetSummary[]> {
     const assetsResponse = await this.makeRequest<AssetsResponse>(
       "/assets",
       Method.GET,
