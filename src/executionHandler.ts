@@ -30,6 +30,7 @@ import {
   AssetVulnerabilityInfo,
   RecentScanSummary,
   ScanHost,
+  ScanStatus,
   ScanVulnerabilitySummary,
 } from "./tenable/types";
 import { TenableIntegrationContext } from "./types";
@@ -197,27 +198,29 @@ async function synchronizeHosts(
   const operationResults: PersisterOperationsResult[] = [];
 
   for (const scanSummary of scanSummaries) {
-    const scanDetail = await provider.fetchScanDetail(scanSummary);
-    if (scanDetail) {
-      if (scanDetail.vulnerabilities) {
-        operationResults.push(
-          await synchronizeScanVulnerabilities(
-            context,
-            scanSummary,
-            scanDetail.vulnerabilities,
-          ),
-        );
-      }
-      if (scanDetail.hosts) {
-        for (const host of scanDetail.hosts) {
+    if (scanSummary.status === ScanStatus.Completed) {
+      const scanDetail = await provider.fetchScanDetail(scanSummary);
+      if (scanDetail) {
+        if (scanDetail.vulnerabilities) {
           operationResults.push(
-            await synchronizeHostVulnerabilities(
+            await synchronizeScanVulnerabilities(
               context,
-              assetCache,
               scanSummary,
-              host,
+              scanDetail.vulnerabilities,
             ),
           );
+        }
+        if (scanDetail.hosts) {
+          for (const host of scanDetail.hosts) {
+            operationResults.push(
+              await synchronizeHostVulnerabilities(
+                context,
+                assetCache,
+                scanSummary,
+                host,
+              ),
+            );
+          }
         }
       }
     }
