@@ -37,7 +37,7 @@ export interface RecentScanSummary {
   read: boolean;
   last_modification_date: number;
   creation_date: number;
-  status: string;
+  status: ScanStatus;
   uuid: string;
   shared: boolean;
   user_permissions: number;
@@ -49,6 +49,22 @@ export interface RecentScanSummary {
   enabled: boolean;
   control: boolean;
   name: string;
+}
+
+export enum ScanStatus {
+  Completed = "completed",
+  Aborted = "aborted",
+  Empty = "empty",
+  Imported = "imported",
+  Pending = "pending",
+  Running = "running",
+  Resuming = "resuming",
+  Canceling = "canceling",
+  Canceled = "canceled",
+  Pausing = "pausing",
+  Paused = "paused",
+  Stopping = "stopping",
+  Stopped = "stopped",
 }
 
 // -- https://cloud.tenable.com/scans/:scanId

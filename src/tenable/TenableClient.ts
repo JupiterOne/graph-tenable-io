@@ -139,24 +139,33 @@ export default class TenableClient {
   public async fetchAssetVulnerabilityInfo(
     asset: AssetSummary,
     vulnerability: ScanHostVulnerability,
-  ): Promise<AssetVulnerabilityInfo> {
-    const vulnerabilitiesResponse = await this.makeRequest<
-      AssetVulnerabilityResponse
-    >(
-      `/workbenches/assets/${asset.id}/vulnerabilities/${vulnerability.plugin_id}/info`,
-      Method.GET,
-      {},
-    );
+  ): Promise<AssetVulnerabilityInfo | undefined> {
+    const logData = {
+      assetId: asset.id,
+      pluginId: vulnerability.plugin_id,
+    };
+    try {
+      const vulnerabilitiesResponse = await this.makeRequest<
+        AssetVulnerabilityResponse
+      >(
+        `/workbenches/assets/${asset.id}/vulnerabilities/${vulnerability.plugin_id}/info`,
+        Method.GET,
+        {},
+      );
 
-    this.logger.trace(
-      {
-        assetId: asset.id,
-        plugingId: vulnerability.plugin_id,
-      },
-      "Fetched Tenable asset vulnerability info",
-    );
+      this.logger.trace(logData, "Fetched Tenable asset vulnerability info");
 
-    return vulnerabilitiesResponse.info;
+      return vulnerabilitiesResponse.info;
+    } catch (err) {
+      if (err.statusCode === 404) {
+        this.logger.info(
+          { ...logData, err },
+          "Vulnerabilities details not found for asset",
+        );
+      } else {
+        throw err;
+      }
+    }
   }
 
   public async fetchScanHostVulnerabilities(

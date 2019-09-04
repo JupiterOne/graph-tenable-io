@@ -2,7 +2,12 @@ import nock from "nock";
 
 import { fetchTenableData } from "./index";
 import TenableClient from "./TenableClient";
-import { RecentScanDetail, RecentScanSummary } from "./types";
+import {
+  AssetSummary,
+  RecentScanDetail,
+  RecentScanSummary,
+  ScanHostVulnerability,
+} from "./types";
 
 const ACCESS_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY || "test_access_token";
@@ -17,7 +22,7 @@ function prepareScope(def: nock.NockDefinition) {
 
 function getClient() {
   return new TenableClient({
-    logger: { trace: jest.fn(), warn: jest.fn() } as any,
+    logger: { trace: jest.fn(), warn: jest.fn(), info: jest.fn() } as any,
     accessToken: ACCESS_KEY,
     secretToken: SECRET_KEY,
     retryMaxAttempts: RETRY_MAX_ATTEMPTS,
@@ -71,6 +76,22 @@ describe("TenableClient fetch errors", () => {
     const client = getClient();
     await expect(
       client.fetchScanDetail({ id: 199 } as RecentScanSummary),
+    ).rejects.toThrow(/401/);
+    scope.done();
+  });
+
+  test("fetchScanDetail unknown error", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get(
+        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
+      )
+      .reply(401);
+    const client = getClient();
+    await expect(
+      client.fetchAssetVulnerabilityInfo(
+        { id: "2aa49a6b-f17b-4b43-8953-58e2012f2fb3" } as AssetSummary,
+        { plugin_id: 10386 } as ScanHostVulnerability,
+      ),
     ).rejects.toThrow(/401/);
     scope.done();
   });
@@ -167,13 +188,44 @@ describe("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchVulnerabilities ok", async () => {
+  test("fetchScanHostVulnerabilities ok", async () => {
     const { nockDone } = await nock.back("vulnerabilities-ok.json", {
       before: prepareScope,
     });
 
     const vulnerabilities = await client.fetchScanHostVulnerabilities(6, 2);
     expect(vulnerabilities.length).not.toEqual(0);
+    nockDone();
+  });
+
+  test("fetchAssetVulnerabilityInfo ok", async () => {
+    const { nockDone } = await nock.back("asset-vulnerability-info-ok.json", {
+      before: prepareScope,
+    });
+
+    const info = await client.fetchAssetVulnerabilityInfo(
+      { id: "2aa49a6b-f17b-4b43-8953-58e2012f2fb3" } as AssetSummary,
+      { plugin_id: 10386 } as ScanHostVulnerability,
+    );
+    expect(info).toMatchObject({
+      plugin_details: expect.any(Object),
+    });
+    nockDone();
+  });
+
+  test("fetchAssetVulnerabilityInfo 404", async () => {
+    const { nockDone } = await nock.back(
+      "asset-vulnerability-info-not-found.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const info = await client.fetchAssetVulnerabilityInfo(
+      { id: "2aa49a6b-f17b-4b43-8953-58e2012f2fb3" } as AssetSummary,
+      { plugin_id: 11111 } as ScanHostVulnerability,
+    );
+    expect(info).toBeUndefined();
     nockDone();
   });
 
