@@ -68,6 +68,29 @@ export function normalizeTenableSeverity(
   }
 }
 
+/**
+ * Converts NVD CVSS2 severity values to J1 normalized numeric values. See
+ * https://nvd.nist.gov/vuln-metrics/cvss.
+ *
+ * Throws an `IntegrationError` when the CVSS2 severity value is not recognized.
+ */
+export function normalizeCVSS2Severity(
+  cvss2Severity: number | string,
+): [FindingSeverityNormal, FindingSeverityNormalName] {
+  const severityNumber = Number(cvss2Severity);
+  if (severityNumber < 4) {
+    return normalSeverity(FindingSeverityNormal.Low);
+  } else if (severityNumber < 7) {
+    return normalSeverity(FindingSeverityNormal.Medium);
+  } else if (severityNumber <= 10) {
+    return normalSeverity(FindingSeverityNormal.High);
+  } else {
+    throw new IntegrationError(
+      `Unhandled severity in normalizer: ${severityNumber}`,
+    );
+  }
+}
+
 function normalSeverity(
   severity: FindingSeverityNormal,
 ): [FindingSeverityNormal, FindingSeverityNormalName] {

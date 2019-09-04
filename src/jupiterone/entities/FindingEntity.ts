@@ -50,4 +50,7 @@ export interface ContainerFindingEntity extends EntityFromIntegration {
   integrityImpact: string;
   cwe: string;
   remediation: string;
+
+  numericSeverity: FindingSeverityNormal;
+  severity: FindingSeverityNormalName;
 }

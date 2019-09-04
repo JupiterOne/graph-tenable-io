@@ -12,7 +12,7 @@ describe("container vulnerabilities", () => {
       published_date: "string",
       modified_date: "string",
       description: "string",
-      cvss_score: "string",
+      cvss_score: "2.3",
       access_vector: "string",
       access_complexity: "string",
       auth: "string",
@@ -46,13 +46,14 @@ describe("container vulnerabilities", () => {
       _class: "Finding",
       _key: "tenable_container_finding_cve-123_cwe-234",
       _type: "tenable_container_finding",
+      displayName: "cve-123/cwe-234",
       accessComplexity: "string",
       accessVector: "string",
       auth: "string",
       availabilityImpact: "string",
       confidentialityImpact: "string",
       cve: "cve-123",
-      cvssScore: "string",
+      cvssScore: "2.3",
       cwe: "cwe-234",
       description: "string",
       integrityImpact: "string",
@@ -60,6 +61,8 @@ describe("container vulnerabilities", () => {
       publishedDate: "string",
       referenceId: "findingId",
       remediation: "string",
+      severity: "Low",
+      numericSeverity: 1,
     });
   });
 });
