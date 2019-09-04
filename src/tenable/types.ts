@@ -242,19 +242,97 @@ export interface ContainerMalware {
 export interface ContainerFinding {
   nvdFinding: {
     reference_id?: string;
+
+    /**
+     * The Common Vulnerabilities and Exposures (CVE) ID for vulnerability.
+     */
     cve: string;
+
+    /**
+     * The systems the vulnerability affects identified by Common Platform
+     * Enumeration (CPE).
+     */
     cpe: string[];
+
     published_date: string;
     modified_date: string; // possibly blank
     description: string;
+
+    /**
+     * The CVSSv2 base score (intrinsic and fundamental characteristics of a
+     * vulnerability that are constant over time and user environments).
+     */
     cvss_score: string;
+
+    /**
+     * The CVSSv2 Access Vector (AV) metric for the vulnerability indicating how
+     * the vulnerability can be exploited. Possible values include:
+     *
+     * - Local
+     * - Adjacent Network
+     * - Network
+     */
     access_vector: string;
+
+    /**
+     * The CVSSv2 Access Complexity (AC) metric for the vulnerability. Possible
+     * values include:
+     *
+     * - High
+     * - Medium
+     * - Low
+     */
     access_complexity: string;
+
+    /**
+     * The CVSSv2 Authentication (Au) metric for the vulnerability. The metric
+     * describes the number of times that an attacker must authenticate to a
+     * target to exploit it. Possible values include:
+     *
+     * - None required
+     * - Single
+     * - Multiple
+     */
     auth: string;
+
+    /**
+     * The CVSSv2 availability impact metric for the vulnerability. The metric
+     * describes the impact on the availability of the target system. Possible
+     * values include:
+     *
+     * - None
+     * - Partial
+     * - Complete
+     */
     availability_impact: string;
+
+    /**
+     * The CVSSv2 confidentiality impact metric for the vulnerability. The
+     * metric describes the impact on the confidentiality of data processed by
+     * the system. Possible values include:
+     *
+     * - None
+     * - Partial
+     * - Complete
+     */
     confidentiality_impact: string;
+
+    /**
+     * The CVSSv2 integrity impact metric for the vulnerability. The metric
+     * describes the impact on the integrity of the exploited system. Possible
+     * values include:
+     *
+     * - None
+     * - Partial
+     * - Complete
+     */
     integrity_impact: string;
+
+    /**
+     * The Common Weakness Enumeration (CWE) ID for vulnerability.
+     */
     cwe: string;
+
     remediation: string; // possibly blank
     references: string[]; // possibly empty
   };

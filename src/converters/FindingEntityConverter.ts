@@ -5,6 +5,7 @@ import {
 } from "../jupiterone/entities";
 import { ContainerFinding, Dictionary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
+import { normalizeCVSS2Severity } from "./vulnerabilities";
 
 export function createContainerFindingEntities(
   data: Dictionary<ContainerFinding[]>,
@@ -18,10 +19,15 @@ export function createContainerFindingEntity(
   vulnerability: ContainerFinding,
 ): ContainerFindingEntity {
   const { nvdFinding } = vulnerability;
+  const [numericSeverity, severity] = normalizeCVSS2Severity(
+    nvdFinding.cvss_score,
+  );
+
   return {
     _key: containerFindingEntityKey(vulnerability),
     _type: CONTAINER_FINDING_ENTITY_TYPE,
     _class: CONTAINER_FINDING_ENTITY_CLASS,
+    displayName: displayName(vulnerability),
     referenceId: nvdFinding.reference_id,
     cve: nvdFinding.cve,
     publishedDate: nvdFinding.published_date,
@@ -36,6 +42,8 @@ export function createContainerFindingEntity(
     integrityImpact: nvdFinding.integrity_impact,
     cwe: nvdFinding.cwe,
     remediation: nvdFinding.remediation,
+    severity,
+    numericSeverity,
   };
 }
 
@@ -45,4 +53,9 @@ export function containerFindingEntityKey(vulnerability: ContainerFinding) {
     CONTAINER_FINDING_ENTITY_TYPE,
     `${nvdFinding.cve}_${nvdFinding.cwe}`,
   );
+}
+
+function displayName(vulnerability: ContainerFinding): string {
+  const { nvdFinding } = vulnerability;
+  return [nvdFinding.cve, nvdFinding.cwe].filter(e => !!e).join("/");
 }

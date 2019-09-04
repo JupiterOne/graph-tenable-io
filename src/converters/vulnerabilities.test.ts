@@ -12,6 +12,7 @@ import {
   createScanVulnerabilityRelationship,
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
+  normalizeCVSS2Severity,
   normalizeTenableSeverity,
 } from "./vulnerabilities";
 
@@ -83,6 +84,31 @@ describe("normalizeTenableSeverity", () => {
   test("error for unknown severity", () => {
     expect(() => {
       normalizeTenableSeverity(11);
+    }).toThrow(/unhandled severity/i);
+  });
+});
+
+describe("normalizeCVSS2Severity", () => {
+  test("Low for < 4", () => {
+    expect(normalizeCVSS2Severity(0)).toEqual([1, "Low"]);
+    expect(normalizeCVSS2Severity(0.1)).toEqual([1, "Low"]);
+    expect(normalizeCVSS2Severity(3.99)).toEqual([1, "Low"]);
+  });
+
+  test("Medium for >= 4 < 7", () => {
+    expect(normalizeCVSS2Severity(4)).toEqual([2, "Medium"]);
+    expect(normalizeCVSS2Severity(6.99)).toEqual([2, "Medium"]);
+  });
+
+  test("High for >= 7 < 10", () => {
+    expect(normalizeCVSS2Severity(7)).toEqual([3, "High"]);
+    expect(normalizeCVSS2Severity(9.99)).toEqual([3, "High"]);
+    expect(normalizeCVSS2Severity(10)).toEqual([3, "High"]);
+  });
+
+  test("error for unknown severity", () => {
+    expect(() => {
+      normalizeCVSS2Severity(11);
     }).toThrow(/unhandled severity/i);
   });
 });
