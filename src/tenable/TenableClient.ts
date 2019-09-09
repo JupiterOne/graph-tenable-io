@@ -137,18 +137,18 @@ export default class TenableClient {
   }
 
   public async fetchAssetVulnerabilityInfo(
-    asset: AssetSummary,
+    assetUuid: string,
     vulnerability: ScanHostVulnerability,
   ): Promise<AssetVulnerabilityInfo | undefined> {
     const logData = {
-      assetId: asset.id,
+      assetId: assetUuid,
       pluginId: vulnerability.plugin_id,
     };
     try {
       const vulnerabilitiesResponse = await this.makeRequest<
         AssetVulnerabilityResponse
       >(
-        `/workbenches/assets/${asset.id}/vulnerabilities/${vulnerability.plugin_id}/info`,
+        `/workbenches/assets/${assetUuid}/vulnerabilities/${vulnerability.plugin_id}/info`,
         Method.GET,
         {},
       );

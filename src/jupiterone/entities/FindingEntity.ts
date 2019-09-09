@@ -16,7 +16,16 @@ export interface VulnerabilityFindingEntity extends EntityFromIntegration {
   scanId: number;
   scanUuid: string;
 
-  assetUuid: string;
+  /**
+   * The UUID of the host/asset when provided in the `ScanHost` or discovered in
+   * the assets listing using the hostname.
+   *
+   * Scans produce findings where the host has no UUID, or the UUID or hostname
+   * of the host does not match an `AssetSummary` loaded by the
+   * `TenableAssetCache`. In these cases, the `assetUuid` will be `undefined`;
+   */
+  assetUuid?: string;
+
   hostId: number;
   hostname: string;
 

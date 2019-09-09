@@ -98,7 +98,7 @@ describe("executionHandler", () => {
       "tenable_scan_identified_finding",
     ];
 
-    const numScansWithHosts = 2;
+    const numScansWithHosts = 3;
 
     const processEntitiesCount =
       entitiesProcessedAsSingleSet.length +
@@ -119,8 +119,8 @@ describe("executionHandler", () => {
     );
 
     // TODO check the operations published instead of the call count
-    expect(persister.publishEntityOperations).toHaveBeenCalledTimes(12);
-    expect(persister.publishPersisterOperations).toHaveBeenCalledTimes(4);
+    expect(persister.publishEntityOperations).toHaveBeenCalledTimes(13);
+    expect(persister.publishPersisterOperations).toHaveBeenCalledTimes(5);
   }, 60000);
 
   test("action unknown", async () => {

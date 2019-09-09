@@ -3,7 +3,6 @@ import nock from "nock";
 import { fetchTenableData } from "./index";
 import TenableClient from "./TenableClient";
 import {
-  AssetSummary,
   RecentScanDetail,
   RecentScanSummary,
   ScanHostVulnerability,
@@ -89,7 +88,7 @@ describe("TenableClient fetch errors", () => {
     const client = getClient();
     await expect(
       client.fetchAssetVulnerabilityInfo(
-        { id: "2aa49a6b-f17b-4b43-8953-58e2012f2fb3" } as AssetSummary,
+        "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
         { plugin_id: 10386 } as ScanHostVulnerability,
       ),
     ).rejects.toThrow(/401/);
@@ -204,7 +203,7 @@ describe("TenableClient data fetch", () => {
     });
 
     const info = await client.fetchAssetVulnerabilityInfo(
-      { id: "2aa49a6b-f17b-4b43-8953-58e2012f2fb3" } as AssetSummary,
+      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
       { plugin_id: 10386 } as ScanHostVulnerability,
     );
     expect(info).toMatchObject({
@@ -222,7 +221,7 @@ describe("TenableClient data fetch", () => {
     );
 
     const info = await client.fetchAssetVulnerabilityInfo(
-      { id: "2aa49a6b-f17b-4b43-8953-58e2012f2fb3" } as AssetSummary,
+      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
       { plugin_id: 11111 } as ScanHostVulnerability,
     );
     expect(info).toBeUndefined();
