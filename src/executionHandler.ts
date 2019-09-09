@@ -268,7 +268,7 @@ async function synchronizeHostVulnerabilities(
   scan: RecentScanSummary,
   scanHost: ScanHost,
 ): Promise<PersisterOperationsResult> {
-  const { graph, persister, provider } = context;
+  const { logger, graph, persister, provider } = context;
 
   const [
     scanHostVulnerabilities,
@@ -295,32 +295,46 @@ async function synchronizeHostVulnerabilities(
 
   const hostAsset = assetCache.findAsset(scanHost);
 
+  /* istanbul ignore next */
+  if (!hostAsset) {
+    logger.info(
+      { scanHost },
+      "No asset found for scan host, some details cannot be provided",
+    );
+  }
+
+  /* istanbul ignore next */
+  const assetUuid = hostAsset ? hostAsset.id : scanHost.uuid;
+
   for (const vulnerability of scanHostVulnerabilities) {
     let vulnerabilityDetails: AssetVulnerabilityInfo | undefined;
-    // TODO: find a better way to determine whether we should expect
-    // `fetchAssetVulnerabilityInfo` to work. This assumes no `scanHost.uuid`
-    // means it will not. If that holds, then document the reason.
-    if (scanHost.uuid) {
+    if (assetUuid) {
       vulnerabilityDetails = await provider.fetchAssetVulnerabilityInfo(
-        hostAsset,
+        assetUuid,
         vulnerability,
       );
     }
 
-    const finding = createVulnerabilityFindingEntity({
-      scan,
-      asset: hostAsset,
-      vulnerability,
-      vulnerabilityDetails,
-    });
-    findingEntities.push(finding);
+    findingEntities.push(
+      createVulnerabilityFindingEntity({
+        scan,
+        asset: hostAsset,
+        assetUuid,
+        vulnerability,
+        vulnerabilityDetails,
+      }),
+    );
 
     vulnerabilityFindingRelationships.push(
-      createVulnerabilityFindingRelationship(scan, hostAsset, vulnerability),
+      createVulnerabilityFindingRelationship({
+        scan,
+        assetUuid,
+        vulnerability,
+      }),
     );
 
     scanFindingRelationships.push(
-      createScanFindingRelationship(scan, hostAsset, vulnerability),
+      createScanFindingRelationship({ scan, assetUuid, vulnerability }),
     );
   }
 

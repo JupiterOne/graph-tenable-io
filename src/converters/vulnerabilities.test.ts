@@ -147,11 +147,11 @@ describe("createScanVulnerabilityRelationship", () => {
 describe("createVulnerabilityFindingRelationship", () => {
   test("converts all expected properties", () => {
     expect(
-      createVulnerabilityFindingRelationship(
-        scanSummary,
-        assetSummary,
-        hostVulnerability,
-      ),
+      createVulnerabilityFindingRelationship({
+        scan: scanSummary,
+        assetUuid: assetSummary.id,
+        vulnerability: hostVulnerability,
+      }),
     ).toEqual({
       _class: "IS",
       _key: "tenable_vulnerability_finding_1234_3_2_tenable_vulnerability_3",
@@ -183,11 +183,11 @@ describe("createVulnerabilityFindingRelationship", () => {
 describe("createScanFindingRelationship", () => {
   test("converts all expected properties", () => {
     expect(
-      createScanFindingRelationship(
-        scanSummary,
-        assetSummary,
-        hostVulnerability,
-      ),
+      createScanFindingRelationship({
+        scan: scanSummary,
+        assetUuid: assetSummary.id,
+        vulnerability: hostVulnerability,
+      }),
     ).toEqual({
       _class: "IDENTIFIED",
       _type: "tenable_scan_identified_finding",
@@ -208,6 +208,7 @@ describe("createVulnerabilityFindingEntity", () => {
     const entity = createVulnerabilityFindingEntity({
       scan: scanSummary,
       asset: assetSummary,
+      assetUuid: assetSummary.id,
       vulnerability: hostVulnerability,
       vulnerabilityDetails: vulnerabilityInfo,
     });
@@ -245,6 +246,7 @@ describe("createVulnerabilityFindingEntity", () => {
     const entity = createVulnerabilityFindingEntity({
       scan: scanSummary,
       asset: assetSummary,
+      assetUuid: assetSummary.id,
       vulnerability: hostVulnerability,
       vulnerabilityDetails: { ...vulnerabilityInfo, vpr: undefined },
     });

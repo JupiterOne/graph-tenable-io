@@ -7,8 +7,7 @@ export { fetchTenableData };
 
 export interface TenableAssetCache {
   /**
-   * Finds the `AssetSummary` for the host or throws `IntegrationError` when it
-   * cannot be found to expose a problem in the integration.
+   * Finds the `AssetSummary` for the host, or `undefined` when not found.
    */
-  findAsset: (host: ScanHost) => AssetSummary;
+  findAsset: (host: ScanHost) => AssetSummary | undefined;
 }

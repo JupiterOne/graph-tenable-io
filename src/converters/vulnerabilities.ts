@@ -149,11 +149,15 @@ export function createScanVulnerabilityRelationship(
  * The `vulnerability` is sufficient for building the relationship; the
  * `Finding` key is derived from the scan/host/asset information.
  */
-export function createVulnerabilityFindingRelationship(
-  scan: RecentScanSummary,
-  host: AssetSummary,
-  vulnerability: ScanHostVulnerability,
-): VulnerabilityFindingRelationship {
+export function createVulnerabilityFindingRelationship({
+  scan,
+  assetUuid,
+  vulnerability,
+}: {
+  scan: RecentScanSummary;
+  assetUuid: string | undefined;
+  vulnerability: ScanHostVulnerability;
+}): VulnerabilityFindingRelationship {
   const sourceEntityKey = vulnerabilityFindingEntityKey(scan, vulnerability);
   const targetEntity = createTenableVulnerabilityEntity(vulnerability);
 
@@ -167,7 +171,7 @@ export function createVulnerabilityFindingRelationship(
       targetFilterKeys: ["_key"],
       targetEntity: targetEntity as any,
     },
-    assetUuid: host.id,
+    assetUuid,
     displayName: "IS",
     pluginId: vulnerability.plugin_id,
     scanId: scan.id,
@@ -181,11 +185,15 @@ export function createVulnerabilityFindingRelationship(
  * The `vulnerability` is sufficient for building the relationship; the
  * `Finding` key is derived from the scan/host/asset information.
  */
-export function createScanFindingRelationship(
-  scan: RecentScanSummary,
-  asset: AssetSummary,
-  vulnerability: ScanHostVulnerability,
-): ScanFindingRelationship {
+export function createScanFindingRelationship({
+  scan,
+  assetUuid,
+  vulnerability,
+}: {
+  scan: RecentScanSummary;
+  assetUuid: string | undefined;
+  vulnerability: ScanHostVulnerability;
+}): ScanFindingRelationship {
   const findingKey = vulnerabilityFindingEntityKey(scan, vulnerability);
   const scanKey = scanEntityKey(scan.id);
   return {
@@ -197,7 +205,7 @@ export function createScanFindingRelationship(
     scanId: scan.id,
     scanUuid: scan.uuid,
     pluginId: vulnerability.plugin_id,
-    assetUuid: asset.id,
+    assetUuid,
     displayName: "IDENTIFIED",
   };
 }
@@ -205,11 +213,13 @@ export function createScanFindingRelationship(
 export function createVulnerabilityFindingEntity({
   scan,
   asset,
+  assetUuid,
   vulnerability,
   vulnerabilityDetails,
 }: {
   scan: RecentScanSummary;
-  asset: AssetSummary;
+  asset: AssetSummary | undefined;
+  assetUuid: string | undefined;
   vulnerability: ScanHostVulnerability;
   vulnerabilityDetails?: AssetVulnerabilityInfo;
 }): VulnerabilityFindingEntity {
@@ -223,7 +233,7 @@ export function createVulnerabilityFindingEntity({
     _class: VULNERABILITY_FINDING_ENTITY_CLASS,
     scanId: scan.id,
     scanUuid: scan.uuid,
-    assetUuid: asset.id,
+    assetUuid,
     hostId: vulnerability.host_id,
     hostname: vulnerability.hostname,
     displayName: vulnerability.plugin_name,
@@ -244,9 +254,12 @@ export function createVulnerabilityFindingEntity({
       vulnerabilityDetails && getTime(vulnerabilityDetails.discovery.seen_last),
     // Set open to true because we are only collecting findings from the latest assessment run
     open: true,
-    targets: [asset.fqdn, asset.ipv4, asset.ipv6, asset.mac_address].reduce(
-      (a, e) => [...a, ...e],
-    ),
+    targets:
+      asset &&
+      [asset.fqdn, asset.ipv4, asset.ipv6, asset.mac_address].reduce((a, e) => [
+        ...a,
+        ...e,
+      ]),
   };
 }
 

@@ -53,17 +53,24 @@ export interface ContainerUnwantedProgramEntity extends EntityFromIntegration {
   sha256: string;
 }
 
-export interface ScanFindingRelationship extends RelationshipFromIntegration {
+interface FindingRelationship {
   scanId: number;
   scanUuid: string;
   pluginId: number;
-  assetUuid: string;
+
+  /**
+   * The UUID of the host/asset when provided in the `ScanHost` or discovered in
+   * the assets listing using the hostname.
+   *
+   * Scans produce findings where the host has no UUID, or the UUID or hostname
+   * of the host does not match an `AssetSummary` loaded by the
+   * `TenableAssetCache`. In these cases, the `assetUuid` will be `undefined`;
+   */
+  assetUuid?: string;
 }
 
-export interface VulnerabilityFindingRelationship
-  extends MappedRelationshipFromIntegration {
-  scanId: number;
-  scanUuid: string;
-  pluginId: number;
-  assetUuid: string;
-}
+export type ScanFindingRelationship = RelationshipFromIntegration &
+  FindingRelationship;
+
+export type VulnerabilityFindingRelationship = MappedRelationshipFromIntegration &
+  FindingRelationship;
