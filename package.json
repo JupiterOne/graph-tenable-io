@@ -28,7 +28,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@jupiterone/jupiter-managed-integration-sdk": "25.0.0-secretsmanager.0",
+    "@jupiterone/jupiter-managed-integration-sdk": "25.0.0-secretsmanager.1",
     "@lifeomic/attempt": "^3.0.0"
   },
   "devDependencies": {
