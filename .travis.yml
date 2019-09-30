@@ -20,5 +20,5 @@ deploy:
   on:
     tags: true
     branch: master
-    repo: JupiterOne/jupiter-integration-tenable-cloud
+    repo: JupiterOne/graph-tenable-cloud
     node: '8'
