@@ -1,6 +1,6 @@
 {
   "name": "@jupiterone/jupiter-integration-tenable-cloud",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A JupiterOne managed integration for https://www.tenable.com/products/tenable-io",
   "main": "dist/index.js",
   "repository": "https://github.com/JupiterOne/jupiter-integration-tenable-cloud",
