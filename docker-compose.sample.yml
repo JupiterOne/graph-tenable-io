@@ -2,9 +2,9 @@ version: '3.7'
 
 services:
   integration:
-    image: jupiter-integration-tenable-app
+    image: graph-tenable-app
     build: .
-    container_name: jupiter-integration-tenable-app
+    container_name: graph-tenable-app
     volumes:
       - .:/app:cached
       - ~/.ssh:/root/.ssh

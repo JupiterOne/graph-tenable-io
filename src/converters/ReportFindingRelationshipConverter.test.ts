@@ -17,7 +17,7 @@ test("convert report container vulnerability relationship", () => {
       os_version: "3.8.2",
       created_at: "2019-04-17T10:26:58.509Z",
       platform: "docker",
-      image_name: "jupiter-integration-tenable-app",
+      image_name: "graph-tenable-app",
       updated_at: "2019-04-17T10:26:58.509Z",
       digest:
         "c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",

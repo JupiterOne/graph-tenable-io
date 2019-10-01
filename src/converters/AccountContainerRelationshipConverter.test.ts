@@ -10,11 +10,11 @@ test("convert account container relationship", () => {
   const containers: Container[] = [
     {
       number_of_vulnerabilities: "0",
-      name: "jupiter-integration-tenable-app",
+      name: "graph-tenable-app",
       size: "2420",
       digest:
         "sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc",
-      repo_name: "jupiter-integration-tenable-app",
+      repo_name: "graph-tenable-app",
       score: "0.0",
       id: "6549098203417933758",
       status: "ready",
