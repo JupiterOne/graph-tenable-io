@@ -1,6 +1,6 @@
 # JupiterOne Managed Integration for Tenable.io
 
-[![Build Status](https://travis-ci.org/JupiterOne/jupiter-integration-tenable-cloud.svg?branch=master)](https://travis-ci.org/JupterOne/jupiter-integration-tenable-cloud)
+[![Build Status](https://travis-ci.org/JupiterOne/graph-tenable-cloud.svg?branch=master)](https://travis-ci.org/JupterOne/graph-tenable-cloud)
 
 A JupiterOne integration ingests information such as configurations and other
 metadata about digital and physical assets belonging to an organization. The
@@ -35,12 +35,11 @@ At build time, this documentation will be placed in a docs folder inside dist so
 that it's included in the NPM module.
 
 The documentation should be placed in `docs/jupiterone-io` and named after the
-package. For example, an AWS integration with the name "jupiter-integration-aws"
-in `package.json` should have its documentation in
-`docs/jupiterone-io/jupiter-integration-aws.md`. Any other files in
-`docs/jupiterone-io` will not be published. Also note that namespace is ignored,
-so "jupiter-integration-aws" and "@jupiterone/jupiter-integration-aws" should
-both name their docs file the same.
+package. For example, an AWS integration with the name "graph-aws" in
+`package.json` should have its documentation in
+`docs/jupiterone-io/graph-aws.md`. Any other files in `docs/jupiterone-io` will
+not be published. Also note that namespace is ignored, so "graph-aws" and
+"@jupiterone/graph-aws" should both name their docs file the same.
 
 The first header in the documentation is used as the title of the document in
 the table of contents on docs.jupiterone.io, so it should be the name of the
