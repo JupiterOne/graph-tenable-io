@@ -859,10 +859,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@jupiterone/jupiter-managed-integration-sdk@25.0.0-secretsmanager.1":
-  version "25.0.0-secretsmanager.1"
-  resolved "https://registry.yarnpkg.com/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-25.0.0-secretsmanager.1.tgz#d92b8892168d08892292fc3bb41ed6de16cfe540"
-  integrity sha512-Kh99Rf9QEIYI6gg1nIoGl8JlcUCeajYasGJqiqdCj6aqiLbqSjWXmPnnVLhB7GQ160L0YXIn7oIQR39bkylPJw==
+"@jupiterone/jupiter-managed-integration-sdk@^26.0.0":
+  version "26.0.0"
+  resolved "https://registry.yarnpkg.com/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-26.0.0.tgz#a37e0d52b057ef86d345b52a0942d7fc5ceb6cd8"
+  integrity sha512-1q6oFn8IdHHwVn1/XG2+Dfe0MGCghGa/15dVD9ZXgnkUueyxmj6IgpFtmelV/DuFwc9I3bUWHm3RyoMG/Ynvrg==
 
 "@lifeomic/attempt@^3.0.0":
   version "3.0.0"
