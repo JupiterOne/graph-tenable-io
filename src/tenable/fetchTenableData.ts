@@ -48,12 +48,15 @@ async function fetchReportsWithContainerVulnerabilities(
         item.digest,
       );
 
+      /* istanbul ignore next */
       if (!malwares[report.sha256]) {
         malwares[report.sha256] = [];
       }
+      /* istanbul ignore next */
       if (!findings[report.sha256]) {
         findings[report.sha256] = [];
       }
+      /* istanbul ignore next */
       if (!unwantedPrograms[report.sha256]) {
         unwantedPrograms[report.sha256] = [];
       }

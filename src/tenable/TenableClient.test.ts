@@ -68,6 +68,20 @@ describe("TenableClient fetch errors", () => {
     scope.done();
   });
 
+  test("fetch 429 without Retry-After", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get("/users")
+      .times(1)
+      .reply(429, "Too Many Requests", {
+        "Content-Type": "text/html",
+      })
+      .get("/users")
+      .reply(404);
+    const client = getClient();
+    await expect(client.fetchUsers()).rejects.toThrow(/404/);
+    scope.done();
+  });
+
   test("fetchScanDetail unknown error", async () => {
     const scope = nock(`https://${TENABLE_COM}`)
       .get("/scans/199")

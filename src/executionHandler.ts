@@ -2,6 +2,7 @@ import {
   IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
+  IntegrationRelationship,
   PersisterOperationsResult,
   summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
@@ -176,11 +177,11 @@ async function synchronizeUsers(
     persister.processEntities(existingUsers, createUserEntities(users)),
     [
       ...persister.processRelationships(
-        existingAccountUsers,
+        existingAccountUsers as IntegrationRelationship[],
         createAccountUserRelationships(account, users),
       ),
       ...persister.processRelationships(
-        existingUserScans,
+        existingUserScans as IntegrationRelationship[],
         createUserScanRelationships(scanSummaries, users),
       ),
     ],
@@ -197,6 +198,7 @@ async function synchronizeHosts(
 
   const operationResults: PersisterOperationsResult[] = [];
 
+  /* istanbul ignore next */
   for (const scanSummary of scanSummaries) {
     if (scanSummary.status === ScanStatus.Completed) {
       const scanDetail = await provider.fetchScanDetail(scanSummary);
@@ -234,7 +236,19 @@ async function synchronizeScanVulnerabilities(
   scan: RecentScanSummary,
   vulnerabilties: ScanVulnerabilitySummary[],
 ): Promise<PersisterOperationsResult> {
-  const { graph, persister } = context;
+  const { logger, graph, persister } = context;
+
+  const vulnLogger = logger.child({
+    scan: {
+      id: scan.id,
+      uuid: scan.uuid,
+    },
+  });
+
+  vulnLogger.info(
+    { scanVulnerabilities: vulnerabilties.length },
+    "Processing vulnerabilities discovered by recent scan...",
+  );
 
   const scanVulnerabilityRelationships = [];
   for (const vuln of vulnerabilties) {
@@ -248,12 +262,18 @@ async function synchronizeScanVulnerabilities(
     { scanUuid: scan.uuid },
   );
 
-  return persister.publishRelationshipOperations(
+  const operations = persister.publishRelationshipOperations(
     persister.processRelationships(
       existingScanVulnerabilityRelationships,
       scanVulnerabilityRelationships,
     ),
   );
+
+  vulnLogger.info(
+    "Processing vulnerabilities discovered by recent scan completed.",
+  );
+
+  return operations;
 }
 
 /**
@@ -269,6 +289,18 @@ async function synchronizeHostVulnerabilities(
   scanHost: ScanHost,
 ): Promise<PersisterOperationsResult> {
   const { logger, graph, persister, provider } = context;
+
+  const vulnLogger = logger.child({
+    scan: {
+      id: scan.id,
+      uuid: scan.uuid,
+    },
+    scanHost: {
+      hostname: scanHost.hostname,
+      id: scanHost.host_id,
+      uuid: scanHost.uuid || "NONE",
+    },
+  });
 
   const [
     scanHostVulnerabilities,
@@ -297,8 +329,7 @@ async function synchronizeHostVulnerabilities(
 
   /* istanbul ignore next */
   if (!hostAsset) {
-    logger.info(
-      { scanHost },
+    vulnLogger.info(
       "No asset found for scan host, some details cannot be provided",
     );
   }
@@ -306,8 +337,17 @@ async function synchronizeHostVulnerabilities(
   /* istanbul ignore next */
   const assetUuid = hostAsset ? hostAsset.id : scanHost.uuid;
 
+  logger.info(
+    {
+      assetUuid,
+      scanHostVulnerabilities: scanHostVulnerabilities.length,
+    },
+    "Processing host vulnerabilities discovered by recent scan...",
+  );
+
   for (const vulnerability of scanHostVulnerabilities) {
     let vulnerabilityDetails: AssetVulnerabilityInfo | undefined;
+    /* istanbul ignore next */
     if (assetUuid) {
       vulnerabilityDetails = await provider.fetchAssetVulnerabilityInfo(
         assetUuid,
@@ -338,19 +378,25 @@ async function synchronizeHostVulnerabilities(
     );
   }
 
-  return persister.publishPersisterOperations([
+  const operations = persister.publishPersisterOperations([
     persister.processEntities(existingFindingEntities, findingEntities),
     [
       ...persister.processRelationships(
-        existingVulnerabilityFindingRelationships,
+        existingVulnerabilityFindingRelationships as IntegrationRelationship[],
         vulnerabilityFindingRelationships,
       ),
       ...persister.processRelationships(
-        existingScanFindingRelationships,
+        existingScanFindingRelationships as IntegrationRelationship[],
         scanFindingRelationships,
       ),
     ],
   ]);
+
+  logger.info(
+    "Processing host vulnerabilities discovered by recent scan completed.",
+  );
+
+  return operations;
 }
 
 type ActionFunction = (
