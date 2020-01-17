@@ -1,8 +1,6 @@
 language: node_js
 node_js:
-  - '8'
-  - '10'
-  - '11'
+  - '12'
 
 notifications:
   email:
@@ -21,4 +19,4 @@ deploy:
     tags: true
     branch: master
     repo: JupiterOne/graph-tenable-cloud
-    node: '8'
+    node: '12'
