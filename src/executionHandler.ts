@@ -2,6 +2,7 @@ import {
   IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
+  IntegrationRelationship,
   PersisterOperationsResult,
   summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
@@ -176,11 +177,11 @@ async function synchronizeUsers(
     persister.processEntities(existingUsers, createUserEntities(users)),
     [
       ...persister.processRelationships(
-        existingAccountUsers,
+        existingAccountUsers as IntegrationRelationship[],
         createAccountUserRelationships(account, users),
       ),
       ...persister.processRelationships(
-        existingUserScans,
+        existingUserScans as IntegrationRelationship[],
         createUserScanRelationships(scanSummaries, users),
       ),
     ],
@@ -197,6 +198,7 @@ async function synchronizeHosts(
 
   const operationResults: PersisterOperationsResult[] = [];
 
+  /* istanbul ignore next */
   for (const scanSummary of scanSummaries) {
     if (scanSummary.status === ScanStatus.Completed) {
       const scanDetail = await provider.fetchScanDetail(scanSummary);
@@ -308,6 +310,7 @@ async function synchronizeHostVulnerabilities(
 
   for (const vulnerability of scanHostVulnerabilities) {
     let vulnerabilityDetails: AssetVulnerabilityInfo | undefined;
+    /* istanbul ignore next */
     if (assetUuid) {
       vulnerabilityDetails = await provider.fetchAssetVulnerabilityInfo(
         assetUuid,
@@ -342,11 +345,11 @@ async function synchronizeHostVulnerabilities(
     persister.processEntities(existingFindingEntities, findingEntities),
     [
       ...persister.processRelationships(
-        existingVulnerabilityFindingRelationships,
+        existingVulnerabilityFindingRelationships as IntegrationRelationship[],
         vulnerabilityFindingRelationships,
       ),
       ...persister.processRelationships(
-        existingScanFindingRelationships,
+        existingScanFindingRelationships as IntegrationRelationship[],
         scanFindingRelationships,
       ),
     ],
