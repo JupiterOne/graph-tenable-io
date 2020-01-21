@@ -5,6 +5,7 @@ import {
 } from "../jupiterone/entities";
 import { RecentScanSummary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
+import getEpochTimeInMilliseconds from "../utils/getEpochTimeInMilliseconds";
 
 export function createScanEntity(data: RecentScanSummary): ScanEntity {
   return {
@@ -16,8 +17,10 @@ export function createScanEntity(data: RecentScanSummary): ScanEntity {
     permissions: data.permissions,
     type: data.type,
     read: data.read,
-    lastModificationDate: data.last_modification_date,
-    creationDate: data.creation_date,
+    lastModificationDate: getEpochTimeInMilliseconds(
+      data.last_modification_date,
+    ),
+    creationDate: getEpochTimeInMilliseconds(data.creation_date),
     status: data.status,
     uuid: data.uuid,
     shared: data.shared,
