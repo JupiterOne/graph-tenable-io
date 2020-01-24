@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import { executeIntegrationLocal } from "@jupiterone/jupiter-managed-integration-sdk";
-import invocationConfig from "../src/index";
+import { stepFunctionsInvocationConfig } from "../src/index";
 
 const integrationConfig = {
   accessKey: process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY,
@@ -13,7 +13,7 @@ const invocationArgs = {
 
 executeIntegrationLocal(
   integrationConfig,
-  invocationConfig,
+  stepFunctionsInvocationConfig,
   invocationArgs,
 ).catch(err => {
   console.error(err);
