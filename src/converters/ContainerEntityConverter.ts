@@ -13,6 +13,7 @@ export function createContainerEntities(data: Container[]): ContainerEntity[] {
       _key: generateEntityKey(CONTAINER_ENTITY_TYPE, container.id),
       _type: CONTAINER_ENTITY_TYPE,
       _class: CONTAINER_ENTITY_CLASS,
+      _rawData: [{ name: "default", rawData: container }],
       id: container.id,
       repoId: container.repo_id,
       platform: container.platform,

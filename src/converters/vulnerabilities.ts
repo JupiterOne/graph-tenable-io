@@ -209,23 +209,20 @@ export function createScanFindingRelationship({
   };
 }
 
-export function createVulnerabilityFindingEntity({
-  scan,
-  asset,
-  assetUuid,
-  vulnerability,
-  vulnerabilityDetails,
-}: {
+export function createVulnerabilityFindingEntity(data: {
   scan: RecentScanSummary;
   asset: AssetSummary | undefined;
   assetUuid: string | undefined;
   vulnerability: ScanHostVulnerability;
   vulnerabilityDetails?: AssetVulnerabilityInfo;
 }): VulnerabilityFindingEntity {
+  const { scan, asset, assetUuid, vulnerability, vulnerabilityDetails } = data;
+
   return {
     _key: vulnerabilityFindingEntityKey(scan, vulnerability),
     _type: VULNERABILITY_FINDING_ENTITY_TYPE,
     _class: VULNERABILITY_FINDING_ENTITY_CLASS,
+    _rawData: [{ name: "default", rawData: data }],
     scanId: scan.id,
     scanUuid: scan.uuid,
     assetUuid,

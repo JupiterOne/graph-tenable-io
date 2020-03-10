@@ -16,6 +16,7 @@ export function createReportEntities(
       _key: generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId),
       _type: CONTAINER_REPORT_ENTITY_TYPE,
       _class: CONTAINER_REPORT_ENTITY_CLASS,
+      _rawData: [{ name: "default", rawData: report }],
       id: reportId,
       sha256: report.sha256,
       digest: report.digest,

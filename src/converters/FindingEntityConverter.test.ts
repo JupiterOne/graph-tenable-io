@@ -46,6 +46,7 @@ describe("container vulnerabilities", () => {
       _class: "Finding",
       _key: "tenable_container_finding_cve-123_cwe-234",
       _type: "tenable_container_finding",
+      _rawData: [{ name: "default", rawData: data }],
       displayName: "cve-123/cwe-234",
       accessComplexity: "string",
       accessVector: "string",
