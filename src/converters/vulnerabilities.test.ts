@@ -81,10 +81,8 @@ describe("normalizeTenableSeverity", () => {
     expect(normalizeTenableSeverity(10)).toEqual([4, "Critical"]);
   });
 
-  test("error for unknown severity", () => {
-    expect(() => {
-      normalizeTenableSeverity(11);
-    }).toThrow(/unhandled severity/i);
+  test("for unknown severity", () => {
+    expect(normalizeTenableSeverity(11)).toEqual([-1, "Unknown"]);
   });
 });
 
@@ -132,7 +130,8 @@ describe("createScanVulnerabilityRelationship", () => {
           pluginId: 112526,
           pluginFamily: "plugin-family",
           pluginName: "plugin-name",
-          severity: 199,
+          numericSeverity: 199,
+          severity: "Unknown",
           displayName: "plugin-name",
         },
       },
@@ -167,7 +166,8 @@ describe("createVulnerabilityFindingRelationship", () => {
           pluginFamily: "plugin-family",
           pluginId: 3,
           pluginName: "plugin-name",
-          severity: 3,
+          numericSeverity: 3,
+          severity: "Low",
         },
         targetFilterKeys: ["_key"],
       },
@@ -226,7 +226,7 @@ describe("createVulnerabilityFindingEntity", () => {
       pluginName: "plugin-name",
       pluginFamily: "plugin-family",
       pluginId: 3,
-      numericSeverity: 1,
+      numericSeverity: 3,
       severity: "Low",
       tenableSeverity: 3,
       tenablePriority: 5.9,

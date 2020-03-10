@@ -62,9 +62,7 @@ export function normalizeTenableSeverity(
   } else if (tenableSeverity === 10) {
     return normalSeverity(FindingSeverityNormal.Critical);
   } else {
-    throw new IntegrationError(
-      `Unhandled severity in normalizer: ${tenableSeverity}`,
-    );
+    return [-1, FindingSeverityNormalName.Unknown];
   }
 }
 
@@ -111,7 +109,8 @@ function createTenableVulnerabilityEntity(
     pluginId: vulnerability.plugin_id,
     pluginFamily: vulnerability.plugin_family,
     pluginName: vulnerability.plugin_name,
-    severity: vulnerability.severity,
+    numericSeverity: vulnerability.severity,
+    severity: normalizeTenableSeverity(vulnerability.severity)[1],
   };
 }
 
@@ -223,10 +222,6 @@ export function createVulnerabilityFindingEntity({
   vulnerability: ScanHostVulnerability;
   vulnerabilityDetails?: AssetVulnerabilityInfo;
 }): VulnerabilityFindingEntity {
-  const [numericSeverity, severity] = normalizeTenableSeverity(
-    vulnerability.severity,
-  );
-
   return {
     _key: vulnerabilityFindingEntityKey(scan, vulnerability),
     _type: VULNERABILITY_FINDING_ENTITY_TYPE,
@@ -240,8 +235,8 @@ export function createVulnerabilityFindingEntity({
     pluginName: vulnerability.plugin_name,
     pluginFamily: vulnerability.plugin_family,
     pluginId: vulnerability.plugin_id,
-    numericSeverity,
-    severity,
+    numericSeverity: vulnerability.severity,
+    severity: normalizeTenableSeverity(vulnerability.severity)[1],
     tenableSeverity: vulnerability.severity,
     tenablePriority:
       vulnerabilityDetails &&
