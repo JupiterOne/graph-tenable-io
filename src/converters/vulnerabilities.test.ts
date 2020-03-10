@@ -205,18 +205,20 @@ describe("createScanFindingRelationship", () => {
 
 describe("createVulnerabilityFindingEntity", () => {
   test("converts all expected properties", () => {
-    const entity = createVulnerabilityFindingEntity({
+    const data = {
       scan: scanSummary,
       asset: assetSummary,
       assetUuid: assetSummary.id,
       vulnerability: hostVulnerability,
       vulnerabilityDetails: vulnerabilityInfo,
-    });
+    };
+    const entity = createVulnerabilityFindingEntity(data);
 
     expect(entity).toEqual({
       _key: "tenable_vulnerability_finding_1234_3_2",
       _type: "tenable_vulnerability_finding",
       _class: "Finding",
+      _rawData: [{ name: "default", rawData: data }],
       scanId: 1234,
       scanUuid: "scan-uuid",
       assetUuid: "asset-uuid",

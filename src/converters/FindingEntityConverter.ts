@@ -27,6 +27,7 @@ export function createContainerFindingEntity(
     _key: containerFindingEntityKey(vulnerability),
     _type: CONTAINER_FINDING_ENTITY_TYPE,
     _class: CONTAINER_FINDING_ENTITY_CLASS,
+    _rawData: [{ name: "default", rawData: vulnerability }],
     displayName: displayName(vulnerability),
     referenceId: nvdFinding.reference_id,
     cve: nvdFinding.cve,

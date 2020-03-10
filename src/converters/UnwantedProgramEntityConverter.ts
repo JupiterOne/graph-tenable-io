@@ -36,6 +36,7 @@ function createUnwantedProgramEntity(
     ),
     _type: CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
     _class: CONTAINER_UNWANTED_PROGRAM_ENTITY_CLASS,
+    _rawData: [{ name: "default", rawData: vulnerability }],
     file: vulnerability.file,
     md5: vulnerability.md5,
     sha256: vulnerability.sha256,

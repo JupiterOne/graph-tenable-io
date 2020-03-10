@@ -12,6 +12,7 @@ export function createScanEntity(data: RecentScanSummary): ScanEntity {
     _key: scanEntityKey(data.id),
     _type: SCAN_ENTITY_TYPE,
     _class: SCAN_ENTITY_CLASS,
+    _rawData: [{ name: "default", rawData: data }],
     id: data.id,
     legacy: data.legacy,
     permissions: data.permissions,
