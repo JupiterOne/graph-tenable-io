@@ -14,6 +14,7 @@ export enum FindingSeverityNormalName {
   Medium = "Medium",
   High = "High",
   Critical = "Critical",
+  Unknown = "Unknown",
 }
 
 export const FindingSeverityNormalNames = {
