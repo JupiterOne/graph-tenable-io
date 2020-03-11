@@ -19,7 +19,7 @@ export function createContainerFindingEntity(
   vulnerability: ContainerFinding,
 ): ContainerFindingEntity {
   const { nvdFinding } = vulnerability;
-  const [numericSeverity, severity] = normalizeCVSS2Severity(
+  const { numericSeverity, severity } = normalizeCVSS2Severity(
     nvdFinding.cvss_score,
   );
 
@@ -43,8 +43,8 @@ export function createContainerFindingEntity(
     integrityImpact: nvdFinding.integrity_impact,
     cwe: nvdFinding.cwe,
     remediation: nvdFinding.remediation,
-    severity,
     numericSeverity,
+    severity,
   };
 }
 

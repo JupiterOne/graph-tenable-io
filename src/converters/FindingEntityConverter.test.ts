@@ -63,7 +63,7 @@ describe("container vulnerabilities", () => {
       referenceId: "findingId",
       remediation: "string",
       severity: "Low",
-      numericSeverity: 1,
+      numericSeverity: 2.3,
     });
   });
 });
