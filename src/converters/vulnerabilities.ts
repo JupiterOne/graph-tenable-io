@@ -1,5 +1,5 @@
 import {
-  IntegrationError,
+  convertProperties,
   RelationshipDirection,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
@@ -34,35 +34,46 @@ import {
 } from "../utils/generateKey";
 import getTime from "../utils/getTime";
 import { scanEntityKey } from "./scans";
-import {
-  FindingSeverityNormal,
-  FindingSeverityNormalName,
-  FindingSeverityNormalNames,
-} from "./types";
+import { FindingSeverityPriority } from "./types";
 
 /**
- * Converts Tenable Plugin Severity Ratings or "Risk Factor" to J1 normalized
- * numeric values. See
+ * Converts Tenable Plugin Severity Ratings or "Risk Factor" to label. See
  * https://community.tenable.com/s/article/Active-Plugins-Severity-vs-CVSS-v2-and-v3-scores
  *
  * Throws an `IntegrationError` when the Tenable severity number is not
  * recognized.
  */
-export function normalizeTenableSeverity(
-  tenableSeverity: number,
-): [FindingSeverityNormal, FindingSeverityNormalName] {
-  if (tenableSeverity === 0) {
-    return normalSeverity(FindingSeverityNormal.Informational);
-  } else if (tenableSeverity < 4) {
-    return normalSeverity(FindingSeverityNormal.Low);
-  } else if (tenableSeverity < 7) {
-    return normalSeverity(FindingSeverityNormal.Medium);
-  } else if (tenableSeverity < 10) {
-    return normalSeverity(FindingSeverityNormal.High);
-  } else if (tenableSeverity === 10) {
-    return normalSeverity(FindingSeverityNormal.Critical);
+export function getSeverity(numericSeverity: number): FindingSeverityPriority {
+  if (numericSeverity === 0) {
+    return FindingSeverityPriority.Informational;
+  } else if (numericSeverity < 4) {
+    return FindingSeverityPriority.Low;
+  } else if (numericSeverity < 7) {
+    return FindingSeverityPriority.Medium;
+  } else if (numericSeverity < 10) {
+    return FindingSeverityPriority.High;
+  } else if (numericSeverity === 10) {
+    return FindingSeverityPriority.Critical;
   } else {
-    return [-1, FindingSeverityNormalName.Unknown];
+    return FindingSeverityPriority.Unknown;
+  }
+}
+
+/**
+ * Converts Tenable Priority Ratings to label. See
+ * https://docs.tenable.com/tenablesc/5_9/Content/RiskMetrics.htm#VPR
+ */
+export function getPriority(numericPriority: number): FindingSeverityPriority {
+  if (numericPriority < 4) {
+    return FindingSeverityPriority.Low;
+  } else if (numericPriority < 7) {
+    return FindingSeverityPriority.Medium;
+  } else if (numericPriority < 9) {
+    return FindingSeverityPriority.High;
+  } else if (numericPriority <= 10) {
+    return FindingSeverityPriority.Critical;
+  } else {
+    return FindingSeverityPriority.Unknown;
   }
 }
 
@@ -74,25 +85,20 @@ export function normalizeTenableSeverity(
  */
 export function normalizeCVSS2Severity(
   cvss2Severity: number | string,
-): [FindingSeverityNormal, FindingSeverityNormalName] {
-  const severityNumber = Number(cvss2Severity);
-  if (severityNumber < 4) {
-    return normalSeverity(FindingSeverityNormal.Low);
-  } else if (severityNumber < 7) {
-    return normalSeverity(FindingSeverityNormal.Medium);
-  } else if (severityNumber <= 10) {
-    return normalSeverity(FindingSeverityNormal.High);
-  } else {
-    throw new IntegrationError(
-      `Unhandled severity in normalizer: ${severityNumber}`,
-    );
+): {
+  numericSeverity: number;
+  severity: FindingSeverityPriority | undefined;
+} {
+  const numericSeverity = Number(cvss2Severity);
+  let severity;
+  if (numericSeverity < 4) {
+    severity = FindingSeverityPriority.Low;
+  } else if (numericSeverity < 7) {
+    severity = FindingSeverityPriority.Medium;
+  } else if (numericSeverity <= 10) {
+    severity = FindingSeverityPriority.High;
   }
-}
-
-function normalSeverity(
-  severity: FindingSeverityNormal,
-): [FindingSeverityNormal, FindingSeverityNormalName] {
-  return [severity, FindingSeverityNormalNames[severity]];
+  return { numericSeverity, severity };
 }
 
 function createTenableVulnerabilityEntity(
@@ -110,7 +116,7 @@ function createTenableVulnerabilityEntity(
     pluginFamily: vulnerability.plugin_family,
     pluginName: vulnerability.plugin_name,
     numericSeverity: vulnerability.severity,
-    severity: normalizeTenableSeverity(vulnerability.severity)[1],
+    severity: getSeverity(vulnerability.severity),
   };
 }
 
@@ -218,7 +224,31 @@ export function createVulnerabilityFindingEntity(data: {
 }): VulnerabilityFindingEntity {
   const { scan, asset, assetUuid, vulnerability, vulnerabilityDetails } = data;
 
+  const details = {};
+
+  if (vulnerabilityDetails) {
+    const numericPriority =
+      vulnerabilityDetails.vpr && vulnerabilityDetails.vpr.score;
+    const priority = numericPriority && getPriority(numericPriority);
+    const cvss = vulnerabilityDetails.risk_information;
+
+    Object.assign(details, {
+      ...convertProperties(cvss),
+      description: vulnerabilityDetails.description,
+      synopsis: vulnerabilityDetails.synopsis,
+      solution: vulnerabilityDetails.solution,
+      reference:
+        vulnerabilityDetails.reference_information &&
+        vulnerabilityDetails.reference_information.url,
+      numericPriority,
+      priority,
+      firstSeenOn: getTime(vulnerabilityDetails.discovery.seen_first),
+      lastSeenOn: getTime(vulnerabilityDetails.discovery.seen_last),
+    });
+  }
+
   return {
+    ...details,
     _key: vulnerabilityFindingEntityKey(scan, vulnerability),
     _type: VULNERABILITY_FINDING_ENTITY_TYPE,
     _class: VULNERABILITY_FINDING_ENTITY_CLASS,
@@ -233,17 +263,7 @@ export function createVulnerabilityFindingEntity(data: {
     pluginFamily: vulnerability.plugin_family,
     pluginId: vulnerability.plugin_id,
     numericSeverity: vulnerability.severity,
-    severity: normalizeTenableSeverity(vulnerability.severity)[1],
-    tenableSeverity: vulnerability.severity,
-    tenablePriority:
-      vulnerabilityDetails &&
-      vulnerabilityDetails.vpr &&
-      vulnerabilityDetails.vpr.score,
-    firstSeenOn:
-      vulnerabilityDetails &&
-      getTime(vulnerabilityDetails.discovery.seen_first),
-    lastSeenOn:
-      vulnerabilityDetails && getTime(vulnerabilityDetails.discovery.seen_last),
+    severity: getSeverity(vulnerability.severity),
     // Set open to true because we are only collecting findings from the latest assessment run
     open: true,
     targets:

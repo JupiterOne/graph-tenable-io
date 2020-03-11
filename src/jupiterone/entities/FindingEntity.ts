@@ -1,9 +1,6 @@
 import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 
-import {
-  FindingSeverityNormal,
-  FindingSeverityNormalName,
-} from "../../converters";
+import { FindingSeverityPriority } from "../../converters";
 
 export const VULNERABILITY_FINDING_ENTITY_TYPE =
   "tenable_vulnerability_finding";
@@ -33,15 +30,16 @@ export interface VulnerabilityFindingEntity extends EntityFromIntegration {
   pluginId: number;
   pluginName: string;
 
-  tenableSeverity: number;
-  numericSeverity: FindingSeverityNormal;
-  severity: FindingSeverityNormalName;
-  tenablePriority: number | undefined;
+  numericSeverity: number;
+  severity: FindingSeverityPriority;
+  numericPriority?: number;
+  priority?: string;
 
   open: boolean;
   targets: string[] | undefined;
-  firstSeenOn: number | undefined;
-  lastSeenOn: number | undefined;
+
+  firstSeenOn?: number;
+  lastSeenOn?: number;
 }
 
 export interface ContainerFindingEntity extends EntityFromIntegration {
@@ -59,7 +57,6 @@ export interface ContainerFindingEntity extends EntityFromIntegration {
   integrityImpact: string;
   cwe: string;
   remediation: string;
-
-  numericSeverity: FindingSeverityNormal;
-  severity: FindingSeverityNormalName;
+  numericSeverity: number;
+  severity: FindingSeverityPriority | undefined;
 }
