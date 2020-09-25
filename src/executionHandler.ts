@@ -1,5 +1,4 @@
 import {
-  IntegrationActionName,
   IntegrationExecutionContext,
   IntegrationExecutionResult,
   IntegrationRelationship,
@@ -91,7 +90,10 @@ async function removeDeprecatedEntities(
     ].map(async t => {
       const entitiesToDelete = await graph.findEntitiesByType(t);
       return persister.publishEntityOperations(
-        persister.processEntities(entitiesToDelete, []),
+        persister.processEntities({
+          oldEntities: entitiesToDelete,
+          newEntities: [],
+        }),
       );
     }),
   );
@@ -119,7 +121,10 @@ async function removeRelationshipsWithoutScanUuid(
     "scanUuid",
   ]);
   return persister.publishRelationshipOperations(
-    persister.processRelationships(relationships, []),
+    persister.processRelationships({
+      oldRelationships: relationships,
+      newRelationships: [],
+    }),
   );
 }
 
@@ -131,7 +136,10 @@ async function synchronizeAccount(
     Entities.ACCOUNT_ENTITY_TYPE,
   );
   return persister.publishEntityOperations(
-    persister.processEntities(existingAccounts, [createAccountEntity(account)]),
+    persister.processEntities({
+      oldEntities: existingAccounts,
+      newEntities: [createAccountEntity(account)],
+    }),
   );
 }
 
@@ -151,7 +159,10 @@ async function synchronizeScans(
   }
 
   return persister.publishEntityOperations(
-    persister.processEntities(existingScans, scanEntities),
+    persister.processEntities({
+      oldEntities: existingScans,
+      newEntities: scanEntities,
+    }),
   );
 }
 
@@ -174,16 +185,19 @@ async function synchronizeUsers(
   ]);
 
   return persister.publishPersisterOperations([
-    persister.processEntities(existingUsers, createUserEntities(users)),
+    persister.processEntities({
+      oldEntities: existingUsers,
+      newEntities: createUserEntities(users),
+    }),
     [
-      ...persister.processRelationships(
-        existingAccountUsers as IntegrationRelationship[],
-        createAccountUserRelationships(account, users),
-      ),
-      ...persister.processRelationships(
-        existingUserScans as IntegrationRelationship[],
-        createUserScanRelationships(scanSummaries, users),
-      ),
+      ...persister.processRelationships({
+        oldRelationships: existingAccountUsers as IntegrationRelationship[],
+        newRelationships: createAccountUserRelationships(account, users),
+      }),
+      ...persister.processRelationships({
+        oldRelationships: existingUserScans as IntegrationRelationship[],
+        newRelationships: createUserScanRelationships(scanSummaries, users),
+      }),
     ],
   ]);
 }
@@ -263,10 +277,10 @@ async function synchronizeScanVulnerabilities(
   );
 
   const operations = persister.publishRelationshipOperations(
-    persister.processRelationships(
-      existingScanVulnerabilityRelationships,
-      scanVulnerabilityRelationships,
-    ),
+    persister.processRelationships({
+      oldRelationships: existingScanVulnerabilityRelationships,
+      newRelationships: scanVulnerabilityRelationships,
+    }),
   );
 
   vulnLogger.info(
@@ -379,16 +393,19 @@ async function synchronizeHostVulnerabilities(
   }
 
   const operations = persister.publishPersisterOperations([
-    persister.processEntities(existingFindingEntities, findingEntities),
+    persister.processEntities({
+      oldEntities: existingFindingEntities,
+      newEntities: findingEntities,
+    }),
     [
-      ...persister.processRelationships(
-        existingVulnerabilityFindingRelationships as IntegrationRelationship[],
-        vulnerabilityFindingRelationships,
-      ),
-      ...persister.processRelationships(
-        existingScanFindingRelationships as IntegrationRelationship[],
-        scanFindingRelationships,
-      ),
+      ...persister.processRelationships({
+        oldRelationships: existingVulnerabilityFindingRelationships as IntegrationRelationship[],
+        newRelationships: vulnerabilityFindingRelationships,
+      }),
+      ...persister.processRelationships({
+        oldRelationships: existingScanFindingRelationships as IntegrationRelationship[],
+        newRelationships: scanFindingRelationships,
+      }),
     ],
   ]);
 
@@ -408,5 +425,5 @@ interface ActionMap {
 }
 
 const ACTIONS: ActionMap = {
-  [IntegrationActionName.INGEST]: synchronize,
+  INGEST: synchronize,
 };
