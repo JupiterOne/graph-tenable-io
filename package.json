@@ -26,21 +26,25 @@
     "lint:md": "remark .",
     "lint:ts": "tslint --project .",
     "format": "yarn prettier --write '**/*.{ts,js,json,md}'",
-    "test": "jest"
+    "test": "jest",
+    "prepack": "yarn build"
   },
   "dependencies": {
+    "@jupiterone/gremlin-client": "^8.0.0",
     "@jupiterone/jupiter-managed-integration-sdk": "^35.0.8",
+    "@jupiterone/jupiter-types": "^44.21.2",
+    "@jupiterone/lambda-runtime-tools": "^7.0.0",
     "@lifeomic/attempt": "^3.0.0",
     "node-fetch": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.4",
-    "@babel/core": "^7.7.4",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
-    "@babel/preset-env": "^7.7.4",
-    "@babel/preset-typescript": "^7.7.4",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-typescript": "^7.10.4",
     "@types/bunyan": "^1.8.5",
     "@types/fs-extra": "^8.0.1",
     "@types/gremlin": "^3.4.2",
