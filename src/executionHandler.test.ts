@@ -2,7 +2,6 @@ import nock from "nock";
 
 import {
   createTestIntegrationExecutionContext,
-  IntegrationActionName,
   IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
@@ -130,7 +129,7 @@ describe("executionHandler", () => {
       },
       event: {
         action: {
-          name: IntegrationActionName.CREATE_ENTITY,
+          name: "CREATE_ENTITY",
         },
       } as IntegrationInvocationEvent,
     });
