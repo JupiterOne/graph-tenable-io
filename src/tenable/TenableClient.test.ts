@@ -65,6 +65,7 @@ describe("TenableClient fetch errors", () => {
       .reply(404);
     const client = getClient();
     await expect(client.fetchUsers()).rejects.toThrow(/404/);
+    expect(scope.pendingMocks().length).toBe(0);
     scope.done();
   });
 
@@ -90,6 +91,25 @@ describe("TenableClient fetch errors", () => {
     await expect(
       client.fetchScanDetail({ id: 199 } as RecentScanSummary),
     ).rejects.toThrow(/401/);
+    scope.done();
+  });
+
+  test("fetchScanDetail 500 error", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get(
+        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
+      )
+      .times(RETRY_MAX_ATTEMPTS)
+      .reply(500);
+
+    const client = getClient();
+    await expect(
+      client.fetchAssetVulnerabilityInfo(
+        "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+        { plugin_id: 10386 } as ScanHostVulnerability,
+      ),
+    ).rejects.toThrow(/500/);
+    expect(scope.pendingMocks().length).toBe(0);
     scope.done();
   });
 

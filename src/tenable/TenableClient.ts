@@ -287,7 +287,7 @@ export default class TenableClient {
           return retryDelay;
         },
         handleError: (err, context) => {
-          if (err.statusCode !== 429) {
+          if (err.statusCode !== 429 && err.statusCode !== 500) {
             context.abort();
           }
         },
