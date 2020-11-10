@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 5.0.1 2020-11-10
+
 ### Changed
 
 - Retry `500` responses
