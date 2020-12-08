@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 5.0.2 2020-12-8
+
+### Changed
+
+- Retry `504` responses
+
 ## 5.0.1 2020-11-10
 
 ### Changed
