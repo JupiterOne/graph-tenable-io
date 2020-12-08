@@ -13,7 +13,7 @@ const ACCESS_KEY =
 const SECRET_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY || "test_secret_token";
 const TENABLE_COM = "cloud.tenable.com";
-const RETRY_MAX_ATTEMPTS = 2;
+const RETRY_MAX_ATTEMPTS = 3;
 
 function prepareScope(def: nock.NockDefinition) {
   def.scope = `https://${TENABLE_COM}`;
@@ -65,6 +65,24 @@ describe("TenableClient fetch errors", () => {
       .reply(404);
     const client = getClient();
     await expect(client.fetchUsers()).rejects.toThrow(/404/);
+    expect(scope.pendingMocks().length).toBe(0);
+    scope.done();
+  });
+
+  test("immediately retry 504 up to the max amount", async () => {
+    const scanId = 123;
+    const hostId = 1234;
+    const vulnerabilities = ["no bueno"];
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get(`/scans/${scanId}/hosts/${hostId}`)
+      .times(RETRY_MAX_ATTEMPTS - 1)
+      .reply(504)
+      .get(`/scans/${scanId}/hosts/${hostId}`)
+      .reply(200, { vulnerabilities });
+    const client = getClient();
+    expect(await client.fetchScanHostVulnerabilities(scanId, hostId)).toEqual(
+      vulnerabilities,
+    );
     expect(scope.pendingMocks().length).toBe(0);
     scope.done();
   });
