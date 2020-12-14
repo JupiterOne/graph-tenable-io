@@ -1188,10 +1188,10 @@
     lodash.zip "^4.2.0"
     nested-error-stacks "^2.1.0"
 
-"@jupiterone/jupiter-managed-integration-sdk@^35.0.8":
-  version "35.0.8"
-  resolved "https://registry.yarnpkg.com/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-35.0.8.tgz#5b6ca147a131b5d7a6f5497d3b820f8475544a23"
-  integrity sha512-sy0S9lnmcnI1SM/7xQqOslM+NYpKpv/1MgtlouN5YjxjAmBssT+2i/P518pQ/vRVlKvN+dBcXKDuJG0Cbx2Ojw==
+"@jupiterone/jupiter-managed-integration-sdk@^35.0.12":
+  version "35.0.12"
+  resolved "https://registry.yarnpkg.com/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-35.0.12.tgz#ea4f979b7f3352d812b8cdcdde284f671643db19"
+  integrity sha512-uuZ1R0WybD/N7uA+GXJQvTDdSgjlb9AWzo6yvz9/eyhbLSo5JL5s0qpFwlBxIM8nD0ga5mo1+yfg0Kq2NmKGWg==
 
 "@jupiterone/jupiter-types@^44.21.2":
   version "44.21.2"

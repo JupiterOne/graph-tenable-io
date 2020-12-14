@@ -8,7 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
-## 5.0.2 2020-12-8
+## 5.0.3 - 2020-12-14
+
+### Changed
+
+- Upgrade `@jupiterone/jupiter-managed-integration-sdk@^35.0.12`, which will
+  enable ECS steps to be executed with a timeout longer than 150 minutes.
+
+## 5.0.2 2020-12-08
 
 ### Changed
 
