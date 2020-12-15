@@ -39,12 +39,8 @@ import logObjectCounts from "./utils/logObjectCounts";
 export default async function executionHandler(
   context: IntegrationExecutionContext,
 ): Promise<IntegrationExecutionResult> {
-  const actionFunction = ACTIONS[context.event.action.name];
-  if (actionFunction) {
-    return await actionFunction(await initializeContext(context));
-  } else {
-    return {};
-  }
+  const initializedContext = await initializeContext(context);
+  return synchronize(initializedContext);
 }
 
 async function synchronize(
@@ -415,15 +411,3 @@ async function synchronizeHostVulnerabilities(
 
   return operations;
 }
-
-type ActionFunction = (
-  context: TenableIntegrationContext,
-) => Promise<IntegrationExecutionResult>;
-
-interface ActionMap {
-  [actionName: string]: ActionFunction | undefined;
-}
-
-const ACTIONS: ActionMap = {
-  INGEST: synchronize,
-};
