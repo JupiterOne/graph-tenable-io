@@ -7,6 +7,19 @@ import {
   RecentScanSummary,
   ScanHostVulnerability,
 } from "./types";
+import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
+
+function getIntegrationLogger(): IntegrationLogger {
+  return {
+    trace: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    fatal: jest.fn(),
+    child: () => getIntegrationLogger(),
+  }
+}
 
 const ACCESS_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY || "test_access_token";
@@ -21,7 +34,7 @@ function prepareScope(def: nock.NockDefinition) {
 
 function getClient() {
   return new TenableClient({
-    logger: { trace: jest.fn(), warn: jest.fn(), info: jest.fn() } as any,
+    logger: getIntegrationLogger(),
     accessToken: ACCESS_KEY,
     secretToken: SECRET_KEY,
     retryMaxAttempts: RETRY_MAX_ATTEMPTS,
@@ -31,7 +44,7 @@ function getClient() {
 describe("new TenableClient", () => {
   test("accepts 0 retryMaxAttempts", () => {
     const client = new TenableClient({
-      logger: { trace: jest.fn() } as any,
+      logger: getIntegrationLogger(),
       accessToken: ACCESS_KEY,
       secretToken: SECRET_KEY,
       retryMaxAttempts: 0,
