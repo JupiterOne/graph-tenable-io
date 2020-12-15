@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 5.0.4 - 2020-12-15
+
 ### Changed
 
 - Change client log levels from `trace` -> `info` and request log level from
