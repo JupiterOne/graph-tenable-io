@@ -62,7 +62,7 @@ export default class TenableClient {
       Method.GET,
       {},
     );
-    this.logger.trace(
+    this.logger.info(
       { permissions: response.permissions },
       "Fetched Tenable user's permissions",
     );
@@ -75,7 +75,7 @@ export default class TenableClient {
       Method.GET,
       {},
     );
-    this.logger.trace(
+    this.logger.info(
       { users: length(usersResponse.users) },
       "Fetched Tenable users",
     );
@@ -88,8 +88,8 @@ export default class TenableClient {
       Method.GET,
       {},
     );
-    this.logger.trace(
-      { users: length(scansResponse.scans) },
+    this.logger.info(
+      { scans: length(scansResponse.scans) },
       "Fetched Tenable scans",
     );
     return scansResponse.scans;
@@ -107,7 +107,7 @@ export default class TenableClient {
 
       const { info, hosts, vulnerabilities } = scanResponse;
 
-      this.logger.trace(
+      this.logger.info(
         {
           scan: { id: scan.id, uuid: scan.uuid },
           hosts: length(hosts),
@@ -153,7 +153,7 @@ export default class TenableClient {
         {},
       );
 
-      this.logger.trace(logData, "Fetched Tenable asset vulnerability info");
+      this.logger.info(logData, "Fetched Tenable asset vulnerability info");
 
       return vulnerabilitiesResponse.info;
     } catch (err) {
@@ -176,7 +176,7 @@ export default class TenableClient {
       ScanVulnerabilitiesResponse
     >(`/scans/${scanId}/hosts/${hostId}`, Method.GET, {});
 
-    this.logger.trace(
+    this.logger.info(
       {
         scan: { id: scanId },
         host: { id: hostId },
@@ -195,7 +195,7 @@ export default class TenableClient {
       {},
     );
 
-    this.logger.trace(
+    this.logger.info(
       { assets: length(assetsResponse.assets) },
       "Fetched Tenable assets",
     );
@@ -210,7 +210,7 @@ export default class TenableClient {
       {},
     );
 
-    this.logger.trace(
+    this.logger.info(
       { containers: length(containersResponse) },
       "Fetched Tenable assets",
     );
@@ -227,7 +227,7 @@ export default class TenableClient {
       {},
     );
 
-    this.logger.trace(
+    this.logger.info(
       {
         digestId,
         malware: length(reportResponse.malware),
@@ -256,7 +256,7 @@ export default class TenableClient {
       },
     };
 
-    this.logger.trace({ method, url }, "Fetching Tenable data...");
+    this.logger.debug({ method, url }, "Fetching Tenable data...");
 
     let retryDelay = 0;
 
@@ -266,6 +266,10 @@ export default class TenableClient {
 
         if (response.status === 429) {
           const serverRetryDelay = response.headers.get("retry-after");
+          this.logger.info(
+            { serverRetryDelay, url },
+            "Received 429 response from endpoint; waiting to retry.",
+          );
           if (serverRetryDelay) {
             retryDelay = Number.parseInt(serverRetryDelay, 10) * 1000;
           }
@@ -290,6 +294,15 @@ export default class TenableClient {
           if (![429, 500, 504].includes(err.statusCode)) {
             context.abort();
           }
+          this.logger.info(
+            {
+              url,
+              err,
+              attemptNum: context.attemptNum,
+              attemptsRemaining: context.attemptsRemaining,
+            },
+            "Encountered retryable API response. Retrying.",
+          );
         },
       },
     );

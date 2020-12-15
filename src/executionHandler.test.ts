@@ -1,9 +1,6 @@
 import nock from "nock";
 
-import {
-  createTestIntegrationExecutionContext,
-  IntegrationInvocationEvent,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk";
 
 import executionHandler from "./executionHandler";
 import * as Entities from "./jupiterone/entities";
@@ -121,28 +118,4 @@ describe("executionHandler", () => {
     expect(persister.publishEntityOperations).toHaveBeenCalledTimes(13);
     expect(persister.publishPersisterOperations).toHaveBeenCalledTimes(5);
   }, 60000);
-
-  test("action unknown", async () => {
-    const invocationContext = createTestIntegrationExecutionContext({
-      instance: {
-        config: tenableConfig,
-      },
-      event: {
-        action: {
-          name: "CREATE_ENTITY",
-        },
-      } as IntegrationInvocationEvent,
-    });
-
-    const { persister } = invocationContext.clients.getClients();
-    jest.spyOn(persister, "processEntities");
-    jest.spyOn(persister, "processRelationships");
-    jest.spyOn(persister, "publishPersisterOperations");
-
-    await executionHandler(invocationContext);
-
-    expect(persister.processEntities).not.toHaveBeenCalled();
-    expect(persister.processRelationships).not.toHaveBeenCalled();
-    expect(persister.publishPersisterOperations).not.toHaveBeenCalled();
-  });
 });
