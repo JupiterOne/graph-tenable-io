@@ -294,6 +294,15 @@ export default class TenableClient {
           if (![429, 500, 504].includes(err.statusCode)) {
             context.abort();
           }
+          this.logger.info(
+            {
+              url,
+              err,
+              attemptNum: context.attemptNum,
+              attemptsRemaining: context.attemptsRemaining,
+            },
+            "Encountered retryable API response. Retrying.",
+          );
         },
       },
     );
