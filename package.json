@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@jupiterone/gremlin-client": "^8.0.0",
-    "@jupiterone/jupiter-managed-integration-sdk": "^36.0.0",
+    "@jupiterone/jupiter-managed-integration-sdk": "^36.0.1",
     "@jupiterone/jupiter-types": "^44.21.2",
     "@jupiterone/lambda-runtime-tools": "^7.0.0",
     "@lifeomic/attempt": "^3.0.0",
