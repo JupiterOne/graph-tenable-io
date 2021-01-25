@@ -1188,10 +1188,10 @@
     lodash.zip "^4.2.0"
     nested-error-stacks "^2.1.0"
 
-"@jupiterone/jupiter-managed-integration-sdk@^35.0.12":
-  version "35.0.12"
-  resolved "https://registry.yarnpkg.com/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-35.0.12.tgz#ea4f979b7f3352d812b8cdcdde284f671643db19"
-  integrity sha512-uuZ1R0WybD/N7uA+GXJQvTDdSgjlb9AWzo6yvz9/eyhbLSo5JL5s0qpFwlBxIM8nD0ga5mo1+yfg0Kq2NmKGWg==
+"@jupiterone/jupiter-managed-integration-sdk@^36.0.1":
+  version "36.0.1"
+  resolved "https://registry.yarnpkg.com/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-36.0.1.tgz#f11c6d76994909727501cf4f3749d40c57b50fd2"
+  integrity sha512-mzYDYoxI3QS0RJvC0stX/d9czX/odX4ksR4J8l/V2V2XR/MVcJFObt7ycVkuWTtJgXrOteWgObg6pQ1l6vwkXg==
 
 "@jupiterone/jupiter-types@^44.21.2":
   version "44.21.2"
@@ -1760,10 +1760,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-aws-sdk@^2:
-  version "2.761.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.761.0.tgz#a677e3755fe84550de780e9be61190e8898cc032"
-  integrity sha512-mSzdiqlnruFlJYrQVWPMyPQ8ynJe9P5QVD+edv8HFlYDQNOwpPCjlqI9kE1VE3cVcxkh0j2Q2kfLQa/pAY2w7Q==
+aws-sdk@^2.828.0:
+  version "2.828.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.828.0.tgz#6aa599c3582f219568f41fb287eb65753e4a9234"
+  integrity sha512-JoDujGdncSIF9ka+XFZjop/7G+fNGucwPwYj7OHYMmFIOV5p7YmqomdbVmH/vIzd988YZz8oLOinWc4jM6vvhg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
