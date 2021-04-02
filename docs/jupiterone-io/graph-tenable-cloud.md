@@ -8,6 +8,28 @@ APIs][2] to obtain account metadata, vulnerability information, and application
 scan results for ingestion into JupiterOne. Customers authorize access by
 providing API keys to JupiterOne.
 
+## Tenable Cloud + JupiterOne Integration Benefits
+
+- Visualize Tenable Cloud users, scans, findings, reports, vulnerabilities, and
+  container findings in the JupiterOne graph.
+- Map Tenable Cloud users to employees in your JupiterOne account.
+- Monitor Tenable vulnerabilities and findings within the alerts app.
+- Monitor changes to Tenable Cloud users, scans, findings, reports,
+  vulnerabilities, and container findings using JupiterOne alerts.
+
+## How it Works
+
+- JupiterOne periodically fetches Tenable Cloud users, scans, findings, and 
+vulnerabilities to update the graph.
+- Write JupiterOne queries to review and monitor updates to the graph.
+- Configure alerts to reduce the noise of findings.
+- Configure alerts to take action when the JupiterOne graph changes.
+
+## Requirements
+
+- JupiterOne requires an access key and secret key used to authenticate with Tenable Cloud. 
+- You must have permission in JupiterOne to install new integrations.
+
 ## Integration Instance Configuration
 
 The integration is triggered by an event containing the information for a
