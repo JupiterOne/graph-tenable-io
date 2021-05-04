@@ -1,3 +1,4 @@
+import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
 import nock from "nock";
 
 import { fetchTenableData } from "./index";
@@ -7,7 +8,6 @@ import {
   RecentScanSummary,
   ScanHostVulnerability,
 } from "./types";
-import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
 
 function getIntegrationLogger(): IntegrationLogger {
   return {
@@ -18,7 +18,7 @@ function getIntegrationLogger(): IntegrationLogger {
     error: jest.fn(),
     fatal: jest.fn(),
     child: () => getIntegrationLogger(),
-  }
+  };
 }
 
 const ACCESS_KEY =
@@ -122,25 +122,6 @@ describe("TenableClient fetch errors", () => {
     await expect(
       client.fetchScanDetail({ id: 199 } as RecentScanSummary),
     ).rejects.toThrow(/401/);
-    scope.done();
-  });
-
-  test("fetchScanDetail 500 error", async () => {
-    const scope = nock(`https://${TENABLE_COM}`)
-      .get(
-        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
-      )
-      .times(RETRY_MAX_ATTEMPTS)
-      .reply(500);
-
-    const client = getClient();
-    await expect(
-      client.fetchAssetVulnerabilityInfo(
-        "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
-        { plugin_id: 10386 } as ScanHostVulnerability,
-      ),
-    ).rejects.toThrow(/500/);
-    expect(scope.pendingMocks().length).toBe(0);
     scope.done();
   });
 
@@ -291,6 +272,23 @@ describe("TenableClient data fetch", () => {
     );
     expect(info).toBeUndefined();
     nockDone();
+  });
+
+  test("fetchScanDetail 500 error", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get(
+        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
+      )
+      .times(RETRY_MAX_ATTEMPTS)
+      .reply(500);
+
+    const info = await client.fetchAssetVulnerabilityInfo(
+      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+      { plugin_id: 10386 } as ScanHostVulnerability,
+    );
+    expect(info).toBeUndefined();
+    expect(scope.pendingMocks().length).toBe(0);
+    scope.done();
   });
 
   test("fetchContainers ok", async () => {
