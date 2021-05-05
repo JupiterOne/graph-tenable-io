@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 5.2.0 - 2021-05-05
+
 ## 5.1.0 - 2021-05-05
 
 ### Changed
