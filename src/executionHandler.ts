@@ -222,7 +222,11 @@ async function synchronizeHosts(
             ),
           );
         }
-        if (scanDetail.hosts) {
+        // If the scan detail is archived any calls
+        // to sync the host details will give a 404 until
+        // we add the export functionality requested by
+        // Tenable. POST /scans/scan_id/export
+        if (scanDetail.hosts && !scanDetail.info.is_archived) {
           for (const host of scanDetail.hosts) {
             operationResults.push(
               await synchronizeHostVulnerabilities(

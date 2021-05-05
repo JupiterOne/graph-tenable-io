@@ -113,6 +113,7 @@ export interface ScanInfo {
   targets: string;
   alt_targets_used: boolean;
   "pci-can-upload": boolean;
+  is_archived: boolean;
   timestamp: number;
   haskb: boolean;
   hasaudittrail: boolean;

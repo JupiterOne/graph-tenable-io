@@ -162,6 +162,11 @@ export default class TenableClient {
           { ...logData, err },
           "Vulnerabilities details not found for asset",
         );
+      } else if (err.statusCode === 500) {
+        this.logger.warn(
+          { ...logData, err },
+          "Tenable API returned an internal service error for the asset vulnerabilities.",
+        );
       } else {
         throw err;
       }
