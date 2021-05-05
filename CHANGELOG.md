@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 5.1.0 - 2021-05-05
+
+### Changed
+
+- fetchAssetVulnerabilityInfo no longer throws error for status code 500,
+  instead it's logged as a warning message
+- synchronizeHosts no longer attempts to fetch host details if the scan is
+  archived. Previously when it did the api would returns a 404.
+
 ## 5.0.4 - 2020-12-15
 
 ### Changed
