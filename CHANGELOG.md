@@ -8,6 +8,19 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 5.3.0 - 2021-05-12
+
+### Changed
+
+- Only retry 500 status code errors from tenable up to a maximum of 3 times
+  irrespective of `retryMaxAttempts`
+- Added additional logging the amount of scans and hosts in the scan details.
+
+### Fixed
+
+- Tenable client now correctly resets the retryDelay so that other status codes
+  don't end up using the calculated retry delay from a 429 status code.
+
 ## 5.2.0 - 2021-05-05
 
 ## 5.1.0 - 2021-05-05
