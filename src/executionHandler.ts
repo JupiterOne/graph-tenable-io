@@ -50,13 +50,18 @@ async function synchronize(
 
   const oldData = await fetchEntitiesAndRelationships(graph);
   const tenableData = await fetchTenableData(provider);
-
   logObjectCounts(context, oldData, tenableData);
 
   const operationResults: PersisterOperationsResult[] = [];
 
   const scans = await provider.fetchScans();
 
+  context.logger.info(
+    {
+      scans: scans.length,
+    },
+    "Processing scans...",
+  );
   operationResults.push(await synchronizeAccount(context));
   operationResults.push(await synchronizeScans(context, scans));
   operationResults.push(await synchronizeUsers(context, scans));
@@ -227,6 +232,12 @@ async function synchronizeHosts(
         // we add the export functionality requested by
         // Tenable. POST /scans/scan_id/export
         if (scanDetail.hosts && !scanDetail.info.is_archived) {
+          context.logger.info(
+            {
+              scanDetailHosts: scanDetail.hosts.length,
+            },
+            "Processing scan detail hosts...",
+          );
           for (const host of scanDetail.hosts) {
             operationResults.push(
               await synchronizeHostVulnerabilities(

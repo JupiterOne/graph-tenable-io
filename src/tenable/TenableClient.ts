@@ -267,6 +267,7 @@ export default class TenableClient {
 
     return attempt.retry(
       async () => {
+        retryDelay = 0;
         const response = await fetch(this.host + url, requestOptions);
 
         if (response.status === 429) {
@@ -299,10 +300,14 @@ export default class TenableClient {
           if (![429, 500, 504].includes(err.statusCode)) {
             context.abort();
           }
+          if (err.statusCode === 500 && context.attemptsRemaining > 2) {
+            context.attemptsRemaining = 2;
+          }
           this.logger.info(
             {
               url,
               err,
+              retryDelay,
               attemptNum: context.attemptNum,
               attemptsRemaining: context.attemptsRemaining,
             },

@@ -26,7 +26,7 @@ const ACCESS_KEY =
 const SECRET_KEY =
   process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY || "test_secret_token";
 const TENABLE_COM = "cloud.tenable.com";
-const RETRY_MAX_ATTEMPTS = 3;
+const RETRY_MAX_ATTEMPTS = 4;
 
 function prepareScope(def: nock.NockDefinition) {
   def.scope = `https://${TENABLE_COM}`;
@@ -96,6 +96,23 @@ describe("TenableClient fetch errors", () => {
     expect(await client.fetchScanHostVulnerabilities(scanId, hostId)).toEqual(
       vulnerabilities,
     );
+    expect(scope.pendingMocks().length).toBe(0);
+    scope.done();
+  });
+
+  test("immediately retry 500 but short circuit to only 3 attempts", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get(
+        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
+      )
+      .times(RETRY_MAX_ATTEMPTS - 1)
+      .reply(500);
+    const client = getClient();
+    const info = await client.fetchAssetVulnerabilityInfo(
+      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+      { plugin_id: 10386 } as ScanHostVulnerability,
+    );
+    expect(info).toBeUndefined();
     expect(scope.pendingMocks().length).toBe(0);
     scope.done();
   });
@@ -272,23 +289,6 @@ describe("TenableClient data fetch", () => {
     );
     expect(info).toBeUndefined();
     nockDone();
-  });
-
-  test("fetchScanDetail 500 error", async () => {
-    const scope = nock(`https://${TENABLE_COM}`)
-      .get(
-        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
-      )
-      .times(RETRY_MAX_ATTEMPTS)
-      .reply(500);
-
-    const info = await client.fetchAssetVulnerabilityInfo(
-      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
-      { plugin_id: 10386 } as ScanHostVulnerability,
-    );
-    expect(info).toBeUndefined();
-    expect(scope.pendingMocks().length).toBe(0);
-    scope.done();
   });
 
   test("fetchContainers ok", async () => {
