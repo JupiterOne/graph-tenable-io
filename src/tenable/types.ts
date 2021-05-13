@@ -758,6 +758,7 @@ export interface AssetExport {
   tags: AssetExportTag[];
   network_interfaces: AssetExportNetworkInterfacesEntity[];
 }
+
 export interface AssetExportSourcesEntity {
   name: string;
   first_seen: string;
