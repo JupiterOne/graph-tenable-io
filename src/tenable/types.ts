@@ -469,3 +469,314 @@ export enum Method {
   GET = "get",
   POST = "post",
 }
+
+// Generic Export Types
+
+export enum ExportStatus {
+  Queued = "QUEUED",
+  Processing = "PROCESSING",
+  Finished = "FINISHED",
+  Cancelled = "CANCELLED",
+  Error = "ERROR",
+}
+
+// Export Vulnerability Types
+
+export enum VulnerabilitySeverity {
+  Info = "info",
+  Low = "low",
+  Medium = "medium",
+  High = "high",
+  Critical = "critical",
+}
+
+export enum VulnerabilityState {
+  Open = "open",
+  Reopened = "reopened",
+  Fixed = "fixed",
+}
+
+// Note: By default, vulnerability exports will only include
+// vulnerabilities found or fixed within the last 30 days if no
+// time-based filters (last_fixed, last_found, or first_found) are
+// submitted with the request. The rest  of the rules can be found
+// here on the api docs.
+// For now if you want all the vulns pass in 1009861200 (When tenable was
+// founded) to the first_found ideally we should keep track of when
+// we last looked.
+export interface ExportVulnerabilitiesFilter {
+  cidr_range?: string;
+  first_found?: number;
+  last_found?: number;
+  last_fixed?: number;
+  plugin_family?: string[];
+  plugin_id?: number[];
+  network_id?: string;
+  severity?: VulnerabilitySeverity[];
+  since?: number;
+  state?: VulnerabilityState[];
+  vpr_score?: {
+    eq?: number[];
+    neq?: number[];
+    gt?: number;
+    gte?: number;
+    lt?: number;
+    lte?: number;
+  };
+}
+
+export interface ExportVulnerabilitiesOptions {
+  num_assets: number;
+  include_unlicensed?: boolean;
+  filters?: ExportVulnerabilitiesFilter; // See filter notes above
+}
+
+export interface ExportVulnerabilitiesResponse {
+  export_uuid: string;
+}
+
+export interface VulnerabilitiesExportStatusResponse {
+  uuid: string;
+  status: ExportStatus;
+  chunks_available: number[];
+  chunks_failed: number[];
+  chunks_cancelled: number[];
+  total_chunks: number;
+  chunks_available_count: number;
+  empty_chunks_count: number;
+  finished_chunks: number;
+  num_assets_per_chunk: number;
+  created: number;
+  filters?: ExportVulnerabilitiesFilter;
+}
+
+export interface VulnerabilityExport {
+  asset: VulnerabilityExportAsset;
+  output: string | null;
+  plugin: VulnerabilityExportPlugin;
+  port: VulnerabilityExportPort;
+  scan: VulnerabilityExportScan;
+  severity: string;
+  severity_id: number;
+  severity_default_id: number;
+  severity_modification_type: string;
+  first_found: string;
+  last_found: string;
+  state: string;
+}
+
+export interface VulnerabilityExportAsset {
+  device_type: string;
+  hostname: string;
+  uuid: string;
+  ipv4: string;
+  last_unauthenticated_results: string;
+  operating_system: string[];
+  network_id: string;
+  tracked: boolean;
+}
+
+export interface VulnerabilityExportPlugin {
+  description: string;
+  family: string;
+  family_id: number;
+  has_patch: boolean;
+  id: number;
+  name: string;
+  modification_date: string;
+  publication_date: string;
+  risk_factor: string;
+  see_also: string[];
+  solution: string;
+  synopsis: string;
+  type: string;
+  version: string;
+  xrefs: VulnerabilityExportXrefsEntity[];
+  cpe: string[];
+  cvss3_base_score: number | null;
+  cvss3_vector: VulnerabilityExportCvss3Vector | null;
+  cvss_base_score: number | null;
+  cvss_vector: VulnerabilityExportCvssVector | null;
+  bid: number[];
+  cve: string[];
+  exploit_available: boolean | null;
+  exploitability_ease: string | null;
+  vuln_publication_date: string | null;
+  vpr: VulnerabilityExportVpr | null;
+}
+
+export interface VulnerabilityExportXrefsEntity {
+  type: string;
+  id: string;
+}
+
+export interface VulnerabilityExportCvss3Vector {
+  access_complexity: string;
+  access_vector: string;
+  availability_impact: string;
+  confidentiality_impact: string;
+  integrity_impact: string;
+  raw: string;
+}
+
+export interface VulnerabilityExportCvssVector {
+  access_complexity: string;
+  access_vector: string;
+  authentication: string;
+  availability_impact: string;
+  confidentiality_impact: string;
+  integrity_impact: string;
+  raw: string;
+}
+
+export interface VulnerabilityExportVpr {
+  score: number;
+  drivers: VulnerabilityExportDrivers;
+  updated: string;
+}
+
+export interface VulnerabilityExportDrivers {
+  age_of_vuln: VulnerabilityExportAgeOfVuln;
+  exploit_code_maturity: string;
+  cvss_impact_score_predicted: boolean;
+  cvss3_impact_score: number;
+  threat_intensity_last28: string;
+  threat_sources_last28: string[];
+  product_coverage: string;
+}
+
+export interface VulnerabilityExportAgeOfVuln {
+  lower_bound: number;
+}
+
+export interface VulnerabilityExportPort {
+  port: number;
+  protocol: string;
+  service: string | null;
+}
+
+export interface VulnerabilityExportScan {
+  completed_at: string;
+  schedule_uuid: string;
+  started_at: string;
+  uuid: string;
+}
+
+// Export Asset Types
+
+export interface ExportAssetsOptions {
+  chunk_size: number;
+  include_unlicensed?: boolean;
+  filters?: ExportAssetsFilter;
+}
+
+export interface ExportAssetsFilter {
+  created_at?: number;
+  updated_at?: number;
+  terminated_at?: number;
+  deleted_at?: number;
+  is_terminated?: boolean;
+  is_deleted?: boolean;
+  is_licensed?: boolean;
+  first_scan_time?: number;
+  last_authenticated_scan_time?: number;
+  last_assessed?: number;
+  servicenow_sysid?: boolean;
+  sources?: string[];
+  has_plugin_results?: boolean;
+  network_id?: string;
+}
+
+export interface ExportAssetsResponse {
+  export_uuid: string;
+}
+
+export interface AssetsExportStatusResponse {
+  status: ExportStatus;
+  chunks_available: number[];
+}
+
+export interface AssetExport {
+  id: string;
+  has_agent: boolean;
+  has_plugin_results: boolean | null;
+  created_at: string;
+  terminated_at: string | null;
+  terminated_by: string | null;
+  updated_at: string;
+  deleted_at: string | null;
+  deleted_by: string | null;
+  first_seen: string;
+  last_seen: string;
+  first_scan_time: string;
+  last_scan_time: string;
+  last_authenticated_scan_date: string | null;
+  last_licensed_scan_date: string;
+  last_scan_id: string;
+  last_schedule_id: string;
+  azure_vm_id: string | null;
+  azure_resource_id: string | null;
+  gcp_project_id: string | null;
+  gcp_zone: string | null;
+  gcp_instance_id: string | null;
+  aws_ec2_instance_ami_id: string | null;
+  aws_ec2_instance_id: string | null;
+  agent_uuid: string | null;
+  bios_uuid: string | null;
+  network_id: string;
+  network_name: string;
+  aws_owner_id: string | null;
+  aws_availability_zone: string | null;
+  aws_region: string | null;
+  aws_vpc_id: string | null;
+  aws_ec2_instance_group_name: string | null;
+  aws_ec2_instance_state_name: string | null;
+  aws_ec2_instance_type: string | null;
+  aws_subnet_id: string | null;
+  aws_ec2_product_code: string | null;
+  aws_ec2_name: string | null;
+  mcafee_epo_guid: string | null;
+  mcafee_epo_agent_guid: string | null;
+  servicenow_sysid: string | null;
+  bigfix_asset_id: string | null;
+  agent_names: string[];
+  installed_software: string[];
+  ipv4s: string[];
+  ipv6s: string[];
+  fqdns: string[];
+  mac_addresses: string[];
+  netbios_names: string[];
+  operating_systems: string[];
+  system_types: string[];
+  hostnames: string[];
+  ssh_fingerprints: string[];
+  qualys_asset_ids: string[];
+  qualys_host_ids: string[];
+  manufacturer_tpm_ids: string[];
+  symantec_ep_hardware_keys: string[];
+  sources: AssetExportSourcesEntity[];
+  tags: AssetExportTag[];
+  network_interfaces: AssetExportNetworkInterfacesEntity[];
+}
+export interface AssetExportSourcesEntity {
+  name: string;
+  first_seen: string;
+  last_seen: string;
+}
+export interface AssetExportNetworkInterfacesEntity {
+  name: string;
+  virtual: boolean | null;
+  aliased: boolean | null;
+  fqdns: string[];
+  mac_addresses: string[];
+  ipv4s: string[];
+  ipv6s: string[];
+}
+
+export interface AssetExportTag {
+  uuid: string;
+  key: string;
+  value: string;
+  added_by: string;
+  added_at: string;
+}

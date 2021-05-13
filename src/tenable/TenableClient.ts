@@ -7,6 +7,8 @@ import {
 import * as attempt from "@lifeomic/attempt";
 
 import {
+  AssetExport,
+  AssetsExportStatusResponse,
   AssetsResponse,
   AssetSummary,
   AssetVulnerabilityInfo,
@@ -14,6 +16,10 @@ import {
   Container,
   ContainerReport,
   ContainersResponse,
+  ExportAssetsOptions,
+  ExportAssetsResponse,
+  ExportVulnerabilitiesOptions,
+  ExportVulnerabilitiesResponse,
   Method,
   RecentScanDetail,
   RecentScanSummary,
@@ -25,6 +31,8 @@ import {
   User,
   UserPermissionsResponse,
   UsersResponse,
+  VulnerabilitiesExportStatusResponse,
+  VulnerabilityExport,
 } from "./types";
 
 function length(resources?: any[]): number {
@@ -60,7 +68,6 @@ export default class TenableClient {
     const response = await this.makeRequest<UserPermissionsResponse>(
       "/session",
       Method.GET,
-      {},
     );
     this.logger.info(
       { permissions: response.permissions },
@@ -73,7 +80,6 @@ export default class TenableClient {
     const usersResponse = await this.makeRequest<UsersResponse>(
       "/users",
       Method.GET,
-      {},
     );
     this.logger.info(
       { users: length(usersResponse.users) },
@@ -86,7 +92,6 @@ export default class TenableClient {
     const scansResponse = await this.makeRequest<ScansResponse>(
       "/scans",
       Method.GET,
-      {},
     );
     this.logger.info(
       { scans: length(scansResponse.scans) },
@@ -102,7 +107,6 @@ export default class TenableClient {
       const scanResponse = await this.makeRequest<ScanResponse>(
         `/scans/${scan.id}`,
         Method.GET,
-        {},
       );
 
       const { info, hosts, vulnerabilities } = scanResponse;
@@ -150,7 +154,6 @@ export default class TenableClient {
       >(
         `/workbenches/assets/${assetUuid}/vulnerabilities/${vulnerability.plugin_id}/info`,
         Method.GET,
-        {},
       );
 
       this.logger.info(logData, "Fetched Tenable asset vulnerability info");
@@ -173,13 +176,129 @@ export default class TenableClient {
     }
   }
 
+  public async exportVulnerabilities(
+    options: ExportVulnerabilitiesOptions,
+  ): Promise<ExportVulnerabilitiesResponse> {
+    const exportResponse = await this.makeRequest<
+      ExportVulnerabilitiesResponse
+    >("/vulns/export", Method.POST, {}, options);
+
+    this.logger.info(
+      {
+        options,
+        exportResponse,
+      },
+      "Started Tenable vulnerabilities export",
+    );
+
+    return exportResponse;
+  }
+
+  public async fetchVulnerabilitiesExportStatus(
+    exportUuid: string,
+  ): Promise<VulnerabilitiesExportStatusResponse> {
+    const exportStatusResponse = await this.makeRequest<
+      VulnerabilitiesExportStatusResponse
+    >(`/vulns/export/${exportUuid}/status`, Method.GET);
+
+    this.logger.info(
+      {
+        exportUuid,
+        exportStatusResponse,
+      },
+      "Fetched Tenable vulnerabilities export status",
+    );
+
+    return exportStatusResponse;
+  }
+
+  public async fetchVulnerabilitiesExportChunk(
+    exportUuid: string,
+    chunkId: number,
+  ): Promise<VulnerabilityExport[]> {
+    const vulnerabilitiesExportResponse = await this.makeRequest<
+      VulnerabilityExport[]
+    >(`/vulns/export/${exportUuid}/chunks/${chunkId}`, Method.GET);
+
+    this.logger.info(
+      {
+        exportUuid,
+        chunkId,
+        vulnerabilitiesExportResponse: vulnerabilitiesExportResponse.length,
+      },
+      "Fetched Tenable vulnerabilities export chunk",
+    );
+
+    return vulnerabilitiesExportResponse;
+  }
+
+  public async exportAssets(
+    options: ExportAssetsOptions,
+  ): Promise<ExportAssetsResponse> {
+    const exportResponse = await this.makeRequest<ExportAssetsResponse>(
+      "/assets/export",
+      Method.POST,
+      {},
+      options,
+    );
+
+    this.logger.info(
+      {
+        options,
+        exportResponse,
+      },
+      "Started Tenable assets export",
+    );
+
+    return exportResponse;
+  }
+
+  public async fetchAssetsExportStatus(
+    exportUuid: string,
+  ): Promise<AssetsExportStatusResponse> {
+    const exportStatusResponse = await this.makeRequest<
+      AssetsExportStatusResponse
+    >(`/assets/export/${exportUuid}/status`, Method.GET);
+
+    this.logger.info(
+      {
+        exportUuid,
+        exportStatusResponse,
+      },
+      "Fetched Tenable vulnerabilities export status",
+    );
+
+    return exportStatusResponse;
+  }
+
+  public async fetchAssetsExportChunk(
+    exportUuid: string,
+    chunkId: number,
+  ): Promise<AssetExport[]> {
+    const assetsExportResponse = await this.makeRequest<AssetExport[]>(
+      `/assets/export/${exportUuid}/chunks/${chunkId}`,
+      Method.GET,
+    );
+
+    this.logger.info(
+      {
+        exportUuid,
+        chunkId,
+        assetsExportResponse: assetsExportResponse.length,
+      },
+      "Fetched Tenable assets export chunk",
+    );
+
+    return assetsExportResponse;
+  }
+
   public async fetchScanHostVulnerabilities(
     scanId: number,
     hostId: number,
   ): Promise<ScanHostVulnerability[]> {
     const vulnerabilitiesResponse = await this.makeRequest<
       ScanVulnerabilitiesResponse
-    >(`/scans/${scanId}/hosts/${hostId}`, Method.GET, {});
+    >(`/scans/${scanId}/hosts/${hostId}`, Method.GET);
 
     this.logger.info(
       {
@@ -197,7 +316,6 @@ export default class TenableClient {
     const assetsResponse = await this.makeRequest<AssetsResponse>(
       "/assets",
       Method.GET,
-      {},
     );
 
     this.logger.info(
@@ -212,7 +330,6 @@ export default class TenableClient {
     const containersResponse = await this.makeRequest<ContainersResponse>(
       "/container-security/api/v1/container/list",
       Method.GET,
-      {},
     );
 
     this.logger.info(
@@ -229,7 +346,6 @@ export default class TenableClient {
     const reportResponse = await this.makeRequest<ReportResponse>(
       `/container-security/api/v1/reports/by_image_digest?image_digest=${digestId}`,
       Method.GET,
-      {},
     );
 
     this.logger.info(
@@ -248,7 +364,8 @@ export default class TenableClient {
   private async makeRequest<T>(
     url: string,
     method: Method,
-    headers: {},
+    headers: {} = {},
+    body?: {},
   ): Promise<T> {
     const requestOptions: RequestInit = {
       method,
@@ -260,6 +377,9 @@ export default class TenableClient {
         ...headers,
       },
     };
+    if (body) {
+      requestOptions.body = JSON.stringify(body);
+    }
 
     this.logger.debug({ method, url }, "Fetching Tenable data...");
 
