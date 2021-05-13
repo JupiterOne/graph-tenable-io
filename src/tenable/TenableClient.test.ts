@@ -4,9 +4,12 @@ import nock from "nock";
 import { fetchTenableData } from "./index";
 import TenableClient from "./TenableClient";
 import {
+  ExportAssetsOptions,
+  ExportVulnerabilitiesOptions,
   RecentScanDetail,
   RecentScanSummary,
   ScanHostVulnerability,
+  VulnerabilityState,
 } from "./types";
 
 function getIntegrationLogger(): IntegrationLogger {
@@ -322,6 +325,96 @@ describe("TenableClient data fetch", () => {
       "sha256:1edb77942782fc99d6b1ad53c78dd602ae5ee4f26e49edb49555faf749574ae9",
     );
     expect(response).not.toEqual({});
+    nockDone();
+  });
+
+  test("exportVulnerabilities ok", async () => {
+    const { nockDone } = await nock.back("export-vulnerabilities-ok.json", {
+      before: prepareScope,
+    });
+
+    const options: ExportVulnerabilitiesOptions = {
+      num_assets: 50,
+      filters: {
+        first_found: 1009861200,
+        state: [
+          VulnerabilityState.Open,
+          VulnerabilityState.Reopened,
+          VulnerabilityState.Fixed,
+        ],
+      },
+    };
+    const response = await client.exportVulnerabilities(options);
+    expect(response).not.toEqual({});
+    nockDone();
+  });
+
+  test("fetchVulnerabilitiesExportStatus ok", async () => {
+    const { nockDone } = await nock.back(
+      "vulnerabilities-export-status-ok.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const response = await client.fetchVulnerabilitiesExportStatus(
+      "ea907e2b-6cf0-45d2-99d0-8037158eb896",
+    );
+    expect(response).not.toEqual({});
+    nockDone();
+  });
+
+  test("fetchVulnerabilitiesExportChunk ok", async () => {
+    const { nockDone } = await nock.back(
+      "vulnerabilities-export-chunk-ok.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const response = await client.fetchVulnerabilitiesExportChunk(
+      "ea907e2b-6cf0-45d2-99d0-8037158eb896",
+      1,
+    );
+    expect(response.length).not.toEqual(0);
+    nockDone();
+  });
+
+  test("exportAssets ok", async () => {
+    const { nockDone } = await nock.back("export-assets-ok.json", {
+      before: prepareScope,
+    });
+
+    const options: ExportAssetsOptions = {
+      chunk_size: 100,
+    };
+    const response = await client.exportAssets(options);
+    expect(response).not.toEqual({});
+    nockDone();
+  });
+
+  test("fetchAssetsExportStatus ok", async () => {
+    const { nockDone } = await nock.back("assets-export-status-ok.json", {
+      before: prepareScope,
+    });
+
+    const response = await client.fetchAssetsExportStatus(
+      "5dc52d4e-82d1-4988-8231-98dbe6ce62cd",
+    );
+    expect(response).not.toEqual({});
+    nockDone();
+  });
+
+  test("fetchAssetsExportChunk ok", async () => {
+    const { nockDone } = await nock.back("assets-export-chunk-ok.json", {
+      before: prepareScope,
+    });
+
+    const response = await client.fetchAssetsExportChunk(
+      "5dc52d4e-82d1-4988-8231-98dbe6ce62cd",
+      1,
+    );
+    expect(response.length).not.toEqual(0);
     nockDone();
   });
 

@@ -1,3 +1,4 @@
+import { AnyAaaaRecord } from "dns";
 import fetchTenableData from "./fetchTenableData";
 import { AssetSummary, ScanHost } from "./types";
 
@@ -10,4 +11,11 @@ export interface TenableAssetCache {
    * Finds the `AssetSummary` for the host, or `undefined` when not found.
    */
   findAsset: (host: ScanHost) => AssetSummary | undefined;
+}
+
+export interface TenableVulnerabilityCache {
+  /**
+   * Finds the `AssetSummary` for the host, or `undefined` when not found.
+   */
+  findVulnerability: (asset: AssetSummary) => AnyAaaaRecord | undefined;
 }
