@@ -1,5 +1,10 @@
 import fetchTenableData from "./fetchTenableData";
-import { AssetExport, AssetSummary, ScanHost } from "./types";
+import {
+  AssetExport,
+  AssetSummary,
+  ScanHost,
+  VulnerabilityExport,
+} from "./types";
 
 export * from "./TenableClient";
 
@@ -12,6 +17,12 @@ export interface TenableAssetCache {
   findAsset: (host: ScanHost) => AssetSummary | undefined;
 }
 
-export interface TenableAssetExportCache {
+export interface AssetExportCache {
   findAssetExportByUuid: (uuid: string) => AssetExport | undefined;
+}
+
+export interface VulnerabilityExportCache {
+  findVulnerabilitiesExportByAssetUuid: (
+    uuid: string,
+  ) => VulnerabilityExport[] | undefined;
 }

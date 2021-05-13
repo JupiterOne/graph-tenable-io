@@ -62,6 +62,7 @@
     "jest-resolve": "^24.9.0",
     "lint-staged": "^9.4.3",
     "nock": "^10.0.6",
+    "p-map": "^4.0.0",
     "prettier": "1.19.1",
     "remark-cli": "^7.0.1",
     "remark-lint": "^6.0.4",
