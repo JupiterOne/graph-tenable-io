@@ -1,6 +1,7 @@
 import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
 import nock from "nock";
-import createTenableAssetExportCache from "./createTenableAssetExportCache";
+import { createAssetExportCache } from "./createAssetExportCache";
+import { createVulnerabilityExportCache } from "./createVulnerabilityExportCache";
 import TenableClient from "./TenableClient";
 
 function getIntegrationLogger(): IntegrationLogger {
@@ -35,8 +36,9 @@ function getClient() {
   });
 }
 
-describe("TenableAssetExportCache", () => {
+describe("AssetExportCache", () => {
   let client: TenableClient;
+  let logger: IntegrationLogger;
 
   beforeAll(() => {
     nock.back.fixtures = `${__dirname}/../../test/fixtures/`;
@@ -47,15 +49,15 @@ describe("TenableAssetExportCache", () => {
 
   beforeEach(() => {
     client = getClient();
+    logger = getIntegrationLogger();
   });
 
-  test("createTenableAssetExportCache ok", async () => {
+  test("create ok", async () => {
     const { nockDone } = await nock.back("export-assets-full-cycle.json", {
       before: prepareScope,
     });
 
-    await createTenableAssetExportCache(client);
-
+    await createAssetExportCache(logger, client);
     nockDone();
   });
 
@@ -64,8 +66,7 @@ describe("TenableAssetExportCache", () => {
       before: prepareScope,
     });
 
-    const cache = await createTenableAssetExportCache(client);
-
+    const cache = await createAssetExportCache(logger, client);
     const lookupUuid = "48cabb0b-f0fe-4db8-9a96-4fec60e4d4f4";
     const assetExport = cache.findAssetExportByUuid(lookupUuid);
     expect(assetExport).not.toBeUndefined();
@@ -79,10 +80,143 @@ describe("TenableAssetExportCache", () => {
       before: prepareScope,
     });
 
-    const cache = await createTenableAssetExportCache(client);
-
+    const cache = await createAssetExportCache(logger, client);
     const assetExport = cache.findAssetExportByUuid("fake");
     expect(assetExport).toBeUndefined();
+    nockDone();
+  });
+
+  afterAll(() => {
+    nock.restore();
+  });
+});
+
+describe("VulnerabilityExportCache", () => {
+  let client: TenableClient;
+  let logger: IntegrationLogger;
+
+  beforeAll(() => {
+    nock.back.fixtures = `${__dirname}/../../test/fixtures/`;
+    process.env.CI
+      ? nock.back.setMode("lockdown")
+      : nock.back.setMode("record");
+  });
+
+  beforeEach(() => {
+    client = getClient();
+    logger = getIntegrationLogger();
+    jest
+      .spyOn(global.Date, "now")
+      .mockImplementation(() => new Date("2020-01-01").valueOf());
+  });
+
+  test("create ok", async () => {
+    const { nockDone } = await nock.back(
+      "export-vulnerabilities-full-cycle.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    await createVulnerabilityExportCache(logger, client);
+
+    nockDone();
+  });
+
+  test("findVulnerabilitiesExportByAssetUuid found vulnerabilities", async () => {
+    const { nockDone } = await nock.back(
+      "export-vulnerabilities-full-cycle.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const cache = await createVulnerabilityExportCache(logger, client);
+
+    const lookupUuid = "48cabb0b-f0fe-4db8-9a96-4fec60e4d4f4";
+    const vulnerabilityExports = cache.findVulnerabilitiesExportByAssetUuid(
+      lookupUuid,
+    );
+    expect(vulnerabilityExports).not.toBeUndefined();
+    expect(vulnerabilityExports?.length).not.toEqual(0);
+    expect(vulnerabilityExports?.[0].asset.uuid).toEqual(lookupUuid);
+
+    nockDone();
+  });
+
+  test("findVulnerabilitiesExportByAssetUuid did not find vulnerabilities", async () => {
+    const { nockDone } = await nock.back(
+      "export-vulnerabilities-full-cycle.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const cache = await createVulnerabilityExportCache(logger, client);
+
+    const vulnerabilityExports = cache.findVulnerabilitiesExportByAssetUuid(
+      "fake",
+    );
+    expect(vulnerabilityExports).toBeUndefined();
+    nockDone();
+  });
+
+  test("findVulnerabilityExportByAssetPluginUuid found vulnerability", async () => {
+    const { nockDone } = await nock.back(
+      "export-vulnerabilities-full-cycle.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const cache = await createVulnerabilityExportCache(logger, client);
+
+    const assetLookupUuid = "48cabb0b-f0fe-4db8-9a96-4fec60e4d4f4";
+    const pluginLookupId = 39521;
+    const vulnerabilityExport = cache.findVulnerabilityExportByAssetPluginUuid(
+      assetLookupUuid,
+      pluginLookupId,
+    );
+    expect(vulnerabilityExport).not.toBeUndefined();
+    expect(vulnerabilityExport?.asset.uuid).toEqual(assetLookupUuid);
+    expect(vulnerabilityExport?.plugin.id).toEqual(pluginLookupId);
+
+    nockDone();
+  });
+
+  test("findVulnerabilityExportByAssetPluginUuid did not find vulnerability", async () => {
+    const { nockDone } = await nock.back(
+      "export-vulnerabilities-full-cycle.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const cache = await createVulnerabilityExportCache(logger, client);
+
+    const assetLookupUuid = "48cabb0b-f0fe-4db8-9a96-4fec60e4d4f4";
+    const vulnerabilityExport = cache.findVulnerabilityExportByAssetPluginUuid(
+      assetLookupUuid,
+      -1,
+    );
+    expect(vulnerabilityExport).toBeUndefined();
+    nockDone();
+  });
+
+  test("findVulnerabilityExportByAssetPluginUuid did not find vulnerability", async () => {
+    const { nockDone } = await nock.back(
+      "export-vulnerabilities-full-cycle.json",
+      {
+        before: prepareScope,
+      },
+    );
+
+    const cache = await createVulnerabilityExportCache(logger, client);
+    const vulnerabilityExport = cache.findVulnerabilityExportByAssetPluginUuid(
+      "fake",
+      -1,
+    );
+    expect(vulnerabilityExport).toBeUndefined();
     nockDone();
   });
 

@@ -22,11 +22,12 @@ import {
   VulnerabilityFindingRelationship,
 } from "../jupiterone";
 import {
-  AssetSummary,
-  AssetVulnerabilityInfo,
+  AssetExport,
+  AssetVulnerabilityRiskInfo,
   RecentScanSummary,
   ScanHostVulnerability,
   ScanVulnerabilitySummary,
+  VulnerabilityExport,
 } from "../tenable/types";
 import {
   generateEntityKey,
@@ -217,33 +218,44 @@ export function createScanFindingRelationship({
 
 export function createVulnerabilityFindingEntity(data: {
   scan: RecentScanSummary;
-  asset: AssetSummary | undefined;
+  asset: AssetExport | undefined;
   assetUuid: string | undefined;
   vulnerability: ScanHostVulnerability;
-  vulnerabilityDetails?: AssetVulnerabilityInfo;
+  vulnerabilityExport?: VulnerabilityExport;
 }): VulnerabilityFindingEntity {
-  const { scan, asset, assetUuid, vulnerability, vulnerabilityDetails } = data;
+  const { scan, asset, assetUuid, vulnerability, vulnerabilityExport } = data;
 
   const details = {};
 
-  if (vulnerabilityDetails) {
+  if (vulnerabilityExport) {
     const numericPriority =
-      vulnerabilityDetails.vpr && vulnerabilityDetails.vpr.score;
+      vulnerabilityExport.plugin.vpr && vulnerabilityExport.plugin.vpr.score;
     const priority = numericPriority && getPriority(numericPriority);
-    const cvss = vulnerabilityDetails.risk_information;
+    // const cvss = vulnerabilityExport.plugin.risk_information;
+
+    const cvss: AssetVulnerabilityRiskInfo = {
+      risk_factor: vulnerabilityExport.plugin.risk_factor,
+      cvss_vector: JSON.stringify(vulnerabilityExport.plugin.cvss_vector),
+      cvss_base_score: vulnerabilityExport.plugin.cvss_base_score?.toString(),
+      cvss_temporal_vector: vulnerabilityExport.plugin.cvss_temporal_vector,
+      cvss_temporal_score: vulnerabilityExport.plugin.cvss_temporal_score,
+      cvss3_vector: vulnerabilityExport.plugin.cvss3_vector,
+      cvss3_base_score: vulnerabilityExport.plugin.cvss3_base_score,
+      cvss3_temporal_vector: vulnerabilityExport.plugin.cvss3_temporal_vector,
+      cvss3_temporal_score: vulnerabilityExport.plugin.cvss_temporal_score,
+      stig_severity: vulnerabilityExport.plugin.stig_severity,
+    };
 
     Object.assign(details, {
       ...convertProperties(cvss),
-      description: vulnerabilityDetails.description,
-      synopsis: vulnerabilityDetails.synopsis,
-      solution: vulnerabilityDetails.solution,
-      reference:
-        vulnerabilityDetails.reference_information &&
-        vulnerabilityDetails.reference_information.url,
+      description: vulnerabilityExport.plugin.description,
+      synopsis: vulnerabilityExport.plugin.synopsis,
+      solution: vulnerabilityExport.plugin.solution,
+      reference: vulnerabilityExport.plugin.see_also,
       numericPriority,
       priority,
-      firstSeenOn: getTime(vulnerabilityDetails.discovery.seen_first),
-      lastSeenOn: getTime(vulnerabilityDetails.discovery.seen_last),
+      firstSeenOn: getTime(vulnerabilityExport.first_found),
+      lastSeenOn: getTime(vulnerabilityExport.last_found),
     });
   }
 
@@ -268,10 +280,12 @@ export function createVulnerabilityFindingEntity(data: {
     open: true,
     targets:
       asset &&
-      [asset.fqdn, asset.ipv4, asset.ipv6, asset.mac_address].reduce((a, e) => [
-        ...a,
-        ...e,
-      ]),
+      [
+        asset.fqdns,
+        asset.ipv4s,
+        asset.ipv6s,
+        asset.mac_addresses,
+      ].reduce((a, e) => [...a, ...e]),
   };
 }
 
