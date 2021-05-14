@@ -8,6 +8,18 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 6.0.0 - 2021-05-14
+
+### Changed
+
+- The integration no longer uses the `/workbenches/assets` endpoint to get
+  vulnerability information and now uses the asset export endpoint to get extra
+  asset metadata information.
+
+### Added
+
+- Bulk export endpoints for vulnerabilities and assets
+
 ## 5.3.0 - 2021-05-12
 
 ### Changed
