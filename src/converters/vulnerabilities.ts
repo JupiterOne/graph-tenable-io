@@ -231,8 +231,6 @@ export function createVulnerabilityFindingEntity(data: {
     const numericPriority =
       vulnerabilityExport.plugin.vpr && vulnerabilityExport.plugin.vpr.score;
     const priority = numericPriority && getPriority(numericPriority);
-    // const cvss = vulnerabilityExport.plugin.risk_information;
-
     const cvss: AssetVulnerabilityRiskInfo = {
       risk_factor: vulnerabilityExport.plugin.risk_factor,
       cvss_vector: JSON.stringify(vulnerabilityExport.plugin.cvss_vector),
