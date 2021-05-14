@@ -1,4 +1,8 @@
-import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
+import {
+  IntegrationError,
+  IntegrationLogger,
+} from "@jupiterone/jupiter-managed-integration-sdk";
+import { subMinutes } from "date-fns";
 import nock from "nock";
 import { createAssetExportCache } from "./createAssetExportCache";
 import { createVulnerabilityExportCache } from "./createVulnerabilityExportCache";
@@ -61,6 +65,21 @@ describe("AssetExportCache", () => {
     nockDone();
   });
 
+  test("create failed due to timeout", async () => {
+    const { nockDone } = await nock.back("export-assets-full-cycle.json", {
+      before: prepareScope,
+    });
+    const timeout = subMinutes(Date.now(), 30).valueOf();
+    jest.spyOn(global.Date, "now").mockImplementationOnce(() => timeout);
+
+    try {
+      await createAssetExportCache(logger, client);
+    } catch (e) {
+      expect(e).toBeInstanceOf(IntegrationError);
+    }
+    nockDone();
+  });
+
   test("findAssetExportsByUuid found asset", async () => {
     const { nockDone } = await nock.back("export-assets-full-cycle.json", {
       before: prepareScope,
@@ -120,6 +139,29 @@ describe("VulnerabilityExportCache", () => {
 
     await createVulnerabilityExportCache(logger, client);
 
+    nockDone();
+  });
+
+  test("create failed due to timeout", async () => {
+    const { nockDone } = await nock.back(
+      "export-vulnerabilities-full-cycle.json",
+      {
+        before: prepareScope,
+      },
+    );
+    jest.clearAllMocks();
+
+    const timeout = subMinutes(Date.now(), 30).valueOf();
+    jest
+      .spyOn(global.Date, "now")
+      .mockImplementationOnce(() => new Date("2020-01-01").valueOf())
+      .mockImplementationOnce(() => timeout);
+
+    try {
+      await createVulnerabilityExportCache(logger, client);
+    } catch (e) {
+      expect(e).toBeInstanceOf(IntegrationError);
+    }
     nockDone();
   });
 

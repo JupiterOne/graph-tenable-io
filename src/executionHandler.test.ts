@@ -46,7 +46,7 @@ describe("executionHandler", () => {
     jest.spyOn(persister, "publishPersisterOperations");
     jest
       .spyOn(global.Date, "now")
-      .mockImplementationOnce(() => new Date("2003-01-01").valueOf());
+      .mockImplementation(() => new Date("2003-01-01").valueOf());
 
     await executionHandler(invocationContext);
 

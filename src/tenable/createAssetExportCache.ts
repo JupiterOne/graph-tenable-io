@@ -2,7 +2,11 @@ import { AssetExportCache } from ".";
 import TenableClient from "./TenableClient";
 import { AssetExport, ExportAssetsOptions, ExportStatus } from "./types";
 
-import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
+import {
+  IntegrationError,
+  IntegrationLogger,
+} from "@jupiterone/jupiter-managed-integration-sdk";
+import { addMinutes, isAfter } from "date-fns";
 import pMap from "p-map";
 
 export async function createAssetExportCache(
@@ -32,11 +36,19 @@ async function getAssetExports(client: TenableClient) {
     chunks_available: chunksAvailable,
   } = await client.fetchAssetsExportStatus(exportUuid);
 
+  const timeLimit = addMinutes(Date.now(), 10);
   while ([ExportStatus.Processing, ExportStatus.Queued].includes(status)) {
     ({
       status,
       chunks_available: chunksAvailable,
     } = await client.fetchAssetsExportStatus(exportUuid));
+
+    if (isAfter(Date.now(), timeLimit)) {
+      throw new IntegrationError({
+        code: "TenableClientApiError",
+        message: `Asset export ${exportUuid} failed to finish processing in time limit`,
+      });
+    }
   }
 
   const chunkResponses = await pMap(
