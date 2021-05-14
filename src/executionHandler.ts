@@ -23,15 +23,16 @@ import initializeContext from "./initializeContext";
 import * as Entities from "./jupiterone/entities";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
 import { publishChanges } from "./persister";
-import { TenableAssetCache } from "./tenable";
-import createTenableAssetCache from "./tenable/createTenableAssetCache";
+import { AssetExportCache, VulnerabilityExportCache } from "./tenable";
+import { createAssetExportCache } from "./tenable/createAssetExportCache";
+import { createVulnerabilityExportCache } from "./tenable/createVulnerabilityExportCache";
 import fetchTenableData from "./tenable/fetchTenableData";
 import {
-  AssetVulnerabilityInfo,
   RecentScanSummary,
   ScanHost,
   ScanStatus,
   ScanVulnerabilitySummary,
+  VulnerabilityExport,
 } from "./tenable/types";
 import { TenableIntegrationContext } from "./types";
 import logObjectCounts from "./utils/logObjectCounts";
@@ -207,9 +208,13 @@ async function synchronizeHosts(
   context: TenableIntegrationContext,
   scanSummaries: RecentScanSummary[],
 ): Promise<PersisterOperationsResult> {
-  const { provider } = context;
+  const { provider, logger } = context;
 
-  const assetCache = await createTenableAssetCache(provider);
+  const assetCache = await createAssetExportCache(logger, provider);
+  const vulnerabilityCache = await createVulnerabilityExportCache(
+    logger,
+    provider,
+  );
 
   const operationResults: PersisterOperationsResult[] = [];
 
@@ -243,6 +248,7 @@ async function synchronizeHosts(
               await synchronizeHostVulnerabilities(
                 context,
                 assetCache,
+                vulnerabilityCache,
                 scanSummary,
                 host,
               ),
@@ -309,7 +315,8 @@ async function synchronizeScanVulnerabilities(
  */
 async function synchronizeHostVulnerabilities(
   context: TenableIntegrationContext,
-  assetCache: TenableAssetCache,
+  assetCache: AssetExportCache,
+  vulnerabilityCache: VulnerabilityExportCache,
   scan: RecentScanSummary,
   scanHost: ScanHost,
 ): Promise<PersisterOperationsResult> {
@@ -323,7 +330,7 @@ async function synchronizeHostVulnerabilities(
     scanHost: {
       hostname: scanHost.hostname,
       id: scanHost.host_id,
-      uuid: scanHost.uuid || "NONE",
+      uuid: scanHost.uuid,
     },
   });
 
@@ -350,7 +357,7 @@ async function synchronizeHostVulnerabilities(
   const vulnerabilityFindingRelationships = [];
   const scanFindingRelationships = [];
 
-  const hostAsset = assetCache.findAsset(scanHost);
+  const hostAsset = assetCache.findAssetExportByUuid(scanHost.uuid);
 
   /* istanbul ignore next */
   if (!hostAsset) {
@@ -371,12 +378,12 @@ async function synchronizeHostVulnerabilities(
   );
 
   for (const vulnerability of scanHostVulnerabilities) {
-    let vulnerabilityDetails: AssetVulnerabilityInfo | undefined;
+    let vulnerabilityExport: VulnerabilityExport | undefined;
     /* istanbul ignore next */
     if (assetUuid) {
-      vulnerabilityDetails = await provider.fetchAssetVulnerabilityInfo(
+      vulnerabilityExport = vulnerabilityCache.findVulnerabilityExportByAssetPluginUuid(
         assetUuid,
-        vulnerability,
+        vulnerability.plugin_id,
       );
     }
 
@@ -386,7 +393,7 @@ async function synchronizeHostVulnerabilities(
         asset: hostAsset,
         assetUuid,
         vulnerability,
-        vulnerabilityDetails,
+        vulnerabilityExport,
       }),
     );
 

@@ -120,11 +120,7 @@ export interface ScanInfo {
 }
 
 export interface ScanHost {
-  /**
-   * The UUID of the scan host entry. As of Aug. 22, 2019, this is not included
-   * in "webapp" `ScanDetail.hosts` entries.
-   */
-  uuid?: string;
+  uuid: string;
   critical: number;
   high: number;
   medium: number;
@@ -594,15 +590,20 @@ export interface VulnerabilityExportPlugin {
   xrefs: VulnerabilityExportXrefsEntity[];
   cpe: string[];
   cvss3_base_score: number | null;
+  cvss3_temporal_score: string;
   cvss3_vector: VulnerabilityExportCvss3Vector | null;
+  cvss3_temporal_vector: any;
   cvss_base_score: number | null;
+  cvss_temporal_score: string;
   cvss_vector: VulnerabilityExportCvssVector | null;
+  cvss_temporal_vector: any;
   bid: number[];
   cve: string[];
   exploit_available: boolean | null;
   exploitability_ease: string | null;
   vuln_publication_date: string | null;
-  vpr: VulnerabilityExportVpr | null;
+  vpr?: VulnerabilityExportVpr | null;
+  stig_severity: string | null;
 }
 
 export interface VulnerabilityExportXrefsEntity {
