@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 6.0.1 - 2021-05-17
+
+### Fixed
+
+- Handle Tenable 404 errors on the `scans/scan_uuid/hosts/host_id` endpoint.
+
 ## 6.0.0 - 2021-05-14
 
 ### Changed
