@@ -296,20 +296,34 @@ export default class TenableClient {
     scanId: number,
     hostId: number,
   ): Promise<ScanHostVulnerability[]> {
-    const vulnerabilitiesResponse = await this.makeRequest<
-      ScanVulnerabilitiesResponse
-    >(`/scans/${scanId}/hosts/${hostId}`, Method.GET);
+    const logData = {
+      scan: { id: scanId },
+      host: { id: hostId },
+    };
+    try {
+      const vulnerabilitiesResponse = await this.makeRequest<
+        ScanVulnerabilitiesResponse
+      >(`/scans/${scanId}/hosts/${hostId}`, Method.GET);
 
-    this.logger.info(
-      {
-        scan: { id: scanId },
-        host: { id: hostId },
-        vulnerabilities: length(vulnerabilitiesResponse.vulnerabilities),
-      },
-      "Fetched Tenable scan host vulnerabilities",
-    );
-
-    return vulnerabilitiesResponse.vulnerabilities;
+      this.logger.info(
+        {
+          ...logData,
+          vulnerabilities: length(vulnerabilitiesResponse.vulnerabilities),
+        },
+        "Fetched Tenable scan host vulnerabilities",
+      );
+      return vulnerabilitiesResponse.vulnerabilities;
+    } catch (err) {
+      if (err.statusCode === 404) {
+        this.logger.info(
+          { ...logData, err },
+          "Could not find information on host vulnerabilities",
+        );
+        return [];
+      } else {
+        throw err;
+      }
+    }
   }
 
   public async fetchAssets(): Promise<AssetSummary[]> {

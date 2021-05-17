@@ -145,6 +145,18 @@ describe("TenableClient fetch errors", () => {
     scope.done();
   });
 
+  test("fetchScanHostVulnerabilities unknown error", async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get("/scans/6/hosts/2")
+      .times(RETRY_MAX_ATTEMPTS - 1)
+      .reply(500);
+    const client = getClient();
+    await expect(client.fetchScanHostVulnerabilities(6, 2)).rejects.toThrow(
+      /500/,
+    );
+    scope.done();
+  });
+
   test("fetchScanDetail unknown error", async () => {
     const scope = nock(`https://${TENABLE_COM}`)
       .get(
@@ -260,6 +272,16 @@ describe("TenableClient data fetch", () => {
 
     const vulnerabilities = await client.fetchScanHostVulnerabilities(6, 2);
     expect(vulnerabilities.length).not.toEqual(0);
+    nockDone();
+  });
+
+  test("fetchScanHostVulnerabilities 404", async () => {
+    const { nockDone } = await nock.back("vulnerabilities-not-found.json", {
+      before: prepareScope,
+    });
+
+    const vulnerabilities = await client.fetchScanHostVulnerabilities(19, 2000);
+    expect(vulnerabilities.length).toEqual(0);
     nockDone();
   });
 
