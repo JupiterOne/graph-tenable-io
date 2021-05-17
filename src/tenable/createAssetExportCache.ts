@@ -36,7 +36,7 @@ async function getAssetExports(client: TenableClient) {
     chunks_available: chunksAvailable,
   } = await client.fetchAssetsExportStatus(exportUuid);
 
-  const timeLimit = addMinutes(Date.now(), 10);
+  const timeLimit = addMinutes(Date.now(), 20);
   while ([ExportStatus.Processing, ExportStatus.Queued].includes(status)) {
     ({
       status,
