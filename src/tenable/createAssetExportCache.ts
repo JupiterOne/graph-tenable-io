@@ -6,6 +6,7 @@ import {
   IntegrationError,
   IntegrationLogger,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+import { sleep } from "@lifeomic/attempt";
 import { addMinutes, isAfter } from "date-fns";
 import pMap from "p-map";
 
@@ -36,7 +37,7 @@ async function getAssetExports(client: TenableClient) {
     chunks_available: chunksAvailable,
   } = await client.fetchAssetsExportStatus(exportUuid);
 
-  const timeLimit = addMinutes(Date.now(), 20);
+  const timeLimit = addMinutes(Date.now(), 30);
   while ([ExportStatus.Processing, ExportStatus.Queued].includes(status)) {
     ({
       status,
@@ -49,6 +50,7 @@ async function getAssetExports(client: TenableClient) {
         message: `Asset export ${exportUuid} failed to finish processing in time limit`,
       });
     }
+    await sleep(60_000); // Sleep 1 minute between status checks.
   }
 
   const chunkResponses = await pMap(

@@ -1,6 +1,6 @@
-import nock from "nock";
-
 import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk";
+import * as attempt from "@lifeomic/attempt";
+import nock from "nock";
 
 import executionHandler from "./executionHandler";
 import * as Entities from "./jupiterone/entities";
@@ -22,6 +22,12 @@ describe("executionHandler", () => {
     process.env.CI
       ? nock.back.setMode("lockdown")
       : nock.back.setMode("record");
+    jest.spyOn(attempt, "sleep").mockImplementation(
+      () =>
+        new Promise(resolve => {
+          setTimeout(resolve, 0);
+        }),
+    );
   });
 
   test("INGEST action with no data", async () => {
