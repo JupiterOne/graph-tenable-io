@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 6.0.2 - 2021-05-27
+
 - Increase timeout for asset/vuln export
 - Wait between status calls to asset/vuln export
 
