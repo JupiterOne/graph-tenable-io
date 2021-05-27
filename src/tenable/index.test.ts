@@ -2,6 +2,7 @@ import {
   IntegrationError,
   IntegrationLogger,
 } from "@jupiterone/jupiter-managed-integration-sdk";
+import * as attempt from "@lifeomic/attempt";
 import { subMinutes } from "date-fns";
 import nock from "nock";
 import { createAssetExportCache } from "./createAssetExportCache";
@@ -49,6 +50,12 @@ describe("AssetExportCache", () => {
     process.env.CI
       ? nock.back.setMode("lockdown")
       : nock.back.setMode("record");
+    jest.spyOn(attempt, "sleep").mockImplementation(
+      () =>
+        new Promise(resolve => {
+          setTimeout(resolve, 0);
+        }),
+    );
   });
 
   beforeEach(() => {
@@ -69,7 +76,7 @@ describe("AssetExportCache", () => {
     const { nockDone } = await nock.back("export-assets-full-cycle.json", {
       before: prepareScope,
     });
-    const timeout = subMinutes(Date.now(), 30).valueOf();
+    const timeout = subMinutes(Date.now(), 40).valueOf();
     jest.spyOn(global.Date, "now").mockImplementationOnce(() => timeout);
 
     try {
@@ -119,6 +126,12 @@ describe("VulnerabilityExportCache", () => {
     process.env.CI
       ? nock.back.setMode("lockdown")
       : nock.back.setMode("record");
+    jest.spyOn(attempt, "sleep").mockImplementation(
+      () =>
+        new Promise(resolve => {
+          setTimeout(resolve, 0);
+        }),
+    );
   });
 
   beforeEach(() => {
@@ -151,7 +164,7 @@ describe("VulnerabilityExportCache", () => {
     );
     jest.clearAllMocks();
 
-    const timeout = subMinutes(Date.now(), 30).valueOf();
+    const timeout = subMinutes(Date.now(), 40).valueOf();
     jest
       .spyOn(global.Date, "now")
       .mockImplementationOnce(() => new Date("2020-01-01").valueOf())
