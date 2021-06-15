@@ -8,6 +8,7 @@ import * as attempt from "@lifeomic/attempt";
 
 import {
   AssetExport,
+  AssetExportJobsResponse,
   AssetsExportStatusResponse,
   AssetsResponse,
   AssetSummary,
@@ -235,22 +236,47 @@ export default class TenableClient {
   public async exportAssets(
     options: ExportAssetsOptions,
   ): Promise<ExportAssetsResponse> {
-    const exportResponse = await this.makeRequest<ExportAssetsResponse>(
-      "/assets/export",
-      Method.POST,
-      {},
-      options,
-    );
-
-    this.logger.info(
-      {
+    try {
+      const exportResponse = await this.makeRequest<ExportAssetsResponse>(
+        "/assets/export",
+        Method.POST,
+        {},
         options,
-        exportResponse,
-      },
-      "Started Tenable assets export",
-    );
+      );
 
-    return exportResponse;
+      this.logger.info(
+        {
+          options,
+          exportResponse,
+        },
+        "Started Tenable assets export",
+      );
+
+      return exportResponse;
+    } catch (err) {
+      // If /assets/export throws with 429 after the 10 retries in `this.makeRequest()`,
+      // it's very likely that this is not a _rate_ limited request, but a _concurrency_
+      // limited request. Print the current export jobs for the user with details about
+      // termination and a link to concurrency documentation.
+      const exportStatusResponse = await this.getAssetExportJobs();
+
+      await this.logger.warn(
+        {
+          exportStatusResponse,
+        },
+        "Failed to create asset export; printing export status response",
+      );
+
+      throw err;
+    }
+  }
+
+  public async getAssetExportJobs(): Promise<AssetExportJobsResponse> {
+    const exportStatusResponse = await this.makeRequest<
+      AssetExportJobsResponse
+    >(`/assets/export/status`, Method.GET);
+
+    return exportStatusResponse;
   }
 
   public async fetchAssetsExportStatus(
@@ -265,7 +291,7 @@ export default class TenableClient {
         exportUuid,
         exportStatusResponse,
       },
-      "Fetched Tenable vulnerabilities export status",
+      "Fetched Tenable asset export status",
     );
 
     return exportStatusResponse;

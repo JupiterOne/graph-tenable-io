@@ -697,6 +697,19 @@ export interface AssetsExportStatusResponse {
   chunks_available: number[];
 }
 
+interface AssetExportJob {
+  uuid: string;
+  total_chunks: number;
+  filters: any;
+  finished_chunks: number;
+  num_assets_per_chunk: number;
+  created: number;
+}
+
+export interface AssetExportJobsResponse {
+  exports: AssetExportJob;
+}
+
 export interface AssetExport {
   id: string;
   has_agent: boolean;

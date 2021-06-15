@@ -14,7 +14,7 @@ export async function createAssetExportCache(
   logger: IntegrationLogger,
   client: TenableClient,
 ): Promise<AssetExportCache> {
-  const assetExports = await getAssetExports(client);
+  const assetExports = await getAssetsUsingExport(client);
   const assetExportMap = new Map<string, AssetExport>();
 
   logger.info({ assetExports: assetExports.length }, "Fetched asset exports");
@@ -29,7 +29,7 @@ export async function createAssetExportCache(
   };
 }
 
-async function getAssetExports(client: TenableClient) {
+async function getAssetsUsingExport(client: TenableClient) {
   const options: ExportAssetsOptions = { chunk_size: 100 };
   const { export_uuid: exportUuid } = await client.exportAssets(options);
   let {
