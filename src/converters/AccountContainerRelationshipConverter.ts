@@ -1,9 +1,8 @@
 import {
   ACCOUNT_CONTAINER_RELATIONSHIP_CLASS,
   ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
-  ACCOUNT_ENTITY_TYPE,
   AccountContainerRelationship,
-  CONTAINER_ENTITY_TYPE,
+  entities,
 } from "../jupiterone/entities";
 import { Container } from "../tenable/types";
 import { Account } from "../types";
@@ -18,8 +17,11 @@ export function createAccountContainerRelationships(
 ): AccountContainerRelationship[] {
   const relationships: AccountContainerRelationship[] = containers.map(
     container => {
-      const parentKey = generateEntityKey(ACCOUNT_ENTITY_TYPE, account.id);
-      const childKey = generateEntityKey(CONTAINER_ENTITY_TYPE, container.id);
+      const parentKey = generateEntityKey(entities.ACCOUNT._type, account.id);
+      const childKey = generateEntityKey(
+        entities.CONTAINER._type,
+        container.id,
+      );
       const relationKey = generateRelationshipKey(
         parentKey,
         ACCOUNT_CONTAINER_RELATIONSHIP_CLASS,

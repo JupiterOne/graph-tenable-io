@@ -1,4 +1,3 @@
-import { ScanEntity } from "../jupiterone";
 import { RecentScanSummary } from "../tenable/types";
 import { createScanEntity } from "./scans";
 
@@ -50,6 +49,6 @@ describe("createScanEntity", () => {
       enabled: false,
       control: true,
       name: "scan-name",
-    } as ScanEntity);
+    });
   });
 });

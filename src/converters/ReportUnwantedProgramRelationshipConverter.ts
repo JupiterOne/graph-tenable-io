@@ -1,9 +1,8 @@
 import {
-  CONTAINER_REPORT_ENTITY_TYPE,
   CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_CLASS,
   CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-  CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
   ContainerReportUnwantedProgramRelationship,
+  entities,
 } from "../jupiterone/entities";
 import {
   ContainerReport,
@@ -35,9 +34,12 @@ function createRelation(
   reportId: string,
 ): ContainerReportUnwantedProgramRelationship {
   const unwantedProgramId = vulnerability.md5;
-  const parentKey = generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId);
+  const parentKey = generateEntityKey(
+    entities.CONTAINER_REPORT._type,
+    reportId,
+  );
   const childKey = generateEntityKey(
-    CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
+    entities.CONTAINER_UNWANTED_PROGRAM._type,
     unwantedProgramId,
   );
   const relationKey = generateRelationshipKey(

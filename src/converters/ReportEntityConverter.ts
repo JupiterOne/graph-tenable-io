@@ -1,11 +1,24 @@
-import {
-  CONTAINER_REPORT_ENTITY_CLASS,
-  CONTAINER_REPORT_ENTITY_TYPE,
-  ContainerReportEntity,
-} from "../jupiterone/entities";
+import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities } from "../jupiterone/entities";
 import { ContainerReport } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 import getTime from "../utils/getTime";
+
+export interface ContainerReportEntity extends EntityFromIntegration {
+  id: string;
+  sha256: string;
+  digest: string;
+  dockerImageId: string;
+  imageName: string;
+  tag: string;
+  os: string;
+  platform: string;
+  riskScore: number;
+  osArchitecture: string;
+  osVersion: string;
+  createdAt: number;
+  updatedAt: number;
+}
 
 export function createReportEntities(
   data: ContainerReport[],
@@ -13,9 +26,9 @@ export function createReportEntities(
   return data.map(report => {
     const reportId = report.sha256;
     const reportEntity: ContainerReportEntity = {
-      _key: generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId),
-      _type: CONTAINER_REPORT_ENTITY_TYPE,
-      _class: CONTAINER_REPORT_ENTITY_CLASS,
+      _key: generateEntityKey(entities.CONTAINER_REPORT._type, reportId),
+      _type: entities.CONTAINER_REPORT._type,
+      _class: entities.CONTAINER_REPORT._class,
       _rawData: [{ name: "default", rawData: report }],
       id: reportId,
       sha256: report.sha256,

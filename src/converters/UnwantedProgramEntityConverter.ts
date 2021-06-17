@@ -1,10 +1,13 @@
-import {
-  CONTAINER_UNWANTED_PROGRAM_ENTITY_CLASS,
-  CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
-  ContainerUnwantedProgramEntity,
-} from "../jupiterone/entities";
+import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities } from "../jupiterone/entities";
 import { ContainerUnwantedProgram, Dictionary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
+
+export interface ContainerUnwantedProgramEntity extends EntityFromIntegration {
+  file: string;
+  md5: string;
+  sha256: string;
+}
 
 export function createUnwantedProgramEntities(
   data: Dictionary<ContainerUnwantedProgram[]>,
@@ -31,11 +34,11 @@ function createUnwantedProgramEntity(
   const unwantedProgramId = vulnerability.md5;
   return {
     _key: generateEntityKey(
-      CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
+      entities.CONTAINER_UNWANTED_PROGRAM._type,
       unwantedProgramId,
     ),
-    _type: CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
-    _class: CONTAINER_UNWANTED_PROGRAM_ENTITY_CLASS,
+    _type: entities.CONTAINER_UNWANTED_PROGRAM._type,
+    _class: entities.CONTAINER_UNWANTED_PROGRAM._class,
     _rawData: [{ name: "default", rawData: vulnerability }],
     file: vulnerability.file,
     md5: vulnerability.md5,

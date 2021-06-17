@@ -1,35 +1,70 @@
 import {
-  EntityFromIntegration,
   MappedRelationshipFromIntegration,
   RelationshipFromIntegration,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
 export * from "./AccountContainerRelationship";
-export * from "./AccountEntity";
 export * from "./AccountUserRelationship";
-export * from "./ContainerEntity";
 export * from "./ContainerReportRelationship";
-export * from "./FindingEntity";
-export * from "./ContainerReportEntity";
 export * from "./ReportFindingRelationship";
 export * from "./ReportMalwareRelationship";
-export * from "./ScanEntity";
 export * from "./TenableVulnerabilityEntity";
 export * from "./ScanVulnerabilityRelationship";
-export * from "./UserEntity";
 export * from "./UserScanRelationship";
 
-export const CONTAINER_MALWARE_ENTITY_TYPE = "tenable_container_malware";
-export const CONTAINER_MALWARE_ENTITY_CLASS = "Finding";
+export const entities = {
+  ACCOUNT: {
+    resourceName: "Account",
+    _class: "Account",
+    _type: "tenable_account",
+  },
+  CONTAINER: {
+    resourceName: "Container",
+    _class: "Image",
+    _type: "tenable_container",
+  },
+  // TODO does the report entity simply include container details, can we really get rid of this entity?
+  CONTAINER_REPORT: {
+    resourceName: "Container Report",
+    _class: "Assessment",
+    _type: "tenable_container_report",
+  },
+  CONTAINER_FINDING: {
+    resourceName: "Container Finding",
+    _class: "Finding",
+    _type: "tenable_container_finding",
+  },
+  CONTAINER_MALWARE: {
+    resourceName: "Container Malware",
+    _class: "Finding",
+    _type: "tenable_container_malware",
+  },
+  CONTAINER_UNWANTED_PROGRAM: {
+    resourceName: "Container Unwanted Program",
+    _class: "Finding",
+    _type: "tenable_container_unwanted_program",
+  },
+  VULN_FINDING: {
+    resourceName: "Vulnerability Finding",
+    _class: "Finding",
+    _type: "tenable_vulnerability_finding",
+  },
+  SCAN: {
+    resourceName: "Scan",
+    _class: ["Assessment", "Service"],
+    _type: "tenable_scan",
+  },
+  USER: {
+    resourceName: "User",
+    _class: "User",
+    _type: "tenable_user",
+  },
+};
 
 export const CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE =
   "tenable_container_report_identified_unwanted_program";
 export const CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_CLASS =
   "IDENTIFIED";
-
-export const CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE =
-  "tenable_container_unwanted_program";
-export const CONTAINER_UNWANTED_PROGRAM_ENTITY_CLASS = "Finding";
 
 export const VULNERABILITY_FINDING_RELATIONSHIP_TYPE =
   "tenable_vulnerability_finding_is_vulnerability";
@@ -39,19 +74,6 @@ export const SCAN_FINDING_RELATIONSHIP_TYPE = "tenable_scan_identified_finding";
 export const SCAN_FINDING_RELATIONSHIP_CLASS = "IDENTIFIED";
 
 export type ContainerReportUnwantedProgramRelationship = RelationshipFromIntegration;
-
-export interface ContainerMalwareEntity extends EntityFromIntegration {
-  infectedFile: string;
-  fileTypeDescriptor: string;
-  md5: string;
-  sha256: string;
-}
-
-export interface ContainerUnwantedProgramEntity extends EntityFromIntegration {
-  file: string;
-  md5: string;
-  sha256: string;
-}
 
 interface FindingRelationship {
   scanId: number;

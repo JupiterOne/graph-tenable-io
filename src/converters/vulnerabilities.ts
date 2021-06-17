@@ -1,10 +1,11 @@
 import {
   convertProperties,
+  EntityFromIntegration,
   RelationshipDirection,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
 import {
-  SCAN_ENTITY_TYPE,
+  entities,
   SCAN_FINDING_RELATIONSHIP_CLASS,
   SCAN_FINDING_RELATIONSHIP_TYPE,
   SCAN_VULNERABILITY_RELATIONSHIP_CLASS,
@@ -14,11 +15,8 @@ import {
   TENABLE_VULNERABILITY_ENTITY_CLASS,
   TENABLE_VULNERABILITY_ENTITY_TYPE,
   TenableVulnerabilityEntity,
-  VULNERABILITY_FINDING_ENTITY_CLASS,
-  VULNERABILITY_FINDING_ENTITY_TYPE,
   VULNERABILITY_FINDING_RELATIONSHIP_CLASS,
   VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
-  VulnerabilityFindingEntity,
   VulnerabilityFindingRelationship,
 } from "../jupiterone";
 import {
@@ -125,7 +123,7 @@ export function createScanVulnerabilityRelationship(
   scan: RecentScanSummary,
   vulnerability: ScanVulnerabilitySummary,
 ): ScanVulnerabilityRelationship {
-  const sourceEntityKey = generateEntityKey(SCAN_ENTITY_TYPE, scan.id);
+  const sourceEntityKey = generateEntityKey(entities.SCAN._type, scan.id);
   const targetEntity = createTenableVulnerabilityEntity(vulnerability);
 
   return {
@@ -216,6 +214,39 @@ export function createScanFindingRelationship({
   };
 }
 
+export interface VulnerabilityFindingEntity extends EntityFromIntegration {
+  scanId: number;
+  scanUuid: string;
+
+  /**
+   * The UUID of the host/asset when provided in the `ScanHost` or discovered in
+   * the assets listing using the hostname.
+   *
+   * Scans produce findings where the host has no UUID, or the UUID or hostname
+   * of the host does not match an `AssetSummary` loaded by the
+   * `TenableAssetCache`. In these cases, the `assetUuid` will be `undefined`;
+   */
+  assetUuid?: string;
+
+  hostId: number;
+  hostname: string;
+
+  pluginFamily: string;
+  pluginId: number;
+  pluginName: string;
+
+  numericSeverity: number;
+  severity: FindingSeverityPriority;
+  numericPriority?: number;
+  priority?: string;
+
+  open: boolean;
+  targets: string[] | undefined;
+
+  firstSeenOn?: number;
+  lastSeenOn?: number;
+}
+
 export function createVulnerabilityFindingEntity(data: {
   scan: RecentScanSummary;
   asset: AssetExport | undefined;
@@ -260,8 +291,8 @@ export function createVulnerabilityFindingEntity(data: {
   return {
     ...details,
     _key: vulnerabilityFindingEntityKey(scan, vulnerability),
-    _type: VULNERABILITY_FINDING_ENTITY_TYPE,
-    _class: VULNERABILITY_FINDING_ENTITY_CLASS,
+    _type: entities.VULN_FINDING._type,
+    _class: entities.VULN_FINDING._class,
     _rawData: [{ name: "default", rawData: data }],
     scanId: scan.id,
     scanUuid: scan.uuid,
@@ -292,7 +323,7 @@ export function vulnerabilityFindingEntityKey(
   vulnerability: ScanHostVulnerability,
 ) {
   return generateEntityKey(
-    VULNERABILITY_FINDING_ENTITY_TYPE,
+    entities.VULN_FINDING._type,
     `${scan.id}_${vulnerability.plugin_id}_${vulnerability.host_id}`,
   );
 }

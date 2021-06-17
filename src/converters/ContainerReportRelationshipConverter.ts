@@ -1,9 +1,8 @@
 import {
-  CONTAINER_ENTITY_TYPE,
-  CONTAINER_REPORT_ENTITY_TYPE,
   CONTAINER_REPORT_RELATIONSHIP_CLASS,
   CONTAINER_REPORT_RELATIONSHIP_TYPE,
   ContainerReportRelationship,
+  entities,
 } from "../jupiterone/entities";
 import { Container, ContainerReport } from "../tenable/types";
 import {
@@ -23,9 +22,12 @@ export function createContainerReportRelationships(
       if (!report) {
         return acc;
       }
-      const parentKey = generateEntityKey(CONTAINER_ENTITY_TYPE, container.id);
+      const parentKey = generateEntityKey(
+        entities.CONTAINER._type,
+        container.id,
+      );
       const childKey = generateEntityKey(
-        CONTAINER_REPORT_ENTITY_TYPE,
+        entities.CONTAINER_REPORT._type,
         report.sha256,
       );
       const relationKey = generateRelationshipKey(

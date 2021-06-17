@@ -1,6 +1,5 @@
 import {
-  SCAN_ENTITY_TYPE,
-  USER_ENTITY_TYPE,
+  entities,
   USER_OWNS_SCAN_RELATIONSHIP_CLASS,
   USER_OWNS_SCAN_RELATIONSHIP_TYPE,
   UserScanRelationship,
@@ -19,8 +18,8 @@ export function createUserScanRelationships(
     if (!user) {
       return acc;
     }
-    const parentKey = generateEntityKey(USER_ENTITY_TYPE, user.id);
-    const childKey = generateEntityKey(SCAN_ENTITY_TYPE, scan.id);
+    const parentKey = generateEntityKey(entities.USER._type, user.id);
+    const childKey = generateEntityKey(entities.SCAN._type, scan.id);
     const relationship: UserScanRelationship = {
       _class: USER_OWNS_SCAN_RELATIONSHIP_CLASS,
       _type: USER_OWNS_SCAN_RELATIONSHIP_TYPE,

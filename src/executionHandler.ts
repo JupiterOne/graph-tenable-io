@@ -20,7 +20,14 @@ import {
   createVulnerabilityFindingRelationship,
 } from "./converters/vulnerabilities";
 import initializeContext from "./initializeContext";
-import * as Entities from "./jupiterone/entities";
+import {
+  ACCOUNT_USER_RELATIONSHIP_TYPE,
+  entities,
+  SCAN_FINDING_RELATIONSHIP_TYPE,
+  SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+  USER_OWNS_SCAN_RELATIONSHIP_TYPE,
+  VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+} from "./jupiterone/entities";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
 import { publishChanges } from "./persister";
 import { AssetExportCache, VulnerabilityExportCache } from "./tenable";
@@ -103,11 +110,11 @@ async function removeDeprecatedEntities(
   results.push(
     await removeRelationshipsWithoutScanUuid(
       context,
-      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+      SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
     ),
     await removeRelationshipsWithoutScanUuid(
       context,
-      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
+      SCAN_FINDING_RELATIONSHIP_TYPE,
     ),
   );
 
@@ -135,7 +142,7 @@ async function synchronizeAccount(
 ): Promise<PersisterOperationsResult> {
   const { graph, persister, account } = context;
   const existingAccounts = await graph.findEntitiesByType(
-    Entities.ACCOUNT_ENTITY_TYPE,
+    entities.ACCOUNT._type,
   );
   return persister.publishEntityOperations(
     persister.processEntities({
@@ -151,9 +158,7 @@ async function synchronizeScans(
 ): Promise<PersisterOperationsResult> {
   const { graph, persister } = context;
 
-  const existingScans = await graph.findEntitiesByType(
-    Entities.SCAN_ENTITY_TYPE,
-  );
+  const existingScans = await graph.findEntitiesByType(entities.SCAN._type);
 
   const scanEntities = [];
   for (const scan of scanSummaries) {
@@ -181,9 +186,9 @@ async function synchronizeUsers(
     existingUserScans,
   ] = await Promise.all([
     provider.fetchUsers(),
-    graph.findEntitiesByType(Entities.USER_ENTITY_TYPE),
-    graph.findRelationshipsByType(Entities.ACCOUNT_USER_RELATIONSHIP_TYPE),
-    graph.findRelationshipsByType(Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE),
+    graph.findEntitiesByType(entities.USER._type),
+    graph.findRelationshipsByType(ACCOUNT_USER_RELATIONSHIP_TYPE),
+    graph.findRelationshipsByType(USER_OWNS_SCAN_RELATIONSHIP_TYPE),
   ]);
 
   return persister.publishPersisterOperations([
@@ -289,7 +294,7 @@ async function synchronizeScanVulnerabilities(
   }
 
   const existingScanVulnerabilityRelationships = await graph.findRelationshipsByType(
-    Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
     { scanUuid: scan.uuid },
   );
 
@@ -341,14 +346,13 @@ async function synchronizeHostVulnerabilities(
     existingScanFindingRelationships,
   ] = await Promise.all([
     provider.fetchScanHostVulnerabilities(scan.id, scanHost.host_id),
-    graph.findEntitiesByType(Entities.VULNERABILITY_FINDING_ENTITY_TYPE, {
+    graph.findEntitiesByType(entities.VULN_FINDING._type, {
       scanUuid: scan.uuid,
     }),
-    graph.findRelationshipsByType(
-      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
-      { scanUuid: scan.uuid },
-    ),
-    graph.findRelationshipsByType(Entities.SCAN_FINDING_RELATIONSHIP_TYPE, {
+    graph.findRelationshipsByType(VULNERABILITY_FINDING_RELATIONSHIP_TYPE, {
+      scanUuid: scan.uuid,
+    }),
+    graph.findRelationshipsByType(SCAN_FINDING_RELATIONSHIP_TYPE, {
       scanUuid: scan.uuid,
     }),
   ]);
