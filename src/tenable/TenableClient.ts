@@ -13,9 +13,11 @@ import {
   AssetSummary,
   AssetVulnerabilityInfo,
   AssetVulnerabilityResponse,
+  CancelExportResponse,
   Container,
   ContainerReport,
   ContainersResponse,
+  ErrorBody,
   ExportAssetsOptions,
   ExportAssetsResponse,
   ExportVulnerabilitiesOptions,
@@ -194,6 +196,25 @@ export default class TenableClient {
     return exportResponse;
   }
 
+  public async cancelVulnerabilitiesExport(
+    exportUuid: string,
+  ): Promise<CancelExportResponse> {
+    const cancelExportResponse = await this.makeRequest<CancelExportResponse>(
+      `/vulns/export/${exportUuid}/cancel`,
+      Method.POST,
+      {},
+    );
+
+    this.logger.info(
+      {
+        cancelExportResponse,
+      },
+      "Cancelled Tenable vulns export",
+    );
+
+    return cancelExportResponse;
+  }
+
   public async fetchVulnerabilitiesExportStatus(
     exportUuid: string,
   ): Promise<VulnerabilitiesExportStatusResponse> {
@@ -253,6 +274,25 @@ export default class TenableClient {
     return exportResponse;
   }
 
+  public async cancelAssetExport(
+    exportUuid: string,
+  ): Promise<CancelExportResponse> {
+    const cancelExportResponse = await this.makeRequest<CancelExportResponse>(
+      `/assets/export/${exportUuid}/cancel`,
+      Method.POST,
+      {},
+    );
+
+    this.logger.info(
+      {
+        cancelExportResponse,
+      },
+      "Cancelled Tenable assets export",
+    );
+
+    return cancelExportResponse;
+  }
+
   public async fetchAssetsExportStatus(
     exportUuid: string,
   ): Promise<AssetsExportStatusResponse> {
@@ -265,7 +305,7 @@ export default class TenableClient {
         exportUuid,
         exportStatusResponse,
       },
-      "Fetched Tenable vulnerabilities export status",
+      "Fetched Tenable asset export status",
     );
 
     return exportStatusResponse;
@@ -416,9 +456,16 @@ export default class TenableClient {
         }
 
         if (response.status >= 400) {
+          let message;
+          try {
+            const errorBody: ErrorBody = await response.json();
+            message = errorBody.message;
+          } catch (e) {
+            // pass
+          }
           throw new IntegrationError({
             code: "TenableClientApiError",
-            message: `${response.statusText}: ${method} ${url}`,
+            message: message || `${response.statusText}: ${method} ${url}`,
             statusCode: response.status,
           });
         } else {

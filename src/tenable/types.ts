@@ -697,6 +697,12 @@ export interface AssetsExportStatusResponse {
   chunks_available: number[];
 }
 
+export interface CancelExportResponse {
+  response: {
+    status: "CANCELLED";
+  };
+}
+
 export interface AssetExport {
   id: string;
   has_agent: boolean;
@@ -781,4 +787,9 @@ export interface AssetExportTag {
   value: string;
   added_by: string;
   added_at: string;
+}
+
+export interface ErrorBody {
+  status?: number;
+  message?: string;
 }

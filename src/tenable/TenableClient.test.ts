@@ -1,5 +1,11 @@
 import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
 import nock from "nock";
+import { config } from "../../test/config";
+import {
+  getTenableMatchRequestsBy,
+  Recording,
+  setupTenableRecording,
+} from "../../test/recording";
 
 import { fetchTenableData } from "./index";
 import TenableClient from "./TenableClient";
@@ -11,6 +17,14 @@ import {
   ScanHostVulnerability,
   VulnerabilityState,
 } from "./types";
+
+let recording: Recording;
+
+afterEach(async () => {
+  if (recording) {
+    await recording.stop();
+  }
+});
 
 function getIntegrationLogger(): IntegrationLogger {
   return {
@@ -456,5 +470,29 @@ describe("TenableClient data fetch", () => {
 
   afterAll(() => {
     nock.restore();
+  });
+});
+
+describe("cancelAssetExport", () => {
+  test("success", async () => {
+    recording = setupTenableRecording({
+      directory: __dirname,
+      name: "cancelAssetExport",
+      options: {
+        matchRequestsBy: getTenableMatchRequestsBy(config),
+      },
+    });
+
+    const client = new TenableClient({
+      logger: getIntegrationLogger(),
+      accessToken: config.accessKey,
+      secretToken: config.secretKey,
+    });
+
+    const { export_uuid } = await client.exportAssets({ chunk_size: 100 });
+
+    const response = await client.cancelAssetExport(export_uuid);
+
+    expect(response.response.status).toBe("CANCELLED");
   });
 });

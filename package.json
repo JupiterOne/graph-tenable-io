@@ -27,6 +27,7 @@
     "lint:ts": "tslint --project .",
     "format": "yarn prettier --write '**/*.{ts,js,json,md}'",
     "test": "jest",
+    "test:env": "LOAD_ENV=1 jest",
     "prepack": "yarn build"
   },
   "dependencies": {
@@ -47,6 +48,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
+    "@jupiterone/integration-sdk-testing": "^6.6.0",
     "@types/bunyan": "^1.8.5",
     "@types/fs-extra": "^8.0.1",
     "@types/gremlin": "^3.4.2",
@@ -56,7 +58,7 @@
     "@types/node-fetch": "^2.3.2",
     "aws-sdk": "^2.828.0",
     "bunyan": "^1.8.12",
-    "dotenv": "^8.0.0",
+    "dotenv": "^10.0.0",
     "fs-extra": "^8.0.1",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
@@ -74,6 +76,6 @@
     "ts-node": "^8.5.2",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.7.5"
+    "typescript": "^4.3.4"
   }
 }
