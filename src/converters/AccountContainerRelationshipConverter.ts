@@ -1,10 +1,5 @@
-import {
-  ACCOUNT_CONTAINER_RELATIONSHIP_CLASS,
-  ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
-  ACCOUNT_ENTITY_TYPE,
-  AccountContainerRelationship,
-  CONTAINER_ENTITY_TYPE,
-} from "../jupiterone/entities";
+import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities, relationships } from "../constants";
 import { Container } from "../tenable/types";
 import { Account } from "../types";
 import {
@@ -12,22 +7,27 @@ import {
   generateRelationshipKey,
 } from "../utils/generateKey";
 
+type AccountContainerRelationship = RelationshipFromIntegration;
+
 export function createAccountContainerRelationships(
   account: Account,
   containers: Container[],
 ): AccountContainerRelationship[] {
-  const relationships: AccountContainerRelationship[] = containers.map(
+  const accountContainerRelationships: AccountContainerRelationship[] = containers.map(
     container => {
-      const parentKey = generateEntityKey(ACCOUNT_ENTITY_TYPE, account.id);
-      const childKey = generateEntityKey(CONTAINER_ENTITY_TYPE, container.id);
+      const parentKey = generateEntityKey(entities.ACCOUNT._type, account.id);
+      const childKey = generateEntityKey(
+        entities.CONTAINER._type,
+        container.id,
+      );
       const relationKey = generateRelationshipKey(
         parentKey,
-        ACCOUNT_CONTAINER_RELATIONSHIP_CLASS,
+        relationships.ACCOUNT_HAS_CONTAINER._class,
         childKey,
       );
       const relationship: AccountContainerRelationship = {
-        _class: ACCOUNT_CONTAINER_RELATIONSHIP_CLASS,
-        _type: ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
+        _class: relationships.ACCOUNT_HAS_CONTAINER._class,
+        _type: relationships.ACCOUNT_HAS_CONTAINER._type,
         _fromEntityKey: parentKey,
         _key: relationKey,
         _toEntityKey: childKey,
@@ -35,5 +35,5 @@ export function createAccountContainerRelationships(
       return relationship;
     },
   );
-  return relationships;
+  return accountContainerRelationships;
 }

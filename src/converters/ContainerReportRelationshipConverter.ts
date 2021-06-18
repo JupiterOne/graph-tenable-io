@@ -1,15 +1,12 @@
-import {
-  CONTAINER_ENTITY_TYPE,
-  CONTAINER_REPORT_ENTITY_TYPE,
-  CONTAINER_REPORT_RELATIONSHIP_CLASS,
-  CONTAINER_REPORT_RELATIONSHIP_TYPE,
-  ContainerReportRelationship,
-} from "../jupiterone/entities";
+import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities, relationships } from "../constants";
 import { Container, ContainerReport } from "../tenable/types";
 import {
   generateEntityKey,
   generateRelationshipKey,
 } from "../utils/generateKey";
+
+type ContainerReportRelationship = RelationshipFromIntegration;
 
 export function createContainerReportRelationships(
   containers: Container[],
@@ -17,26 +14,29 @@ export function createContainerReportRelationships(
 ): ContainerReportRelationship[] {
   const defaultValue: ContainerReportRelationship[] = [];
 
-  const relationships: ContainerReportRelationship[] = containers.reduce(
+  const containerReportRelationships: ContainerReportRelationship[] = containers.reduce(
     (acc, container) => {
       const report = findReport(reports, container.digest);
       if (!report) {
         return acc;
       }
-      const parentKey = generateEntityKey(CONTAINER_ENTITY_TYPE, container.id);
+      const parentKey = generateEntityKey(
+        entities.CONTAINER._type,
+        container.id,
+      );
       const childKey = generateEntityKey(
-        CONTAINER_REPORT_ENTITY_TYPE,
+        entities.CONTAINER_REPORT._type,
         report.sha256,
       );
       const relationKey = generateRelationshipKey(
         parentKey,
-        CONTAINER_REPORT_RELATIONSHIP_CLASS,
+        relationships.CONTAINER_HAS_REPORT._class,
         childKey,
       );
 
       const relationship: ContainerReportRelationship = {
-        _class: CONTAINER_REPORT_RELATIONSHIP_CLASS,
-        _type: CONTAINER_REPORT_RELATIONSHIP_TYPE,
+        _class: relationships.CONTAINER_HAS_REPORT._class,
+        _type: relationships.CONTAINER_HAS_REPORT._type,
         _fromEntityKey: parentKey,
         _key: relationKey,
         _toEntityKey: childKey,
@@ -46,7 +46,7 @@ export function createContainerReportRelationships(
     defaultValue,
   );
 
-  return relationships;
+  return containerReportRelationships;
 }
 
 function findReport(reports: ContainerReport[], reportId: string) {

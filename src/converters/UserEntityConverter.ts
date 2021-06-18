@@ -1,17 +1,31 @@
-import {
-  USER_ENTITY_CLASS,
-  USER_ENTITY_TYPE,
-  UserEntity,
-} from "../jupiterone/entities";
+import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities } from "../constants";
 import { User } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
+
+interface UserEntity extends EntityFromIntegration {
+  id: number;
+  uuid: string;
+  userName: string;
+  username: string;
+  email: string;
+  name: string;
+  type: string;
+  containerUuid: string;
+  permissions: number;
+  loginFailCount: number;
+  loginFailTotal: number;
+  enabled: boolean;
+  lastlogin: number;
+  uuidId: string;
+}
 
 export function createUserEntities(data: User[]): UserEntity[] {
   return data.map(user => {
     const userEntity: UserEntity = {
-      _key: generateEntityKey(USER_ENTITY_TYPE, user.id),
-      _type: USER_ENTITY_TYPE,
-      _class: USER_ENTITY_CLASS,
+      _key: generateEntityKey(entities.USER._type, user.id),
+      _type: entities.USER._type,
+      _class: entities.USER._class,
       id: user.id,
       uuid: user.uuid,
       userName: user.user_name,

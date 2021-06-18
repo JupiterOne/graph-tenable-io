@@ -2,8 +2,8 @@ import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-manag
 import * as attempt from "@lifeomic/attempt";
 import nock from "nock";
 
+import { entities, relationships } from "./constants";
 import executionHandler from "./executionHandler";
-import * as Entities from "./jupiterone/entities";
 
 const tenableConfig = {
   accessKey:
@@ -59,34 +59,32 @@ describe("executionHandler", () => {
     nockDone();
 
     const entitiesProcessedAsSingleSet = [
-      Entities.ACCOUNT_ENTITY_TYPE,
-      Entities.SCAN_ENTITY_TYPE,
-      Entities.USER_ENTITY_TYPE,
-      Entities.CONTAINER_ENTITY_TYPE,
-      Entities.CONTAINER_REPORT_ENTITY_TYPE,
-      Entities.CONTAINER_MALWARE_ENTITY_TYPE,
-      Entities.CONTAINER_FINDING_ENTITY_TYPE,
-      Entities.CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
+      entities.ACCOUNT._type,
+      entities.SCAN._type,
+      entities.USER._type,
+      entities.CONTAINER._type,
+      entities.CONTAINER_REPORT._type,
+      entities.CONTAINER_MALWARE._type,
+      entities.CONTAINER_FINDING._type,
+      entities.CONTAINER_UNWANTED_PROGRAM._type,
     ];
 
-    const entitiesProcessedAsScanSet = [
-      Entities.VULNERABILITY_FINDING_ENTITY_TYPE,
-    ];
+    const entitiesProcessedAsScanSet = [entities.VULN_FINDING._type];
 
     const relationshipsProcessedAsSingleSet = [
-      Entities.ACCOUNT_USER_RELATIONSHIP_TYPE,
-      Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE,
-      Entities.ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
-      Entities.CONTAINER_REPORT_RELATIONSHIP_TYPE,
-      Entities.CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-      Entities.REPORT_MALWARE_RELATIONSHIP_TYPE,
-      Entities.REPORT_FINDING_RELATIONSHIP_TYPE,
+      relationships.ACCOUNT_HAS_USER._type,
+      relationships.USER_OWNS_SCAN._type,
+      relationships.ACCOUNT_HAS_CONTAINER._type,
+      relationships.CONTAINER_HAS_REPORT._type,
+      relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM.targetType,
+      relationships.REPORT_IDENTIFIED_MALWARE._type,
+      relationships.REPORT_IDENTIFIED_FINDING._type,
     ];
 
     const relationshipsProcessedAsScanSet = [
-      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
-      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
-      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+      relationships.SCAN_IDENTIFIED_VULNERABILITY._type,
+      relationships.SCAN_IDENTIFIED_FINDING._type,
+      relationships.FINDING_IS_VULNERABILITY._type,
     ];
 
     const deprecatedEntityTypes = [

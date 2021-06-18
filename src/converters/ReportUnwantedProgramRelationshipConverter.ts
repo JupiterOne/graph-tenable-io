@@ -1,10 +1,5 @@
-import {
-  CONTAINER_REPORT_ENTITY_TYPE,
-  CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_CLASS,
-  CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-  CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
-  ContainerReportUnwantedProgramRelationship,
-} from "../jupiterone/entities";
+import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities, relationships } from "../constants";
 import {
   ContainerReport,
   ContainerUnwantedProgram,
@@ -15,19 +10,21 @@ import {
   generateRelationshipKey,
 } from "../utils/generateKey";
 
+type ContainerReportUnwantedProgramRelationship = RelationshipFromIntegration;
+
 export function createContainerReportUnwantedProgramRelationships(
   reports: ContainerReport[],
   unwantedPrograms: Dictionary<ContainerUnwantedProgram[]>,
 ): ContainerReportUnwantedProgramRelationship[] {
   const defaultValue: ContainerReportUnwantedProgramRelationship[] = [];
-  const relationships = reports.reduce((acc, report) => {
+  const unwantedProgramRelationships = reports.reduce((acc, report) => {
     const vulnerabilitiesForReport = unwantedPrograms[report.sha256];
     const relationsForReport = vulnerabilitiesForReport.map(item => {
       return createRelation(item, report.sha256);
     });
     return acc.concat(relationsForReport);
   }, defaultValue);
-  return relationships;
+  return unwantedProgramRelationships;
 }
 
 function createRelation(
@@ -35,20 +32,23 @@ function createRelation(
   reportId: string,
 ): ContainerReportUnwantedProgramRelationship {
   const unwantedProgramId = vulnerability.md5;
-  const parentKey = generateEntityKey(CONTAINER_REPORT_ENTITY_TYPE, reportId);
+  const parentKey = generateEntityKey(
+    entities.CONTAINER_REPORT._type,
+    reportId,
+  );
   const childKey = generateEntityKey(
-    CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
+    entities.CONTAINER_UNWANTED_PROGRAM._type,
     unwantedProgramId,
   );
   const relationKey = generateRelationshipKey(
     parentKey,
-    CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_CLASS,
+    relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
     childKey,
   );
 
   return {
-    _class: CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_CLASS,
-    _type: CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
+    _class: relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
+    _type: relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,

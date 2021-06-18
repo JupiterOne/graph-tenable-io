@@ -1,11 +1,28 @@
-import {
-  CONTAINER_FINDING_ENTITY_CLASS,
-  CONTAINER_FINDING_ENTITY_TYPE,
-  ContainerFindingEntity,
-} from "../jupiterone/entities";
+import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities } from "../constants";
 import { ContainerFinding, Dictionary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
+import { FindingSeverityPriority } from "./types";
 import { normalizeCVSS2Severity } from "./vulnerabilities";
+
+export interface ContainerFindingEntity extends EntityFromIntegration {
+  referenceId?: string;
+  cve: string;
+  publishedDate: string;
+  modifiedDate: string;
+  description: string;
+  cvssScore: string;
+  accessVector: string;
+  accessComplexity: string;
+  auth: string;
+  availabilityImpact: string;
+  confidentialityImpact: string;
+  integrityImpact: string;
+  cwe: string;
+  remediation: string;
+  numericSeverity: number;
+  severity: FindingSeverityPriority | undefined;
+}
 
 export function createContainerFindingEntities(
   data: Dictionary<ContainerFinding[]>,
@@ -25,8 +42,8 @@ export function createContainerFindingEntity(
 
   return {
     _key: containerFindingEntityKey(vulnerability),
-    _type: CONTAINER_FINDING_ENTITY_TYPE,
-    _class: CONTAINER_FINDING_ENTITY_CLASS,
+    _type: entities.CONTAINER_FINDING._type,
+    _class: entities.CONTAINER_FINDING._class,
     _rawData: [{ name: "default", rawData: vulnerability }],
     displayName: displayName(vulnerability),
     referenceId: nvdFinding.reference_id,
@@ -51,7 +68,7 @@ export function createContainerFindingEntity(
 export function containerFindingEntityKey(vulnerability: ContainerFinding) {
   const { nvdFinding } = vulnerability;
   return generateEntityKey(
-    CONTAINER_FINDING_ENTITY_TYPE,
+    entities.CONTAINER_FINDING._type,
     `${nvdFinding.cve}_${nvdFinding.cwe}`,
   );
 }

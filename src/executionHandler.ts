@@ -6,6 +6,7 @@ import {
   summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
+import { entities, relationships } from "./constants";
 import {
   createAccountEntity,
   createAccountUserRelationships,
@@ -20,7 +21,6 @@ import {
   createVulnerabilityFindingRelationship,
 } from "./converters/vulnerabilities";
 import initializeContext from "./initializeContext";
-import * as Entities from "./jupiterone/entities";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
 import { publishChanges } from "./persister";
 import { AssetExportCache, VulnerabilityExportCache } from "./tenable";
@@ -103,11 +103,11 @@ async function removeDeprecatedEntities(
   results.push(
     await removeRelationshipsWithoutScanUuid(
       context,
-      Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+      relationships.SCAN_IDENTIFIED_VULNERABILITY._type,
     ),
     await removeRelationshipsWithoutScanUuid(
       context,
-      Entities.SCAN_FINDING_RELATIONSHIP_TYPE,
+      relationships.SCAN_IDENTIFIED_FINDING._type,
     ),
   );
 
@@ -119,12 +119,14 @@ async function removeRelationshipsWithoutScanUuid(
   type: string,
 ) {
   const { graph, persister } = context;
-  const relationships = await graph.findRelationshipsByType(type, {}, [
-    "scanUuid",
-  ]);
+  const relationshipsWithoutScanUuid = await graph.findRelationshipsByType(
+    type,
+    {},
+    ["scanUuid"],
+  );
   return persister.publishRelationshipOperations(
     persister.processRelationships({
-      oldRelationships: relationships,
+      oldRelationships: relationshipsWithoutScanUuid,
       newRelationships: [],
     }),
   );
@@ -135,7 +137,7 @@ async function synchronizeAccount(
 ): Promise<PersisterOperationsResult> {
   const { graph, persister, account } = context;
   const existingAccounts = await graph.findEntitiesByType(
-    Entities.ACCOUNT_ENTITY_TYPE,
+    entities.ACCOUNT._type,
   );
   return persister.publishEntityOperations(
     persister.processEntities({
@@ -151,9 +153,7 @@ async function synchronizeScans(
 ): Promise<PersisterOperationsResult> {
   const { graph, persister } = context;
 
-  const existingScans = await graph.findEntitiesByType(
-    Entities.SCAN_ENTITY_TYPE,
-  );
+  const existingScans = await graph.findEntitiesByType(entities.SCAN._type);
 
   const scanEntities = [];
   for (const scan of scanSummaries) {
@@ -181,9 +181,9 @@ async function synchronizeUsers(
     existingUserScans,
   ] = await Promise.all([
     provider.fetchUsers(),
-    graph.findEntitiesByType(Entities.USER_ENTITY_TYPE),
-    graph.findRelationshipsByType(Entities.ACCOUNT_USER_RELATIONSHIP_TYPE),
-    graph.findRelationshipsByType(Entities.USER_OWNS_SCAN_RELATIONSHIP_TYPE),
+    graph.findEntitiesByType(entities.USER._type),
+    graph.findRelationshipsByType(relationships.ACCOUNT_HAS_USER._type),
+    graph.findRelationshipsByType(relationships.USER_OWNS_SCAN._type),
   ]);
 
   return persister.publishPersisterOperations([
@@ -289,7 +289,7 @@ async function synchronizeScanVulnerabilities(
   }
 
   const existingScanVulnerabilityRelationships = await graph.findRelationshipsByType(
-    Entities.SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    relationships.SCAN_IDENTIFIED_VULNERABILITY._type,
     { scanUuid: scan.uuid },
   );
 
@@ -341,14 +341,16 @@ async function synchronizeHostVulnerabilities(
     existingScanFindingRelationships,
   ] = await Promise.all([
     provider.fetchScanHostVulnerabilities(scan.id, scanHost.host_id),
-    graph.findEntitiesByType(Entities.VULNERABILITY_FINDING_ENTITY_TYPE, {
+    graph.findEntitiesByType(entities.VULN_FINDING._type, {
       scanUuid: scan.uuid,
     }),
     graph.findRelationshipsByType(
-      Entities.VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
-      { scanUuid: scan.uuid },
+      relationships.FINDING_IS_VULNERABILITY._type,
+      {
+        scanUuid: scan.uuid,
+      },
     ),
-    graph.findRelationshipsByType(Entities.SCAN_FINDING_RELATIONSHIP_TYPE, {
+    graph.findRelationshipsByType(relationships.SCAN_IDENTIFIED_FINDING._type, {
       scanUuid: scan.uuid,
     }),
   ]);

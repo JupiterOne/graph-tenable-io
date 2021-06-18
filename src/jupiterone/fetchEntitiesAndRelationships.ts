@@ -1,21 +1,25 @@
-import { GraphClient } from "@jupiterone/jupiter-managed-integration-sdk";
+import {
+  EntityFromIntegration,
+  GraphClient,
+  IntegrationRelationship,
+} from "@jupiterone/jupiter-managed-integration-sdk";
 
-import * as Entities from "./entities";
+import { entities, relationships } from "../constants";
 
 export interface JupiterOneEntitiesData {
-  containers: Entities.ContainerEntity[];
-  containerReports: Entities.ContainerReportEntity[];
-  containerMalwares: Entities.ContainerMalwareEntity[];
-  containerFindings: Entities.ContainerFindingEntity[];
-  containerUnwantedPrograms: Entities.ContainerUnwantedProgramEntity[];
+  containers: EntityFromIntegration[];
+  containerReports: EntityFromIntegration[];
+  containerMalwares: EntityFromIntegration[];
+  containerFindings: EntityFromIntegration[];
+  containerUnwantedPrograms: EntityFromIntegration[];
 }
 
 export interface JupiterOneRelationshipsData {
-  accountContainerRelationships: Entities.AccountContainerRelationship[];
-  containerReportRelationships: Entities.ContainerReportRelationship[];
-  reportMalwareRelationships: Entities.ReportMalwareRelationship[];
-  reportFindingRelationships: Entities.ReportFindingRelationship[];
-  reportUnwantedProgramRelationships: Entities.ContainerReportUnwantedProgramRelationship[];
+  accountContainerRelationships: IntegrationRelationship[];
+  containerReportRelationships: IntegrationRelationship[];
+  reportMalwareRelationships: IntegrationRelationship[];
+  reportFindingRelationships: IntegrationRelationship[];
+  reportUnwantedProgramRelationships: IntegrationRelationship[];
 }
 
 export interface JupiterOneDataModel {
@@ -44,21 +48,11 @@ async function fetchEntities(
     containerFindings,
     containerUnwantedPrograms,
   ] = await Promise.all([
-    graph.findEntitiesByType<Entities.ContainerEntity>(
-      Entities.CONTAINER_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.ContainerReportEntity>(
-      Entities.CONTAINER_REPORT_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.ContainerMalwareEntity>(
-      Entities.CONTAINER_MALWARE_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.ContainerFindingEntity>(
-      Entities.CONTAINER_FINDING_ENTITY_TYPE,
-    ),
-    graph.findEntitiesByType<Entities.ContainerUnwantedProgramEntity>(
-      Entities.CONTAINER_UNWANTED_PROGRAM_ENTITY_TYPE,
-    ),
+    graph.findEntitiesByType(entities.CONTAINER._type),
+    graph.findEntitiesByType(entities.CONTAINER_REPORT._type),
+    graph.findEntitiesByType(entities.CONTAINER_MALWARE._type),
+    graph.findEntitiesByType(entities.CONTAINER_FINDING._type),
+    graph.findEntitiesByType(entities.CONTAINER_UNWANTED_PROGRAM._type),
   ]);
 
   return {
@@ -80,21 +74,17 @@ export async function fetchRelationships(
     reportFindingRelationships,
     reportUnwantedProgramRelationships,
   ] = await Promise.all([
-    graph.findRelationshipsByType<Entities.AccountContainerRelationship>(
-      Entities.ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType(relationships.ACCOUNT_HAS_CONTAINER._type),
+    graph.findRelationshipsByType(relationships.CONTAINER_HAS_REPORT._type),
+    graph.findRelationshipsByType(
+      relationships.REPORT_IDENTIFIED_MALWARE._type,
     ),
-    graph.findRelationshipsByType<Entities.ContainerReportRelationship>(
-      Entities.CONTAINER_REPORT_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType(
+      relationships.REPORT_IDENTIFIED_FINDING._type,
     ),
-    graph.findRelationshipsByType<Entities.ReportMalwareRelationship>(
-      Entities.REPORT_MALWARE_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType(
+      relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
     ),
-    graph.findRelationshipsByType<Entities.ReportFindingRelationship>(
-      Entities.REPORT_FINDING_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<
-      Entities.ContainerReportUnwantedProgramRelationship
-    >(Entities.CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE),
   ]);
 
   return {

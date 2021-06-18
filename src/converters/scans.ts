@@ -1,17 +1,36 @@
-import {
-  SCAN_ENTITY_CLASS,
-  SCAN_ENTITY_TYPE,
-  ScanEntity,
-} from "../jupiterone/entities";
+import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities } from "../constants";
 import { RecentScanSummary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 import getEpochTimeInMilliseconds from "../utils/getEpochTimeInMilliseconds";
 
+interface ScanEntity extends EntityFromIntegration {
+  id: number;
+  legacy: boolean;
+  permissions: number;
+  type: string;
+  read: boolean;
+  lastModificationDate: number;
+  creationDate: number;
+  status: string;
+  uuid: string;
+  shared: boolean;
+  userPermissions: number;
+  owner: string;
+  scheduleUuid: string;
+  timezone: string | undefined;
+  rrules: string | undefined;
+  starttime: string | undefined;
+  enabled: boolean;
+  control: boolean;
+  name: string;
+}
+
 export function createScanEntity(data: RecentScanSummary): ScanEntity {
   return {
     _key: scanEntityKey(data.id),
-    _type: SCAN_ENTITY_TYPE,
-    _class: SCAN_ENTITY_CLASS,
+    _type: entities.SCAN._type,
+    _class: entities.SCAN._class,
     _rawData: [{ name: "default", rawData: data }],
     id: data.id,
     legacy: data.legacy,
@@ -38,5 +57,5 @@ export function createScanEntity(data: RecentScanSummary): ScanEntity {
 }
 
 export function scanEntityKey(scanId: number): string {
-  return generateEntityKey(SCAN_ENTITY_TYPE, scanId);
+  return generateEntityKey(entities.SCAN._type, scanId);
 }
