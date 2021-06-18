@@ -6,8 +6,18 @@ import {
 
 import { entities, relationships } from "./constants";
 import {
+  createAccountContainerRelationships,
   createAccountEntity,
   createAccountUserRelationships,
+  createContainerEntities,
+  createContainerFindingEntities,
+  createContainerReportRelationships,
+  createContainerReportUnwantedProgramRelationships,
+  createMalwareEntities,
+  createReportEntities,
+  createReportFindingRelationships,
+  createReportMalwareRelationships,
+  createUnwantedProgramEntities,
   createUserEntities,
   createUserScanRelationships,
 } from "./converters";
@@ -22,13 +32,19 @@ import { AssetExportCache, VulnerabilityExportCache } from "./tenable";
 import { createAssetExportCache } from "./tenable/createAssetExportCache";
 import { createVulnerabilityExportCache } from "./tenable/createVulnerabilityExportCache";
 import {
+  Container,
+  ContainerFinding,
+  ContainerMalware,
+  ContainerReport,
+  ContainerUnwantedProgram,
+  Dictionary,
   RecentScanSummary,
   ScanHost,
   ScanStatus,
   ScanVulnerabilitySummary,
   VulnerabilityExport,
 } from "./tenable/types";
-import { TenableIntegrationContext } from "./types";
+import { Account, TenableIntegrationContext } from "./types";
 
 async function synchronizeAccount(
   context: TenableIntegrationContext,
@@ -334,9 +350,226 @@ async function synchronizeHostVulnerabilities(
   return operations;
 }
 
+async function synchronizeContainers(
+  { persister, graph, logger }: TenableIntegrationContext,
+  containers: Container[],
+  account: Account,
+) {
+  logger.info("Synchronizing containers");
+  const containerEntityOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: await graph.findEntitiesByType(entities.CONTAINER._type),
+      newEntities: createContainerEntities(containers),
+    }),
+  );
+  logger.info("Finished synchronizing containers");
+
+  logger.info("Synchronizing account -> container relationships");
+  const accountContainerRelationshipOperationsResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: await graph.findRelationshipsByType(
+        relationships.ACCOUNT_HAS_CONTAINER._type,
+      ),
+      newRelationships: createAccountContainerRelationships(
+        account,
+        containers,
+      ),
+    }),
+  );
+  logger.info("Finished synchronizing account -> container relationships");
+
+  return summarizePersisterOperationsResults(
+    containerEntityOperationsResult,
+    accountContainerRelationshipOperationsResult,
+  );
+}
+
+async function synchronizeContainerReports(
+  { persister, graph, logger }: TenableIntegrationContext,
+  containerReports: ContainerReport[],
+  containers: Container[],
+) {
+  logger.info("Synchronizing container reports");
+  const containerReportEntityOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: await graph.findEntitiesByType(
+        entities.CONTAINER_REPORT._type,
+      ),
+      newEntities: createReportEntities(containerReports),
+    }),
+  );
+  logger.info("Finished synchronizing container reports");
+
+  logger.info("Synchronizing container -> report relationships");
+  const containerReportRelationshipOperationsResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: await graph.findRelationshipsByType(
+        relationships.CONTAINER_HAS_REPORT._type,
+      ),
+      newRelationships: createContainerReportRelationships(
+        containers,
+        containerReports,
+      ),
+    }),
+  );
+  logger.info("Finished synchronizing container -> report relationships");
+
+  return summarizePersisterOperationsResults(
+    containerReportEntityOperationsResult,
+    containerReportRelationshipOperationsResult,
+  );
+}
+
+async function synchronizeContainerMalware(
+  { persister, graph, logger }: TenableIntegrationContext,
+  containerReports: ContainerReport[],
+) {
+  const malwares: Dictionary<ContainerMalware[]> = {};
+
+  for (const report of containerReports) {
+    /* istanbul ignore next */
+    if (!malwares[report.sha256]) {
+      malwares[report.sha256] = [];
+    }
+    /* istanbul ignore next */
+    malwares[report.sha256] = malwares[report.sha256].concat(report.malware);
+  }
+
+  logger.info("Synchronizing container malware");
+  const malwareEntityOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: await graph.findEntitiesByType(
+        entities.CONTAINER_MALWARE._type,
+      ),
+      newEntities: createMalwareEntities(malwares),
+    }),
+  );
+  logger.info("Finished synchronizing container malware");
+
+  logger.info("Synchronizing report -> malware relationships");
+  const reportMalwareRelationshipOperationsResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: await graph.findRelationshipsByType(
+        relationships.REPORT_IDENTIFIED_MALWARE._type,
+      ),
+      newRelationships: createReportMalwareRelationships(
+        containerReports,
+        malwares,
+      ),
+    }),
+  );
+  logger.info("Finished synchronizing report -> malware relationships");
+
+  return summarizePersisterOperationsResults(
+    malwareEntityOperationsResult,
+    reportMalwareRelationshipOperationsResult,
+  );
+}
+
+async function synchronizeContainerFindings(
+  { persister, graph, logger }: TenableIntegrationContext,
+  containerReports: ContainerReport[],
+) {
+  const findings: Dictionary<ContainerFinding[]> = {};
+
+  for (const report of containerReports) {
+    /* istanbul ignore next */
+    if (!findings[report.sha256]) {
+      findings[report.sha256] = [];
+    }
+    /* istanbul ignore next */
+    findings[report.sha256] = findings[report.sha256].concat(report.findings);
+  }
+
+  logger.info("Synchronizing container finding");
+  const findingEntityOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: await graph.findEntitiesByType(
+        entities.CONTAINER_FINDING._type,
+      ),
+      newEntities: createContainerFindingEntities(findings),
+    }),
+  );
+  logger.info("Finished synchronizing container finding");
+
+  logger.info("Synchronizing report -> finding relationships");
+  const reportMalwareRelationshipOperationsResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: await graph.findRelationshipsByType(
+        relationships.REPORT_IDENTIFIED_FINDING._type,
+      ),
+      newRelationships: createReportFindingRelationships(
+        containerReports,
+        findings,
+      ),
+    }),
+  );
+  logger.info("Finished synchronizing report -> finding relationships");
+
+  return summarizePersisterOperationsResults(
+    findingEntityOperationsResult,
+    reportMalwareRelationshipOperationsResult,
+  );
+}
+
+async function synchronizeContainerUnwantedPrograms(
+  { persister, graph, logger }: TenableIntegrationContext,
+  containerReports: ContainerReport[],
+) {
+  const unwantedPrograms: Dictionary<ContainerUnwantedProgram[]> = {};
+
+  for (const report of containerReports) {
+    /* istanbul ignore next */
+    if (!unwantedPrograms[report.sha256]) {
+      unwantedPrograms[report.sha256] = [];
+    }
+    /* istanbul ignore next */
+    unwantedPrograms[report.sha256] = unwantedPrograms[report.sha256].concat(
+      report.potentially_unwanted_programs,
+    );
+  }
+
+  logger.info("Synchronizing container unwanted programs");
+  const findingEntityOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: await graph.findEntitiesByType(
+        entities.CONTAINER_UNWANTED_PROGRAM._type,
+      ),
+      newEntities: createUnwantedProgramEntities(unwantedPrograms),
+    }),
+  );
+  logger.info("Finished synchronizing container unwanted programs");
+
+  logger.info("Synchronizing report -> unwanted program relationships");
+  const reportMalwareRelationshipOperationsResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: await graph.findRelationshipsByType(
+        relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
+      ),
+      newRelationships: createContainerReportUnwantedProgramRelationships(
+        containerReports,
+        unwantedPrograms,
+      ),
+    }),
+  );
+  logger.info(
+    "Finished synchronizing report -> unwanted program relationships",
+  );
+
+  return summarizePersisterOperationsResults(
+    findingEntityOperationsResult,
+    reportMalwareRelationshipOperationsResult,
+  );
+}
+
 export {
   synchronizeAccount,
   synchronizeScans,
   synchronizeUsers,
   synchronizeHosts,
+  synchronizeContainers,
+  synchronizeContainerReports,
+  synchronizeContainerMalware,
+  synchronizeContainerFindings,
+  synchronizeContainerUnwantedPrograms,
 };
