@@ -122,7 +122,8 @@ describe("executionHandler", () => {
     );
 
     // TODO check the operations published instead of the call count
-    expect(persister.publishEntityOperations).toHaveBeenCalledTimes(13);
-    expect(persister.publishPersisterOperations).toHaveBeenCalledTimes(5);
+    expect(persister.publishEntityOperations).toHaveBeenCalledTimes(17);
+    expect(persister.publishRelationshipOperations).toHaveBeenCalledTimes(14);
+    expect(persister.publishPersisterOperations).toHaveBeenCalledTimes(4);
   }, 60000);
 });
