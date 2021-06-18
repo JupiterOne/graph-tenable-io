@@ -16,7 +16,6 @@ import {
   createUserEntities,
   createUserScanRelationships,
 } from './converters';
-import { createScanEntity } from './converters/scans';
 import {
   createScanFindingRelationship,
   createScanVulnerabilityRelationship,
@@ -42,16 +41,6 @@ import {
   VulnerabilityExport,
 } from './tenable/types';
 import { Account } from './types';
-
-export async function synchronizeScans(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
-  scanSummaries: RecentScanSummary[],
-): Promise<void> {
-  context.logger.info('Synchronizing scans');
-  for (const scan of scanSummaries) {
-    await context.jobState.addEntity(createScanEntity(scan));
-  }
-}
 
 export async function synchronizeUsers(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,

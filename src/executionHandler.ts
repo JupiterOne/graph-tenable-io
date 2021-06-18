@@ -1,6 +1,10 @@
-import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-core';
+import {
+  getRawData,
+  IntegrationStepExecutionContext,
+} from '@jupiterone/integration-sdk-core';
 
 import { TenableIntegrationConfig } from './config';
+import { entities } from './constants';
 import { getAccount } from './initializeContext';
 import {
   synchronizeContainerFindings,
@@ -9,10 +13,10 @@ import {
   synchronizeContainers,
   synchronizeContainerUnwantedPrograms,
   synchronizeHosts,
-  synchronizeScans,
   synchronizeUsers,
 } from './synchronizers';
 import TenableClient from './tenable/TenableClient';
+import { RecentScanSummary } from './tenable/types';
 
 export default async function executionHandler(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -28,15 +32,18 @@ async function synchronize(
     accessToken: context.instance.config.accessKey,
     secretToken: context.instance.config.secretKey,
   });
-  const scans = await provider.fetchScans();
 
-  context.logger.info(
-    {
-      scans: scans.length,
+  const scans: RecentScanSummary[] = [];
+
+  await context.jobState.iterateEntities(
+    { _type: entities.SCAN._type },
+    (scanEntity) => {
+      const scan = getRawData<RecentScanSummary>(scanEntity);
+      if (!scan) return;
+      scans.push(scan);
     },
-    'Processing scans...',
   );
-  await synchronizeScans(context, scans);
+
   await synchronizeUsers(context, scans);
   await synchronizeHosts(context, scans);
 
