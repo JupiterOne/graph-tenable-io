@@ -7,17 +7,18 @@ import {
 
 import { relationships } from "./constants";
 import initializeContext from "./initializeContext";
-import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
-import { publishChanges } from "./persister";
 import {
   synchronizeAccount,
+  synchronizeContainerFindings,
+  synchronizeContainerMalware,
+  synchronizeContainerReports,
+  synchronizeContainers,
+  synchronizeContainerUnwantedPrograms,
   synchronizeHosts,
   synchronizeScans,
   synchronizeUsers,
 } from "./synchronizers";
-import fetchTenableData from "./tenable/fetchTenableData";
 import { TenableIntegrationContext } from "./types";
-import logObjectCounts from "./utils/logObjectCounts";
 
 export default async function executionHandler(
   context: IntegrationExecutionContext,
@@ -29,11 +30,7 @@ export default async function executionHandler(
 async function synchronize(
   context: TenableIntegrationContext,
 ): Promise<IntegrationExecutionResult> {
-  const { graph, persister, provider, account } = context;
-
-  const oldData = await fetchEntitiesAndRelationships(graph);
-  const tenableData = await fetchTenableData(provider);
-  logObjectCounts(context, oldData, tenableData);
+  const { provider, account } = context;
 
   const operationResults: PersisterOperationsResult[] = [];
 
@@ -50,10 +47,32 @@ async function synchronize(
   operationResults.push(await synchronizeUsers(context, scans));
   operationResults.push(await synchronizeHosts(context, scans));
 
+  const containers = await provider.fetchContainers();
+  operationResults.push(
+    await synchronizeContainers(context, containers, account),
+  );
+
+  /* istanbul ignore next */
+  const containerReports = await Promise.all(
+    containers.map(async c => provider.fetchReportByImageDigest(c.digest)),
+  );
+  operationResults.push(
+    await synchronizeContainerReports(context, containerReports, containers),
+  );
+
+  operationResults.push(
+    await synchronizeContainerMalware(context, containerReports),
+  );
+  operationResults.push(
+    await synchronizeContainerFindings(context, containerReports),
+  );
+  operationResults.push(
+    await synchronizeContainerUnwantedPrograms(context, containerReports),
+  );
+
   return {
     operations: summarizePersisterOperationsResults(
       await removeDeprecatedEntities(context),
-      await publishChanges({ persister, oldData, tenableData, account }),
       ...operationResults,
     ),
   };
