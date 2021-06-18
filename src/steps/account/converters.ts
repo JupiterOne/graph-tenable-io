@@ -1,7 +1,7 @@
-import { entities } from "../constants";
-import { Account } from "../types";
+import { entities } from '../../constants';
+import { Account } from '../../types';
 
-import { generateEntityKey } from "../utils/generateKey";
+import { generateEntityKey } from '../../utils/generateKey';
 
 export function createAccountEntity(account: Account) {
   return {
