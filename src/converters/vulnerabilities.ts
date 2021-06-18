@@ -1,24 +1,12 @@
 import {
   convertProperties,
   EntityFromIntegration,
+  MappedRelationshipFromIntegration,
   RelationshipDirection,
+  RelationshipFromIntegration,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
-import {
-  entities,
-  SCAN_FINDING_RELATIONSHIP_CLASS,
-  SCAN_FINDING_RELATIONSHIP_TYPE,
-  SCAN_VULNERABILITY_RELATIONSHIP_CLASS,
-  SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
-  ScanFindingRelationship,
-  ScanVulnerabilityRelationship,
-  TENABLE_VULNERABILITY_ENTITY_CLASS,
-  TENABLE_VULNERABILITY_ENTITY_TYPE,
-  TenableVulnerabilityEntity,
-  VULNERABILITY_FINDING_RELATIONSHIP_CLASS,
-  VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
-  VulnerabilityFindingRelationship,
-} from "../jupiterone";
+import { entities, FindingRelationship, relationships } from "../jupiterone";
 import {
   AssetExport,
   AssetVulnerabilityRiskInfo,
@@ -100,16 +88,25 @@ export function normalizeCVSS2Severity(
   return { numericSeverity, severity };
 }
 
+interface TenableVulnerabilityEntity extends EntityFromIntegration {
+  description?: string;
+  pluginId: number;
+  pluginFamily: string;
+  pluginName: string;
+  numericSeverity: number;
+  severity: string;
+}
+
 function createTenableVulnerabilityEntity(
   vulnerability: ScanVulnerabilitySummary,
 ): TenableVulnerabilityEntity {
   return {
     _key: generateEntityKey(
-      TENABLE_VULNERABILITY_ENTITY_TYPE,
+      entities.VULNERABILITY._type,
       vulnerability.plugin_id,
     ),
-    _type: TENABLE_VULNERABILITY_ENTITY_TYPE,
-    _class: TENABLE_VULNERABILITY_ENTITY_CLASS,
+    _type: entities.VULNERABILITY._type,
+    _class: entities.VULNERABILITY._class,
     displayName: vulnerability.plugin_name,
     pluginId: vulnerability.plugin_id,
     pluginFamily: vulnerability.plugin_family,
@@ -117,6 +114,18 @@ function createTenableVulnerabilityEntity(
     numericSeverity: vulnerability.severity,
     severity: getSeverity(vulnerability.severity),
   };
+}
+/**
+ * A mapped relationship is used because there will be many scans pointing to
+ * the same vulnerability, perhaps from different integration instances.
+ * Scan-specific information (i.e. number of instances of the vulnerability
+ * found by the scan) about the vulnerability is placed on the relationship.
+ */
+export interface ScanVulnerabilityRelationship
+  extends MappedRelationshipFromIntegration {
+  scanId: number;
+  scanUuid: string;
+  count: number;
 }
 
 export function createScanVulnerabilityRelationship(
@@ -129,11 +138,11 @@ export function createScanVulnerabilityRelationship(
   return {
     _key: generateRelationshipKey(
       sourceEntityKey,
-      SCAN_VULNERABILITY_RELATIONSHIP_CLASS,
+      relationships.SCAN_IDENTIFIED_VULNERABILITY._class,
       targetEntity._key,
     ),
-    _class: SCAN_VULNERABILITY_RELATIONSHIP_CLASS,
-    _type: SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
+    _class: relationships.SCAN_IDENTIFIED_VULNERABILITY._class,
+    _type: relationships.SCAN_IDENTIFIED_VULNERABILITY._type,
     _mapping: {
       relationshipDirection: RelationshipDirection.FORWARD,
       sourceEntityKey,
@@ -146,6 +155,9 @@ export function createScanVulnerabilityRelationship(
     count: vulnerability.count,
   };
 }
+
+export type VulnerabilityFindingRelationship = MappedRelationshipFromIntegration &
+  FindingRelationship;
 
 /**
  * Create a relationship between a finding and the vulnerability that was found.
@@ -167,8 +179,8 @@ export function createVulnerabilityFindingRelationship({
 
   return {
     _key: `${sourceEntityKey}_${targetEntity._key}`,
-    _type: VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
-    _class: VULNERABILITY_FINDING_RELATIONSHIP_CLASS,
+    _type: relationships.FINDING_IS_VULNERABILITY._type,
+    _class: relationships.FINDING_IS_VULNERABILITY._class,
     _mapping: {
       relationshipDirection: RelationshipDirection.FORWARD,
       sourceEntityKey,
@@ -182,6 +194,9 @@ export function createVulnerabilityFindingRelationship({
     scanUuid: scan.uuid,
   };
 }
+
+export type ScanFindingRelationship = RelationshipFromIntegration &
+  FindingRelationship;
 
 /**
  * Create a relationship between a finding and the scan that found it.
@@ -202,8 +217,8 @@ export function createScanFindingRelationship({
   const scanKey = scanEntityKey(scan.id);
   return {
     _key: `${scanKey}_${findingKey}`,
-    _type: SCAN_FINDING_RELATIONSHIP_TYPE,
-    _class: SCAN_FINDING_RELATIONSHIP_CLASS,
+    _type: relationships.SCAN_IDENTIFIED_FINDING._type,
+    _class: relationships.SCAN_IDENTIFIED_FINDING._class,
     _fromEntityKey: scanKey,
     _toEntityKey: findingKey,
     scanId: scan.id,

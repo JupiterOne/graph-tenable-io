@@ -1,15 +1,13 @@
-import {
-  ACCOUNT_USER_RELATIONSHIP_CLASS,
-  ACCOUNT_USER_RELATIONSHIP_TYPE,
-  AccountUserRelationship,
-  entities,
-} from "../jupiterone";
+import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities, relationships } from "../jupiterone";
 import { User } from "../tenable/types";
 import { Account } from "../types";
 import {
   generateEntityKey,
   generateRelationshipKey,
 } from "../utils/generateKey";
+
+type AccountUserRelationship = RelationshipFromIntegration;
 
 export function createAccountUserRelationships(
   account: Account,
@@ -22,15 +20,15 @@ export function createAccountUserRelationships(
     const childKey = generateEntityKey(entities.USER._type, user.id);
     const relationKey = generateRelationshipKey(
       parentKey,
-      ACCOUNT_USER_RELATIONSHIP_CLASS,
+      relationships.ACCOUNT_HAS_USER._class,
       childKey,
     );
 
     const relationship: AccountUserRelationship = {
-      _class: ACCOUNT_USER_RELATIONSHIP_CLASS,
+      _class: relationships.ACCOUNT_HAS_USER._class,
       _fromEntityKey: parentKey,
       _key: relationKey,
-      _type: ACCOUNT_USER_RELATIONSHIP_TYPE,
+      _type: relationships.ACCOUNT_HAS_USER._type,
       _toEntityKey: childKey,
     };
 

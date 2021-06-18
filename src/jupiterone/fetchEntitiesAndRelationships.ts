@@ -1,21 +1,10 @@
 import {
   EntityFromIntegration,
   GraphClient,
+  IntegrationRelationship,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
-import {
-  ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
-  AccountContainerRelationship,
-  CONTAINER_REPORT_RELATIONSHIP_TYPE,
-  CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-  ContainerReportRelationship,
-  ContainerReportUnwantedProgramRelationship,
-  entities,
-  REPORT_FINDING_RELATIONSHIP_TYPE,
-  REPORT_MALWARE_RELATIONSHIP_TYPE,
-  ReportFindingRelationship,
-  ReportMalwareRelationship,
-} from "./entities";
+import { entities, relationships } from "./entities";
 
 export interface JupiterOneEntitiesData {
   containers: EntityFromIntegration[];
@@ -26,11 +15,11 @@ export interface JupiterOneEntitiesData {
 }
 
 export interface JupiterOneRelationshipsData {
-  accountContainerRelationships: AccountContainerRelationship[];
-  containerReportRelationships: ContainerReportRelationship[];
-  reportMalwareRelationships: ReportMalwareRelationship[];
-  reportFindingRelationships: ReportFindingRelationship[];
-  reportUnwantedProgramRelationships: ContainerReportUnwantedProgramRelationship[];
+  accountContainerRelationships: IntegrationRelationship[];
+  containerReportRelationships: IntegrationRelationship[];
+  reportMalwareRelationships: IntegrationRelationship[];
+  reportFindingRelationships: IntegrationRelationship[];
+  reportUnwantedProgramRelationships: IntegrationRelationship[];
 }
 
 export interface JupiterOneDataModel {
@@ -85,20 +74,16 @@ export async function fetchRelationships(
     reportFindingRelationships,
     reportUnwantedProgramRelationships,
   ] = await Promise.all([
-    graph.findRelationshipsByType<AccountContainerRelationship>(
-      ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType(relationships.ACCOUNT_HAS_CONTAINER._type),
+    graph.findRelationshipsByType(relationships.CONTAINER_HAS_REPORT._type),
+    graph.findRelationshipsByType(
+      relationships.REPORT_IDENTIFIED_MALWARE._type,
     ),
-    graph.findRelationshipsByType<ContainerReportRelationship>(
-      CONTAINER_REPORT_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType(
+      relationships.REPORT_IDENTIFIED_FINDING._type,
     ),
-    graph.findRelationshipsByType<ReportMalwareRelationship>(
-      REPORT_MALWARE_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<ReportFindingRelationship>(
-      REPORT_FINDING_RELATIONSHIP_TYPE,
-    ),
-    graph.findRelationshipsByType<ContainerReportUnwantedProgramRelationship>(
-      CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
+    graph.findRelationshipsByType(
+      relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
     ),
   ]);
 

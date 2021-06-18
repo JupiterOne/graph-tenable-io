@@ -1,17 +1,3 @@
-import {
-  MappedRelationshipFromIntegration,
-  RelationshipFromIntegration,
-} from "@jupiterone/jupiter-managed-integration-sdk";
-
-export * from "./AccountContainerRelationship";
-export * from "./AccountUserRelationship";
-export * from "./ContainerReportRelationship";
-export * from "./ReportFindingRelationship";
-export * from "./ReportMalwareRelationship";
-export * from "./TenableVulnerabilityEntity";
-export * from "./ScanVulnerabilityRelationship";
-export * from "./UserScanRelationship";
-
 export const entities = {
   ACCOUNT: {
     resourceName: "Account",
@@ -44,6 +30,11 @@ export const entities = {
     _class: "Finding",
     _type: "tenable_container_unwanted_program",
   },
+  VULNERABILITY: {
+    resourceName: "Vulnerability",
+    _class: "Vulnerability",
+    _type: "tenable_vulnerability",
+  },
   VULN_FINDING: {
     resourceName: "Vulnerability Finding",
     _class: "Finding",
@@ -61,21 +52,70 @@ export const entities = {
   },
 };
 
-export const CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE =
-  "tenable_container_report_identified_unwanted_program";
-export const CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_CLASS =
-  "IDENTIFIED";
+export const relationships = {
+  ACCOUNT_HAS_USER: {
+    _type: "tenable_account_has_user",
+    sourceType: entities.ACCOUNT._type,
+    _class: "HAS",
+    targetType: entities.USER._type,
+  },
+  USER_OWNS_SCAN: {
+    _type: "tenable_user_owns_scan",
+    sourceType: entities.USER._type,
+    _class: "OWNS",
+    targetType: entities.SCAN._type,
+  },
+  ACCOUNT_HAS_CONTAINER: {
+    _type: "tenable_account_has_container",
+    sourceType: entities.ACCOUNT._type,
+    _class: "HAS",
+    targetType: entities.CONTAINER._type,
+  },
+  CONTAINER_HAS_REPORT: {
+    _type: "tenable_container_has_container_report",
+    sourceType: entities.CONTAINER._type,
+    _class: "HAS",
+    targetType: entities.CONTAINER_REPORT._type,
+  },
+  REPORT_IDENTIFIED_FINDING: {
+    _type: "tenable_container_report_identified_finding",
+    sourceType: entities.CONTAINER_REPORT._type,
+    _class: "IDENTIFIED",
+    targetType: entities.CONTAINER_FINDING._type,
+  },
+  REPORT_IDENTIFIED_MALWARE: {
+    _type: "tenable_container_report_identified_malware",
+    sourceType: entities.CONTAINER_REPORT._type,
+    _class: "IDENTIFIED",
+    targetType: entities.CONTAINER_MALWARE._type,
+  },
+  CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM: {
+    _type: "tenable_container_report_identified_unwanted_program",
+    sourceType: entities.CONTAINER_REPORT._type,
+    _class: "IDENTIFIED",
+    targetType: entities.CONTAINER_UNWANTED_PROGRAM._type,
+  },
+  SCAN_IDENTIFIED_FINDING: {
+    _type: "tenable_scan_identified_finding",
+    sourceType: entities.SCAN._type,
+    _class: "IDENTIFIED",
+    targetType: entities.VULN_FINDING._type,
+  },
+  SCAN_IDENTIFIED_VULNERABILITY: {
+    _type: "tenable_scan_identified_vulnerability",
+    sourceType: entities.SCAN._type,
+    _class: "IDENTIFIED",
+    targetType: entities.VULNERABILITY._type,
+  },
+  FINDING_IS_VULNERABILITY: {
+    _type: "tenable_vulnerability_finding_is_vulnerability",
+    sourceType: entities.VULN_FINDING._type,
+    _class: "IS",
+    targetType: "vulnerability",
+  },
+};
 
-export const VULNERABILITY_FINDING_RELATIONSHIP_TYPE =
-  "tenable_vulnerability_finding_is_vulnerability";
-export const VULNERABILITY_FINDING_RELATIONSHIP_CLASS = "IS";
-
-export const SCAN_FINDING_RELATIONSHIP_TYPE = "tenable_scan_identified_finding";
-export const SCAN_FINDING_RELATIONSHIP_CLASS = "IDENTIFIED";
-
-export type ContainerReportUnwantedProgramRelationship = RelationshipFromIntegration;
-
-interface FindingRelationship {
+export interface FindingRelationship {
   scanId: number;
   scanUuid: string;
   pluginId: number;
@@ -90,9 +130,3 @@ interface FindingRelationship {
    */
   assetUuid?: string;
 }
-
-export type ScanFindingRelationship = RelationshipFromIntegration &
-  FindingRelationship;
-
-export type VulnerabilityFindingRelationship = MappedRelationshipFromIntegration &
-  FindingRelationship;

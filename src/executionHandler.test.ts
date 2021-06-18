@@ -3,19 +3,7 @@ import * as attempt from "@lifeomic/attempt";
 import nock from "nock";
 
 import executionHandler from "./executionHandler";
-import {
-  ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
-  ACCOUNT_USER_RELATIONSHIP_TYPE,
-  CONTAINER_REPORT_RELATIONSHIP_TYPE,
-  CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-  entities,
-  REPORT_FINDING_RELATIONSHIP_TYPE,
-  REPORT_MALWARE_RELATIONSHIP_TYPE,
-  SCAN_FINDING_RELATIONSHIP_TYPE,
-  SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
-  USER_OWNS_SCAN_RELATIONSHIP_TYPE,
-  VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
-} from "./jupiterone/entities";
+import { entities, relationships } from "./jupiterone/entities";
 
 const tenableConfig = {
   accessKey:
@@ -84,19 +72,19 @@ describe("executionHandler", () => {
     const entitiesProcessedAsScanSet = [entities.VULN_FINDING._type];
 
     const relationshipsProcessedAsSingleSet = [
-      ACCOUNT_USER_RELATIONSHIP_TYPE,
-      USER_OWNS_SCAN_RELATIONSHIP_TYPE,
-      ACCOUNT_CONTAINER_RELATIONSHIP_TYPE,
-      CONTAINER_REPORT_RELATIONSHIP_TYPE,
-      CONTAINER_REPORT_UNWANTED_PROGRAM_RELATIONSHIP_TYPE,
-      REPORT_MALWARE_RELATIONSHIP_TYPE,
-      REPORT_FINDING_RELATIONSHIP_TYPE,
+      relationships.ACCOUNT_HAS_USER._type,
+      relationships.USER_OWNS_SCAN._type,
+      relationships.ACCOUNT_HAS_CONTAINER._type,
+      relationships.CONTAINER_HAS_REPORT._type,
+      relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM.targetType,
+      relationships.REPORT_IDENTIFIED_MALWARE._type,
+      relationships.REPORT_IDENTIFIED_FINDING._type,
     ];
 
     const relationshipsProcessedAsScanSet = [
-      SCAN_VULNERABILITY_RELATIONSHIP_TYPE,
-      SCAN_FINDING_RELATIONSHIP_TYPE,
-      VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+      relationships.SCAN_IDENTIFIED_VULNERABILITY._type,
+      relationships.SCAN_IDENTIFIED_FINDING._type,
+      relationships.FINDING_IS_VULNERABILITY._type,
     ];
 
     const deprecatedEntityTypes = [

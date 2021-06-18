@@ -1,11 +1,9 @@
-import {
-  entities,
-  USER_OWNS_SCAN_RELATIONSHIP_CLASS,
-  USER_OWNS_SCAN_RELATIONSHIP_TYPE,
-  UserScanRelationship,
-} from "../jupiterone/entities";
+import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { entities, relationships } from "../jupiterone/entities";
 import { RecentScanSummary, User } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
+
+export type UserScanRelationship = RelationshipFromIntegration;
 
 export function createUserScanRelationships(
   scans: RecentScanSummary[],
@@ -13,24 +11,27 @@ export function createUserScanRelationships(
 ): UserScanRelationship[] {
   const defaultValue: UserScanRelationship[] = [];
 
-  const relationships: UserScanRelationship[] = scans.reduce((acc, scan) => {
-    const user = findUser(users, scan.owner);
-    if (!user) {
-      return acc;
-    }
-    const parentKey = generateEntityKey(entities.USER._type, user.id);
-    const childKey = generateEntityKey(entities.SCAN._type, scan.id);
-    const relationship: UserScanRelationship = {
-      _class: USER_OWNS_SCAN_RELATIONSHIP_CLASS,
-      _type: USER_OWNS_SCAN_RELATIONSHIP_TYPE,
-      _fromEntityKey: parentKey,
-      _key: `${parentKey}_owns_${childKey}`,
-      _toEntityKey: childKey,
-    };
-    return acc.concat(relationship);
-  }, defaultValue);
+  const userScanRelationships: UserScanRelationship[] = scans.reduce(
+    (acc, scan) => {
+      const user = findUser(users, scan.owner);
+      if (!user) {
+        return acc;
+      }
+      const parentKey = generateEntityKey(entities.USER._type, user.id);
+      const childKey = generateEntityKey(entities.SCAN._type, scan.id);
+      const relationship: UserScanRelationship = {
+        _class: relationships.USER_OWNS_SCAN._class,
+        _type: relationships.USER_OWNS_SCAN._type,
+        _fromEntityKey: parentKey,
+        _key: `${parentKey}_owns_${childKey}`,
+        _toEntityKey: childKey,
+      };
+      return acc.concat(relationship);
+    },
+    defaultValue,
+  );
 
-  return relationships;
+  return userScanRelationships;
 }
 
 function findUser(users: User[], username: string): User | undefined {
