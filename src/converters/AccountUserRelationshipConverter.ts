@@ -1,4 +1,4 @@
-import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { Relationship } from "@jupiterone/integration-sdk-core";
 import { entities, relationships } from "../constants";
 import { User } from "../tenable/types";
 import { Account } from "../types";
@@ -7,13 +7,11 @@ import {
   generateRelationshipKey,
 } from "../utils/generateKey";
 
-type AccountUserRelationship = RelationshipFromIntegration;
-
 export function createAccountUserRelationships(
   account: Account,
   users: User[],
-): AccountUserRelationship[] {
-  const defaultValue: AccountUserRelationship[] = [];
+) {
+  const defaultValue: Relationship[] = [];
 
   return users.reduce((acc, user) => {
     const parentKey = generateEntityKey(entities.ACCOUNT._type, account.id);
@@ -24,7 +22,7 @@ export function createAccountUserRelationships(
       childKey,
     );
 
-    const relationship: AccountUserRelationship = {
+    const relationship: Relationship = {
       _class: relationships.ACCOUNT_HAS_USER._class,
       _fromEntityKey: parentKey,
       _key: relationKey,

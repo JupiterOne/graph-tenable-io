@@ -1,7 +1,8 @@
 import {
   IntegrationError,
   IntegrationLogger,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+} from "@jupiterone/integration-sdk-core";
+import { createMockIntegrationLogger } from "@jupiterone/integration-sdk-testing";
 import * as attempt from "@lifeomic/attempt";
 import { subMinutes } from "date-fns";
 import nock from "nock";
@@ -24,15 +25,7 @@ afterEach(async () => {
 });
 
 function getIntegrationLogger(): IntegrationLogger {
-  return {
-    trace: jest.fn(),
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    fatal: jest.fn(),
-    child: () => getIntegrationLogger(),
-  };
+  return createMockIntegrationLogger();
 }
 
 const ACCESS_KEY =

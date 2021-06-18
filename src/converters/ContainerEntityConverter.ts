@@ -1,27 +1,11 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 import { entities } from "../constants";
 import { Container } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 import getTime from "../utils/getTime";
 
-export interface ContainerEntity extends EntityFromIntegration {
-  id: string;
-  repoId: string;
-  platform: string;
-  name: string;
-  size: string;
-  digest: string;
-  repoName: string;
-  score: string;
-  status: string;
-  createdAt: number;
-  updatedAt: number;
-  numberOfVulnerabilities: string;
-}
-
-export function createContainerEntities(data: Container[]): ContainerEntity[] {
+export function createContainerEntities(data: Container[]) {
   return data.map(container => {
-    const containerEntity: ContainerEntity = {
+    const containerEntity = {
       _key: generateEntityKey(entities.CONTAINER._type, container.id),
       _type: entities.CONTAINER._type,
       _class: entities.CONTAINER._class,

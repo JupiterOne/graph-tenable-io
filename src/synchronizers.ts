@@ -1,10 +1,6 @@
-import {
-  IntegrationRelationship,
-  PersisterOperationsResult,
-  summarizePersisterOperationsResults,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+import { IntegrationStepExecutionContext } from "@jupiterone/integration-sdk-core";
 
-import { entities, relationships } from "./constants";
+import { TenableIntegrationConfig } from "./config";
 import {
   createAccountContainerRelationships,
   createAccountEntity,
@@ -28,9 +24,11 @@ import {
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
 } from "./converters/vulnerabilities";
+import { getAccount } from "./initializeContext";
 import { AssetExportCache, VulnerabilityExportCache } from "./tenable";
 import { createAssetExportCache } from "./tenable/createAssetExportCache";
 import { createVulnerabilityExportCache } from "./tenable/createVulnerabilityExportCache";
+import TenableClient from "./tenable/TenableClient";
 import {
   Container,
   ContainerFinding,
@@ -44,93 +42,66 @@ import {
   ScanVulnerabilitySummary,
   VulnerabilityExport,
 } from "./tenable/types";
-import { Account, TenableIntegrationContext } from "./types";
+import { Account } from "./types";
 
-async function synchronizeAccount(
-  context: TenableIntegrationContext,
-): Promise<PersisterOperationsResult> {
-  const { graph, persister, account } = context;
-  const existingAccounts = await graph.findEntitiesByType(
-    entities.ACCOUNT._type,
+export async function synchronizeAccount(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+): Promise<void> {
+  context.logger.info("Synchronizing account");
+  const accountEntity = await context.jobState.addEntity(
+    createAccountEntity(getAccount(context)),
   );
-  return persister.publishEntityOperations(
-    persister.processEntities({
-      oldEntities: existingAccounts,
-      newEntities: [createAccountEntity(account)],
-    }),
-  );
+  await context.jobState.setData("DATA_ACCOUNT_ENTITY", accountEntity);
 }
 
-async function synchronizeScans(
-  context: TenableIntegrationContext,
+export async function synchronizeScans(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   scanSummaries: RecentScanSummary[],
-): Promise<PersisterOperationsResult> {
-  const { graph, persister } = context;
-
-  const existingScans = await graph.findEntitiesByType(entities.SCAN._type);
-
-  const scanEntities = [];
+): Promise<void> {
+  context.logger.info("Synchronizing scans");
   for (const scan of scanSummaries) {
-    scanEntities.push(createScanEntity(scan));
+    await context.jobState.addEntity(createScanEntity(scan));
   }
+}
 
-  return persister.publishEntityOperations(
-    persister.processEntities({
-      oldEntities: existingScans,
-      newEntities: scanEntities,
-    }),
+export async function synchronizeUsers(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  scanSummaries: RecentScanSummary[],
+): Promise<void> {
+  context.logger.info("Synchronizing users");
+  const provider = new TenableClient({
+    logger: context.logger,
+    accessToken: context.instance.config.accessKey,
+    secretToken: context.instance.config.secretKey,
+  });
+  const users = await provider.fetchUsers();
+
+  await context.jobState.addEntities(createUserEntities(users));
+
+  await context.jobState.addRelationships(
+    createAccountUserRelationships(getAccount(context), users),
+  );
+
+  await context.jobState.addRelationships(
+    createUserScanRelationships(scanSummaries, users),
   );
 }
 
-async function synchronizeUsers(
-  context: TenableIntegrationContext,
+export async function synchronizeHosts(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   scanSummaries: RecentScanSummary[],
-): Promise<PersisterOperationsResult> {
-  const { graph, persister, provider, account } = context;
+): Promise<void> {
+  const provider = new TenableClient({
+    logger: context.logger,
+    accessToken: context.instance.config.accessKey,
+    secretToken: context.instance.config.secretKey,
+  });
 
-  const [
-    users,
-    existingUsers,
-    existingAccountUsers,
-    existingUserScans,
-  ] = await Promise.all([
-    provider.fetchUsers(),
-    graph.findEntitiesByType(entities.USER._type),
-    graph.findRelationshipsByType(relationships.ACCOUNT_HAS_USER._type),
-    graph.findRelationshipsByType(relationships.USER_OWNS_SCAN._type),
-  ]);
-
-  return persister.publishPersisterOperations([
-    persister.processEntities({
-      oldEntities: existingUsers,
-      newEntities: createUserEntities(users),
-    }),
-    [
-      ...persister.processRelationships({
-        oldRelationships: existingAccountUsers as IntegrationRelationship[],
-        newRelationships: createAccountUserRelationships(account, users),
-      }),
-      ...persister.processRelationships({
-        oldRelationships: existingUserScans as IntegrationRelationship[],
-        newRelationships: createUserScanRelationships(scanSummaries, users),
-      }),
-    ],
-  ]);
-}
-
-async function synchronizeHosts(
-  context: TenableIntegrationContext,
-  scanSummaries: RecentScanSummary[],
-): Promise<PersisterOperationsResult> {
-  const { provider, logger } = context;
-
-  const assetCache = await createAssetExportCache(logger, provider);
+  const assetCache = await createAssetExportCache(context.logger, provider);
   const vulnerabilityCache = await createVulnerabilityExportCache(
-    logger,
+    context.logger,
     provider,
   );
-
-  const operationResults: PersisterOperationsResult[] = [];
 
   /* istanbul ignore next */
   for (const scanSummary of scanSummaries) {
@@ -138,12 +109,10 @@ async function synchronizeHosts(
       const scanDetail = await provider.fetchScanDetail(scanSummary);
       if (scanDetail) {
         if (scanDetail.vulnerabilities) {
-          operationResults.push(
-            await synchronizeScanVulnerabilities(
-              context,
-              scanSummary,
-              scanDetail.vulnerabilities,
-            ),
+          await synchronizeScanVulnerabilities(
+            context,
+            scanSummary,
+            scanDetail.vulnerabilities,
           );
         }
         // If the scan detail is archived any calls
@@ -158,30 +127,26 @@ async function synchronizeHosts(
             "Processing scan detail hosts...",
           );
           for (const host of scanDetail.hosts) {
-            operationResults.push(
-              await synchronizeHostVulnerabilities(
-                context,
-                assetCache,
-                vulnerabilityCache,
-                scanSummary,
-                host,
-              ),
+            await synchronizeHostVulnerabilities(
+              context,
+              assetCache,
+              vulnerabilityCache,
+              scanSummary,
+              host,
             );
           }
         }
       }
     }
   }
-
-  return summarizePersisterOperationsResults(...operationResults);
 }
 
-async function synchronizeScanVulnerabilities(
-  context: TenableIntegrationContext,
+export async function synchronizeScanVulnerabilities(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   scan: RecentScanSummary,
   vulnerabilties: ScanVulnerabilitySummary[],
-): Promise<PersisterOperationsResult> {
-  const { logger, graph, persister } = context;
+): Promise<void> {
+  const { logger } = context;
 
   const vulnLogger = logger.child({
     scan: {
@@ -195,30 +160,15 @@ async function synchronizeScanVulnerabilities(
     "Processing vulnerabilities discovered by recent scan...",
   );
 
-  const scanVulnerabilityRelationships = [];
   for (const vuln of vulnerabilties) {
-    scanVulnerabilityRelationships.push(
+    await context.jobState.addRelationship(
       createScanVulnerabilityRelationship(scan, vuln),
     );
   }
 
-  const existingScanVulnerabilityRelationships = await graph.findRelationshipsByType(
-    relationships.SCAN_IDENTIFIED_VULNERABILITY._type,
-    { scanUuid: scan.uuid },
-  );
-
-  const operations = persister.publishRelationshipOperations(
-    persister.processRelationships({
-      oldRelationships: existingScanVulnerabilityRelationships,
-      newRelationships: scanVulnerabilityRelationships,
-    }),
-  );
-
   vulnLogger.info(
     "Processing vulnerabilities discovered by recent scan completed.",
   );
-
-  return operations;
 }
 
 /**
@@ -227,14 +177,19 @@ async function synchronizeScanVulnerabilities(
  * will have a finding of the vulnerability for each scan because they are
  * different findings.
  */
-async function synchronizeHostVulnerabilities(
-  context: TenableIntegrationContext,
+export async function synchronizeHostVulnerabilities(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   assetCache: AssetExportCache,
   vulnerabilityCache: VulnerabilityExportCache,
   scan: RecentScanSummary,
   scanHost: ScanHost,
-): Promise<PersisterOperationsResult> {
-  const { logger, graph, persister, provider } = context;
+): Promise<void> {
+  const { logger } = context;
+  const provider = new TenableClient({
+    logger,
+    accessToken: context.instance.config.accessKey,
+    secretToken: context.instance.config.secretKey,
+  });
 
   const vulnLogger = logger.child({
     scan: {
@@ -248,30 +203,10 @@ async function synchronizeHostVulnerabilities(
     },
   });
 
-  const [
-    scanHostVulnerabilities,
-    existingFindingEntities,
-    existingVulnerabilityFindingRelationships,
-    existingScanFindingRelationships,
-  ] = await Promise.all([
-    provider.fetchScanHostVulnerabilities(scan.id, scanHost.host_id),
-    graph.findEntitiesByType(entities.VULN_FINDING._type, {
-      scanUuid: scan.uuid,
-    }),
-    graph.findRelationshipsByType(
-      relationships.FINDING_IS_VULNERABILITY._type,
-      {
-        scanUuid: scan.uuid,
-      },
-    ),
-    graph.findRelationshipsByType(relationships.SCAN_IDENTIFIED_FINDING._type, {
-      scanUuid: scan.uuid,
-    }),
-  ]);
-
-  const findingEntities = [];
-  const vulnerabilityFindingRelationships = [];
-  const scanFindingRelationships = [];
+  const scanHostVulnerabilities = await provider.fetchScanHostVulnerabilities(
+    scan.id,
+    scanHost.host_id,
+  );
 
   const hostAsset = assetCache.findAssetExportByUuid(scanHost.uuid);
 
@@ -303,7 +238,7 @@ async function synchronizeHostVulnerabilities(
       );
     }
 
-    findingEntities.push(
+    await context.jobState.addEntity(
       createVulnerabilityFindingEntity({
         scan,
         asset: hostAsset,
@@ -313,7 +248,7 @@ async function synchronizeHostVulnerabilities(
       }),
     );
 
-    vulnerabilityFindingRelationships.push(
+    await context.jobState.addRelationship(
       createVulnerabilityFindingRelationship({
         scan,
         assetUuid,
@@ -321,107 +256,59 @@ async function synchronizeHostVulnerabilities(
       }),
     );
 
-    scanFindingRelationships.push(
+    await context.jobState.addRelationship(
       createScanFindingRelationship({ scan, assetUuid, vulnerability }),
     );
   }
 
-  const operations = persister.publishPersisterOperations([
-    persister.processEntities({
-      oldEntities: existingFindingEntities,
-      newEntities: findingEntities,
-    }),
-    [
-      ...persister.processRelationships({
-        oldRelationships: existingVulnerabilityFindingRelationships as IntegrationRelationship[],
-        newRelationships: vulnerabilityFindingRelationships,
-      }),
-      ...persister.processRelationships({
-        oldRelationships: existingScanFindingRelationships as IntegrationRelationship[],
-        newRelationships: scanFindingRelationships,
-      }),
-    ],
-  ]);
-
   logger.info(
     "Processing host vulnerabilities discovered by recent scan completed.",
   );
-
-  return operations;
 }
 
-async function synchronizeContainers(
-  { persister, graph, logger }: TenableIntegrationContext,
+export async function synchronizeContainers(
+  {
+    jobState,
+    logger,
+  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   containers: Container[],
   account: Account,
 ) {
   logger.info("Synchronizing containers");
-  const containerEntityOperationsResult = await persister.publishEntityOperations(
-    persister.processEntities({
-      oldEntities: await graph.findEntitiesByType(entities.CONTAINER._type),
-      newEntities: createContainerEntities(containers),
-    }),
-  );
+  await jobState.addEntities(createContainerEntities(containers));
   logger.info("Finished synchronizing containers");
 
   logger.info("Synchronizing account -> container relationships");
-  const accountContainerRelationshipOperationsResult = await persister.publishRelationshipOperations(
-    persister.processRelationships({
-      oldRelationships: await graph.findRelationshipsByType(
-        relationships.ACCOUNT_HAS_CONTAINER._type,
-      ),
-      newRelationships: createAccountContainerRelationships(
-        account,
-        containers,
-      ),
-    }),
+  await jobState.addRelationships(
+    createAccountContainerRelationships(account, containers),
   );
   logger.info("Finished synchronizing account -> container relationships");
-
-  return summarizePersisterOperationsResults(
-    containerEntityOperationsResult,
-    accountContainerRelationshipOperationsResult,
-  );
 }
 
-async function synchronizeContainerReports(
-  { persister, graph, logger }: TenableIntegrationContext,
+export async function synchronizeContainerReports(
+  {
+    jobState,
+    logger,
+  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   containerReports: ContainerReport[],
   containers: Container[],
 ) {
   logger.info("Synchronizing container reports");
-  const containerReportEntityOperationsResult = await persister.publishEntityOperations(
-    persister.processEntities({
-      oldEntities: await graph.findEntitiesByType(
-        entities.CONTAINER_REPORT._type,
-      ),
-      newEntities: createReportEntities(containerReports),
-    }),
-  );
+  await jobState.addEntities(createReportEntities(containerReports));
   logger.info("Finished synchronizing container reports");
 
   logger.info("Synchronizing container -> report relationships");
-  const containerReportRelationshipOperationsResult = await persister.publishRelationshipOperations(
-    persister.processRelationships({
-      oldRelationships: await graph.findRelationshipsByType(
-        relationships.CONTAINER_HAS_REPORT._type,
-      ),
-      newRelationships: createContainerReportRelationships(
-        containers,
-        containerReports,
-      ),
-    }),
+  await jobState.addRelationships(
+    createContainerReportRelationships(containers, containerReports),
   );
   logger.info("Finished synchronizing container -> report relationships");
-
-  return summarizePersisterOperationsResults(
-    containerReportEntityOperationsResult,
-    containerReportRelationshipOperationsResult,
-  );
 }
 
-async function synchronizeContainerMalware(
-  { persister, graph, logger }: TenableIntegrationContext,
+export async function synchronizeContainerMalware(
+  {
+    jobState,
+    logger,
+  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   containerReports: ContainerReport[],
 ) {
   const malwares: Dictionary<ContainerMalware[]> = {};
@@ -436,38 +323,21 @@ async function synchronizeContainerMalware(
   }
 
   logger.info("Synchronizing container malware");
-  const malwareEntityOperationsResult = await persister.publishEntityOperations(
-    persister.processEntities({
-      oldEntities: await graph.findEntitiesByType(
-        entities.CONTAINER_MALWARE._type,
-      ),
-      newEntities: createMalwareEntities(malwares),
-    }),
-  );
+  await jobState.addEntities(createMalwareEntities(malwares));
   logger.info("Finished synchronizing container malware");
 
   logger.info("Synchronizing report -> malware relationships");
-  const reportMalwareRelationshipOperationsResult = await persister.publishRelationshipOperations(
-    persister.processRelationships({
-      oldRelationships: await graph.findRelationshipsByType(
-        relationships.REPORT_IDENTIFIED_MALWARE._type,
-      ),
-      newRelationships: createReportMalwareRelationships(
-        containerReports,
-        malwares,
-      ),
-    }),
+  await jobState.addEntities(
+    createReportMalwareRelationships(containerReports, malwares),
   );
   logger.info("Finished synchronizing report -> malware relationships");
-
-  return summarizePersisterOperationsResults(
-    malwareEntityOperationsResult,
-    reportMalwareRelationshipOperationsResult,
-  );
 }
 
-async function synchronizeContainerFindings(
-  { persister, graph, logger }: TenableIntegrationContext,
+export async function synchronizeContainerFindings(
+  {
+    jobState,
+    logger,
+  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   containerReports: ContainerReport[],
 ) {
   const findings: Dictionary<ContainerFinding[]> = {};
@@ -482,38 +352,21 @@ async function synchronizeContainerFindings(
   }
 
   logger.info("Synchronizing container finding");
-  const findingEntityOperationsResult = await persister.publishEntityOperations(
-    persister.processEntities({
-      oldEntities: await graph.findEntitiesByType(
-        entities.CONTAINER_FINDING._type,
-      ),
-      newEntities: createContainerFindingEntities(findings),
-    }),
-  );
+  await jobState.addEntities(createContainerFindingEntities(findings));
   logger.info("Finished synchronizing container finding");
 
   logger.info("Synchronizing report -> finding relationships");
-  const reportMalwareRelationshipOperationsResult = await persister.publishRelationshipOperations(
-    persister.processRelationships({
-      oldRelationships: await graph.findRelationshipsByType(
-        relationships.REPORT_IDENTIFIED_FINDING._type,
-      ),
-      newRelationships: createReportFindingRelationships(
-        containerReports,
-        findings,
-      ),
-    }),
+  await jobState.addRelationships(
+    createReportFindingRelationships(containerReports, findings),
   );
   logger.info("Finished synchronizing report -> finding relationships");
-
-  return summarizePersisterOperationsResults(
-    findingEntityOperationsResult,
-    reportMalwareRelationshipOperationsResult,
-  );
 }
 
-async function synchronizeContainerUnwantedPrograms(
-  { persister, graph, logger }: TenableIntegrationContext,
+export async function synchronizeContainerUnwantedPrograms(
+  {
+    jobState,
+    logger,
+  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   containerReports: ContainerReport[],
 ) {
   const unwantedPrograms: Dictionary<ContainerUnwantedProgram[]> = {};
@@ -530,46 +383,17 @@ async function synchronizeContainerUnwantedPrograms(
   }
 
   logger.info("Synchronizing container unwanted programs");
-  const findingEntityOperationsResult = await persister.publishEntityOperations(
-    persister.processEntities({
-      oldEntities: await graph.findEntitiesByType(
-        entities.CONTAINER_UNWANTED_PROGRAM._type,
-      ),
-      newEntities: createUnwantedProgramEntities(unwantedPrograms),
-    }),
-  );
+  await jobState.addEntities(createUnwantedProgramEntities(unwantedPrograms));
   logger.info("Finished synchronizing container unwanted programs");
 
   logger.info("Synchronizing report -> unwanted program relationships");
-  const reportMalwareRelationshipOperationsResult = await persister.publishRelationshipOperations(
-    persister.processRelationships({
-      oldRelationships: await graph.findRelationshipsByType(
-        relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
-      ),
-      newRelationships: createContainerReportUnwantedProgramRelationships(
-        containerReports,
-        unwantedPrograms,
-      ),
-    }),
+  await jobState.addRelationships(
+    createContainerReportUnwantedProgramRelationships(
+      containerReports,
+      unwantedPrograms,
+    ),
   );
   logger.info(
     "Finished synchronizing report -> unwanted program relationships",
   );
-
-  return summarizePersisterOperationsResults(
-    findingEntityOperationsResult,
-    reportMalwareRelationshipOperationsResult,
-  );
 }
-
-export {
-  synchronizeAccount,
-  synchronizeScans,
-  synchronizeUsers,
-  synchronizeHosts,
-  synchronizeContainers,
-  synchronizeContainerReports,
-  synchronizeContainerMalware,
-  synchronizeContainerFindings,
-  synchronizeContainerUnwantedPrograms,
-};

@@ -1,4 +1,3 @@
-import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 import { entities, relationships } from "../constants";
 import {
   ContainerReport,
@@ -10,13 +9,11 @@ import {
   generateRelationshipKey,
 } from "../utils/generateKey";
 
-type ContainerReportUnwantedProgramRelationship = RelationshipFromIntegration;
-
 export function createContainerReportUnwantedProgramRelationships(
   reports: ContainerReport[],
   unwantedPrograms: Dictionary<ContainerUnwantedProgram[]>,
-): ContainerReportUnwantedProgramRelationship[] {
-  const defaultValue: ContainerReportUnwantedProgramRelationship[] = [];
+) {
+  const defaultValue: any[] = [];
   const unwantedProgramRelationships = reports.reduce((acc, report) => {
     const vulnerabilitiesForReport = unwantedPrograms[report.sha256];
     const relationsForReport = vulnerabilitiesForReport.map(item => {
@@ -30,7 +27,7 @@ export function createContainerReportUnwantedProgramRelationships(
 function createRelation(
   vulnerability: ContainerUnwantedProgram,
   reportId: string,
-): ContainerReportUnwantedProgramRelationship {
+) {
   const unwantedProgramId = vulnerability.md5;
   const parentKey = generateEntityKey(
     entities.CONTAINER_REPORT._type,

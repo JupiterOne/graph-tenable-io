@@ -29,7 +29,7 @@ describe("createScanEntity", () => {
       _key: "tenable_scan_8",
       _type: "tenable_scan",
       _rawData: [{ name: "default", rawData: scan }],
-      id: 8,
+      id: "8",
       legacy: false,
       permissions: 16,
       type: "webapp",

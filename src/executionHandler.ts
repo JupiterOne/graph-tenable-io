@@ -1,12 +1,7 @@
-import {
-  IntegrationExecutionContext,
-  IntegrationExecutionResult,
-  PersisterOperationsResult,
-  summarizePersisterOperationsResults,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+import { IntegrationStepExecutionContext } from "@jupiterone/integration-sdk-core";
 
-import { relationships } from "./constants";
-import initializeContext from "./initializeContext";
+import { TenableIntegrationConfig } from "./config";
+import { getAccount } from "./initializeContext";
 import {
   synchronizeAccount,
   synchronizeContainerFindings,
@@ -18,22 +13,22 @@ import {
   synchronizeScans,
   synchronizeUsers,
 } from "./synchronizers";
-import { TenableIntegrationContext } from "./types";
+import TenableClient from "./tenable/TenableClient";
 
 export default async function executionHandler(
-  context: IntegrationExecutionContext,
-): Promise<IntegrationExecutionResult> {
-  const initializedContext = await initializeContext(context);
-  return synchronize(initializedContext);
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+): Promise<void> {
+  return synchronize(context);
 }
 
 async function synchronize(
-  context: TenableIntegrationContext,
-): Promise<IntegrationExecutionResult> {
-  const { provider, account } = context;
-
-  const operationResults: PersisterOperationsResult[] = [];
-
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+): Promise<void> {
+  const provider = new TenableClient({
+    logger: context.logger,
+    accessToken: context.instance.config.accessKey,
+    secretToken: context.instance.config.secretKey,
+  });
   const scans = await provider.fetchScans();
 
   context.logger.info(
@@ -42,93 +37,21 @@ async function synchronize(
     },
     "Processing scans...",
   );
-  operationResults.push(await synchronizeAccount(context));
-  operationResults.push(await synchronizeScans(context, scans));
-  operationResults.push(await synchronizeUsers(context, scans));
-  operationResults.push(await synchronizeHosts(context, scans));
+  await synchronizeAccount(context);
+  await synchronizeScans(context, scans);
+  await synchronizeUsers(context, scans);
+  await synchronizeHosts(context, scans);
 
   const containers = await provider.fetchContainers();
-  operationResults.push(
-    await synchronizeContainers(context, containers, account),
-  );
+  await synchronizeContainers(context, containers, getAccount(context));
 
   /* istanbul ignore next */
   const containerReports = await Promise.all(
     containers.map(async c => provider.fetchReportByImageDigest(c.digest)),
   );
-  operationResults.push(
-    await synchronizeContainerReports(context, containerReports, containers),
-  );
+  await synchronizeContainerReports(context, containerReports, containers);
 
-  operationResults.push(
-    await synchronizeContainerMalware(context, containerReports),
-  );
-  operationResults.push(
-    await synchronizeContainerFindings(context, containerReports),
-  );
-  operationResults.push(
-    await synchronizeContainerUnwantedPrograms(context, containerReports),
-  );
-
-  return {
-    operations: summarizePersisterOperationsResults(
-      await removeDeprecatedEntities(context),
-      ...operationResults,
-    ),
-  };
-}
-
-async function removeDeprecatedEntities(
-  context: TenableIntegrationContext,
-): Promise<PersisterOperationsResult> {
-  const { graph, persister } = context;
-  const results = await Promise.all(
-    [
-      "tenable_asset",
-      "tenable_report",
-      "tenable_finding",
-      "tenable_malware",
-      "tenable_unwanted_program",
-      "tenable_webapp_vulnerability",
-    ].map(async t => {
-      const entitiesToDelete = await graph.findEntitiesByType(t);
-      return persister.publishEntityOperations(
-        persister.processEntities({
-          oldEntities: entitiesToDelete,
-          newEntities: [],
-        }),
-      );
-    }),
-  );
-
-  results.push(
-    await removeRelationshipsWithoutScanUuid(
-      context,
-      relationships.SCAN_IDENTIFIED_VULNERABILITY._type,
-    ),
-    await removeRelationshipsWithoutScanUuid(
-      context,
-      relationships.SCAN_IDENTIFIED_FINDING._type,
-    ),
-  );
-
-  return summarizePersisterOperationsResults(...results);
-}
-
-async function removeRelationshipsWithoutScanUuid(
-  context: TenableIntegrationContext,
-  type: string,
-) {
-  const { graph, persister } = context;
-  const relationshipsWithoutScanUuid = await graph.findRelationshipsByType(
-    type,
-    {},
-    ["scanUuid"],
-  );
-  return persister.publishRelationshipOperations(
-    persister.processRelationships({
-      oldRelationships: relationshipsWithoutScanUuid,
-      newRelationships: [],
-    }),
-  );
+  await synchronizeContainerMalware(context, containerReports);
+  await synchronizeContainerFindings(context, containerReports);
+  await synchronizeContainerUnwantedPrograms(context, containerReports);
 }

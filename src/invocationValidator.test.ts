@@ -1,7 +1,7 @@
 import {
-  IntegrationInstanceAuthenticationError,
-  IntegrationInstanceConfigError,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+  IntegrationConfigLoadError,
+  IntegrationValidationError,
+} from "@jupiterone/integration-sdk-core";
 import invocationValidator from "./invocationValidator";
 
 it("should reject", async () => {
@@ -13,7 +13,7 @@ it("should reject", async () => {
   try {
     await invocationValidator(executionContext as any);
   } catch (e) {
-    expect(e instanceof IntegrationInstanceConfigError).toBe(true);
+    expect(e).toBeInstanceOf(IntegrationConfigLoadError);
   }
 });
 
@@ -29,6 +29,6 @@ it("auth error", async () => {
   try {
     await invocationValidator(executionContext as any);
   } catch (e) {
-    expect(e instanceof IntegrationInstanceAuthenticationError).toBe(true);
+    expect(e).toBeInstanceOf(IntegrationValidationError);
   }
 });

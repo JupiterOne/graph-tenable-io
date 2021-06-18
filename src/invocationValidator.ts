@@ -1,9 +1,10 @@
 import {
-  IntegrationInstanceAuthenticationError,
-  IntegrationInstanceConfigError,
-  IntegrationValidationContext,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+  IntegrationConfigLoadError,
+  IntegrationExecutionContext,
+  IntegrationValidationError,
+} from "@jupiterone/integration-sdk-core";
 
+import { TenableIntegrationConfig } from "./config";
 import TenableClient from "./tenable/TenableClient";
 
 /**
@@ -22,14 +23,14 @@ import TenableClient from "./tenable/TenableClient";
  * @param executionContext
  */
 export default async function invocationValidator(
-  executionContext: IntegrationValidationContext,
+  executionContext: IntegrationExecutionContext<TenableIntegrationConfig>,
 ) {
   const {
     logger,
     instance: { config },
   } = executionContext;
   if (!config.accessKey || !config.secretKey) {
-    throw new IntegrationInstanceConfigError(
+    throw new IntegrationConfigLoadError(
       "config requires all of { accessKey, secretKey }",
     );
   }
@@ -43,6 +44,6 @@ export default async function invocationValidator(
   try {
     await provider.fetchUserPermissions();
   } catch (err) {
-    throw new IntegrationInstanceAuthenticationError(err);
+    throw new IntegrationValidationError(err.message);
   }
 }

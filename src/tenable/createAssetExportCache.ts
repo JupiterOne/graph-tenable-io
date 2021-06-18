@@ -5,7 +5,7 @@ import { AssetExport, ExportAssetsOptions, ExportStatus } from "./types";
 import {
   IntegrationError,
   IntegrationLogger,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+} from "@jupiterone/integration-sdk-core";
 import { sleep } from "@lifeomic/attempt";
 import { addMinutes, isAfter } from "date-fns";
 import pMap from "p-map";

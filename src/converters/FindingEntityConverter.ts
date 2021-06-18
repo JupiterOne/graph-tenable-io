@@ -1,40 +1,17 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 import { entities } from "../constants";
 import { ContainerFinding, Dictionary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
-import { FindingSeverityPriority } from "./types";
 import { normalizeCVSS2Severity } from "./vulnerabilities";
-
-export interface ContainerFindingEntity extends EntityFromIntegration {
-  referenceId?: string;
-  cve: string;
-  publishedDate: string;
-  modifiedDate: string;
-  description: string;
-  cvssScore: string;
-  accessVector: string;
-  accessComplexity: string;
-  auth: string;
-  availabilityImpact: string;
-  confidentialityImpact: string;
-  integrityImpact: string;
-  cwe: string;
-  remediation: string;
-  numericSeverity: number;
-  severity: FindingSeverityPriority | undefined;
-}
 
 export function createContainerFindingEntities(
   data: Dictionary<ContainerFinding[]>,
-): ContainerFindingEntity[] {
-  return Object.values(data).reduce((acc: ContainerFindingEntity[], array) => {
+) {
+  return Object.values(data).reduce((acc, array) => {
     return [...acc, ...array.map(createContainerFindingEntity)];
-  }, []);
+  }, [] as any[]);
 }
 
-export function createContainerFindingEntity(
-  vulnerability: ContainerFinding,
-): ContainerFindingEntity {
+export function createContainerFindingEntity(vulnerability: ContainerFinding) {
   const { nvdFinding } = vulnerability;
   const { numericSeverity, severity } = normalizeCVSS2Severity(
     nvdFinding.cvss_score,

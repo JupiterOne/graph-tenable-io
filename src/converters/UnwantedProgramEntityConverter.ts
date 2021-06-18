@@ -1,36 +1,22 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 import { entities } from "../constants";
 import { ContainerUnwantedProgram, Dictionary } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 
-export interface ContainerUnwantedProgramEntity extends EntityFromIntegration {
-  file: string;
-  md5: string;
-  sha256: string;
-}
-
 export function createUnwantedProgramEntities(
   data: Dictionary<ContainerUnwantedProgram[]>,
-): ContainerUnwantedProgramEntity[] {
-  const defaultValue: ContainerUnwantedProgramEntity[] = [];
+) {
+  const defaultValue: any[] = [];
   const vulnerabilityArrays = Object.values(data);
 
-  const relationships = vulnerabilityArrays.reduce(
-    (acc: ContainerUnwantedProgramEntity[], array) => {
-      const relationsForOneReport: ContainerUnwantedProgramEntity[] = array.map(
-        createUnwantedProgramEntity,
-      );
-      return acc.concat(relationsForOneReport);
-    },
-    defaultValue,
-  );
+  const relationships = vulnerabilityArrays.reduce((acc, array) => {
+    const relationsForOneReport = array.map(createUnwantedProgramEntity);
+    return acc.concat(relationsForOneReport);
+  }, defaultValue);
 
   return relationships;
 }
 
-function createUnwantedProgramEntity(
-  vulnerability: ContainerUnwantedProgram,
-): ContainerUnwantedProgramEntity {
+function createUnwantedProgramEntity(vulnerability: ContainerUnwantedProgram) {
   const unwantedProgramId = vulnerability.md5;
   return {
     _key: generateEntityKey(
