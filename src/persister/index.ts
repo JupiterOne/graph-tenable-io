@@ -1,8 +1,6 @@
 import {
-  EntityFromIntegration,
-  EntityOperation,
   PersisterClient,
-  RelationshipOperation,
+  summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
 import {
@@ -17,16 +15,9 @@ import {
   createReportMalwareRelationships,
   createUnwantedProgramEntities,
 } from "../converters";
-import {
-  JupiterOneDataModel,
-  JupiterOneEntitiesData,
-  JupiterOneRelationshipsData,
-} from "../jupiterone";
+import { JupiterOneDataModel } from "../jupiterone";
 import { TenableDataModel } from "../tenable/types";
 import { Account } from "../types";
-
-type EntityDataNames = keyof JupiterOneEntitiesData;
-type RelationshipDataNames = keyof JupiterOneRelationshipsData;
 
 export async function publishChanges({
   persister,
@@ -39,117 +30,106 @@ export async function publishChanges({
   oldData: JupiterOneDataModel;
   tenableData: TenableDataModel;
 }) {
-  const newData = convert(tenableData, account);
-
-  const entities = createEntitiesOperations(
-    oldData.entities,
-    newData.entities,
-    persister,
-  );
-  const relationships = createRelationshipsOperations(
-    oldData.relationships,
-    newData.relationships,
-    persister,
+  const containerOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: oldData.entities.containers,
+      newEntities: createContainerEntities(tenableData.containers),
+    }),
   );
 
-  return await persister.publishPersisterOperations([entities, relationships]);
-}
+  const containerReportOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: oldData.entities.containerReports,
+      newEntities: createReportEntities(tenableData.containerReports),
+    }),
+  );
 
-function createEntitiesOperations(
-  oldData: JupiterOneEntitiesData,
-  newData: JupiterOneEntitiesData,
-  persister: PersisterClient,
-): EntityOperation[] {
-  const dataNames = Object.keys(oldData) as EntityDataNames[];
+  const containerFindingOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: oldData.entities.containerFindings,
+      newEntities: createContainerFindingEntities(
+        tenableData.containerFindings,
+      ),
+    }),
+  );
 
-  return dataNames.reduce((operations: EntityOperation[], dataName) => {
-    const oldEntities = oldData[dataName];
-    const newEntities = newData[dataName];
+  const containerMalwareOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: oldData.entities.containerMalwares,
+      newEntities: createMalwareEntities(tenableData.containerMalwares),
+    }),
+  );
 
-    return [
-      ...operations,
-      ...persister.processEntities<EntityFromIntegration>({
-        oldEntities,
-        newEntities,
-      }),
-    ];
-  }, []);
-}
+  const containerUnwantedProgramsOperationsResult = await persister.publishEntityOperations(
+    persister.processEntities({
+      oldEntities: oldData.entities.containerUnwantedPrograms,
+      newEntities: createUnwantedProgramEntities(
+        tenableData.containerUnwantedPrograms,
+      ),
+    }),
+  );
 
-function createRelationshipsOperations(
-  oldData: JupiterOneRelationshipsData,
-  newData: JupiterOneRelationshipsData,
-  persister: PersisterClient,
-): RelationshipOperation[] {
-  const defaultOperations: RelationshipOperation[] = [];
-  const relationships = Object.keys(oldData) as RelationshipDataNames[];
+  const accountContainerRelationshipResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: oldData.relationships.accountContainerRelationships,
+      newRelationships: createAccountContainerRelationships(
+        account,
+        tenableData.containers,
+      ),
+    }),
+  );
 
-  return relationships.reduce((operations, relationshipName) => {
-    const oldRelationships = oldData[relationshipName];
-    const newRelationships = newData[relationshipName];
+  const containerReportRelationshipResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: oldData.relationships.containerReportRelationships,
+      newRelationships: createContainerReportRelationships(
+        tenableData.containers,
+        tenableData.containerReports,
+      ),
+    }),
+  );
 
-    return [
-      ...operations,
-      ...persister.processRelationships({
-        oldRelationships,
-        newRelationships,
-      }),
-    ];
-  }, defaultOperations);
-}
+  const reportMalwareRelationshipResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: oldData.relationships.reportMalwareRelationships,
+      newRelationships: createReportMalwareRelationships(
+        tenableData.containerReports,
+        tenableData.containerMalwares,
+      ),
+    }),
+  );
 
-export function convert(
-  tenableDataModel: TenableDataModel,
-  account: Account,
-): JupiterOneDataModel {
-  return {
-    entities: convertEntities(tenableDataModel),
-    relationships: convertRelationships(tenableDataModel, account),
-  };
-}
+  const reportFindingRelationshipResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships: oldData.relationships.reportFindingRelationships,
+      newRelationships: createReportFindingRelationships(
+        tenableData.containerReports,
+        tenableData.containerFindings,
+      ),
+    }),
+  );
 
-export function convertEntities(
-  tenableDataModel: TenableDataModel,
-): JupiterOneEntitiesData {
-  return {
-    containers: createContainerEntities(tenableDataModel.containers),
-    containerReports: createReportEntities(tenableDataModel.containerReports),
-    containerMalwares: createMalwareEntities(
-      tenableDataModel.containerMalwares,
-    ),
-    containerFindings: createContainerFindingEntities(
-      tenableDataModel.containerFindings,
-    ),
-    containerUnwantedPrograms: createUnwantedProgramEntities(
-      tenableDataModel.containerUnwantedPrograms,
-    ),
-  };
-}
+  const reportUnwantedProgramRelationshipResult = await persister.publishRelationshipOperations(
+    persister.processRelationships({
+      oldRelationships:
+        oldData.relationships.reportUnwantedProgramRelationships,
+      newRelationships: createContainerReportUnwantedProgramRelationships(
+        tenableData.containerReports,
+        tenableData.containerUnwantedPrograms,
+      ),
+    }),
+  );
 
-export function convertRelationships(
-  tenableDataModel: TenableDataModel,
-  account: Account,
-): JupiterOneRelationshipsData {
-  return {
-    accountContainerRelationships: createAccountContainerRelationships(
-      account,
-      tenableDataModel.containers,
-    ),
-    containerReportRelationships: createContainerReportRelationships(
-      tenableDataModel.containers,
-      tenableDataModel.containerReports,
-    ),
-    reportMalwareRelationships: createReportMalwareRelationships(
-      tenableDataModel.containerReports,
-      tenableDataModel.containerMalwares,
-    ),
-    reportFindingRelationships: createReportFindingRelationships(
-      tenableDataModel.containerReports,
-      tenableDataModel.containerFindings,
-    ),
-    reportUnwantedProgramRelationships: createContainerReportUnwantedProgramRelationships(
-      tenableDataModel.containerReports,
-      tenableDataModel.containerUnwantedPrograms,
-    ),
-  };
+  return summarizePersisterOperationsResults(
+    containerOperationsResult,
+    containerReportOperationsResult,
+    containerFindingOperationsResult,
+    containerMalwareOperationsResult,
+    containerUnwantedProgramsOperationsResult,
+    accountContainerRelationshipResult,
+    containerReportRelationshipResult,
+    reportMalwareRelationshipResult,
+    reportFindingRelationshipResult,
+    reportUnwantedProgramRelationshipResult,
+  );
 }
