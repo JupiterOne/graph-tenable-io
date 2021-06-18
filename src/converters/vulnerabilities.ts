@@ -6,7 +6,7 @@ import {
   RelationshipFromIntegration,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
-import { entities, FindingRelationship, relationships } from "../jupiterone";
+import { entities, FindingRelationship, relationships } from "../constants";
 import {
   AssetExport,
   AssetVulnerabilityRiskInfo,

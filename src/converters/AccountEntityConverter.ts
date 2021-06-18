@@ -1,5 +1,5 @@
 import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
-import { entities } from "../jupiterone/entities";
+import { entities } from "../constants";
 import { Account } from "../types";
 
 import { generateEntityKey } from "../utils/generateKey";

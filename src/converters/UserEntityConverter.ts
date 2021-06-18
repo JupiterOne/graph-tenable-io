@@ -1,5 +1,5 @@
 import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
-import { entities } from "../jupiterone/entities";
+import { entities } from "../constants";
 import { User } from "../tenable/types";
 import { generateEntityKey } from "../utils/generateKey";
 

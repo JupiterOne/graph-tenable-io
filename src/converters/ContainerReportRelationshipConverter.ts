@@ -1,5 +1,5 @@
 import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
-import { entities, relationships } from "../jupiterone/entities";
+import { entities, relationships } from "../constants";
 import { Container, ContainerReport } from "../tenable/types";
 import {
   generateEntityKey,

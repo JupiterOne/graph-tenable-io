@@ -4,7 +4,7 @@ import {
   IntegrationRelationship,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
-import { entities, relationships } from "./entities";
+import { entities, relationships } from "../constants";
 
 export interface JupiterOneEntitiesData {
   containers: EntityFromIntegration[];

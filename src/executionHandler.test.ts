@@ -2,8 +2,8 @@ import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-manag
 import * as attempt from "@lifeomic/attempt";
 import nock from "nock";
 
+import { entities, relationships } from "./constants";
 import executionHandler from "./executionHandler";
-import { entities, relationships } from "./jupiterone/entities";
 
 const tenableConfig = {
   accessKey:

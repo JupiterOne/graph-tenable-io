@@ -6,6 +6,7 @@ import {
   summarizePersisterOperationsResults,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
+import { entities, relationships } from "./constants";
 import {
   createAccountEntity,
   createAccountUserRelationships,
@@ -20,7 +21,6 @@ import {
   createVulnerabilityFindingRelationship,
 } from "./converters/vulnerabilities";
 import initializeContext from "./initializeContext";
-import { entities, relationships } from "./jupiterone/entities";
 import fetchEntitiesAndRelationships from "./jupiterone/fetchEntitiesAndRelationships";
 import { publishChanges } from "./persister";
 import { AssetExportCache, VulnerabilityExportCache } from "./tenable";
