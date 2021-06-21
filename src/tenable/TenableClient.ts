@@ -1,9 +1,9 @@
 import fetch, { RequestInit } from "node-fetch";
 
 import {
-  IntegrationError,
   IntegrationLogger,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+  IntegrationProviderAPIError,
+} from "@jupiterone/integration-sdk-core";
 import * as attempt from "@lifeomic/attempt";
 
 import {
@@ -456,17 +456,19 @@ export default class TenableClient {
         }
 
         if (response.status >= 400) {
-          let message;
+          let message: string | undefined;
           try {
             const errorBody: ErrorBody = await response.json();
             message = errorBody.message;
           } catch (e) {
             // pass
           }
-          throw new IntegrationError({
+          throw new IntegrationProviderAPIError({
             code: "TenableClientApiError",
             message: message || `${response.statusText}: ${method} ${url}`,
-            statusCode: response.status,
+            status: response.status,
+            endpoint: this.host + url,
+            statusText: message!,
           });
         } else {
           return response.json();

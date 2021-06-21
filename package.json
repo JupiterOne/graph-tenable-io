@@ -13,14 +13,11 @@
     "access": "public"
   },
   "scripts": {
-    "start": "ts-node --require dotenv/config tools/execute.ts | bunyan",
-    "start:containers": "docker-compose up -d",
-    "stop:containers": "docker-compose down",
-    "restart:containers": "docker-compose restart",
+    "start": "j1-integration collect",
+    "graph": "j1-integration visualize",
     "prebuild": "yarn test",
-    "build": "rm -rf dist/* && yarn build:types && yarn build:src && yarn build:docs",
+    "build": "rm -rf dist/* && yarn build:types && yarn build:src",
     "build:src": "babel src --extensions '.ts' --out-dir dist",
-    "build:docs": "ts-node tools/docs.ts",
     "build:types": "tsc --project tsconfig.dist.json --declaration --emitDeclarationOnly",
     "lint": "yarn lint:ts && yarn lint:md",
     "lint:md": "remark .",
@@ -32,6 +29,7 @@
   },
   "dependencies": {
     "@jupiterone/gremlin-client": "^8.0.0",
+    "@jupiterone/integration-sdk-core": "^6.6.0",
     "@jupiterone/jupiter-managed-integration-sdk": "^36.0.1",
     "@jupiterone/jupiter-types": "^44.21.2",
     "@jupiterone/lambda-runtime-tools": "^7.0.0",
@@ -48,6 +46,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
+    "@jupiterone/integration-sdk-dev-tools": "^6.6.0",
     "@jupiterone/integration-sdk-testing": "^6.6.0",
     "@types/bunyan": "^1.8.5",
     "@types/fs-extra": "^8.0.1",

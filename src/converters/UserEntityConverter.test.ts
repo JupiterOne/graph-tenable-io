@@ -31,7 +31,7 @@ test("convert user entity", () => {
       containerUuid: "a01249a3-3547-4961-9d5d-9c74d296169d",
       email: "denis.arkhireev@dualbootpartners.com",
       enabled: true,
-      id: 2,
+      id: "2",
       lastlogin: 1555420696094,
       loginFailCount: 0,
       loginFailTotal: 0,

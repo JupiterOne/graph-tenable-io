@@ -1,12 +1,9 @@
 import {
   convertProperties,
-  EntityFromIntegration,
-  MappedRelationshipFromIntegration,
   RelationshipDirection,
-  RelationshipFromIntegration,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+} from "@jupiterone/integration-sdk-core";
 
-import { entities, FindingRelationship, relationships } from "../constants";
+import { entities, relationships } from "../constants";
 import {
   AssetExport,
   AssetVulnerabilityRiskInfo,
@@ -88,18 +85,9 @@ export function normalizeCVSS2Severity(
   return { numericSeverity, severity };
 }
 
-interface TenableVulnerabilityEntity extends EntityFromIntegration {
-  description?: string;
-  pluginId: number;
-  pluginFamily: string;
-  pluginName: string;
-  numericSeverity: number;
-  severity: string;
-}
-
 function createTenableVulnerabilityEntity(
   vulnerability: ScanVulnerabilitySummary,
-): TenableVulnerabilityEntity {
+) {
   return {
     _key: generateEntityKey(
       entities.VULNERABILITY._type,
@@ -115,23 +103,11 @@ function createTenableVulnerabilityEntity(
     severity: getSeverity(vulnerability.severity),
   };
 }
-/**
- * A mapped relationship is used because there will be many scans pointing to
- * the same vulnerability, perhaps from different integration instances.
- * Scan-specific information (i.e. number of instances of the vulnerability
- * found by the scan) about the vulnerability is placed on the relationship.
- */
-export interface ScanVulnerabilityRelationship
-  extends MappedRelationshipFromIntegration {
-  scanId: number;
-  scanUuid: string;
-  count: number;
-}
 
 export function createScanVulnerabilityRelationship(
   scan: RecentScanSummary,
   vulnerability: ScanVulnerabilitySummary,
-): ScanVulnerabilityRelationship {
+) {
   const sourceEntityKey = generateEntityKey(entities.SCAN._type, scan.id);
   const targetEntity = createTenableVulnerabilityEntity(vulnerability);
 
@@ -156,9 +132,6 @@ export function createScanVulnerabilityRelationship(
   };
 }
 
-export type VulnerabilityFindingRelationship = MappedRelationshipFromIntegration &
-  FindingRelationship;
-
 /**
  * Create a relationship between a finding and the vulnerability that was found.
  *
@@ -173,7 +146,7 @@ export function createVulnerabilityFindingRelationship({
   scan: RecentScanSummary;
   assetUuid: string | undefined;
   vulnerability: ScanHostVulnerability;
-}): VulnerabilityFindingRelationship {
+}) {
   const sourceEntityKey = vulnerabilityFindingEntityKey(scan, vulnerability);
   const targetEntity = createTenableVulnerabilityEntity(vulnerability);
 
@@ -195,9 +168,6 @@ export function createVulnerabilityFindingRelationship({
   };
 }
 
-export type ScanFindingRelationship = RelationshipFromIntegration &
-  FindingRelationship;
-
 /**
  * Create a relationship between a finding and the scan that found it.
  *
@@ -212,7 +182,7 @@ export function createScanFindingRelationship({
   scan: RecentScanSummary;
   assetUuid: string | undefined;
   vulnerability: ScanHostVulnerability;
-}): ScanFindingRelationship {
+}) {
   const findingKey = vulnerabilityFindingEntityKey(scan, vulnerability);
   const scanKey = scanEntityKey(scan.id);
   return {
@@ -229,46 +199,13 @@ export function createScanFindingRelationship({
   };
 }
 
-export interface VulnerabilityFindingEntity extends EntityFromIntegration {
-  scanId: number;
-  scanUuid: string;
-
-  /**
-   * The UUID of the host/asset when provided in the `ScanHost` or discovered in
-   * the assets listing using the hostname.
-   *
-   * Scans produce findings where the host has no UUID, or the UUID or hostname
-   * of the host does not match an `AssetSummary` loaded by the
-   * `TenableAssetCache`. In these cases, the `assetUuid` will be `undefined`;
-   */
-  assetUuid?: string;
-
-  hostId: number;
-  hostname: string;
-
-  pluginFamily: string;
-  pluginId: number;
-  pluginName: string;
-
-  numericSeverity: number;
-  severity: FindingSeverityPriority;
-  numericPriority?: number;
-  priority?: string;
-
-  open: boolean;
-  targets: string[] | undefined;
-
-  firstSeenOn?: number;
-  lastSeenOn?: number;
-}
-
 export function createVulnerabilityFindingEntity(data: {
   scan: RecentScanSummary;
   asset: AssetExport | undefined;
   assetUuid: string | undefined;
   vulnerability: ScanHostVulnerability;
   vulnerabilityExport?: VulnerabilityExport;
-}): VulnerabilityFindingEntity {
+}) {
   const { scan, asset, assetUuid, vulnerability, vulnerabilityExport } = data;
 
   const details = {};

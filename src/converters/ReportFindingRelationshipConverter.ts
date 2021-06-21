@@ -1,4 +1,3 @@
-import { RelationshipFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
 import { entities, relationships } from "../constants";
 import {
   ContainerFinding,
@@ -11,13 +10,11 @@ import {
 } from "../utils/generateKey";
 import { containerFindingEntityKey } from "./FindingEntityConverter";
 
-type ReportFindingRelationship = RelationshipFromIntegration;
-
 export function createReportFindingRelationships(
   reports: ContainerReport[],
   findings: Dictionary<ContainerFinding[]>,
-): ReportFindingRelationship[] {
-  const defaultValue: ReportFindingRelationship[] = [];
+) {
+  const defaultValue: any[] = [];
   const reportFindingRelationships = reports.reduce((acc, report) => {
     const vulnerabilitiesForReport = findings[report.sha256];
     const relationsForReport = vulnerabilitiesForReport.map(item => {
@@ -28,10 +25,7 @@ export function createReportFindingRelationships(
   return reportFindingRelationships;
 }
 
-function createRelation(
-  vulnerability: ContainerFinding,
-  reportId: string,
-): ReportFindingRelationship {
+function createRelation(vulnerability: ContainerFinding, reportId: string) {
   const parentKey = generateEntityKey(
     entities.CONTAINER_REPORT._type,
     reportId,
