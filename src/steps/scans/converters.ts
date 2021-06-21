@@ -1,14 +1,14 @@
-import { entities } from "../constants";
-import { RecentScanSummary } from "../tenable/types";
-import { generateEntityKey } from "../utils/generateKey";
-import getEpochTimeInMilliseconds from "../utils/getEpochTimeInMilliseconds";
+import { entities } from '../../constants';
+import { RecentScanSummary } from '../../tenable/types';
+import { generateEntityKey } from '../../utils/generateKey';
+import getEpochTimeInMilliseconds from '../../utils/getEpochTimeInMilliseconds';
 
 export function createScanEntity(data: RecentScanSummary) {
   return {
     _key: scanEntityKey(data.id),
     _type: entities.SCAN._type,
     _class: entities.SCAN._class,
-    _rawData: [{ name: "default", rawData: data }],
+    _rawData: [{ name: 'default', rawData: data }],
     id: data.id.toString(),
     legacy: data.legacy,
     permissions: data.permissions,

@@ -1,9 +1,9 @@
 import {
   convertProperties,
   RelationshipDirection,
-} from "@jupiterone/integration-sdk-core";
+} from '@jupiterone/integration-sdk-core';
 
-import { entities, relationships } from "../constants";
+import { entities, relationships } from '../constants';
 import {
   AssetExport,
   AssetVulnerabilityRiskInfo,
@@ -11,14 +11,14 @@ import {
   ScanHostVulnerability,
   ScanVulnerabilitySummary,
   VulnerabilityExport,
-} from "../tenable/types";
+} from '../tenable/types';
 import {
   generateEntityKey,
   generateRelationshipKey,
-} from "../utils/generateKey";
-import getTime from "../utils/getTime";
-import { scanEntityKey } from "./scans";
-import { FindingSeverityPriority } from "./types";
+} from '../utils/generateKey';
+import getTime from '../utils/getTime';
+import { scanEntityKey } from '../steps/scans/converters';
+import { FindingSeverityPriority } from './types';
 
 /**
  * Converts Tenable Plugin Severity Ratings or "Risk Factor" to label. See
@@ -67,9 +67,7 @@ export function getPriority(numericPriority: number): FindingSeverityPriority {
  *
  * Throws an `IntegrationError` when the CVSS2 severity value is not recognized.
  */
-export function normalizeCVSS2Severity(
-  cvss2Severity: number | string,
-): {
+export function normalizeCVSS2Severity(cvss2Severity: number | string): {
   numericSeverity: number;
   severity: FindingSeverityPriority | undefined;
 } {
@@ -122,10 +120,10 @@ export function createScanVulnerabilityRelationship(
     _mapping: {
       relationshipDirection: RelationshipDirection.FORWARD,
       sourceEntityKey,
-      targetFilterKeys: ["_key"],
+      targetFilterKeys: ['_key'],
       targetEntity: targetEntity as any,
     },
-    displayName: "IDENTIFIED",
+    displayName: 'IDENTIFIED',
     scanId: scan.id,
     scanUuid: scan.uuid,
     count: vulnerability.count,
@@ -157,11 +155,11 @@ export function createVulnerabilityFindingRelationship({
     _mapping: {
       relationshipDirection: RelationshipDirection.FORWARD,
       sourceEntityKey,
-      targetFilterKeys: ["_key"],
+      targetFilterKeys: ['_key'],
       targetEntity: targetEntity as any,
     },
     assetUuid,
-    displayName: "IS",
+    displayName: 'IS',
     pluginId: vulnerability.plugin_id,
     scanId: scan.id,
     scanUuid: scan.uuid,
@@ -195,7 +193,7 @@ export function createScanFindingRelationship({
     scanUuid: scan.uuid,
     pluginId: vulnerability.plugin_id,
     assetUuid,
-    displayName: "IDENTIFIED",
+    displayName: 'IDENTIFIED',
   };
 }
 
@@ -245,7 +243,7 @@ export function createVulnerabilityFindingEntity(data: {
     _key: vulnerabilityFindingEntityKey(scan, vulnerability),
     _type: entities.VULN_FINDING._type,
     _class: entities.VULN_FINDING._class,
-    _rawData: [{ name: "default", rawData: data }],
+    _rawData: [{ name: 'default', rawData: data }],
     scanId: scan.id,
     scanUuid: scan.uuid,
     assetUuid,
@@ -261,12 +259,9 @@ export function createVulnerabilityFindingEntity(data: {
     open: true,
     targets:
       asset &&
-      [
-        asset.fqdns,
-        asset.ipv4s,
-        asset.ipv6s,
-        asset.mac_addresses,
-      ].reduce((a, e) => [...a, ...e]),
+      [asset.fqdns, asset.ipv4s, asset.ipv6s, asset.mac_addresses].reduce(
+        (a, e) => [...a, ...e],
+      ),
   };
 }
 
