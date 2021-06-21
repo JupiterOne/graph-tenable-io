@@ -1,8 +1,13 @@
 import { RelationshipClass } from '@jupiterone/integration-sdk-core';
 
+export const SetDataKeys = {
+  USERS: 'data-users',
+};
+
 export const StepIds = {
   ACCOUNT: 'step-account',
   SCANS: 'step-scans',
+  USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
 };
 

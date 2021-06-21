@@ -1,5 +1,6 @@
-import { entities } from '../../constants';
-import { RecentScanSummary } from '../../tenable/types';
+import { Relationship } from '@jupiterone/integration-sdk-core';
+import { entities, relationships } from '../../constants';
+import { RecentScanSummary, User } from '../../tenable/types';
 import { generateEntityKey } from '../../utils/generateKey';
 import getEpochTimeInMilliseconds from '../../utils/getEpochTimeInMilliseconds';
 
@@ -35,4 +36,20 @@ export function createScanEntity(data: RecentScanSummary) {
 
 export function scanEntityKey(scanId: number): string {
   return generateEntityKey(entities.SCAN._type, scanId);
+}
+
+export function createUserScanRelationship(
+  user: User,
+  scan: RecentScanSummary,
+): Relationship {
+  const parentKey = generateEntityKey(entities.USER._type, user.id);
+  const childKey = generateEntityKey(entities.SCAN._type, scan.id);
+  const relationship: Relationship = {
+    _class: relationships.USER_OWNS_SCAN._class,
+    _type: relationships.USER_OWNS_SCAN._type,
+    _fromEntityKey: parentKey,
+    _key: `${parentKey}_owns_${childKey}`,
+    _toEntityKey: childKey,
+  };
+  return relationship;
 }

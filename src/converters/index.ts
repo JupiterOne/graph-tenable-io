@@ -10,4 +10,3 @@ export { createReportFindingRelationships } from '../converters/ReportFindingRel
 export { createReportMalwareRelationships } from '../converters/ReportMalwareRelationshipConverter';
 export { createContainerReportUnwantedProgramRelationships } from '../converters/ReportUnwantedProgramRelationshipConverter';
 export { createUnwantedProgramEntities } from '../converters/UnwantedProgramEntityConverter';
-export { createUserScanRelationships } from '../converters/UserScanRelationshipConverter';

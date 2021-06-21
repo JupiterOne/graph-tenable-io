@@ -5,7 +5,7 @@ import { entities, relationships, StepIds } from './constants';
 import executionHandler from './executionHandler';
 import invocationValidator from './invocationValidator';
 import { accountStep } from './steps/account';
-import { scanStep } from './steps/scans';
+import { scanSteps } from './steps/scans';
 import { userStep } from './steps/users';
 
 export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationConfig> =
@@ -22,7 +22,7 @@ export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationCon
     validateInvocation: invocationValidator,
     integrationSteps: [
       accountStep,
-      scanStep,
+      ...scanSteps,
       userStep,
       {
         id: 'synchronize',

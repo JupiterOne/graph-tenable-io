@@ -3,7 +3,7 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
-import { entities, relationships, StepIds } from '../../constants';
+import { entities, relationships, SetDataKeys, StepIds } from '../../constants';
 import { getAccount } from '../../initializeContext';
 import TenableClient from '../../tenable/TenableClient';
 import { createAccountUserRelationship, createUserEntity } from './converters';
@@ -27,6 +27,8 @@ export async function fetchUsers(
       createAccountUserRelationship(account, user),
     );
   }
+
+  await jobState.setData(SetDataKeys.USERS, users);
 }
 
 export const userStep: Step<

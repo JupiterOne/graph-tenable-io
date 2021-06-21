@@ -13,7 +13,6 @@ import {
   synchronizeContainers,
   synchronizeContainerUnwantedPrograms,
   synchronizeHosts,
-  synchronizeUsers,
 } from './synchronizers';
 import TenableClient from './tenable/TenableClient';
 import { RecentScanSummary } from './tenable/types';
@@ -44,7 +43,6 @@ async function synchronize(
     },
   );
 
-  await synchronizeUsers(context, scans);
   await synchronizeHosts(context, scans);
 
   const containers = await provider.fetchContainers();
