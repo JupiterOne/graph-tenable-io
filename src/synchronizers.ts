@@ -12,7 +12,6 @@ import {
   createReportFindingRelationships,
   createReportMalwareRelationships,
   createUnwantedProgramEntities,
-  createUserScanRelationships,
 } from './converters';
 import {
   createScanFindingRelationship,
@@ -38,23 +37,6 @@ import {
   VulnerabilityExport,
 } from './tenable/types';
 import { Account } from './types';
-
-export async function synchronizeUsers(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
-  scanSummaries: RecentScanSummary[],
-): Promise<void> {
-  context.logger.info('Synchronizing users');
-  const provider = new TenableClient({
-    logger: context.logger,
-    accessToken: context.instance.config.accessKey,
-    secretToken: context.instance.config.secretKey,
-  });
-  const users = await provider.fetchUsers();
-
-  await context.jobState.addRelationships(
-    createUserScanRelationships(scanSummaries, users),
-  );
-}
 
 export async function synchronizeHosts(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
