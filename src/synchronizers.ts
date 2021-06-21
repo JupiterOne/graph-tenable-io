@@ -3,7 +3,6 @@ import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-cor
 import { TenableIntegrationConfig } from './config';
 import {
   createAccountContainerRelationships,
-  createAccountUserRelationships,
   createContainerEntities,
   createContainerFindingEntities,
   createContainerReportRelationships,
@@ -13,7 +12,6 @@ import {
   createReportFindingRelationships,
   createReportMalwareRelationships,
   createUnwantedProgramEntities,
-  createUserEntities,
   createUserScanRelationships,
 } from './converters';
 import {
@@ -22,7 +20,6 @@ import {
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
 } from './converters/vulnerabilities';
-import { getAccount } from './initializeContext';
 import { AssetExportCache, VulnerabilityExportCache } from './tenable';
 import { createAssetExportCache } from './tenable/createAssetExportCache';
 import { createVulnerabilityExportCache } from './tenable/createVulnerabilityExportCache';
@@ -53,12 +50,6 @@ export async function synchronizeUsers(
     secretToken: context.instance.config.secretKey,
   });
   const users = await provider.fetchUsers();
-
-  await context.jobState.addEntities(createUserEntities(users));
-
-  await context.jobState.addRelationships(
-    createAccountUserRelationships(getAccount(context), users),
-  );
 
   await context.jobState.addRelationships(
     createUserScanRelationships(scanSummaries, users),

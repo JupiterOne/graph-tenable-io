@@ -6,6 +6,7 @@ import executionHandler from './executionHandler';
 import invocationValidator from './invocationValidator';
 import { accountStep } from './steps/account';
 import { scanStep } from './steps/scans';
+import { userStep } from './steps/users';
 
 export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationConfig> =
   {
@@ -22,6 +23,7 @@ export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationCon
     integrationSteps: [
       accountStep,
       scanStep,
+      userStep,
       {
         id: 'synchronize',
         name: 'Synchronize',
@@ -31,12 +33,10 @@ export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationCon
           entities.CONTAINER_FINDING,
           entities.CONTAINER_MALWARE,
           entities.CONTAINER_UNWANTED_PROGRAM,
-          entities.USER,
           entities.VULNERABILITY,
           entities.VULN_FINDING,
         ],
         relationships: [
-          relationships.ACCOUNT_HAS_USER,
           relationships.ACCOUNT_HAS_CONTAINER,
           relationships.CONTAINER_HAS_REPORT,
           relationships.REPORT_IDENTIFIED_FINDING,
@@ -47,7 +47,7 @@ export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationCon
           relationships.SCAN_IDENTIFIED_VULNERABILITY,
           relationships.FINDING_IS_VULNERABILITY,
         ],
-        dependsOn: [StepIds.ACCOUNT, StepIds.SCANS],
+        dependsOn: [StepIds.ACCOUNT, StepIds.SCANS, StepIds.USERS],
         executionHandler,
       },
     ],
