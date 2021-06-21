@@ -1,9 +1,8 @@
-import { IntegrationStepExecutionContext } from "@jupiterone/integration-sdk-core";
+import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-core';
 
-import { TenableIntegrationConfig } from "./config";
-import { getAccount } from "./initializeContext";
+import { TenableIntegrationConfig } from './config';
+import { getAccount } from './initializeContext';
 import {
-  synchronizeAccount,
   synchronizeContainerFindings,
   synchronizeContainerMalware,
   synchronizeContainerReports,
@@ -12,8 +11,8 @@ import {
   synchronizeHosts,
   synchronizeScans,
   synchronizeUsers,
-} from "./synchronizers";
-import TenableClient from "./tenable/TenableClient";
+} from './synchronizers';
+import TenableClient from './tenable/TenableClient';
 
 export default async function executionHandler(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -35,9 +34,8 @@ async function synchronize(
     {
       scans: scans.length,
     },
-    "Processing scans...",
+    'Processing scans...',
   );
-  await synchronizeAccount(context);
   await synchronizeScans(context, scans);
   await synchronizeUsers(context, scans);
   await synchronizeHosts(context, scans);
@@ -47,7 +45,7 @@ async function synchronize(
 
   /* istanbul ignore next */
   const containerReports = await Promise.all(
-    containers.map(async c => provider.fetchReportByImageDigest(c.digest)),
+    containers.map(async (c) => provider.fetchReportByImageDigest(c.digest)),
   );
   await synchronizeContainerReports(context, containerReports, containers);
 

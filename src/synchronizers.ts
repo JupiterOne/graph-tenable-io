@@ -1,9 +1,8 @@
-import { IntegrationStepExecutionContext } from "@jupiterone/integration-sdk-core";
+import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-core';
 
-import { TenableIntegrationConfig } from "./config";
+import { TenableIntegrationConfig } from './config';
 import {
   createAccountContainerRelationships,
-  createAccountEntity,
   createAccountUserRelationships,
   createContainerEntities,
   createContainerFindingEntities,
@@ -16,19 +15,19 @@ import {
   createUnwantedProgramEntities,
   createUserEntities,
   createUserScanRelationships,
-} from "./converters";
-import { createScanEntity } from "./converters/scans";
+} from './converters';
+import { createScanEntity } from './converters/scans';
 import {
   createScanFindingRelationship,
   createScanVulnerabilityRelationship,
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
-} from "./converters/vulnerabilities";
-import { getAccount } from "./initializeContext";
-import { AssetExportCache, VulnerabilityExportCache } from "./tenable";
-import { createAssetExportCache } from "./tenable/createAssetExportCache";
-import { createVulnerabilityExportCache } from "./tenable/createVulnerabilityExportCache";
-import TenableClient from "./tenable/TenableClient";
+} from './converters/vulnerabilities';
+import { getAccount } from './initializeContext';
+import { AssetExportCache, VulnerabilityExportCache } from './tenable';
+import { createAssetExportCache } from './tenable/createAssetExportCache';
+import { createVulnerabilityExportCache } from './tenable/createVulnerabilityExportCache';
+import TenableClient from './tenable/TenableClient';
 import {
   Container,
   ContainerFinding,
@@ -41,24 +40,14 @@ import {
   ScanStatus,
   ScanVulnerabilitySummary,
   VulnerabilityExport,
-} from "./tenable/types";
-import { Account } from "./types";
-
-export async function synchronizeAccount(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
-): Promise<void> {
-  context.logger.info("Synchronizing account");
-  const accountEntity = await context.jobState.addEntity(
-    createAccountEntity(getAccount(context)),
-  );
-  await context.jobState.setData("DATA_ACCOUNT_ENTITY", accountEntity);
-}
+} from './tenable/types';
+import { Account } from './types';
 
 export async function synchronizeScans(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   scanSummaries: RecentScanSummary[],
 ): Promise<void> {
-  context.logger.info("Synchronizing scans");
+  context.logger.info('Synchronizing scans');
   for (const scan of scanSummaries) {
     await context.jobState.addEntity(createScanEntity(scan));
   }
@@ -68,7 +57,7 @@ export async function synchronizeUsers(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
   scanSummaries: RecentScanSummary[],
 ): Promise<void> {
-  context.logger.info("Synchronizing users");
+  context.logger.info('Synchronizing users');
   const provider = new TenableClient({
     logger: context.logger,
     accessToken: context.instance.config.accessKey,
@@ -124,7 +113,7 @@ export async function synchronizeHosts(
             {
               scanDetailHosts: scanDetail.hosts.length,
             },
-            "Processing scan detail hosts...",
+            'Processing scan detail hosts...',
           );
           for (const host of scanDetail.hosts) {
             await synchronizeHostVulnerabilities(
@@ -157,7 +146,7 @@ export async function synchronizeScanVulnerabilities(
 
   vulnLogger.info(
     { scanVulnerabilities: vulnerabilties.length },
-    "Processing vulnerabilities discovered by recent scan...",
+    'Processing vulnerabilities discovered by recent scan...',
   );
 
   for (const vuln of vulnerabilties) {
@@ -167,7 +156,7 @@ export async function synchronizeScanVulnerabilities(
   }
 
   vulnLogger.info(
-    "Processing vulnerabilities discovered by recent scan completed.",
+    'Processing vulnerabilities discovered by recent scan completed.',
   );
 }
 
@@ -213,7 +202,7 @@ export async function synchronizeHostVulnerabilities(
   /* istanbul ignore next */
   if (!hostAsset) {
     vulnLogger.info(
-      "No asset found for scan host, some details cannot be provided",
+      'No asset found for scan host, some details cannot be provided',
     );
   }
 
@@ -225,17 +214,18 @@ export async function synchronizeHostVulnerabilities(
       assetUuid,
       scanHostVulnerabilities: scanHostVulnerabilities.length,
     },
-    "Processing host vulnerabilities discovered by recent scan...",
+    'Processing host vulnerabilities discovered by recent scan...',
   );
 
   for (const vulnerability of scanHostVulnerabilities) {
     let vulnerabilityExport: VulnerabilityExport | undefined;
     /* istanbul ignore next */
     if (assetUuid) {
-      vulnerabilityExport = vulnerabilityCache.findVulnerabilityExportByAssetPluginUuid(
-        assetUuid,
-        vulnerability.plugin_id,
-      );
+      vulnerabilityExport =
+        vulnerabilityCache.findVulnerabilityExportByAssetPluginUuid(
+          assetUuid,
+          vulnerability.plugin_id,
+        );
     }
 
     await context.jobState.addEntity(
@@ -262,7 +252,7 @@ export async function synchronizeHostVulnerabilities(
   }
 
   logger.info(
-    "Processing host vulnerabilities discovered by recent scan completed.",
+    'Processing host vulnerabilities discovered by recent scan completed.',
   );
 }
 
@@ -274,15 +264,15 @@ export async function synchronizeContainers(
   containers: Container[],
   account: Account,
 ) {
-  logger.info("Synchronizing containers");
+  logger.info('Synchronizing containers');
   await jobState.addEntities(createContainerEntities(containers));
-  logger.info("Finished synchronizing containers");
+  logger.info('Finished synchronizing containers');
 
-  logger.info("Synchronizing account -> container relationships");
+  logger.info('Synchronizing account -> container relationships');
   await jobState.addRelationships(
     createAccountContainerRelationships(account, containers),
   );
-  logger.info("Finished synchronizing account -> container relationships");
+  logger.info('Finished synchronizing account -> container relationships');
 }
 
 export async function synchronizeContainerReports(
@@ -293,15 +283,15 @@ export async function synchronizeContainerReports(
   containerReports: ContainerReport[],
   containers: Container[],
 ) {
-  logger.info("Synchronizing container reports");
+  logger.info('Synchronizing container reports');
   await jobState.addEntities(createReportEntities(containerReports));
-  logger.info("Finished synchronizing container reports");
+  logger.info('Finished synchronizing container reports');
 
-  logger.info("Synchronizing container -> report relationships");
+  logger.info('Synchronizing container -> report relationships');
   await jobState.addRelationships(
     createContainerReportRelationships(containers, containerReports),
   );
-  logger.info("Finished synchronizing container -> report relationships");
+  logger.info('Finished synchronizing container -> report relationships');
 }
 
 export async function synchronizeContainerMalware(
@@ -322,15 +312,15 @@ export async function synchronizeContainerMalware(
     malwares[report.sha256] = malwares[report.sha256].concat(report.malware);
   }
 
-  logger.info("Synchronizing container malware");
+  logger.info('Synchronizing container malware');
   await jobState.addEntities(createMalwareEntities(malwares));
-  logger.info("Finished synchronizing container malware");
+  logger.info('Finished synchronizing container malware');
 
-  logger.info("Synchronizing report -> malware relationships");
+  logger.info('Synchronizing report -> malware relationships');
   await jobState.addEntities(
     createReportMalwareRelationships(containerReports, malwares),
   );
-  logger.info("Finished synchronizing report -> malware relationships");
+  logger.info('Finished synchronizing report -> malware relationships');
 }
 
 export async function synchronizeContainerFindings(
@@ -351,15 +341,15 @@ export async function synchronizeContainerFindings(
     findings[report.sha256] = findings[report.sha256].concat(report.findings);
   }
 
-  logger.info("Synchronizing container finding");
+  logger.info('Synchronizing container finding');
   await jobState.addEntities(createContainerFindingEntities(findings));
-  logger.info("Finished synchronizing container finding");
+  logger.info('Finished synchronizing container finding');
 
-  logger.info("Synchronizing report -> finding relationships");
+  logger.info('Synchronizing report -> finding relationships');
   await jobState.addRelationships(
     createReportFindingRelationships(containerReports, findings),
   );
-  logger.info("Finished synchronizing report -> finding relationships");
+  logger.info('Finished synchronizing report -> finding relationships');
 }
 
 export async function synchronizeContainerUnwantedPrograms(
@@ -382,11 +372,11 @@ export async function synchronizeContainerUnwantedPrograms(
     );
   }
 
-  logger.info("Synchronizing container unwanted programs");
+  logger.info('Synchronizing container unwanted programs');
   await jobState.addEntities(createUnwantedProgramEntities(unwantedPrograms));
-  logger.info("Finished synchronizing container unwanted programs");
+  logger.info('Finished synchronizing container unwanted programs');
 
-  logger.info("Synchronizing report -> unwanted program relationships");
+  logger.info('Synchronizing report -> unwanted program relationships');
   await jobState.addRelationships(
     createContainerReportUnwantedProgramRelationships(
       containerReports,
@@ -394,6 +384,6 @@ export async function synchronizeContainerUnwantedPrograms(
     ),
   );
   logger.info(
-    "Finished synchronizing report -> unwanted program relationships",
+    'Finished synchronizing report -> unwanted program relationships',
   );
 }
