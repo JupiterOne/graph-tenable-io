@@ -1,7 +1,6 @@
 export * from './types';
 
 export { createAccountContainerRelationships } from '../converters/AccountContainerRelationshipConverter';
-export { createAccountUserRelationships } from '../converters/AccountUserRelationshipConverter';
 export { createContainerEntities } from '../converters/ContainerEntityConverter';
 export { createContainerReportRelationships } from '../converters/ContainerReportRelationshipConverter';
 export { createContainerFindingEntities } from '../converters/FindingEntityConverter';
@@ -11,5 +10,4 @@ export { createReportFindingRelationships } from '../converters/ReportFindingRel
 export { createReportMalwareRelationships } from '../converters/ReportMalwareRelationshipConverter';
 export { createContainerReportUnwantedProgramRelationships } from '../converters/ReportUnwantedProgramRelationshipConverter';
 export { createUnwantedProgramEntities } from '../converters/UnwantedProgramEntityConverter';
-export { createUserEntities } from '../converters/UserEntityConverter';
 export { createUserScanRelationships } from '../converters/UserScanRelationshipConverter';

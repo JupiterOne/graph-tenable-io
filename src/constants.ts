@@ -3,6 +3,7 @@ import { RelationshipClass } from '@jupiterone/integration-sdk-core';
 export const StepIds = {
   ACCOUNT: 'step-account',
   SCANS: 'step-scans',
+  USERS: 'step-users',
 };
 
 export const entities = {
