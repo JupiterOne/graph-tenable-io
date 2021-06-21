@@ -3,10 +3,8 @@ import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-cor
 import { TenableIntegrationConfig } from './config';
 import {
   createContainerFindingEntities,
-  createContainerReportRelationships,
   createContainerReportUnwantedProgramRelationships,
   createMalwareEntities,
-  createReportEntities,
   createReportFindingRelationships,
   createReportMalwareRelationships,
   createUnwantedProgramEntities,
@@ -22,7 +20,6 @@ import { createAssetExportCache } from './tenable/createAssetExportCache';
 import { createVulnerabilityExportCache } from './tenable/createVulnerabilityExportCache';
 import TenableClient from './tenable/TenableClient';
 import {
-  Container,
   ContainerFinding,
   ContainerMalware,
   ContainerReport,
@@ -213,25 +210,6 @@ export async function synchronizeHostVulnerabilities(
   logger.info(
     'Processing host vulnerabilities discovered by recent scan completed.',
   );
-}
-
-export async function synchronizeContainerReports(
-  {
-    jobState,
-    logger,
-  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
-  containerReports: ContainerReport[],
-  containers: Container[],
-) {
-  logger.info('Synchronizing container reports');
-  await jobState.addEntities(createReportEntities(containerReports));
-  logger.info('Finished synchronizing container reports');
-
-  logger.info('Synchronizing container -> report relationships');
-  await jobState.addRelationships(
-    createContainerReportRelationships(containers, containerReports),
-  );
-  logger.info('Finished synchronizing container -> report relationships');
 }
 
 export async function synchronizeContainerMalware(

@@ -10,6 +10,7 @@ export const StepIds = {
   USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
   CONTAINERS: 'step-containers',
+  CONTAINER_REPORTS: 'step-container-reports',
 };
 
 export const entities = {
