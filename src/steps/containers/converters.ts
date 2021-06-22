@@ -4,6 +4,7 @@ import {
   ContainerReport,
   ContainerFinding,
   ContainerMalware,
+  ContainerUnwantedProgram,
 } from '../../tenable/types';
 import { Account } from '../../types';
 import { normalizeCVSS2Severity } from '../../converters/vulnerabilities';
@@ -207,6 +208,53 @@ export function createReportMalwareRelationship(
   return {
     _class: relationships.REPORT_IDENTIFIED_MALWARE._class,
     _type: relationships.REPORT_IDENTIFIED_MALWARE._type,
+    _fromEntityKey: parentKey,
+    _key: relationKey,
+    _toEntityKey: childKey,
+  };
+}
+
+export function createUnwantedProgramEntity(
+  unwantedProgram: ContainerUnwantedProgram,
+) {
+  return {
+    _key: unwantedProgramEntityKey(unwantedProgram),
+    _type: entities.CONTAINER_UNWANTED_PROGRAM._type,
+    _class: entities.CONTAINER_UNWANTED_PROGRAM._class,
+    _rawData: [{ name: 'default', rawData: unwantedProgram }],
+    file: unwantedProgram.file,
+    md5: unwantedProgram.md5,
+    sha256: unwantedProgram.sha256,
+  };
+}
+
+export function unwantedProgramEntityKey(
+  unwantedProgram: ContainerUnwantedProgram,
+) {
+  return generateEntityKey(
+    entities.CONTAINER_UNWANTED_PROGRAM._type,
+    unwantedProgram.md5,
+  );
+}
+
+export function createReportUnwantedProgramRelationship(
+  reportSha256: string,
+  unwantedProgram: ContainerUnwantedProgram,
+) {
+  const parentKey = generateEntityKey(
+    entities.CONTAINER_REPORT._type,
+    reportSha256,
+  );
+  const childKey = unwantedProgramEntityKey(unwantedProgram);
+  const relationKey = generateRelationshipKey(
+    parentKey,
+    relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
+    childKey,
+  );
+
+  return {
+    _class: relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
+    _type: relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,

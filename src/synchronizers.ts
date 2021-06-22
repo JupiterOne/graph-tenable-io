@@ -2,10 +2,6 @@ import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-cor
 
 import { TenableIntegrationConfig } from './config';
 import {
-  createContainerReportUnwantedProgramRelationships,
-  createUnwantedProgramEntities,
-} from './converters';
-import {
   createScanFindingRelationship,
   createScanVulnerabilityRelationship,
   createVulnerabilityFindingEntity,
@@ -16,9 +12,6 @@ import { createAssetExportCache } from './tenable/createAssetExportCache';
 import { createVulnerabilityExportCache } from './tenable/createVulnerabilityExportCache';
 import TenableClient from './tenable/TenableClient';
 import {
-  ContainerReport,
-  ContainerUnwantedProgram,
-  Dictionary,
   RecentScanSummary,
   ScanHost,
   ScanStatus,
@@ -203,41 +196,5 @@ export async function synchronizeHostVulnerabilities(
 
   logger.info(
     'Processing host vulnerabilities discovered by recent scan completed.',
-  );
-}
-
-export async function synchronizeContainerUnwantedPrograms(
-  {
-    jobState,
-    logger,
-  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
-  containerReports: ContainerReport[],
-) {
-  const unwantedPrograms: Dictionary<ContainerUnwantedProgram[]> = {};
-
-  for (const report of containerReports) {
-    /* istanbul ignore next */
-    if (!unwantedPrograms[report.sha256]) {
-      unwantedPrograms[report.sha256] = [];
-    }
-    /* istanbul ignore next */
-    unwantedPrograms[report.sha256] = unwantedPrograms[report.sha256].concat(
-      report.potentially_unwanted_programs,
-    );
-  }
-
-  logger.info('Synchronizing container unwanted programs');
-  await jobState.addEntities(createUnwantedProgramEntities(unwantedPrograms));
-  logger.info('Finished synchronizing container unwanted programs');
-
-  logger.info('Synchronizing report -> unwanted program relationships');
-  await jobState.addRelationships(
-    createContainerReportUnwantedProgramRelationships(
-      containerReports,
-      unwantedPrograms,
-    ),
-  );
-  logger.info(
-    'Finished synchronizing report -> unwanted program relationships',
   );
 }

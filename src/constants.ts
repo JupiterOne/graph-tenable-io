@@ -104,7 +104,7 @@ export const relationships = {
     _class: RelationshipClass.IDENTIFIED,
     targetType: entities.CONTAINER_MALWARE._type,
   },
-  CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM: {
+  REPORT_IDENTIFIED_UNWANTED_PROGRAM: {
     _type: 'tenable_container_report_identified_unwanted_program',
     sourceType: entities.CONTAINER_REPORT._type,
     _class: RelationshipClass.IDENTIFIED,

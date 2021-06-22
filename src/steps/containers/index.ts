@@ -7,9 +7,12 @@ import { TenableIntegrationConfig } from '../../config';
 import { entities, relationships, StepIds } from '../../constants';
 import {
   containerFindingEntityKey,
+  createReportUnwantedProgramRelationship,
   createMalwareEntity,
   createReportMalwareRelationship,
+  createUnwantedProgramEntity,
   malwareEntityKey,
+  unwantedProgramEntityKey,
 } from './converters';
 import { getAccount } from '../../initializeContext';
 import TenableClient from '../../tenable/TenableClient';
@@ -103,6 +106,21 @@ export async function fetchContainerReports(
           createReportMalwareRelationship(report.sha256, malware),
         );
       }
+
+      for (const program of report.potentially_unwanted_programs) {
+        const programKey = unwantedProgramEntityKey(program);
+        let programEntity = await jobState.findEntity(programKey);
+
+        if (!programEntity) {
+          programEntity = await jobState.addEntity(
+            createUnwantedProgramEntity(program),
+          );
+        }
+
+        await jobState.addRelationship(
+          createReportUnwantedProgramRelationship(report.sha256, program),
+        );
+      }
     },
   );
 }
@@ -125,11 +143,13 @@ export const containerSteps: Step<
       entities.CONTAINER_REPORT,
       entities.CONTAINER_FINDING,
       entities.CONTAINER_MALWARE,
+      entities.CONTAINER_UNWANTED_PROGRAM,
     ],
     relationships: [
       relationships.CONTAINER_HAS_REPORT,
       relationships.REPORT_IDENTIFIED_FINDING,
       relationships.REPORT_IDENTIFIED_MALWARE,
+      relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM,
     ],
     dependsOn: [StepIds.CONTAINERS],
     executionHandler: fetchContainerReports,
