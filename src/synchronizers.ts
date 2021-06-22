@@ -2,8 +2,6 @@ import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-cor
 
 import { TenableIntegrationConfig } from './config';
 import {
-  createAccountContainerRelationships,
-  createContainerEntities,
   createContainerFindingEntities,
   createContainerReportRelationships,
   createContainerReportUnwantedProgramRelationships,
@@ -36,7 +34,6 @@ import {
   ScanVulnerabilitySummary,
   VulnerabilityExport,
 } from './tenable/types';
-import { Account } from './types';
 
 export async function synchronizeHosts(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -216,25 +213,6 @@ export async function synchronizeHostVulnerabilities(
   logger.info(
     'Processing host vulnerabilities discovered by recent scan completed.',
   );
-}
-
-export async function synchronizeContainers(
-  {
-    jobState,
-    logger,
-  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
-  containers: Container[],
-  account: Account,
-) {
-  logger.info('Synchronizing containers');
-  await jobState.addEntities(createContainerEntities(containers));
-  logger.info('Finished synchronizing containers');
-
-  logger.info('Synchronizing account -> container relationships');
-  await jobState.addRelationships(
-    createAccountContainerRelationships(account, containers),
-  );
-  logger.info('Finished synchronizing account -> container relationships');
 }
 
 export async function synchronizeContainerReports(

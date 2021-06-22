@@ -1,7 +1,5 @@
 export * from './types';
 
-export { createAccountContainerRelationships } from '../converters/AccountContainerRelationshipConverter';
-export { createContainerEntities } from '../converters/ContainerEntityConverter';
 export { createContainerReportRelationships } from '../converters/ContainerReportRelationshipConverter';
 export { createContainerFindingEntities } from '../converters/FindingEntityConverter';
 export { createMalwareEntities } from '../converters/MalwareEntityConverter';

@@ -5,12 +5,10 @@ import {
 
 import { TenableIntegrationConfig } from './config';
 import { entities } from './constants';
-import { getAccount } from './initializeContext';
 import {
   synchronizeContainerFindings,
   synchronizeContainerMalware,
   synchronizeContainerReports,
-  synchronizeContainers,
   synchronizeContainerUnwantedPrograms,
   synchronizeHosts,
 } from './synchronizers';
@@ -46,7 +44,6 @@ async function synchronize(
   await synchronizeHosts(context, scans);
 
   const containers = await provider.fetchContainers();
-  await synchronizeContainers(context, containers, getAccount(context));
 
   /* istanbul ignore next */
   const containerReports = await Promise.all(
