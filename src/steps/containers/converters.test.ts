@@ -2,6 +2,7 @@ import {
   Container,
   ContainerReport,
   ContainerFinding,
+  ContainerMalware,
 } from '../../tenable/types';
 import { Account } from '../../types';
 import {
@@ -11,6 +12,8 @@ import {
   createContainerReportRelationship,
   createContainerFindingEntity,
   createReportFindingRelationship,
+  createMalwareEntity,
+  createReportMalwareRelationship,
 } from './converters';
 
 test('convert container entity', () => {
@@ -290,5 +293,74 @@ test('convert report container vulnerability relationship', () => {
     _key: 'tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_container_finding_cve-123_cwe-234',
     _toEntityKey: 'tenable_container_finding_cve-123_cwe-234',
     _type: 'tenable_container_report_identified_finding',
+  });
+});
+
+test('convert container vulnerability entity', () => {
+  const malware = {
+    infectedFile: 'string',
+    fileTypeDescriptor: 'string',
+    md5: 'malwareMd5',
+    sha256: 'string',
+  };
+
+  expect(createMalwareEntity(malware)).toEqual({
+    _class: 'Finding',
+    _key: 'tenable_container_malware_malwareMd5',
+    _type: 'tenable_container_malware',
+    _rawData: [
+      {
+        name: 'default',
+        rawData: {
+          infectedFile: 'string',
+          fileTypeDescriptor: 'string',
+          md5: 'malwareMd5',
+          sha256: 'string',
+        },
+      },
+    ],
+    fileTypeDescriptor: 'string',
+    infectedFile: 'string',
+    md5: 'malwareMd5',
+    sha256: 'string',
+  });
+});
+
+test('convert report container vulnerability relationship', () => {
+  const report: ContainerReport = {
+    malware: [],
+    sha256:
+      'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
+    os: 'LINUX_ALPINE',
+    risk_score: 0,
+    findings: [],
+    os_version: '3.8.2',
+    created_at: '2019-04-17T10:26:58.509Z',
+    platform: 'docker',
+    image_name: 'graph-tenable-app',
+    updated_at: '2019-04-17T10:26:58.509Z',
+    digest: 'c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
+    tag: 'latest',
+    potentially_unwanted_programs: [],
+    docker_image_id: 'f8ebac0b4322',
+    os_architecture: 'AMD64',
+  };
+
+  const malware: ContainerMalware = {
+    infectedFile: 'string',
+    fileTypeDescriptor: 'string',
+    md5: 'malwareMd5',
+    sha256: 'string',
+  };
+
+  const relationships = createReportMalwareRelationship(report.sha256, malware);
+
+  expect(relationships).toEqual({
+    _class: 'IDENTIFIED',
+    _fromEntityKey:
+      'tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
+    _key: 'tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc_identified_tenable_container_malware_malwareMd5',
+    _toEntityKey: 'tenable_container_malware_malwareMd5',
+    _type: 'tenable_container_report_identified_malware',
   });
 });

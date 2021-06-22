@@ -6,7 +6,6 @@ import {
 import { TenableIntegrationConfig } from './config';
 import { entities } from './constants';
 import {
-  synchronizeContainerMalware,
   synchronizeContainerUnwantedPrograms,
   synchronizeHosts,
 } from './synchronizers';
@@ -48,6 +47,5 @@ async function synchronize(
     containers.map(async (c) => provider.fetchReportByImageDigest(c.digest)),
   );
 
-  await synchronizeContainerMalware(context, containerReports);
   await synchronizeContainerUnwantedPrograms(context, containerReports);
 }
