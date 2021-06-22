@@ -1,6 +1,11 @@
 import { entities, relationships } from '../../constants';
-import { Container, ContainerReport } from '../../tenable/types';
+import {
+  Container,
+  ContainerReport,
+  ContainerFinding,
+} from '../../tenable/types';
 import { Account } from '../../types';
+import { normalizeCVSS2Severity } from '../../converters/vulnerabilities';
 import {
   generateEntityKey,
   generateRelationshipKey,
@@ -96,4 +101,72 @@ export function createContainerReportRelationship(
     _toEntityKey: childKey,
   };
   return relationship;
+}
+
+export function createContainerFindingEntity(vulnerability: ContainerFinding) {
+  const { nvdFinding } = vulnerability;
+  const { numericSeverity, severity } = normalizeCVSS2Severity(
+    nvdFinding.cvss_score,
+  );
+
+  return {
+    _key: containerFindingEntityKey(vulnerability),
+    _type: entities.CONTAINER_FINDING._type,
+    _class: entities.CONTAINER_FINDING._class,
+    _rawData: [{ name: 'default', rawData: vulnerability }],
+    displayName: displayName(vulnerability),
+    referenceId: nvdFinding.reference_id,
+    cve: nvdFinding.cve,
+    publishedDate: nvdFinding.published_date,
+    modifiedDate: nvdFinding.modified_date,
+    description: nvdFinding.description,
+    cvssScore: nvdFinding.cvss_score,
+    accessVector: nvdFinding.access_vector,
+    accessComplexity: nvdFinding.access_complexity,
+    auth: nvdFinding.auth,
+    availabilityImpact: nvdFinding.availability_impact,
+    confidentialityImpact: nvdFinding.confidentiality_impact,
+    integrityImpact: nvdFinding.integrity_impact,
+    cwe: nvdFinding.cwe,
+    remediation: nvdFinding.remediation,
+    numericSeverity,
+    severity,
+  };
+}
+
+export function containerFindingEntityKey(vulnerability: ContainerFinding) {
+  const { nvdFinding } = vulnerability;
+  return generateEntityKey(
+    entities.CONTAINER_FINDING._type,
+    `${nvdFinding.cve}_${nvdFinding.cwe}`,
+  );
+}
+
+function displayName(vulnerability: ContainerFinding): string {
+  const { nvdFinding } = vulnerability;
+  return [nvdFinding.cve, nvdFinding.cwe].filter((e) => !!e).join('/');
+}
+
+export function createReportFindingRelationship(
+  reportSha256: string,
+  vulnerability: ContainerFinding,
+) {
+  const parentKey = generateEntityKey(
+    entities.CONTAINER_REPORT._type,
+    reportSha256,
+  );
+  const childKey = containerFindingEntityKey(vulnerability);
+  const relationKey = generateRelationshipKey(
+    parentKey,
+    relationships.REPORT_IDENTIFIED_FINDING._class,
+    childKey,
+  );
+
+  return {
+    _class: relationships.REPORT_IDENTIFIED_FINDING._class,
+    _type: relationships.REPORT_IDENTIFIED_FINDING._type,
+    _fromEntityKey: parentKey,
+    _key: relationKey,
+    _toEntityKey: childKey,
+  };
 }

@@ -2,10 +2,8 @@ import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-cor
 
 import { TenableIntegrationConfig } from './config';
 import {
-  createContainerFindingEntities,
   createContainerReportUnwantedProgramRelationships,
   createMalwareEntities,
-  createReportFindingRelationships,
   createReportMalwareRelationships,
   createUnwantedProgramEntities,
 } from './converters';
@@ -20,7 +18,6 @@ import { createAssetExportCache } from './tenable/createAssetExportCache';
 import { createVulnerabilityExportCache } from './tenable/createVulnerabilityExportCache';
 import TenableClient from './tenable/TenableClient';
 import {
-  ContainerFinding,
   ContainerMalware,
   ContainerReport,
   ContainerUnwantedProgram,
@@ -239,35 +236,6 @@ export async function synchronizeContainerMalware(
     createReportMalwareRelationships(containerReports, malwares),
   );
   logger.info('Finished synchronizing report -> malware relationships');
-}
-
-export async function synchronizeContainerFindings(
-  {
-    jobState,
-    logger,
-  }: IntegrationStepExecutionContext<TenableIntegrationConfig>,
-  containerReports: ContainerReport[],
-) {
-  const findings: Dictionary<ContainerFinding[]> = {};
-
-  for (const report of containerReports) {
-    /* istanbul ignore next */
-    if (!findings[report.sha256]) {
-      findings[report.sha256] = [];
-    }
-    /* istanbul ignore next */
-    findings[report.sha256] = findings[report.sha256].concat(report.findings);
-  }
-
-  logger.info('Synchronizing container finding');
-  await jobState.addEntities(createContainerFindingEntities(findings));
-  logger.info('Finished synchronizing container finding');
-
-  logger.info('Synchronizing report -> finding relationships');
-  await jobState.addRelationships(
-    createReportFindingRelationships(containerReports, findings),
-  );
-  logger.info('Finished synchronizing report -> finding relationships');
 }
 
 export async function synchronizeContainerUnwantedPrograms(

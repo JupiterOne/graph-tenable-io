@@ -6,7 +6,6 @@ import {
 import { TenableIntegrationConfig } from './config';
 import { entities } from './constants';
 import {
-  synchronizeContainerFindings,
   synchronizeContainerMalware,
   synchronizeContainerUnwantedPrograms,
   synchronizeHosts,
@@ -50,6 +49,5 @@ async function synchronize(
   );
 
   await synchronizeContainerMalware(context, containerReports);
-  await synchronizeContainerFindings(context, containerReports);
   await synchronizeContainerUnwantedPrograms(context, containerReports);
 }
