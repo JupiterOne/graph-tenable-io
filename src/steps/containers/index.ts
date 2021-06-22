@@ -5,14 +5,17 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
 import { entities, relationships, StepIds } from '../../constants';
+import { containerFindingEntityKey } from './converters';
 import { getAccount } from '../../initializeContext';
 import TenableClient from '../../tenable/TenableClient';
 import { Container } from '../../tenable/types';
 import {
   createAccountContainerRelationship,
   createContainerEntity,
+  createContainerFindingEntity,
   createContainerReportRelationship,
   createReportEntity,
+  createReportFindingRelationship,
 } from './converters';
 
 export async function fetchContainers(
@@ -65,6 +68,21 @@ export async function fetchContainerReports(
       await jobState.addRelationship(
         createContainerReportRelationship(container, report),
       );
+
+      for (const finding of report.findings) {
+        const findingKey = containerFindingEntityKey(finding);
+        let findingEntity = await jobState.findEntity(findingKey);
+
+        if (!findingEntity) {
+          findingEntity = await jobState.addEntity(
+            createContainerFindingEntity(finding),
+          );
+        }
+
+        await jobState.addRelationship(
+          createReportFindingRelationship(report.sha256, finding),
+        );
+      }
     },
   );
 }
@@ -83,8 +101,11 @@ export const containerSteps: Step<
   {
     id: StepIds.CONTAINER_REPORTS,
     name: 'Fetch Container Reports',
-    entities: [entities.CONTAINER_REPORT],
-    relationships: [relationships.CONTAINER_HAS_REPORT],
+    entities: [entities.CONTAINER_REPORT, entities.CONTAINER_FINDING],
+    relationships: [
+      relationships.CONTAINER_HAS_REPORT,
+      relationships.REPORT_IDENTIFIED_FINDING,
+    ],
     dependsOn: [StepIds.CONTAINERS],
     executionHandler: fetchContainerReports,
   },

@@ -30,14 +30,12 @@ export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationCon
         id: 'synchronize',
         name: 'Synchronize',
         entities: [
-          entities.CONTAINER_FINDING,
           entities.CONTAINER_MALWARE,
           entities.CONTAINER_UNWANTED_PROGRAM,
           entities.VULNERABILITY,
           entities.VULN_FINDING,
         ],
         relationships: [
-          relationships.REPORT_IDENTIFIED_FINDING,
           relationships.REPORT_IDENTIFIED_MALWARE,
           relationships.CONTAINER_REPORT_IDENTIFIED_UNWANTED_PROGRAM,
           relationships.SCAN_IDENTIFIED_FINDING,
