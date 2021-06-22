@@ -8,7 +8,6 @@ import { entities } from './constants';
 import {
   synchronizeContainerFindings,
   synchronizeContainerMalware,
-  synchronizeContainerReports,
   synchronizeContainerUnwantedPrograms,
   synchronizeHosts,
 } from './synchronizers';
@@ -49,7 +48,6 @@ async function synchronize(
   const containerReports = await Promise.all(
     containers.map(async (c) => provider.fetchReportByImageDigest(c.digest)),
   );
-  await synchronizeContainerReports(context, containerReports, containers);
 
   await synchronizeContainerMalware(context, containerReports);
   await synchronizeContainerFindings(context, containerReports);
