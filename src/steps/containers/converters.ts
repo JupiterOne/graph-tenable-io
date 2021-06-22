@@ -3,6 +3,7 @@ import {
   Container,
   ContainerReport,
   ContainerFinding,
+  ContainerMalware,
 } from '../../tenable/types';
 import { Account } from '../../types';
 import { normalizeCVSS2Severity } from '../../converters/vulnerabilities';
@@ -103,18 +104,18 @@ export function createContainerReportRelationship(
   return relationship;
 }
 
-export function createContainerFindingEntity(vulnerability: ContainerFinding) {
-  const { nvdFinding } = vulnerability;
+export function createContainerFindingEntity(finding: ContainerFinding) {
+  const { nvdFinding } = finding;
   const { numericSeverity, severity } = normalizeCVSS2Severity(
     nvdFinding.cvss_score,
   );
 
   return {
-    _key: containerFindingEntityKey(vulnerability),
+    _key: containerFindingEntityKey(finding),
     _type: entities.CONTAINER_FINDING._type,
     _class: entities.CONTAINER_FINDING._class,
-    _rawData: [{ name: 'default', rawData: vulnerability }],
-    displayName: displayName(vulnerability),
+    _rawData: [{ name: 'default', rawData: finding }],
+    displayName: displayName(finding),
     referenceId: nvdFinding.reference_id,
     cve: nvdFinding.cve,
     publishedDate: nvdFinding.published_date,
@@ -134,28 +135,28 @@ export function createContainerFindingEntity(vulnerability: ContainerFinding) {
   };
 }
 
-export function containerFindingEntityKey(vulnerability: ContainerFinding) {
-  const { nvdFinding } = vulnerability;
+export function containerFindingEntityKey(finding: ContainerFinding) {
+  const { nvdFinding } = finding;
   return generateEntityKey(
     entities.CONTAINER_FINDING._type,
     `${nvdFinding.cve}_${nvdFinding.cwe}`,
   );
 }
 
-function displayName(vulnerability: ContainerFinding): string {
-  const { nvdFinding } = vulnerability;
+function displayName(finding: ContainerFinding): string {
+  const { nvdFinding } = finding;
   return [nvdFinding.cve, nvdFinding.cwe].filter((e) => !!e).join('/');
 }
 
 export function createReportFindingRelationship(
   reportSha256: string,
-  vulnerability: ContainerFinding,
+  finding: ContainerFinding,
 ) {
   const parentKey = generateEntityKey(
     entities.CONTAINER_REPORT._type,
     reportSha256,
   );
-  const childKey = containerFindingEntityKey(vulnerability);
+  const childKey = containerFindingEntityKey(finding);
   const relationKey = generateRelationshipKey(
     parentKey,
     relationships.REPORT_IDENTIFIED_FINDING._class,
@@ -165,6 +166,47 @@ export function createReportFindingRelationship(
   return {
     _class: relationships.REPORT_IDENTIFIED_FINDING._class,
     _type: relationships.REPORT_IDENTIFIED_FINDING._type,
+    _fromEntityKey: parentKey,
+    _key: relationKey,
+    _toEntityKey: childKey,
+  };
+}
+
+export function createMalwareEntity(malware: ContainerMalware) {
+  return {
+    _key: malwareEntityKey(malware),
+    _type: entities.CONTAINER_MALWARE._type,
+    _class: entities.CONTAINER_MALWARE._class,
+    _rawData: [{ name: 'default', rawData: malware }],
+    infectedFile: malware.infectedFile,
+    fileTypeDescriptor: malware.fileTypeDescriptor,
+    md5: malware.md5,
+    sha256: malware.sha256,
+  };
+}
+
+export function malwareEntityKey(malware: ContainerMalware) {
+  return generateEntityKey(entities.CONTAINER_MALWARE._type, malware.md5);
+}
+
+export function createReportMalwareRelationship(
+  reportSha256: string,
+  malware: ContainerMalware,
+) {
+  const parentKey = generateEntityKey(
+    entities.CONTAINER_REPORT._type,
+    reportSha256,
+  );
+  const childKey = malwareEntityKey(malware);
+  const relationKey = generateRelationshipKey(
+    parentKey,
+    relationships.REPORT_IDENTIFIED_MALWARE._class,
+    childKey,
+  );
+
+  return {
+    _class: relationships.REPORT_IDENTIFIED_MALWARE._class,
+    _type: relationships.REPORT_IDENTIFIED_MALWARE._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,

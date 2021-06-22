@@ -5,7 +5,12 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
 import { entities, relationships, StepIds } from '../../constants';
-import { containerFindingEntityKey } from './converters';
+import {
+  containerFindingEntityKey,
+  createMalwareEntity,
+  createReportMalwareRelationship,
+  malwareEntityKey,
+} from './converters';
 import { getAccount } from '../../initializeContext';
 import TenableClient from '../../tenable/TenableClient';
 import { Container } from '../../tenable/types';
@@ -83,6 +88,21 @@ export async function fetchContainerReports(
           createReportFindingRelationship(report.sha256, finding),
         );
       }
+
+      for (const malware of report.malware) {
+        const malwareKey = malwareEntityKey(malware);
+        let malwareEntity = await jobState.findEntity(malwareKey);
+
+        if (!malwareEntity) {
+          malwareEntity = await jobState.addEntity(
+            createMalwareEntity(malware),
+          );
+        }
+
+        await jobState.addRelationship(
+          createReportMalwareRelationship(report.sha256, malware),
+        );
+      }
     },
   );
 }
@@ -101,10 +121,15 @@ export const containerSteps: Step<
   {
     id: StepIds.CONTAINER_REPORTS,
     name: 'Fetch Container Reports',
-    entities: [entities.CONTAINER_REPORT, entities.CONTAINER_FINDING],
+    entities: [
+      entities.CONTAINER_REPORT,
+      entities.CONTAINER_FINDING,
+      entities.CONTAINER_MALWARE,
+    ],
     relationships: [
       relationships.CONTAINER_HAS_REPORT,
       relationships.REPORT_IDENTIFIED_FINDING,
+      relationships.REPORT_IDENTIFIED_MALWARE,
     ],
     dependsOn: [StepIds.CONTAINERS],
     executionHandler: fetchContainerReports,
