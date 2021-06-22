@@ -5,11 +5,7 @@ import {
 
 import { TenableIntegrationConfig } from './config';
 import { entities } from './constants';
-import {
-  synchronizeContainerUnwantedPrograms,
-  synchronizeHosts,
-} from './synchronizers';
-import TenableClient from './tenable/TenableClient';
+import { synchronizeHosts } from './synchronizers';
 import { RecentScanSummary } from './tenable/types';
 
 export default async function executionHandler(
@@ -21,12 +17,6 @@ export default async function executionHandler(
 async function synchronize(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
 ): Promise<void> {
-  const provider = new TenableClient({
-    logger: context.logger,
-    accessToken: context.instance.config.accessKey,
-    secretToken: context.instance.config.secretKey,
-  });
-
   const scans: RecentScanSummary[] = [];
 
   await context.jobState.iterateEntities(
@@ -39,13 +29,4 @@ async function synchronize(
   );
 
   await synchronizeHosts(context, scans);
-
-  const containers = await provider.fetchContainers();
-
-  /* istanbul ignore next */
-  const containerReports = await Promise.all(
-    containers.map(async (c) => provider.fetchReportByImageDigest(c.digest)),
-  );
-
-  await synchronizeContainerUnwantedPrograms(context, containerReports);
 }

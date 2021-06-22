@@ -18,7 +18,17 @@ import {
 } from '../utils/generateKey';
 import getTime from '../utils/getTime';
 import { scanEntityKey } from '../steps/scans/converters';
-import { FindingSeverityPriority } from './types';
+
+// TODO: Move these into integration SDK and push out to other scanner
+// integrations
+export enum FindingSeverityPriority {
+  Informational = 'Informational',
+  Low = 'Low',
+  Medium = 'Medium',
+  High = 'High',
+  Critical = 'Critical',
+  Unknown = 'Unknown',
+}
 
 /**
  * Converts Tenable Plugin Severity Ratings or "Risk Factor" to label. See
