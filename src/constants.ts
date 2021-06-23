@@ -7,6 +7,7 @@ export const SetDataKeys = {
 export const StepIds = {
   ACCOUNT: 'step-account',
   SCANS: 'step-scans',
+  SCAN_DETAILS: 'step-scan-details',
   USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
   CONTAINERS: 'step-containers',

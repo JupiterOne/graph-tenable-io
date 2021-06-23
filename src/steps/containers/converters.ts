@@ -7,7 +7,7 @@ import {
   ContainerUnwantedProgram,
 } from '../../tenable/types';
 import { Account } from '../../types';
-import { normalizeCVSS2Severity } from '../../converters/vulnerabilities';
+import { normalizeCVSS2Severity } from '../scans/converters';
 import {
   generateEntityKey,
   generateRelationshipKey,
