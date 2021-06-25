@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 7.0.0 - 2021-06-25
+
+### Changed
+
+- Adopted open-source `@jupiterone/integration-sdk-*` framework for execution
+  environment.
+
 ## 6.0.2 - 2021-05-27
 
 - Increase timeout for asset/vuln export
