@@ -1,10 +1,11 @@
-import fetch, { RequestInit } from "node-fetch";
+import fetch, { RequestInit } from 'node-fetch';
+import { version as graphTenablePackageVersion } from '../../package.json';
 
 import {
   IntegrationLogger,
   IntegrationProviderAPIError,
-} from "@jupiterone/integration-sdk-core";
-import * as attempt from "@lifeomic/attempt";
+} from '@jupiterone/integration-sdk-core';
+import * as attempt from '@lifeomic/attempt';
 
 import {
   AssetExport,
@@ -35,7 +36,7 @@ import {
   UsersResponse,
   VulnerabilitiesExportStatusResponse,
   VulnerabilityExport,
-} from "./types";
+} from './types';
 
 function length(resources?: any[]): number {
   return resources ? resources.length : 0;
@@ -43,7 +44,7 @@ function length(resources?: any[]): number {
 
 export default class TenableClient {
   private readonly logger: IntegrationLogger;
-  private readonly host: string = "https://cloud.tenable.com";
+  private readonly host: string = 'https://cloud.tenable.com';
   private readonly accessToken: string;
   private readonly secretToken: string;
   private readonly retryMaxAttempts: number;
@@ -68,7 +69,7 @@ export default class TenableClient {
 
   public async fetchUserPermissions() {
     const response = await this.makeRequest<UserPermissionsResponse>(
-      "/session",
+      '/session',
       Method.GET,
     );
     this.logger.info(
@@ -80,24 +81,24 @@ export default class TenableClient {
 
   public async fetchUsers(): Promise<User[]> {
     const usersResponse = await this.makeRequest<UsersResponse>(
-      "/users",
+      '/users',
       Method.GET,
     );
     this.logger.info(
       { users: length(usersResponse.users) },
-      "Fetched Tenable users",
+      'Fetched Tenable users',
     );
     return usersResponse.users;
   }
 
   public async fetchScans(): Promise<RecentScanSummary[]> {
     const scansResponse = await this.makeRequest<ScansResponse>(
-      "/scans",
+      '/scans',
       Method.GET,
     );
     this.logger.info(
       { scans: length(scansResponse.scans) },
-      "Fetched Tenable scans",
+      'Fetched Tenable scans',
     );
     return scansResponse.scans;
   }
@@ -119,7 +120,7 @@ export default class TenableClient {
           hosts: length(hosts),
           vulnerabilities: length(vulnerabilities),
         },
-        "Fetched Tenable scan details",
+        'Fetched Tenable scan details',
       );
 
       return {
@@ -134,7 +135,7 @@ export default class TenableClient {
       if (err.statusCode === 403) {
         this.logger.warn(
           { err, scan: { uuid: scan.uuid, id: scan.id } },
-          "Scan details forbidden",
+          'Scan details forbidden',
         );
       } else {
         throw err;
@@ -151,26 +152,25 @@ export default class TenableClient {
       pluginId: vulnerability.plugin_id,
     };
     try {
-      const vulnerabilitiesResponse = await this.makeRequest<
-        AssetVulnerabilityResponse
-      >(
-        `/workbenches/assets/${assetUuid}/vulnerabilities/${vulnerability.plugin_id}/info`,
-        Method.GET,
-      );
+      const vulnerabilitiesResponse =
+        await this.makeRequest<AssetVulnerabilityResponse>(
+          `/workbenches/assets/${assetUuid}/vulnerabilities/${vulnerability.plugin_id}/info`,
+          Method.GET,
+        );
 
-      this.logger.info(logData, "Fetched Tenable asset vulnerability info");
+      this.logger.info(logData, 'Fetched Tenable asset vulnerability info');
 
       return vulnerabilitiesResponse.info;
     } catch (err) {
       if (err.statusCode === 404) {
         this.logger.info(
           { ...logData, err },
-          "Vulnerabilities details not found for asset",
+          'Vulnerabilities details not found for asset',
         );
       } else if (err.statusCode === 500) {
         this.logger.warn(
           { ...logData, err },
-          "Tenable API returned an internal service error for the asset vulnerabilities.",
+          'Tenable API returned an internal service error for the asset vulnerabilities.',
         );
       } else {
         throw err;
@@ -181,16 +181,20 @@ export default class TenableClient {
   public async exportVulnerabilities(
     options: ExportVulnerabilitiesOptions,
   ): Promise<ExportVulnerabilitiesResponse> {
-    const exportResponse = await this.makeRequest<
-      ExportVulnerabilitiesResponse
-    >("/vulns/export", Method.POST, {}, options);
+    const exportResponse =
+      await this.makeRequest<ExportVulnerabilitiesResponse>(
+        '/vulns/export',
+        Method.POST,
+        {},
+        options,
+      );
 
     this.logger.info(
       {
         options,
         exportResponse,
       },
-      "Started Tenable vulnerabilities export",
+      'Started Tenable vulnerabilities export',
     );
 
     return exportResponse;
@@ -209,7 +213,7 @@ export default class TenableClient {
       {
         cancelExportResponse,
       },
-      "Cancelled Tenable vulns export",
+      'Cancelled Tenable vulns export',
     );
 
     return cancelExportResponse;
@@ -218,16 +222,18 @@ export default class TenableClient {
   public async fetchVulnerabilitiesExportStatus(
     exportUuid: string,
   ): Promise<VulnerabilitiesExportStatusResponse> {
-    const exportStatusResponse = await this.makeRequest<
-      VulnerabilitiesExportStatusResponse
-    >(`/vulns/export/${exportUuid}/status`, Method.GET);
+    const exportStatusResponse =
+      await this.makeRequest<VulnerabilitiesExportStatusResponse>(
+        `/vulns/export/${exportUuid}/status`,
+        Method.GET,
+      );
 
     this.logger.info(
       {
         exportUuid,
         exportStatusResponse,
       },
-      "Fetched Tenable vulnerabilities export status",
+      'Fetched Tenable vulnerabilities export status',
     );
 
     return exportStatusResponse;
@@ -247,7 +253,7 @@ export default class TenableClient {
         chunkId,
         vulnerabilitiesExportResponse: vulnerabilitiesExportResponse.length,
       },
-      "Fetched Tenable vulnerabilities export chunk",
+      'Fetched Tenable vulnerabilities export chunk',
     );
 
     return vulnerabilitiesExportResponse;
@@ -257,7 +263,7 @@ export default class TenableClient {
     options: ExportAssetsOptions,
   ): Promise<ExportAssetsResponse> {
     const exportResponse = await this.makeRequest<ExportAssetsResponse>(
-      "/assets/export",
+      '/assets/export',
       Method.POST,
       {},
       options,
@@ -268,7 +274,7 @@ export default class TenableClient {
         options,
         exportResponse,
       },
-      "Started Tenable assets export",
+      'Started Tenable assets export',
     );
 
     return exportResponse;
@@ -287,7 +293,7 @@ export default class TenableClient {
       {
         cancelExportResponse,
       },
-      "Cancelled Tenable assets export",
+      'Cancelled Tenable assets export',
     );
 
     return cancelExportResponse;
@@ -296,16 +302,18 @@ export default class TenableClient {
   public async fetchAssetsExportStatus(
     exportUuid: string,
   ): Promise<AssetsExportStatusResponse> {
-    const exportStatusResponse = await this.makeRequest<
-      AssetsExportStatusResponse
-    >(`/assets/export/${exportUuid}/status`, Method.GET);
+    const exportStatusResponse =
+      await this.makeRequest<AssetsExportStatusResponse>(
+        `/assets/export/${exportUuid}/status`,
+        Method.GET,
+      );
 
     this.logger.info(
       {
         exportUuid,
         exportStatusResponse,
       },
-      "Fetched Tenable asset export status",
+      'Fetched Tenable asset export status',
     );
 
     return exportStatusResponse;
@@ -326,7 +334,7 @@ export default class TenableClient {
         chunkId,
         assetsExportResponse: assetsExportResponse.length,
       },
-      "Fetched Tenable assets export chunk",
+      'Fetched Tenable assets export chunk',
     );
 
     return assetsExportResponse;
@@ -341,23 +349,25 @@ export default class TenableClient {
       host: { id: hostId },
     };
     try {
-      const vulnerabilitiesResponse = await this.makeRequest<
-        ScanVulnerabilitiesResponse
-      >(`/scans/${scanId}/hosts/${hostId}`, Method.GET);
+      const vulnerabilitiesResponse =
+        await this.makeRequest<ScanVulnerabilitiesResponse>(
+          `/scans/${scanId}/hosts/${hostId}`,
+          Method.GET,
+        );
 
       this.logger.info(
         {
           ...logData,
           vulnerabilities: length(vulnerabilitiesResponse.vulnerabilities),
         },
-        "Fetched Tenable scan host vulnerabilities",
+        'Fetched Tenable scan host vulnerabilities',
       );
       return vulnerabilitiesResponse.vulnerabilities;
     } catch (err) {
       if (err.statusCode === 404) {
         this.logger.info(
           { ...logData, err },
-          "Could not find information on host vulnerabilities",
+          'Could not find information on host vulnerabilities',
         );
         return [];
       } else {
@@ -368,13 +378,13 @@ export default class TenableClient {
 
   public async fetchAssets(): Promise<AssetSummary[]> {
     const assetsResponse = await this.makeRequest<AssetsResponse>(
-      "/assets",
+      '/assets',
       Method.GET,
     );
 
     this.logger.info(
       { assets: length(assetsResponse.assets) },
-      "Fetched Tenable assets",
+      'Fetched Tenable assets',
     );
 
     return assetsResponse.assets;
@@ -382,13 +392,13 @@ export default class TenableClient {
 
   public async fetchContainers(): Promise<Container[]> {
     const containersResponse = await this.makeRequest<ContainersResponse>(
-      "/container-security/api/v1/container/list",
+      '/container-security/api/v1/container/list',
       Method.GET,
     );
 
     this.logger.info(
       { containers: length(containersResponse) },
-      "Fetched Tenable assets",
+      'Fetched Tenable assets',
     );
 
     return containersResponse;
@@ -409,7 +419,7 @@ export default class TenableClient {
         findings: length(reportResponse.findings),
         unwantedPrograms: length(reportResponse.potentially_unwanted_programs),
       },
-      "Fetched Tenable container report",
+      'Fetched Tenable container report',
     );
 
     return reportResponse;
@@ -424,10 +434,11 @@ export default class TenableClient {
     const requestOptions: RequestInit = {
       method,
       headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
-        "Accept-encoding": "identity",
-        "X-ApiKeys": `accessKey=${this.accessToken}; secretKey=${this.secretToken};`,
+        'Content-type': 'application/json',
+        Accept: 'application/json',
+        'Accept-encoding': 'identity',
+        'X-ApiKeys': `accessKey=${this.accessToken}; secretKey=${this.secretToken};`,
+        'User-Agent': `Integration/1.0 (JupiterOne; graph-tenable-cloud;  Build/${graphTenablePackageVersion})`,
         ...headers,
       },
     };
@@ -435,7 +446,7 @@ export default class TenableClient {
       requestOptions.body = JSON.stringify(body);
     }
 
-    this.logger.debug({ method, url }, "Fetching Tenable data...");
+    this.logger.debug({ method, url }, 'Fetching Tenable data...');
 
     let retryDelay = 0;
 
@@ -445,10 +456,10 @@ export default class TenableClient {
         const response = await fetch(this.host + url, requestOptions);
 
         if (response.status === 429) {
-          const serverRetryDelay = response.headers.get("retry-after");
+          const serverRetryDelay = response.headers.get('retry-after');
           this.logger.info(
             { serverRetryDelay, url },
-            "Received 429 response from endpoint; waiting to retry.",
+            'Received 429 response from endpoint; waiting to retry.',
           );
           if (serverRetryDelay) {
             retryDelay = Number.parseInt(serverRetryDelay, 10) * 1000;
@@ -464,7 +475,7 @@ export default class TenableClient {
             // pass
           }
           throw new IntegrationProviderAPIError({
-            code: "TenableClientApiError",
+            code: 'TenableClientApiError',
             message: message || `${response.statusText}: ${method} ${url}`,
             status: response.status,
             endpoint: this.host + url,
@@ -494,7 +505,7 @@ export default class TenableClient {
               attemptNum: context.attemptNum,
               attemptsRemaining: context.attemptsRemaining,
             },
-            "Encountered retryable API response. Retrying.",
+            'Encountered retryable API response. Retrying.',
           );
         },
       },

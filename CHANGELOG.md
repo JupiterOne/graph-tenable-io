@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added `User-Agent` header to Tenable API calls.
+
 ## 7.0.0 - 2021-06-25
 
 ### Changed
