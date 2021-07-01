@@ -1,6 +1,9 @@
-import { AssetExport, VulnerabilityExport } from "./types";
+import {
+  AssetExport,
+  VulnerabilityExport,
+} from '@jupiterone/tenable-client-nodejs';
 
-export * from "./TenableClient";
+export * from './TenableClient';
 
 export interface AssetExportCache {
   findAssetExportByUuid: (uuid: string) => AssetExport | undefined;

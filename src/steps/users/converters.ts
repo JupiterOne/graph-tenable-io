@@ -1,6 +1,6 @@
 import { Relationship } from '@jupiterone/integration-sdk-core';
 import { entities, relationships } from '../../constants';
-import { User } from '../../tenable/types';
+import { User } from '@jupiterone/tenable-client-nodejs';
 import { Account } from '../../types';
 import {
   generateEntityKey,

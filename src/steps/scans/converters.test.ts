@@ -8,7 +8,7 @@ import {
   ScanVulnerabilitySummary,
   User,
   VulnerabilityExport,
-} from '../../tenable/types';
+} from '@jupiterone/tenable-client-nodejs';
 import {
   createScanEntity,
   createScanFindingRelationship,

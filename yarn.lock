@@ -756,6 +756,14 @@
     deepmerge "^4.2.2"
     lodash "^4.17.15"
 
+"@jupiterone/tenable-client-nodejs@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@jupiterone/tenable-client-nodejs/-/tenable-client-nodejs-0.1.2.tgz#35131f6a1bad91f6c6da581d9a42db8265c8aa4b"
+  integrity sha512-HTl/ymZTv7l8oMwp7Oxqrf0fiYpxnk0Qo16PE/k/9C1pGMF6/Rc3/t+415whFOPwLwtWJOwVwlR5kVOopb0mIg==
+  dependencies:
+    "@types/node" "^15.12.5"
+    node-fetch "^2.6.1"
+
 "@lifeomic/alpha@^1.4.0":
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@lifeomic/alpha/-/alpha-1.4.2.tgz#70772f1e2801c5fa15e706edc7d626f1477d9a1f"
@@ -1012,6 +1020,11 @@
   version "14.17.3"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.3.tgz#6d327abaa4be34a74e421ed6409a0ae2f47f4c3d"
   integrity sha512-e6ZowgGJmTuXa3GyaPbTGxX17tnThl2aSSizrFthQ7m9uLGZBXiGhgE55cjRZTF5kjZvYn9EOPOMljdjwbflxw==
+
+"@types/node@^15.12.5":
+  version "15.12.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.5.tgz#9a78318a45d75c9523d2396131bd3cca54b2d185"
+  integrity sha512-se3yX7UHv5Bscf8f1ERKvQOD6sTyycH3hdaoozvaLxgUiY5lIGEeH37AD0G0Qi9kPqihPn0HOfd2yaIEN9VwEg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4311,7 +4324,7 @@ nock@^12.0.3:
     lodash "^4.17.13"
     propagate "^2.0.0"
 
-node-fetch@^2.3.0:
+node-fetch@^2.3.0, node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==

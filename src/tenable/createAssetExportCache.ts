@@ -1,14 +1,18 @@
-import { AssetExportCache } from ".";
-import TenableClient from "./TenableClient";
-import { AssetExport, ExportAssetsOptions, ExportStatus } from "./types";
+import { AssetExportCache } from '.';
+import TenableClient from './TenableClient';
+import {
+  AssetExport,
+  ExportAssetsOptions,
+  ExportStatus,
+} from '@jupiterone/tenable-client-nodejs';
 
 import {
   IntegrationError,
   IntegrationLogger,
-} from "@jupiterone/integration-sdk-core";
-import { sleep } from "@lifeomic/attempt";
-import { addMinutes, isAfter } from "date-fns";
-import pMap from "p-map";
+} from '@jupiterone/integration-sdk-core';
+import { sleep } from '@lifeomic/attempt';
+import { addMinutes, isAfter } from 'date-fns';
+import pMap from 'p-map';
 
 export async function createAssetExportCache(
   logger: IntegrationLogger,
@@ -17,7 +21,7 @@ export async function createAssetExportCache(
   const assetExports = await getAssetsUsingExport(client);
   const assetExportMap = new Map<string, AssetExport>();
 
-  logger.info({ assetExports: assetExports.length }, "Fetched asset exports");
+  logger.info({ assetExports: assetExports.length }, 'Fetched asset exports');
 
   for (const assetExport of assetExports) {
     assetExportMap.set(assetExport.id, assetExport);
@@ -32,22 +36,18 @@ export async function createAssetExportCache(
 async function getAssetsUsingExport(client: TenableClient) {
   const options: ExportAssetsOptions = { chunk_size: 100 };
   const { export_uuid: exportUuid } = await client.exportAssets(options);
-  let {
-    status,
-    chunks_available: chunksAvailable,
-  } = await client.fetchAssetsExportStatus(exportUuid);
+  let { status, chunks_available: chunksAvailable } =
+    await client.fetchAssetsExportStatus(exportUuid);
 
   const timeLimit = addMinutes(Date.now(), 30);
   while ([ExportStatus.Processing, ExportStatus.Queued].includes(status)) {
-    ({
-      status,
-      chunks_available: chunksAvailable,
-    } = await client.fetchAssetsExportStatus(exportUuid));
+    ({ status, chunks_available: chunksAvailable } =
+      await client.fetchAssetsExportStatus(exportUuid));
 
     if (isAfter(Date.now(), timeLimit)) {
       await client.cancelAssetExport(exportUuid);
       throw new IntegrationError({
-        code: "TenableClientApiError",
+        code: 'TenableClientApiError',
         message: `Asset export ${exportUuid} failed to finish processing in time limit`,
       });
     }
@@ -56,7 +56,7 @@ async function getAssetsUsingExport(client: TenableClient) {
 
   const chunkResponses = await pMap(
     chunksAvailable,
-    async chunkId => await client.fetchAssetsExportChunk(exportUuid, chunkId),
+    async (chunkId) => await client.fetchAssetsExportChunk(exportUuid, chunkId),
     { concurrency: 3 },
   );
 
