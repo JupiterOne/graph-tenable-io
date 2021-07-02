@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Added
 
+- Imported client from `@jupiterone/tenable-client-nodejs`.
 - Added `User-Agent` header to Tenable API calls.
 
 ## 7.0.0 - 2021-06-25

@@ -1,14 +1,14 @@
-import { IntegrationLogger } from "@jupiterone/integration-sdk-core";
-import { createMockIntegrationLogger } from "@jupiterone/integration-sdk-testing";
-import nock from "nock";
-import { config } from "../../test/config";
+import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
+import { createMockIntegrationLogger } from '@jupiterone/integration-sdk-testing';
+import nock from 'nock';
+import { config } from '../../test/config';
 import {
   getTenableMatchRequestsBy,
   Recording,
   setupTenableRecording,
-} from "../../test/recording";
+} from '../../test/recording';
 
-import TenableClient from "./TenableClient";
+import TenableClient from './TenableClient';
 import {
   ExportAssetsOptions,
   ExportVulnerabilitiesOptions,
@@ -16,7 +16,7 @@ import {
   RecentScanSummary,
   ScanHostVulnerability,
   VulnerabilityState,
-} from "./types";
+} from '@jupiterone/tenable-client-nodejs';
 
 let recording: Recording;
 
@@ -31,10 +31,10 @@ function getIntegrationLogger(): IntegrationLogger {
 }
 
 const ACCESS_KEY =
-  process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY || "test_access_token";
+  process.env.TENABLE_LOCAL_EXECUTION_ACCESS_KEY || 'test_access_token';
 const SECRET_KEY =
-  process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY || "test_secret_token";
-const TENABLE_COM = "cloud.tenable.com";
+  process.env.TENABLE_LOCAL_EXECUTION_SECRET_KEY || 'test_secret_token';
+const TENABLE_COM = 'cloud.tenable.com';
 const RETRY_MAX_ATTEMPTS = 4;
 
 function prepareScope(def: nock.NockDefinition) {
@@ -50,8 +50,8 @@ function getClient() {
   });
 }
 
-describe.skip("new TenableClient", () => {
-  test("accepts 0 retryMaxAttempts", () => {
+describe.skip('new TenableClient', () => {
+  test('accepts 0 retryMaxAttempts', () => {
     const client = new TenableClient({
       logger: getIntegrationLogger(),
       accessToken: ACCESS_KEY,
@@ -65,25 +65,23 @@ describe.skip("new TenableClient", () => {
 
 // See docs/tenable-cloud/fixture-data.md
 
-describe.skip("TenableClient fetch errors", () => {
-  test("fetch error", async () => {
-    const scope = nock(`https://${TENABLE_COM}`)
-      .get(/.*/)
-      .reply(404);
+describe.skip('TenableClient fetch errors', () => {
+  test('fetch error', async () => {
+    const scope = nock(`https://${TENABLE_COM}`).get(/.*/).reply(404);
     const client = getClient();
     await expect(client.fetchUsers()).rejects.toThrow(/404/);
     scope.done();
   });
 
-  test("fetch 429 waits Retry-After time max times", async () => {
+  test('fetch 429 waits Retry-After time max times', async () => {
     const scope = nock(`https://${TENABLE_COM}`)
-      .get("/users")
+      .get('/users')
       .times(RETRY_MAX_ATTEMPTS - 1)
-      .reply(429, "Too Many Requests", {
-        "Content-Type": "text/html",
-        "Retry-After": "1",
+      .reply(429, 'Too Many Requests', {
+        'Content-Type': 'text/html',
+        'Retry-After': '1',
       })
-      .get("/users")
+      .get('/users')
       .reply(404);
     const client = getClient();
     await expect(client.fetchUsers()).rejects.toThrow(/404/);
@@ -91,10 +89,10 @@ describe.skip("TenableClient fetch errors", () => {
     scope.done();
   });
 
-  test("immediately retry 504 up to the max amount", async () => {
+  test('immediately retry 504 up to the max amount', async () => {
     const scanId = 123;
     const hostId = 1234;
-    const vulnerabilities = ["no bueno"];
+    const vulnerabilities = ['no bueno'];
     const scope = nock(`https://${TENABLE_COM}`)
       .get(`/scans/${scanId}/hosts/${hostId}`)
       .times(RETRY_MAX_ATTEMPTS - 1)
@@ -109,16 +107,16 @@ describe.skip("TenableClient fetch errors", () => {
     scope.done();
   });
 
-  test("immediately retry 500 but short circuit to only 3 attempts", async () => {
+  test('immediately retry 500 but short circuit to only 3 attempts', async () => {
     const scope = nock(`https://${TENABLE_COM}`)
       .get(
-        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
+        '/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info',
       )
       .times(RETRY_MAX_ATTEMPTS - 1)
       .reply(500);
     const client = getClient();
     const info = await client.fetchAssetVulnerabilityInfo(
-      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+      '2aa49a6b-f17b-4b43-8953-58e2012f2fb3',
       { plugin_id: 10386 } as ScanHostVulnerability,
     );
     expect(info).toBeUndefined();
@@ -126,24 +124,22 @@ describe.skip("TenableClient fetch errors", () => {
     scope.done();
   });
 
-  test("fetch 429 without Retry-After", async () => {
+  test('fetch 429 without Retry-After', async () => {
     const scope = nock(`https://${TENABLE_COM}`)
-      .get("/users")
+      .get('/users')
       .times(1)
-      .reply(429, "Too Many Requests", {
-        "Content-Type": "text/html",
+      .reply(429, 'Too Many Requests', {
+        'Content-Type': 'text/html',
       })
-      .get("/users")
+      .get('/users')
       .reply(404);
     const client = getClient();
     await expect(client.fetchUsers()).rejects.toThrow(/404/);
     scope.done();
   });
 
-  test("fetchScanDetail unknown error", async () => {
-    const scope = nock(`https://${TENABLE_COM}`)
-      .get("/scans/199")
-      .reply(401);
+  test('fetchScanDetail unknown error', async () => {
+    const scope = nock(`https://${TENABLE_COM}`).get('/scans/199').reply(401);
     const client = getClient();
     await expect(
       client.fetchScanDetail({ id: 199 } as RecentScanSummary),
@@ -151,9 +147,9 @@ describe.skip("TenableClient fetch errors", () => {
     scope.done();
   });
 
-  test("fetchScanHostVulnerabilities unknown error", async () => {
+  test('fetchScanHostVulnerabilities unknown error', async () => {
     const scope = nock(`https://${TENABLE_COM}`)
-      .get("/scans/6/hosts/2")
+      .get('/scans/6/hosts/2')
       .times(RETRY_MAX_ATTEMPTS - 1)
       .reply(500);
     const client = getClient();
@@ -163,16 +159,16 @@ describe.skip("TenableClient fetch errors", () => {
     scope.done();
   });
 
-  test("fetchScanDetail unknown error", async () => {
+  test('fetchScanDetail unknown error', async () => {
     const scope = nock(`https://${TENABLE_COM}`)
       .get(
-        "/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info",
+        '/workbenches/assets/2aa49a6b-f17b-4b43-8953-58e2012f2fb3/vulnerabilities/10386/info',
       )
       .reply(401);
     const client = getClient();
     await expect(
       client.fetchAssetVulnerabilityInfo(
-        "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+        '2aa49a6b-f17b-4b43-8953-58e2012f2fb3',
         { plugin_id: 10386 } as ScanHostVulnerability,
       ),
     ).rejects.toThrow(/401/);
@@ -180,22 +176,22 @@ describe.skip("TenableClient fetch errors", () => {
   });
 });
 
-describe.skip("TenableClient data fetch", () => {
+describe.skip('TenableClient data fetch', () => {
   let client: TenableClient;
 
   beforeAll(() => {
     nock.back.fixtures = `${__dirname}/../../test/fixtures/`;
     process.env.CI
-      ? nock.back.setMode("lockdown")
-      : nock.back.setMode("record");
+      ? nock.back.setMode('lockdown')
+      : nock.back.setMode('record');
   });
 
   beforeEach(() => {
     client = getClient();
   });
 
-  test("fetchUserPermissions ok", async () => {
-    const { nockDone } = await nock.back("user-permissions-ok.json", {
+  test('fetchUserPermissions ok', async () => {
+    const { nockDone } = await nock.back('user-permissions-ok.json', {
       before: prepareScope,
     });
 
@@ -204,8 +200,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchUsers ok", async () => {
-    const { nockDone } = await nock.back("users-ok.json", {
+  test('fetchUsers ok', async () => {
+    const { nockDone } = await nock.back('users-ok.json', {
       before: prepareScope,
     });
 
@@ -214,8 +210,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchScans ok", async () => {
-    const { nockDone } = await nock.back("scans-ok.json", {
+  test('fetchScans ok', async () => {
+    const { nockDone } = await nock.back('scans-ok.json', {
       before: prepareScope,
     });
 
@@ -224,8 +220,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchAssets ok", async () => {
-    const { nockDone } = await nock.back("assets-ok.json", {
+  test('fetchAssets ok', async () => {
+    const { nockDone } = await nock.back('assets-ok.json', {
       before: prepareScope,
     });
     const response = await client.fetchAssets();
@@ -233,8 +229,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchScanDetail ok", async () => {
-    const { nockDone } = await nock.back("scan-ok.json", {
+  test('fetchScanDetail ok', async () => {
+    const { nockDone } = await nock.back('scan-ok.json', {
       before: prepareScope,
     });
 
@@ -247,8 +243,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchScanDetail never executed", async () => {
-    const { nockDone } = await nock.back("scan-never-executed.json", {
+  test('fetchScanDetail never executed', async () => {
+    const { nockDone } = await nock.back('scan-never-executed.json', {
       before: prepareScope,
     });
 
@@ -261,8 +257,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchScanDetail forbidden", async () => {
-    const { nockDone } = await nock.back("scan-forbidden.json", {
+  test('fetchScanDetail forbidden', async () => {
+    const { nockDone } = await nock.back('scan-forbidden.json', {
       before: prepareScope,
     });
 
@@ -271,8 +267,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchScanHostVulnerabilities ok", async () => {
-    const { nockDone } = await nock.back("vulnerabilities-ok.json", {
+  test('fetchScanHostVulnerabilities ok', async () => {
+    const { nockDone } = await nock.back('vulnerabilities-ok.json', {
       before: prepareScope,
     });
 
@@ -281,8 +277,8 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchScanHostVulnerabilities 404", async () => {
-    const { nockDone } = await nock.back("vulnerabilities-not-found.json", {
+  test('fetchScanHostVulnerabilities 404', async () => {
+    const { nockDone } = await nock.back('vulnerabilities-not-found.json', {
       before: prepareScope,
     });
 
@@ -291,13 +287,13 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchAssetVulnerabilityInfo ok", async () => {
-    const { nockDone } = await nock.back("asset-vulnerability-info-ok.json", {
+  test('fetchAssetVulnerabilityInfo ok', async () => {
+    const { nockDone } = await nock.back('asset-vulnerability-info-ok.json', {
       before: prepareScope,
     });
 
     const info = await client.fetchAssetVulnerabilityInfo(
-      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+      '2aa49a6b-f17b-4b43-8953-58e2012f2fb3',
       { plugin_id: 10386 } as ScanHostVulnerability,
     );
     expect(info).toMatchObject({
@@ -306,24 +302,24 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchAssetVulnerabilityInfo 404", async () => {
+  test('fetchAssetVulnerabilityInfo 404', async () => {
     const { nockDone } = await nock.back(
-      "asset-vulnerability-info-not-found.json",
+      'asset-vulnerability-info-not-found.json',
       {
         before: prepareScope,
       },
     );
 
     const info = await client.fetchAssetVulnerabilityInfo(
-      "2aa49a6b-f17b-4b43-8953-58e2012f2fb3",
+      '2aa49a6b-f17b-4b43-8953-58e2012f2fb3',
       { plugin_id: 11111 } as ScanHostVulnerability,
     );
     expect(info).toBeUndefined();
     nockDone();
   });
 
-  test("fetchContainers ok", async () => {
-    const { nockDone } = await nock.back("containers-ok.json", {
+  test('fetchContainers ok', async () => {
+    const { nockDone } = await nock.back('containers-ok.json', {
       before: prepareScope,
     });
 
@@ -332,32 +328,32 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchReportByImageDigest image with vulnerabilities", async () => {
-    const { nockDone } = await nock.back("container-report-vulns.json", {
+  test('fetchReportByImageDigest image with vulnerabilities', async () => {
+    const { nockDone } = await nock.back('container-report-vulns.json', {
       before: prepareScope,
     });
 
     const response = await client.fetchReportByImageDigest(
-      "sha256:5887b9b394294f66c2f8ef1b4bdddbdd7fcc4512df5ee470c5e74f6e8ed603c6",
+      'sha256:5887b9b394294f66c2f8ef1b4bdddbdd7fcc4512df5ee470c5e74f6e8ed603c6',
     );
     expect(response).not.toEqual({});
     nockDone();
   });
 
-  test("fetchReportByImageDigest image with no vulnerabilities", async () => {
-    const { nockDone } = await nock.back("container-report-no-vulns.json", {
+  test('fetchReportByImageDigest image with no vulnerabilities', async () => {
+    const { nockDone } = await nock.back('container-report-no-vulns.json', {
       before: prepareScope,
     });
 
     const response = await client.fetchReportByImageDigest(
-      "sha256:1edb77942782fc99d6b1ad53c78dd602ae5ee4f26e49edb49555faf749574ae9",
+      'sha256:1edb77942782fc99d6b1ad53c78dd602ae5ee4f26e49edb49555faf749574ae9',
     );
     expect(response).not.toEqual({});
     nockDone();
   });
 
-  test("exportVulnerabilities ok", async () => {
-    const { nockDone } = await nock.back("export-vulnerabilities-ok.json", {
+  test('exportVulnerabilities ok', async () => {
+    const { nockDone } = await nock.back('export-vulnerabilities-ok.json', {
       before: prepareScope,
     });
 
@@ -377,39 +373,39 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchVulnerabilitiesExportStatus ok", async () => {
+  test('fetchVulnerabilitiesExportStatus ok', async () => {
     const { nockDone } = await nock.back(
-      "vulnerabilities-export-status-ok.json",
+      'vulnerabilities-export-status-ok.json',
       {
         before: prepareScope,
       },
     );
 
     const response = await client.fetchVulnerabilitiesExportStatus(
-      "ea907e2b-6cf0-45d2-99d0-8037158eb896",
+      'ea907e2b-6cf0-45d2-99d0-8037158eb896',
     );
     expect(response).not.toEqual({});
     nockDone();
   });
 
-  test("fetchVulnerabilitiesExportChunk ok", async () => {
+  test('fetchVulnerabilitiesExportChunk ok', async () => {
     const { nockDone } = await nock.back(
-      "vulnerabilities-export-chunk-ok.json",
+      'vulnerabilities-export-chunk-ok.json',
       {
         before: prepareScope,
       },
     );
 
     const response = await client.fetchVulnerabilitiesExportChunk(
-      "ea907e2b-6cf0-45d2-99d0-8037158eb896",
+      'ea907e2b-6cf0-45d2-99d0-8037158eb896',
       1,
     );
     expect(response.length).not.toEqual(0);
     nockDone();
   });
 
-  test("exportAssets ok", async () => {
-    const { nockDone } = await nock.back("export-assets-ok.json", {
+  test('exportAssets ok', async () => {
+    const { nockDone } = await nock.back('export-assets-ok.json', {
       before: prepareScope,
     });
 
@@ -421,33 +417,33 @@ describe.skip("TenableClient data fetch", () => {
     nockDone();
   });
 
-  test("fetchAssetsExportStatus ok", async () => {
-    const { nockDone } = await nock.back("assets-export-status-ok.json", {
+  test('fetchAssetsExportStatus ok', async () => {
+    const { nockDone } = await nock.back('assets-export-status-ok.json', {
       before: prepareScope,
     });
 
     const response = await client.fetchAssetsExportStatus(
-      "5dc52d4e-82d1-4988-8231-98dbe6ce62cd",
+      '5dc52d4e-82d1-4988-8231-98dbe6ce62cd',
     );
     expect(response).not.toEqual({});
     nockDone();
   });
 
-  test("fetchAssetsExportChunk ok", async () => {
-    const { nockDone } = await nock.back("assets-export-chunk-ok.json", {
+  test('fetchAssetsExportChunk ok', async () => {
+    const { nockDone } = await nock.back('assets-export-chunk-ok.json', {
       before: prepareScope,
     });
 
     const response = await client.fetchAssetsExportChunk(
-      "5dc52d4e-82d1-4988-8231-98dbe6ce62cd",
+      '5dc52d4e-82d1-4988-8231-98dbe6ce62cd',
       1,
     );
     expect(response.length).not.toEqual(0);
     nockDone();
   });
 
-  test.skip("fetchTenableData ok", async () => {
-    const { nockDone } = await nock.back("all-data-ok.json", {
+  test.skip('fetchTenableData ok', async () => {
+    const { nockDone } = await nock.back('all-data-ok.json', {
       before: prepareScope,
     });
 
@@ -466,11 +462,11 @@ describe.skip("TenableClient data fetch", () => {
   });
 });
 
-describe("cancelAssetExport", () => {
-  test("success", async () => {
+describe('cancelAssetExport', () => {
+  test('success', async () => {
     recording = setupTenableRecording({
       directory: __dirname,
-      name: "cancelAssetExport",
+      name: 'cancelAssetExport',
       options: {
         matchRequestsBy: getTenableMatchRequestsBy(config),
       },
@@ -486,6 +482,6 @@ describe("cancelAssetExport", () => {
 
     const response = await client.cancelAssetExport(export_uuid);
 
-    expect(response.response.status).toBe("CANCELLED");
+    expect(response.response.status).toBe('CANCELLED');
   });
 });

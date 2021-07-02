@@ -1,4 +1,4 @@
-import { User } from '../../tenable/types';
+import { User } from '@jupiterone/tenable-client-nodejs';
 import { Account } from '../../types';
 import { createAccountUserRelationship, createUserEntity } from './converters';
 
