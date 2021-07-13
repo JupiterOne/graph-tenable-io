@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 7.1.4 - 2021-07-13
+
+### Fixed
+
+- Publish contents of `src`
+
 ## 7.1.3 - 2021-07-13
 
 ### Fixed
