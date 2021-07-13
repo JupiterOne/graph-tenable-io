@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 7.1.2 - 2021-07-13
+
+### Fixed
+
+- Run `yarn build` in github workflow
+
 ## 7.1.1 - 2021-07-13
 
 ### Fixed
