@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Added
 
+- Added `displayName` property to entities
 - Imported client from `@jupiterone/tenable-client-nodejs`.
 - Added `User-Agent` header to Tenable API calls.
 

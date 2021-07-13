@@ -17,6 +17,7 @@ export function createUserEntity(user: User) {
     userName: user.user_name,
     username: user.username,
     email: user.email,
+    displayName: user.name,
     name: user.name,
     type: user.type,
     containerUuid: user.container_uuid,

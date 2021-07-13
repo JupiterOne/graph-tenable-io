@@ -27,6 +27,7 @@ test('convert user entity', () => {
     _key: 'tenable_user_2',
     _type: 'tenable_user',
     containerUuid: 'a01249a3-3547-4961-9d5d-9c74d296169d',
+    displayName: 'Denis Arkhireev',
     email: 'denis.arkhireev@dualbootpartners.com',
     enabled: true,
     id: '2',

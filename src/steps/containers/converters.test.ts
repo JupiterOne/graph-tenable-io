@@ -44,6 +44,7 @@ test('convert container entity', () => {
     createdAt: 1555496818509,
     digest:
       'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
+    displayName: 'graph-tenable-app',
     id: '6549098203417933758',
     name: 'graph-tenable-app',
     numberOfVulnerabilities: '0',
@@ -116,6 +117,7 @@ test('convert report entity', () => {
     _rawData: [{ name: 'default', rawData: report }],
     createdAt: 1555496818509,
     digest: 'c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
+    displayName: 'graph-tenable-app',
     dockerImageId: 'f8ebac0b4322',
     id: 'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
     imageName: 'graph-tenable-app',
@@ -319,6 +321,7 @@ test('convert container vulnerability entity', () => {
       },
     ],
     fileTypeDescriptor: 'string',
+    displayName: 'string',
     infectedFile: 'string',
     md5: 'malwareMd5',
     sha256: 'string',
@@ -386,6 +389,7 @@ test('convert container vulnerability entity', () => {
       },
     ],
     file: 'file',
+    displayName: 'file',
     md5: 'unwantedProgramMd5',
     sha256: 'string',
   });

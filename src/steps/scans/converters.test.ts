@@ -56,6 +56,7 @@ describe('createScanEntity', () => {
       read: false,
       lastModificationDate: 1563469604000,
       creationDate: 1563469024000,
+      displayName: 'scan-name',
       status: 'completed',
       uuid: 'f8528b96-cb70-42cc-9211-183752c9ddf8',
       shared: true,
