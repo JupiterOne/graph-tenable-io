@@ -2,7 +2,7 @@
   "name": "@jupiterone/graph-tenable-cloud",
   "version": "7.1.0",
   "description": "A JupiterOne managed integration for https://www.tenable.com/products/tenable-io",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "repository": "https://github.com/JupiterOne/graph-tenable-cloud",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
@@ -22,7 +22,7 @@
     "test": "jest",
     "test:env": "LOAD_ENV=1 yarn test",
     "test:ci": "yarn lint && yarn type-check && yarn test",
-    "build": "tsc -p tsconfig.dist.json --declaration",
+    "build": "tsc -p tsconfig.dist.json --declaration && cp README.md dist/README.md",
     "prepush": "yarn lint && yarn type-check && jest --changedSince master",
     "prepack": "yarn build"
   },
