@@ -8,16 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
-## 7.1.2 - 2021-07-13
+## 7.1.3 - 2021-07-13
 
 ### Fixed
 
+- Removed `prepack` script
 - Run `yarn build` in github workflow
-
-## 7.1.1 - 2021-07-13
-
-### Fixed
-
 - Fixed structure of `/dist` for published package
 
 ## 7.1.0 - 2021-07-13
