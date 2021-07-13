@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 7.1.0 - 2021-07-13
+
 ### Added
 
 - Added `displayName` property to entities
