@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added `TenableClient.iterateAssets()` method. Made other asset export
+  endpoints private.
+
 ## 7.1.4 - 2021-07-13
 
 ### Fixed

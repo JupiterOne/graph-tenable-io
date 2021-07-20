@@ -10,7 +10,7 @@ import {
 
 import TenableClient from './TenableClient';
 import {
-  ExportAssetsOptions,
+  AssetExport,
   ExportVulnerabilitiesOptions,
   RecentScanDetail,
   RecentScanSummary,
@@ -404,44 +404,6 @@ describe.skip('TenableClient data fetch', () => {
     nockDone();
   });
 
-  test('exportAssets ok', async () => {
-    const { nockDone } = await nock.back('export-assets-ok.json', {
-      before: prepareScope,
-    });
-
-    const options: ExportAssetsOptions = {
-      chunk_size: 100,
-    };
-    const response = await client.exportAssets(options);
-    expect(response).not.toEqual({});
-    nockDone();
-  });
-
-  test('fetchAssetsExportStatus ok', async () => {
-    const { nockDone } = await nock.back('assets-export-status-ok.json', {
-      before: prepareScope,
-    });
-
-    const response = await client.fetchAssetsExportStatus(
-      '5dc52d4e-82d1-4988-8231-98dbe6ce62cd',
-    );
-    expect(response).not.toEqual({});
-    nockDone();
-  });
-
-  test('fetchAssetsExportChunk ok', async () => {
-    const { nockDone } = await nock.back('assets-export-chunk-ok.json', {
-      before: prepareScope,
-    });
-
-    const response = await client.fetchAssetsExportChunk(
-      '5dc52d4e-82d1-4988-8231-98dbe6ce62cd',
-      1,
-    );
-    expect(response.length).not.toEqual(0);
-    nockDone();
-  });
-
   test.skip('fetchTenableData ok', async () => {
     const { nockDone } = await nock.back('all-data-ok.json', {
       before: prepareScope,
@@ -462,11 +424,15 @@ describe.skip('TenableClient data fetch', () => {
   });
 });
 
-describe('cancelAssetExport', () => {
-  test('success', async () => {
+function flushPromises() {
+  return new Promise((resolve) => setImmediate(resolve));
+}
+
+describe('iterateAssets', () => {
+  test('should iterate all assets', async () => {
     recording = setupTenableRecording({
       directory: __dirname,
-      name: 'cancelAssetExport',
+      name: 'iterateAssets-success',
       options: {
         matchRequestsBy: getTenableMatchRequestsBy(config),
       },
@@ -478,10 +444,17 @@ describe('cancelAssetExport', () => {
       secretToken: config.secretKey,
     });
 
-    const { export_uuid } = await client.exportAssets({ chunk_size: 100 });
+    jest.useFakeTimers();
+    const assets: AssetExport[] = [];
+    client
+      .iterateAssets((a) => {
+        assets.push(a);
+      })
+      .then(() => expect(assets.length).toBeGreaterThan(0))
+      .catch((e) => e);
 
-    const response = await client.cancelAssetExport(export_uuid);
-
-    expect(response.response.status).toBe('CANCELLED');
+    jest.runAllTimers();
+    await flushPromises();
+    jest.useRealTimers();
   });
 });

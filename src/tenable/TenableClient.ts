@@ -1,7 +1,11 @@
 import { version as graphTenablePackageVersion } from '../../package.json';
-import Client, { TenableRepsonse } from '@jupiterone/tenable-client-nodejs';
+import Client, {
+  ExportStatus,
+  TenableRepsonse,
+} from '@jupiterone/tenable-client-nodejs';
 
 import {
+  IntegrationError,
   IntegrationLogger,
   IntegrationProviderAPIError,
 } from '@jupiterone/integration-sdk-core';
@@ -27,6 +31,10 @@ import {
   VulnerabilitiesExportStatusResponse,
   VulnerabilityExport,
 } from '@jupiterone/tenable-client-nodejs';
+import isAfter from 'date-fns/isAfter';
+import { sleep } from '@lifeomic/attempt';
+import pMap from 'p-map';
+import addMinutes from 'date-fns/addMinutes';
 
 function length(resources?: any[]): number {
   return resources ? resources.length : 0;
@@ -238,7 +246,7 @@ export default class TenableClient {
     return vulnerabilitiesExportResponse;
   }
 
-  public async exportAssets(
+  private async exportAssets(
     options: ExportAssetsOptions,
   ): Promise<ExportAssetsResponse> {
     const exportResponse = await this.retryRequest(() =>
@@ -256,7 +264,7 @@ export default class TenableClient {
     return exportResponse;
   }
 
-  public async cancelAssetExport(
+  private async cancelAssetExport(
     exportUuid: string,
   ): Promise<CancelExportResponse> {
     const cancelExportResponse = await this.retryRequest(() =>
@@ -273,7 +281,7 @@ export default class TenableClient {
     return cancelExportResponse;
   }
 
-  public async fetchAssetsExportStatus(
+  private async fetchAssetsExportStatus(
     exportUuid: string,
   ): Promise<AssetsExportStatusResponse> {
     const exportStatusResponse = await this.retryRequest(() =>
@@ -291,7 +299,7 @@ export default class TenableClient {
     return exportStatusResponse;
   }
 
-  public async fetchAssetsExportChunk(
+  private async fetchAssetsExportChunk(
     exportUuid: string,
     chunkId: number,
   ): Promise<AssetExport[]> {
@@ -309,6 +317,49 @@ export default class TenableClient {
     );
 
     return assetsExportResponse;
+  }
+
+  public async iterateAssets(
+    callback: (asset: AssetExport) => void | Promise<void>,
+    options?: {
+      timeoutInMinutes?: number;
+      chunkSize?: number;
+    },
+  ) {
+    const chunkSize = options?.chunkSize || 100;
+    const timeoutInMinutes = options?.timeoutInMinutes || 30;
+    const { export_uuid: exportUuid } = await this.exportAssets({
+      chunk_size: chunkSize,
+    });
+    let { status, chunks_available: chunksAvailable } =
+      await this.fetchAssetsExportStatus(exportUuid);
+
+    const timeLimit = addMinutes(Date.now(), timeoutInMinutes);
+    while ([ExportStatus.Processing, ExportStatus.Queued].includes(status)) {
+      if (isAfter(Date.now(), timeLimit)) {
+        await this.cancelAssetExport(exportUuid);
+        throw new IntegrationError({
+          code: 'TenableClientApiError',
+          message: `Asset export ${exportUuid} failed to finish processing in time limit`,
+        });
+      }
+
+      ({ status, chunks_available: chunksAvailable } =
+        await this.fetchAssetsExportStatus(exportUuid));
+      await sleep(60_000); // Sleep 5 seconds between status checks.
+    }
+
+    await pMap(
+      chunksAvailable,
+      async (chunkId) => {
+        const assets = await this.fetchAssetsExportChunk(exportUuid, chunkId);
+        for (const asset of assets) {
+          await callback(asset);
+        }
+      },
+      { concurrency: 3 },
+    );
+    return { exportUuid };
   }
 
   public async fetchScanHostVulnerabilities(
