@@ -16,7 +16,7 @@ and this project adheres to
   | -------------- | --------- | ------------------------------------------------------------- |
   | `tenable_scan` | **SCANS** | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
 
-- Added `TenableClient.iteraetAssets()` method. Made other asset export
+- Added `TenableClient.iterateAssets()` method. Made other asset export
   endpoints private.
 
 ## 7.1.4 - 2021-07-13
