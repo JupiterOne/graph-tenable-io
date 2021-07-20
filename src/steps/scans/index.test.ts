@@ -6,7 +6,7 @@ import {
   Recording,
   getTenableMatchRequestsBy,
 } from '../../../test/recording';
-import { entities } from '../../constants';
+import { SetDataKeys } from '../../constants';
 
 let recording: Recording;
 
@@ -31,9 +31,6 @@ describe('fetch-assets', () => {
 
     await fetchAssets(context);
 
-    expect(context.jobState.collectedEntities.length).toBeGreaterThan(0);
-    expect(context.jobState.collectedEntities).toMatchGraphObjectSchema({
-      _class: entities.ASSET._class,
-    });
+    expect(context.jobState.getData(SetDataKeys.ASSET_MAP)).not.toBeUndefined();
   });
 });

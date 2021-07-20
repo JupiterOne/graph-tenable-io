@@ -10,17 +10,11 @@ and this project adheres to
 
 ### Added
 
-- Added support for ingesting the following **new** resources:
-
-  | Resources | Entity `_type`  | Entity `_class` |
-  | --------- | --------------- | --------------- |
-  | Asset     | `tenable_asset` | `Host`          |
-
 - Added support for ingesting the following **new** relationships:
 
-  | Source         | \_class | Target          |
-  | -------------- | ------- | --------------- |
-  | `tenable_scan` | `SCANS` | `tenable_asset` |
+  | Source         | \_class   | Target                                                        |
+  | -------------- | --------- | ------------------------------------------------------------- |
+  | `tenable_scan` | **SCANS** | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
 
 - Added `TenableClient.iteraetAssets()` method. Made other asset export
   endpoints private.

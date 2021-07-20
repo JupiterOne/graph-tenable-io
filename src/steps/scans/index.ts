@@ -1,5 +1,4 @@
 import {
-  createDirectRelationship,
   getRawData,
   IntegrationError,
   IntegrationStepExecutionContext,
@@ -18,7 +17,7 @@ import {
   VulnerabilityExport,
 } from '@jupiterone/tenable-client-nodejs';
 import {
-  createAssetEntity,
+  createTargetAssetEntity,
   createScanEntity,
   createScanFindingRelationship,
   createScanVulnerabilityRelationship,
@@ -26,6 +25,7 @@ import {
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
 } from './converters';
+import { createRelationshipToTargetEntity } from '../../utils/targetEntities';
 
 export async function fetchScans(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -98,6 +98,8 @@ function findUser(users: User[], username: string): User | undefined {
   return users.find((user) => user.username === username);
 }
 
+type AssetMap = Map<string, AssetExport>;
+
 export async function fetchAssets(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
 ): Promise<void> {
@@ -108,9 +110,11 @@ export async function fetchAssets(
     secretToken: instance.config.secretKey,
   });
 
-  await provider.iterateAssets(async (asset) => {
-    await jobState.addEntity(createAssetEntity(asset));
+  const assetMap: AssetMap = new Map();
+  await provider.iterateAssets((asset) => {
+    assetMap.set(asset.id, asset);
   });
+  await jobState.setData(SetDataKeys.ASSET_MAP, assetMap);
 }
 
 export async function fetchScanDetails(
@@ -122,6 +126,8 @@ export async function fetchScanDetails(
     accessToken: instance.config.accessKey,
     secretToken: instance.config.secretKey,
   });
+
+  const assetMap = await jobState.getData<AssetMap>(SetDataKeys.ASSET_MAP);
 
   const vulnerabilityCache = await createVulnerabilityExportCache(
     context.logger,
@@ -173,23 +179,22 @@ export async function fetchScanDetails(
 
               const assetUuid = host.uuid;
 
-              const hostAssetEntity = await jobState.findEntity(assetUuid);
-
-              if (hostAssetEntity) {
+              const asset = assetMap?.get(assetUuid);
+              if (asset) {
                 await jobState.addRelationship(
-                  createDirectRelationship({
+                  createRelationshipToTargetEntity({
                     from: scanEntity,
                     _class: RelationshipClass.SCANS,
-                    to: hostAssetEntity,
+                    to: createTargetAssetEntity(asset),
                   }),
                 );
-              }
-              const hostAsset = hostAssetEntity
-                ? getRawData<AssetExport>(hostAssetEntity)
-                : undefined;
-              if (!hostAsset) {
+              } else {
                 logger.info(
-                  'No asset found for scan host, some details cannot be provided',
+                  {
+                    assetUuid,
+                    scanId: scan.id,
+                  },
+                  'Could not find asset listed in scan.',
                 );
               }
 
@@ -215,7 +220,7 @@ export async function fetchScanDetails(
                 await context.jobState.addEntity(
                   createVulnerabilityFindingEntity({
                     scan,
-                    asset: hostAsset,
+                    asset,
                     assetUuid,
                     vulnerability,
                     vulnerabilityExport,
@@ -264,7 +269,7 @@ export const scanSteps: Step<
   {
     id: StepIds.ASSETS,
     name: 'Fetch Assets',
-    entities: [entities.ASSET],
+    entities: [],
     relationships: [],
     dependsOn: [],
     executionHandler: fetchAssets,
@@ -277,6 +282,7 @@ export const scanSteps: Step<
       relationships.SCAN_IDENTIFIED_FINDING,
       relationships.SCAN_IDENTIFIED_VULNERABILITY,
       relationships.FINDING_IS_VULNERABILITY,
+      relationships.SCAN_SCANS_ASSET,
     ],
     dependsOn: [StepIds.SCANS, StepIds.ASSETS],
     executionHandler: fetchScanDetails,

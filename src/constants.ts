@@ -2,6 +2,7 @@ import { RelationshipClass } from '@jupiterone/integration-sdk-core';
 
 export const SetDataKeys = {
   USERS: 'data-users',
+  ASSET_MAP: 'data-asset-map',
 };
 
 export const StepIds = {
@@ -20,11 +21,6 @@ export const entities = {
     resourceName: 'Account',
     _class: 'Account',
     _type: 'tenable_account',
-  },
-  ASSET: {
-    resourceName: 'Asset',
-    _class: 'Host',
-    _type: 'tenable_asset',
   },
   CONTAINER: {
     resourceName: 'Container',
@@ -91,7 +87,7 @@ export const relationships = {
     _type: 'tenable_scan_scans_asset',
     sourceType: entities.SCAN._type,
     _class: RelationshipClass.SCANS,
-    targetType: entities.ASSET._type,
+    targetType: 'aws_instance,azure_vm,google_compute_instance,tenable_asset',
   },
   ACCOUNT_HAS_CONTAINER: {
     _type: 'tenable_account_has_container',
