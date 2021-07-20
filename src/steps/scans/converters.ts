@@ -1,4 +1,7 @@
-import { Relationship } from '@jupiterone/integration-sdk-core';
+import {
+  createIntegrationEntity,
+  Relationship,
+} from '@jupiterone/integration-sdk-core';
 import { entities, relationships } from '../../constants';
 import {
   AssetExport,
@@ -20,6 +23,62 @@ import {
   convertProperties,
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
+
+export function createAssetEntity(data: AssetExport) {
+  return createIntegrationEntity({
+    entityData: {
+      source: data,
+      assign: {
+        _class: entities.ASSET._class,
+        _type: entities.ASSET._type,
+        _key: data.id,
+        // JUPITERONE REQUIRED PROPERTIES
+        name: data.id,
+        deletedBy: data.deleted_by || undefined,
+
+        id: data.id,
+        hasAgent: data.has_agent,
+        hasPluginResults: data.has_plugin_results,
+        createdAt: data.created_at,
+        terminatedAt: data.terminated_at,
+        terminatedBy: data.terminated_by,
+        updatedAt: data.updated_at,
+        deletedAt: data.deleted_at,
+        firstSeen: data.first_seen,
+        lastSeen: data.last_seen,
+        firstScanTime: data.first_scan_time,
+        lastScanTime: data.last_scan_time,
+        lastAuthenticatedScanDate: data.last_authenticated_scan_date,
+        lastLicensedScanDate: data.last_licensed_scan_date,
+        lastScanId: data.last_scan_id,
+        lastScheduleId: data.last_schedule_id,
+        agentUuid: data.agent_uuid,
+        biosUuid: data.bios_uuid,
+        networkId: data.network_id,
+        networkName: data.network_name,
+        agentNames: data.agent_names,
+        installedSoftware: data.installed_software,
+        ipv4s: data.ipv4s,
+        ipv6s: data.ipv6s,
+        fqdns: data.fqdns,
+        macAddresses: data.mac_addresses,
+        netbiosNames: data.netbios_names,
+        operatingSystems: data.operating_systems,
+        // TODO Add provider-specific properties
+        // azure
+        // gcp
+        // aws
+        // mcafee
+        // sevicenow
+        // bigfix
+        // TODO Add sources, tags, networkInterfaces
+        // sources: data.sources,
+        // tags: data.tags,
+        // networkInterfaces: data.network_interfaces,
+      },
+    },
+  });
+}
 
 export function createScanEntity(data: RecentScanSummary) {
   return {

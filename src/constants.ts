@@ -7,6 +7,7 @@ export const SetDataKeys = {
 export const StepIds = {
   ACCOUNT: 'step-account',
   SCANS: 'step-scans',
+  ASSETS: 'step-assets',
   SCAN_DETAILS: 'step-scan-details',
   USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
@@ -19,6 +20,11 @@ export const entities = {
     resourceName: 'Account',
     _class: 'Account',
     _type: 'tenable_account',
+  },
+  ASSET: {
+    resourceName: 'Asset',
+    _class: 'Host',
+    _type: 'tenable_asset',
   },
   CONTAINER: {
     resourceName: 'Container',
@@ -80,6 +86,12 @@ export const relationships = {
     sourceType: entities.USER._type,
     _class: RelationshipClass.OWNS,
     targetType: entities.SCAN._type,
+  },
+  SCAN_SCANS_ASSET: {
+    _type: 'tenable_scan_scans_asset',
+    sourceType: entities.SCAN._type,
+    _class: RelationshipClass.SCANS,
+    targetType: entities.ASSET._type,
   },
   ACCOUNT_HAS_CONTAINER: {
     _type: 'tenable_account_has_container',
