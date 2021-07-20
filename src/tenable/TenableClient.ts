@@ -346,7 +346,7 @@ export default class TenableClient {
 
       ({ status, chunks_available: chunksAvailable } =
         await this.fetchAssetsExportStatus(exportUuid));
-      await sleep(5_000); // Sleep 5 seconds between status checks.
+      await sleep(60_000); // Sleep 5 seconds between status checks.
     }
 
     await pMap(

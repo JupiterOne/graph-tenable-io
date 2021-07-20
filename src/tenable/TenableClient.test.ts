@@ -424,6 +424,10 @@ describe.skip('TenableClient data fetch', () => {
   });
 });
 
+function flushPromises() {
+  return new Promise((resolve) => setImmediate(resolve));
+}
+
 describe('iterateAssets', () => {
   test('should iterate all assets', async () => {
     recording = setupTenableRecording({
@@ -440,11 +444,17 @@ describe('iterateAssets', () => {
       secretToken: config.secretKey,
     });
 
+    jest.useFakeTimers();
     const assets: AssetExport[] = [];
-    await client.iterateAssets((a) => {
-      assets.push(a);
-    });
+    client
+      .iterateAssets((a) => {
+        assets.push(a);
+      })
+      .then(() => expect(assets.length).toBeGreaterThan(0))
+      .catch((e) => e);
 
-    expect(assets.length).toBeGreaterThan(0);
-  }, 10_000);
+    jest.runAllTimers();
+    await flushPromises();
+    jest.useRealTimers();
+  });
 });
