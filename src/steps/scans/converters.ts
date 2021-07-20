@@ -20,6 +20,114 @@ import {
   convertProperties,
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
+import { TargetEntity } from '../../utils/targetEntities';
+
+export function createTargetAssetEntity(data: AssetExport): TargetEntity {
+  let targetFilter;
+
+  if (data.aws_ec2_instance_id) {
+    targetFilter = {
+      instanceId: data.aws_ec2_instance_id,
+      _type: 'aws_instance',
+    };
+  } else if (data.azure_resource_id) {
+    targetFilter = {
+      id: data.azure_resource_id,
+      _type: 'azure_vm',
+    };
+  } else if (data.gcp_instance_id) {
+    targetFilter = {
+      id: data.gcp_instance_id,
+      projectId: data.gcp_project_id,
+      _type: 'google_compute_instance',
+    };
+  } else {
+    // just make sure that at least all of the mapped relationships from this integration target the same entity.
+    // `ipv4`, `ipv6`, `mac_address`, and `fqdn` are all arrays, so filtering on them won't do.
+    targetFilter = {
+      id: data.id,
+      _type: 'tenable_asset',
+    };
+  }
+
+  const targetEntity = {
+    _class: 'Host',
+    _type: 'tenable_asset',
+    _key: data.id,
+    // JUPITERONE REQUIRED PROPERTIES
+    name: data.id,
+    deletedBy: data.deleted_by || undefined,
+
+    id: data.id,
+    hasAgent: data.has_agent,
+    hasPluginResults: data.has_plugin_results,
+    createdAt: data.created_at,
+    terminatedAt: data.terminated_at,
+    terminatedBy: data.terminated_by,
+    updatedAt: data.updated_at,
+    deletedAt: data.deleted_at,
+    firstSeen: data.first_seen,
+    lastSeen: data.last_seen,
+    firstScanTime: data.first_scan_time,
+    lastScanTime: data.last_scan_time,
+    lastAuthenticatedScanDate: data.last_authenticated_scan_date,
+    lastLicensedScanDate: data.last_licensed_scan_date,
+    lastScanId: data.last_scan_id,
+    lastScheduleId: data.last_schedule_id,
+    agentUuid: data.agent_uuid,
+    biosUuid: data.bios_uuid,
+    networkId: data.network_id,
+    networkName: data.network_name,
+    agentNames: data.agent_names,
+    installedSoftware: data.installed_software,
+    ipv4s: data.ipv4s,
+    ipv6s: data.ipv6s,
+    fqdns: data.fqdns,
+    macAddresses: data.mac_addresses,
+    netbiosNames: data.netbios_names,
+    operatingSystems: data.operating_systems,
+    // Provider-specific properties
+    // azure
+    azureResourceId: data.azure_resource_id,
+    azureVmId: data.azure_vm_id,
+    // gcp
+    gcpProjectId: data.gcp_project_id,
+    gcpInstanceId: data.gcp_instance_id,
+    gcpZone: data.gcp_zone,
+    // aws
+    awsEc2InstanceAmiId: data.aws_ec2_instance_ami_id,
+    awsEc2InstanceGroupName: data.aws_ec2_instance_group_name,
+    awsEc2InstanceId: data.aws_ec2_instance_id,
+    awsEc2InstanceState: data.aws_ec2_instance_state_name,
+    awsEc2InstanceType: data.aws_ec2_instance_type,
+    awsEc2Name: data.aws_ec2_name,
+    awsEc2ProductCode: data.aws_ec2_product_code,
+    awsOwnerId: data.aws_owner_id,
+    awsRegion: data.aws_region,
+    awsSubnetId: data.aws_subnet_id,
+    awsVpcId: data.aws_vpc_id,
+    awsAvailabilityZone: data.aws_availability_zone,
+    // mcafee
+    mcafeeEpoAgentId: data.mcafee_epo_agent_guid,
+    mcafeeEpoGuid: data.mcafee_epo_guid,
+    // sevicenow
+    servicenowSysid: data.servicenow_sysid,
+    // bigfix
+    bigfixAssetId: data.bigfix_asset_id,
+    // TODO Add sources, tags, networkInterfaces
+    // sources: data.sources,
+    // tags: data.tags,
+    // networkInterfaces: data.network_interfaces,
+  };
+
+  return {
+    targetEntity: {
+      ...targetEntity,
+      ...targetFilter,
+    },
+    targetFilterKeys: Object.keys(targetFilter),
+  };
+}
 
 export function createScanEntity(data: RecentScanSummary) {
   return {

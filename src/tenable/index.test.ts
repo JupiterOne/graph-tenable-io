@@ -12,7 +12,6 @@ import {
   Recording,
   setupTenableRecording,
 } from '../../test/recording';
-import { createAssetExportCache } from './createAssetExportCache';
 import { createVulnerabilityExportCache } from './createVulnerabilityExportCache';
 import TenableClient from './TenableClient';
 
@@ -47,109 +46,6 @@ function getClient() {
     retryMaxAttempts: RETRY_MAX_ATTEMPTS,
   });
 }
-
-describe.skip('AssetExportCache', () => {
-  describe('nock', () => {
-    let client: TenableClient;
-    let logger: IntegrationLogger;
-
-    beforeAll(() => {
-      nock.back.fixtures = `${__dirname}/../../test/fixtures/`;
-      process.env.CI
-        ? nock.back.setMode('lockdown')
-        : nock.back.setMode('record');
-      jest.spyOn(attempt, 'sleep').mockImplementation(
-        () =>
-          new Promise((resolve) => {
-            setTimeout(resolve, 0);
-          }),
-      );
-    });
-
-    beforeEach(() => {
-      client = getClient();
-      logger = getIntegrationLogger();
-    });
-
-    test('create ok', async () => {
-      const { nockDone } = await nock.back('export-assets-full-cycle.json', {
-        before: prepareScope,
-      });
-
-      await createAssetExportCache(logger, client);
-      nockDone();
-    });
-
-    test.skip('create failed due to timeout', async () => {
-      const { nockDone } = await nock.back('export-assets-full-cycle.json', {
-        before: prepareScope,
-      });
-      const timeout = subMinutes(Date.now(), 40).valueOf();
-      jest.spyOn(global.Date, 'now').mockImplementationOnce(() => timeout);
-
-      try {
-        await createAssetExportCache(logger, client);
-      } catch (e) {
-        expect(e).toBeInstanceOf(IntegrationError);
-      }
-      nockDone();
-    });
-
-    test('findAssetExportsByUuid found asset', async () => {
-      const { nockDone } = await nock.back('export-assets-full-cycle.json', {
-        before: prepareScope,
-      });
-
-      const cache = await createAssetExportCache(logger, client);
-      const lookupUuid = '48cabb0b-f0fe-4db8-9a96-4fec60e4d4f4';
-      const assetExport = cache.findAssetExportByUuid(lookupUuid);
-      expect(assetExport).not.toBeUndefined();
-      expect(assetExport?.id).toEqual(lookupUuid);
-
-      nockDone();
-    });
-
-    test('findAssetExportsByUuid did not find asset', async () => {
-      const { nockDone } = await nock.back('export-assets-full-cycle.json', {
-        before: prepareScope,
-      });
-
-      const cache = await createAssetExportCache(logger, client);
-      const assetExport = cache.findAssetExportByUuid('fake');
-      expect(assetExport).toBeUndefined();
-      nockDone();
-    });
-
-    afterAll(() => {
-      nock.restore();
-    });
-  });
-
-  test('create failed due to timeout', async () => {
-    recording = setupTenableRecording({
-      directory: __dirname,
-      name: 'createAssetExportCache-timeout',
-      options: {
-        matchRequestsBy: getTenableMatchRequestsBy(config),
-      },
-    });
-
-    const timeout = subMinutes(Date.now(), 40).valueOf();
-    jest.spyOn(global.Date, 'now').mockImplementationOnce(() => timeout);
-
-    const logger = getIntegrationLogger();
-    const client = new TenableClient({
-      logger,
-      accessToken: config.accessKey,
-      secretToken: config.secretKey,
-    });
-    try {
-      await createAssetExportCache(logger, client);
-    } catch (e) {
-      expect(e).toBeInstanceOf(IntegrationError);
-    }
-  });
-});
 
 describe.skip('VulnerabilityExportCache', () => {
   describe('nock', () => {

@@ -2,20 +2,22 @@ import {
   getRawData,
   IntegrationError,
   IntegrationStepExecutionContext,
+  RelationshipClass,
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
 import { entities, relationships, SetDataKeys, StepIds } from '../../constants';
-import { createAssetExportCache } from '../../tenable/createAssetExportCache';
 import { createVulnerabilityExportCache } from '../../tenable/createVulnerabilityExportCache';
 import TenableClient from '../../tenable/TenableClient';
 import {
+  AssetExport,
   RecentScanSummary,
   ScanStatus,
   User,
   VulnerabilityExport,
 } from '@jupiterone/tenable-client-nodejs';
 import {
+  createTargetAssetEntity,
   createScanEntity,
   createScanFindingRelationship,
   createScanVulnerabilityRelationship,
@@ -23,6 +25,7 @@ import {
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
 } from './converters';
+import { createRelationshipToTargetEntity } from '../../utils/targetEntities';
 
 export async function fetchScans(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -95,6 +98,25 @@ function findUser(users: User[], username: string): User | undefined {
   return users.find((user) => user.username === username);
 }
 
+type AssetMap = Map<string, AssetExport>;
+
+export async function fetchAssets(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+): Promise<void> {
+  const { jobState, logger, instance } = context;
+  const provider = new TenableClient({
+    logger: logger,
+    accessToken: instance.config.accessKey,
+    secretToken: instance.config.secretKey,
+  });
+
+  const assetMap: AssetMap = new Map();
+  await provider.iterateAssets((asset) => {
+    assetMap.set(asset.id, asset);
+  });
+  await jobState.setData(SetDataKeys.ASSET_MAP, assetMap);
+}
+
 export async function fetchScanDetails(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
 ): Promise<void> {
@@ -105,7 +127,8 @@ export async function fetchScanDetails(
     secretToken: instance.config.secretKey,
   });
 
-  const assetCache = await createAssetExportCache(context.logger, provider);
+  const assetMap = await jobState.getData<AssetMap>(SetDataKeys.ASSET_MAP);
+
   const vulnerabilityCache = await createVulnerabilityExportCache(
     context.logger,
     provider,
@@ -154,17 +177,26 @@ export async function fetchScanDetails(
                   host.host_id,
                 );
 
-              const hostAsset = assetCache.findAssetExportByUuid(host.uuid);
+              const assetUuid = host.uuid;
 
-              /* istanbul ignore next */
-              if (!hostAsset) {
+              const asset = assetMap?.get(assetUuid);
+              if (asset) {
+                await jobState.addRelationship(
+                  createRelationshipToTargetEntity({
+                    from: scanEntity,
+                    _class: RelationshipClass.SCANS,
+                    to: createTargetAssetEntity(asset),
+                  }),
+                );
+              } else {
                 logger.info(
-                  'No asset found for scan host, some details cannot be provided',
+                  {
+                    assetUuid,
+                    scanId: scan.id,
+                  },
+                  'Could not find asset listed in scan.',
                 );
               }
-
-              /* istanbul ignore next */
-              const assetUuid = hostAsset ? hostAsset.id : host.uuid;
 
               logger.info(
                 {
@@ -188,7 +220,7 @@ export async function fetchScanDetails(
                 await context.jobState.addEntity(
                   createVulnerabilityFindingEntity({
                     scan,
-                    asset: hostAsset,
+                    asset,
                     assetUuid,
                     vulnerability,
                     vulnerabilityExport,
@@ -235,6 +267,14 @@ export const scanSteps: Step<
     executionHandler: fetchScans,
   },
   {
+    id: StepIds.ASSETS,
+    name: 'Fetch Assets',
+    entities: [],
+    relationships: [],
+    dependsOn: [],
+    executionHandler: fetchAssets,
+  },
+  {
     id: StepIds.SCAN_DETAILS,
     name: 'Fetch Scan Details',
     entities: [entities.VULNERABILITY, entities.VULN_FINDING],
@@ -242,8 +282,9 @@ export const scanSteps: Step<
       relationships.SCAN_IDENTIFIED_FINDING,
       relationships.SCAN_IDENTIFIED_VULNERABILITY,
       relationships.FINDING_IS_VULNERABILITY,
+      relationships.SCAN_SCANS_ASSET,
     ],
-    dependsOn: [StepIds.SCANS],
+    dependsOn: [StepIds.SCANS, StepIds.ASSETS],
     executionHandler: fetchScanDetails,
   },
   {
