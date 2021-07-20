@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 7.2.0 - 2021-07-20
+
 ### Added
 
 - Added support for ingesting the following **new** relationships:
