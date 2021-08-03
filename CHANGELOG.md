@@ -16,6 +16,12 @@ and this project adheres to
   | --------- | --------------- | --------------- |
   | Asset     | `tenable_asset` | `HostAgent`     |
 
+- Added support for ingesting the following **new** relationships:
+
+  | Source            | \_class | Target          |
+  | ----------------- | ------- | --------------- |
+  | `tenable_account` | **HAS** | `tenable_asset` |
+
 - Added support for ingesting the following **new** mapped relationships:
 
   | Source          | \_class   | Target                                                        |

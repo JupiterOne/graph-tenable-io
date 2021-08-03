@@ -1,6 +1,7 @@
 import {
   createIntegrationEntity,
   MappedRelationship,
+  Relationship,
 } from '@jupiterone/integration-sdk-core';
 import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 import { fetchAssets } from '.';
@@ -10,7 +11,7 @@ import {
   Recording,
   getTenableMatchRequestsBy,
 } from '../../../test/recording';
-import { entities } from '../../constants';
+import { entities, relationships } from '../../constants';
 
 let recording: Recording;
 
@@ -19,6 +20,23 @@ afterEach(async () => {
     await recording.stop();
   }
 });
+
+function separateRelationships(
+  relationships: Relationship[],
+  isTarget: (r: Relationship) => boolean,
+) {
+  const targets: Relationship[] = [];
+  const rest: Relationship[] = [];
+
+  for (const r of relationships) {
+    if (isTarget(r)) {
+      targets.push(r);
+    } else {
+      rest.push(r);
+    }
+  }
+  return { targets, rest };
+}
 
 describe('fetch-assets', () => {
   test('success', async () => {
@@ -36,14 +54,31 @@ describe('fetch-assets', () => {
 
     await fetchAssets(context);
 
-    expect(context.jobState.collectedEntities.length).toBeGreaterThan(0);
-    expect(context.jobState.collectedEntities).toMatchGraphObjectSchema({
+    const assetEntities = context.jobState.collectedEntities;
+
+    expect(assetEntities.length).toBeGreaterThan(0);
+    expect(assetEntities).toMatchGraphObjectSchema({
       _class: entities.ASSET._class,
     });
 
-    expect(context.jobState.collectedRelationships.length).toBe(
-      context.jobState.collectedEntities.length,
+    const {
+      targets: mappedAssetHostRelationships,
+      rest: accountAssetRealtionships,
+    } = separateRelationships(
+      context.jobState.collectedRelationships,
+      (r) => !!r._mapping,
     );
+
+    expect(accountAssetRealtionships.length).toBe(assetEntities.length);
+    expect(accountAssetRealtionships).toMatchDirectRelationshipSchema({
+      schema: {
+        properties: {
+          _type: { const: relationships.ACCOUNT_HAS_ASSET._type },
+        },
+      },
+    });
+
+    expect(mappedAssetHostRelationships.length).toBe(assetEntities.length);
   });
 
   describe('HostAgent -> Host mapped relationships', () => {
@@ -86,7 +121,7 @@ describe('fetch-assets', () => {
 
       const azureMappedRelationships = (
         context.jobState.collectedRelationships as MappedRelationship[]
-      ).filter((m) => m._mapping.targetEntity._type === 'azure_vm');
+      ).filter((m) => m._mapping?.targetEntity?._type === 'azure_vm');
 
       expect(azureMappedRelationships.length).toBeGreaterThan(0);
       expect(azureMappedRelationships).toTargetEntities(

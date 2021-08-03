@@ -1,4 +1,5 @@
 import {
+  createDirectRelationship,
   getRawData,
   IntegrationError,
   IntegrationStepExecutionContext,
@@ -33,6 +34,8 @@ import {
   createAssetEntity,
 } from './converters';
 import { createRelationshipToTargetEntity } from '../../utils/targetEntities';
+import { getAccount } from '../../initializeContext';
+import { createAccountEntity } from '../account/converters';
 
 export async function fetchScans(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -111,6 +114,7 @@ export async function fetchAssets(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
+  const accountEntity = createAccountEntity(getAccount(context));
   const provider = new TenableClient({
     logger: logger,
     accessToken: instance.config.accessKey,
@@ -119,6 +123,13 @@ export async function fetchAssets(
 
   await provider.iterateAssets(async (asset) => {
     const assetEntity = await jobState.addEntity(createAssetEntity(asset));
+    await jobState.addRelationship(
+      createDirectRelationship({
+        from: accountEntity,
+        _class: RelationshipClass.HAS,
+        to: assetEntity,
+      }),
+    );
     await jobState.addRelationship(
       createRelationshipToTargetEntity({
         from: assetEntity,

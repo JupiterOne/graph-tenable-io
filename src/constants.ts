@@ -82,6 +82,12 @@ export const relationships = {
     _class: RelationshipClass.HAS,
     targetType: entities.USER._type,
   },
+  ACCOUNT_HAS_ASSET: {
+    _type: 'tenable_account_has_asset',
+    sourceType: entities.ACCOUNT._type,
+    _class: RelationshipClass.HAS,
+    targetType: entities.ASSET._type,
+  },
   USER_OWNS_SCAN: {
     _type: 'tenable_user_owns_scan',
     sourceType: entities.USER._type,
