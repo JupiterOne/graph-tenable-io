@@ -6,7 +6,13 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
-import { entities, relationships, SetDataKeys, StepIds } from '../../constants';
+import {
+  entities,
+  MappedRelationships,
+  relationships,
+  SetDataKeys,
+  StepIds,
+} from '../../constants';
 import { createVulnerabilityExportCache } from '../../tenable/createVulnerabilityExportCache';
 import TenableClient from '../../tenable/TenableClient';
 import {
@@ -17,13 +23,14 @@ import {
   VulnerabilityExport,
 } from '@jupiterone/tenable-client-nodejs';
 import {
-  createTargetAssetEntity,
+  createTargetHostEntity,
   createScanEntity,
   createScanFindingRelationship,
   createScanVulnerabilityRelationship,
   createUserScanRelationship,
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
+  createAssetEntity,
 } from './converters';
 import { createRelationshipToTargetEntity } from '../../utils/targetEntities';
 
@@ -110,11 +117,16 @@ export async function fetchAssets(
     secretToken: instance.config.secretKey,
   });
 
-  const assetMap: AssetMap = new Map();
-  await provider.iterateAssets((asset) => {
-    assetMap.set(asset.id, asset);
+  await provider.iterateAssets(async (asset) => {
+    const assetEntity = await jobState.addEntity(createAssetEntity(asset));
+    await jobState.addRelationship(
+      createRelationshipToTargetEntity({
+        from: assetEntity,
+        _class: RelationshipClass.SCANS,
+        to: createTargetHostEntity(asset),
+      }),
+    );
   });
-  await jobState.setData(SetDataKeys.ASSET_MAP, assetMap);
 }
 
 export async function fetchScanDetails(
@@ -185,7 +197,7 @@ export async function fetchScanDetails(
                   createRelationshipToTargetEntity({
                     from: scanEntity,
                     _class: RelationshipClass.SCANS,
-                    to: createTargetAssetEntity(asset),
+                    to: createTargetHostEntity(asset),
                   }),
                 );
               } else {
@@ -269,11 +281,12 @@ export const scanSteps: Step<
   {
     id: StepIds.ASSETS,
     name: 'Fetch Assets',
-    entities: [],
+    entities: [entities.ASSET],
     relationships: [],
+    mappedRelationships: [MappedRelationships.ASSET_SCANS_HOST],
     dependsOn: [],
     executionHandler: fetchAssets,
-  },
+  } as Step<IntegrationStepExecutionContext<TenableIntegrationConfig>>,
   {
     id: StepIds.SCAN_DETAILS,
     name: 'Fetch Scan Details',

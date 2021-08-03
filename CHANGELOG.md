@@ -8,6 +8,32 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added support for ingesting the following **new** entities:
+
+  | Resources | Entity `_type`  | Entity `_class` |
+  | --------- | --------------- | --------------- |
+  | Asset     | `tenable_asset` | `HostAgent`     |
+
+- Added support for ingesting the following **new** mapped relationships:
+
+  | Source          | \_class   | Target                                                        |
+  | --------------- | --------- | ------------------------------------------------------------- |
+  | `tenable_asset` | **SCANS** | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
+
+### Changed
+
+- Upgraded `@jupiterone/integration-sdk-*@6.13.0`
+
+### Remvoved
+
+- Removed support for ingesting the following mapped relationships:
+
+  | Source         | \_class   | Target                                                        |
+  | -------------- | --------- | ------------------------------------------------------------- |
+  | `tenable_scan` | **SCANS** | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
+
 ## 7.2.0 - 2021-07-20
 
 ### Added
