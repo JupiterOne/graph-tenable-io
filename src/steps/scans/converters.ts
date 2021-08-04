@@ -1,4 +1,7 @@
-import { Relationship } from '@jupiterone/integration-sdk-core';
+import {
+  createIntegrationEntity,
+  Relationship,
+} from '@jupiterone/integration-sdk-core';
 import { entities, relationships } from '../../constants';
 import {
   AssetExport,
@@ -22,7 +25,86 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { TargetEntity } from '../../utils/targetEntities';
 
-export function createTargetAssetEntity(data: AssetExport): TargetEntity {
+export function createAssetEntity(data: AssetExport) {
+  return createIntegrationEntity({
+    entityData: {
+      source: data,
+      assign: {
+        _class: entities.ASSET._class,
+        _type: entities.ASSET._type,
+        _key: data.id,
+
+        // JupiterOne required properties
+        name: data.hostnames?.[0] || data.ipv4s?.[0] || data.ipv6s?.[0],
+        function: ['vulnerability-detection'],
+
+        id: data.id,
+        deletedBy: data.deleted_by || undefined,
+        hasAgent: data.has_agent,
+        hasPluginResults: data.has_plugin_results,
+        createdAt: data.created_at,
+        terminatedAt: data.terminated_at,
+        terminatedBy: data.terminated_by,
+        updatedAt: data.updated_at,
+        deletedAt: data.deleted_at,
+        firstSeen: data.first_seen,
+        lastSeen: data.last_seen,
+        firstScanTime: data.first_scan_time,
+        lastScanTime: data.last_scan_time,
+        lastAuthenticatedScanDate: data.last_authenticated_scan_date,
+        lastLicensedScanDate: data.last_licensed_scan_date,
+        lastScanId: data.last_scan_id,
+        lastScheduleId: data.last_schedule_id,
+        agentUuid: data.agent_uuid,
+        biosUuid: data.bios_uuid,
+        networkId: data.network_id,
+        networkName: data.network_name,
+        agentNames: data.agent_names,
+        installedSoftware: data.installed_software,
+        ipv4s: data.ipv4s,
+        ipv6s: data.ipv6s,
+        fqdns: data.fqdns,
+        macAddresses: data.mac_addresses,
+        netbiosNames: data.netbios_names,
+        operatingSystems: data.operating_systems,
+        // Provider-specific properties
+        // azure
+        azureResourceId: data.azure_resource_id,
+        azureVmId: data.azure_vm_id,
+        // gcp
+        gcpProjectId: data.gcp_project_id,
+        gcpInstanceId: data.gcp_instance_id,
+        gcpZone: data.gcp_zone,
+        // aws
+        awsEc2InstanceAmiId: data.aws_ec2_instance_ami_id,
+        awsEc2InstanceGroupName: data.aws_ec2_instance_group_name,
+        awsEc2InstanceId: data.aws_ec2_instance_id,
+        awsEc2InstanceState: data.aws_ec2_instance_state_name,
+        awsEc2InstanceType: data.aws_ec2_instance_type,
+        awsEc2Name: data.aws_ec2_name,
+        awsEc2ProductCode: data.aws_ec2_product_code,
+        awsOwnerId: data.aws_owner_id,
+        awsRegion: data.aws_region,
+        awsSubnetId: data.aws_subnet_id,
+        awsVpcId: data.aws_vpc_id,
+        awsAvailabilityZone: data.aws_availability_zone,
+        // mcafee
+        mcafeeEpoAgentId: data.mcafee_epo_agent_guid,
+        mcafeeEpoGuid: data.mcafee_epo_guid,
+        // sevicenow
+        servicenowSysid: data.servicenow_sysid,
+        // bigfix
+        bigfixAssetId: data.bigfix_asset_id,
+        // TODO Add sources, tags, networkInterfaces
+        // sources: data.sources,
+        // tags: data.tags,
+        // networkInterfaces: data.network_interfaces,
+      },
+    },
+  });
+}
+
+export function createTargetHostEntity(data: AssetExport): TargetEntity {
   let targetFilter;
 
   if (data.aws_ec2_instance_id) {
@@ -32,7 +114,8 @@ export function createTargetAssetEntity(data: AssetExport): TargetEntity {
     };
   } else if (data.azure_resource_id) {
     targetFilter = {
-      id: data.azure_resource_id,
+      // See createVirtualMachineEntity()  https://github.com/JupiterOne/graph-azure/blob/main/src/steps/resource-manager/compute/converters.ts#L33
+      _key: data.azure_resource_id.toLowerCase(),
       _type: 'azure_vm',
     };
   } else if (data.gcp_instance_id) {
@@ -51,73 +134,10 @@ export function createTargetAssetEntity(data: AssetExport): TargetEntity {
   }
 
   const targetEntity = {
+    // JUPITERONE REQUIRED PROPERTIES
     _class: 'Host',
     _type: 'tenable_asset',
     _key: data.id,
-    // JUPITERONE REQUIRED PROPERTIES
-    name: data.id,
-    deletedBy: data.deleted_by || undefined,
-
-    id: data.id,
-    hasAgent: data.has_agent,
-    hasPluginResults: data.has_plugin_results,
-    createdAt: data.created_at,
-    terminatedAt: data.terminated_at,
-    terminatedBy: data.terminated_by,
-    updatedAt: data.updated_at,
-    deletedAt: data.deleted_at,
-    firstSeen: data.first_seen,
-    lastSeen: data.last_seen,
-    firstScanTime: data.first_scan_time,
-    lastScanTime: data.last_scan_time,
-    lastAuthenticatedScanDate: data.last_authenticated_scan_date,
-    lastLicensedScanDate: data.last_licensed_scan_date,
-    lastScanId: data.last_scan_id,
-    lastScheduleId: data.last_schedule_id,
-    agentUuid: data.agent_uuid,
-    biosUuid: data.bios_uuid,
-    networkId: data.network_id,
-    networkName: data.network_name,
-    agentNames: data.agent_names,
-    installedSoftware: data.installed_software,
-    ipv4s: data.ipv4s,
-    ipv6s: data.ipv6s,
-    fqdns: data.fqdns,
-    macAddresses: data.mac_addresses,
-    netbiosNames: data.netbios_names,
-    operatingSystems: data.operating_systems,
-    // Provider-specific properties
-    // azure
-    azureResourceId: data.azure_resource_id,
-    azureVmId: data.azure_vm_id,
-    // gcp
-    gcpProjectId: data.gcp_project_id,
-    gcpInstanceId: data.gcp_instance_id,
-    gcpZone: data.gcp_zone,
-    // aws
-    awsEc2InstanceAmiId: data.aws_ec2_instance_ami_id,
-    awsEc2InstanceGroupName: data.aws_ec2_instance_group_name,
-    awsEc2InstanceId: data.aws_ec2_instance_id,
-    awsEc2InstanceState: data.aws_ec2_instance_state_name,
-    awsEc2InstanceType: data.aws_ec2_instance_type,
-    awsEc2Name: data.aws_ec2_name,
-    awsEc2ProductCode: data.aws_ec2_product_code,
-    awsOwnerId: data.aws_owner_id,
-    awsRegion: data.aws_region,
-    awsSubnetId: data.aws_subnet_id,
-    awsVpcId: data.aws_vpc_id,
-    awsAvailabilityZone: data.aws_availability_zone,
-    // mcafee
-    mcafeeEpoAgentId: data.mcafee_epo_agent_guid,
-    mcafeeEpoGuid: data.mcafee_epo_guid,
-    // sevicenow
-    servicenowSysid: data.servicenow_sysid,
-    // bigfix
-    bigfixAssetId: data.bigfix_asset_id,
-    // TODO Add sources, tags, networkInterfaces
-    // sources: data.sources,
-    // tags: data.tags,
-    // networkInterfaces: data.network_interfaces,
   };
 
   return {
@@ -125,7 +145,7 @@ export function createTargetAssetEntity(data: AssetExport): TargetEntity {
       ...targetEntity,
       ...targetFilter,
     },
-    targetFilterKeys: Object.keys(targetFilter),
+    targetFilterKeys: [Object.keys(targetFilter)],
   };
 }
 

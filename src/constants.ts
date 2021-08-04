@@ -22,6 +22,11 @@ export const entities = {
     _class: 'Account',
     _type: 'tenable_account',
   },
+  ASSET: {
+    resourceName: 'Asset',
+    _class: 'HostAgent',
+    _type: 'tenable_asset',
+  },
   CONTAINER: {
     resourceName: 'Container',
     _class: 'Image',
@@ -76,6 +81,12 @@ export const relationships = {
     sourceType: entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: entities.USER._type,
+  },
+  ACCOUNT_HAS_ASSET: {
+    _type: 'tenable_account_has_asset',
+    sourceType: entities.ACCOUNT._type,
+    _class: RelationshipClass.HAS,
+    targetType: entities.ASSET._type,
   },
   USER_OWNS_SCAN: {
     _type: 'tenable_user_owns_scan',
@@ -136,5 +147,14 @@ export const relationships = {
     sourceType: entities.VULN_FINDING._type,
     _class: RelationshipClass.IS,
     targetType: 'vulnerability',
+  },
+};
+
+export const MappedRelationships = {
+  ASSET_SCANS_HOST: {
+    _type: 'tenable_asset_scans_host',
+    sourceType: entities.ASSET._type,
+    _class: RelationshipClass.SCANS,
+    targetType: 'host',
   },
 };
