@@ -297,7 +297,7 @@ export const scanSteps: Step<
     mappedRelationships: [MappedRelationships.ASSET_SCANS_HOST],
     dependsOn: [],
     executionHandler: fetchAssets,
-  } as Step<IntegrationStepExecutionContext<TenableIntegrationConfig>>,
+  },
   {
     id: StepIds.SCAN_DETAILS,
     name: 'Fetch Scan Details',

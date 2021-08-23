@@ -30,7 +30,7 @@ and this project adheres to
 
 ### Changed
 
-- Upgraded `@jupiterone/integration-sdk-*@6.13.0`
+- Upgraded `@jupiterone/integration-sdk-*@6.15.0`
 
 ### Remvoved
 
