@@ -1,4 +1,7 @@
-import { RelationshipClass } from '@jupiterone/integration-sdk-core';
+import {
+  RelationshipClass,
+  RelationshipDirection,
+} from '@jupiterone/integration-sdk-core';
 
 export const SetDataKeys = {
   USERS: 'data-users',
@@ -156,5 +159,6 @@ export const MappedRelationships = {
     sourceType: entities.ASSET._type,
     _class: RelationshipClass.SCANS,
     targetType: 'host',
+    direction: RelationshipDirection.FORWARD,
   },
 };
