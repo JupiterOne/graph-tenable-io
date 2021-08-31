@@ -133,7 +133,7 @@ export const containerSteps: Step<
     name: 'Fetch Containers',
     entities: [entities.CONTAINER],
     relationships: [relationships.ACCOUNT_HAS_CONTAINER],
-    dependsOn: [],
+    dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchContainers,
   },
   {

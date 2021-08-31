@@ -1,19 +1,14 @@
-import {
-  IntegrationStepExecutionContext,
-  RelationshipClass,
-  Step,
-} from '@jupiterone/integration-sdk-core';
+import { RelationshipClass } from '@jupiterone/integration-sdk-core';
+import { TenableIntegrationConfig } from '../../../../src/config';
+import { StepSpec } from '../types';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const executionHandler = () => {};
-
-export const accessSpec: Step<IntegrationStepExecutionContext>[] = [
+export const accessSpec: StepSpec<TenableIntegrationConfig>[] = [
   {
     /**
      * ENDPOINT: https://cloud.tenable.com/users
      * PATTERN: Fetch Entities
      */
-    id: 'fetch-users',
+    id: 'step-users',
     name: 'Fetch Users',
     entities: [
       {
@@ -30,7 +25,7 @@ export const accessSpec: Step<IntegrationStepExecutionContext>[] = [
         targetType: 'tenable_user',
       },
     ],
-    dependsOn: ['fetch-account'],
-    executionHandler,
+    dependsOn: ['step-account'],
+    implemented: true,
   },
 ];
