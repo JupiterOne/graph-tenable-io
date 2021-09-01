@@ -4,7 +4,7 @@ import { TenableIntegrationConfig } from './config';
 import invocationValidator from './invocationValidator';
 import { accountStep } from './steps/account';
 import { containerSteps } from './steps/containers';
-import { scanSteps } from './steps/scans';
+import { scanSteps } from './steps/vulnerabilities';
 import { userStep } from './steps/access';
 
 export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationConfig> =
