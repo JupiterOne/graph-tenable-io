@@ -13,6 +13,7 @@ export const StepIds = {
   SCANS: 'step-scans',
   ASSETS: 'step-assets',
   VULNERABILITIES: 'step-vulnerabilities',
+  VULNERABILITY_CVE_RELATIONSHIPS: 'build-vuln-cve-relationships',
   SCAN_DETAILS: 'step-scan-details',
   USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
@@ -165,6 +166,13 @@ export const MappedRelationships = {
     sourceType: entities.ASSET._type,
     _class: RelationshipClass.IS,
     targetType: 'host',
+    direction: RelationshipDirection.FORWARD,
+  },
+  VULNERABILITY_IS_CVE: {
+    _type: 'tenable_vulnerability_is_cve',
+    sourceType: entities.VULN._type,
+    _class: RelationshipClass.IS,
+    targetType: 'cve',
     direction: RelationshipDirection.FORWARD,
   },
 };

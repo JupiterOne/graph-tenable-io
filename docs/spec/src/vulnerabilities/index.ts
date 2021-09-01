@@ -236,7 +236,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
      * PATTERN: Build Child Relationships
      */
     id: 'build-vuln-cve-relationships',
-    name: 'Build Vuln -> CVE Relationships',
+    name: 'Build Vulnerability -> CVE Mapped Relationships',
     entities: [],
     relationships: [],
     mappedRelationships: [
@@ -248,7 +248,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
         direction: RelationshipDirection.FORWARD,
       },
     ],
-    dependsOn: ['fetch-vulnerabilities'],
-    implemented: false,
+    dependsOn: ['step-vulnerabilities'],
+    implemented: true,
   },
 ];
