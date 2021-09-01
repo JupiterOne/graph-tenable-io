@@ -89,7 +89,7 @@ The following entities are created:
 | Container Unwanted Program | `tenable_container_unwanted_program` | `Finding`               |
 | Scan                       | `tenable_scan`                       | `Assessment`, `Service` |
 | User                       | `tenable_user`                       | `User`                  |
-| Vulnerability              | `tenable_vulnerability`              | `Vulnerability`         |
+| Vulnerability              | `tenable_vulnerability`              | `Finding`               |
 | Vulnerability Finding      | `tenable_vulnerability_finding`      | `Finding`               |
 
 ### Relationships

@@ -151,8 +151,8 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
      * ENDPOINT: https://cloud.tenable.com/vulns/export
      * PATTERN: Fetch Entities
      */
-    id: 'fetch-vulnerabilities',
-    name: 'Fetch Vulnerabilties',
+    id: 'step-vulnerabilities',
+    name: 'Fetch Vulnerabilities',
     entities: [
       {
         resourceName: 'Vulnerability',
@@ -162,7 +162,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     ],
     relationships: [],
     dependsOn: [],
-    implemented: false,
+    implemented: true,
   },
   {
     /**

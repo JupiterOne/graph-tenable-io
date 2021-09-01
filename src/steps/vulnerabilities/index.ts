@@ -32,6 +32,7 @@ import {
   createVulnerabilityFindingEntity,
   createVulnerabilityFindingRelationship,
   createAssetEntity,
+  createVulnerabilityEntity,
 } from './converters';
 import { createRelationshipToTargetEntity } from '../../utils/targetEntities';
 import { getAccount } from '../../initializeContext';
@@ -137,6 +138,22 @@ export async function fetchAssets(
         to: createTargetHostEntity(asset),
       }),
     );
+  });
+}
+
+export async function fetchVulnerabilities(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+): Promise<void> {
+  const { jobState, logger, instance } = context;
+  const provider = new TenableClient({
+    logger: logger,
+    accessToken: instance.config.accessKey,
+    secretToken: instance.config.secretKey,
+  });
+
+  await provider.iterateVulnerabilities(async (vuln) => {
+    // TODO add `targets` property from the asset.
+    await jobState.addEntity(createVulnerabilityEntity(vuln, []));
   });
 }
 
@@ -297,6 +314,14 @@ export const scanSteps: Step<
     mappedRelationships: [MappedRelationships.ASSET_IS_HOST],
     dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchAssets,
+  },
+  {
+    id: StepIds.VULNERABILITIES,
+    name: 'Fetch Vulnerabilities',
+    entities: [entities.VULN],
+    relationships: [],
+    dependsOn: [],
+    executionHandler: fetchVulnerabilities,
   },
   {
     id: StepIds.SCAN_DETAILS,

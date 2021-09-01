@@ -12,6 +12,7 @@ export const StepIds = {
   ACCOUNT: 'step-account',
   SCANS: 'step-scans',
   ASSETS: 'step-assets',
+  VULNERABILITIES: 'step-vulnerabilities',
   SCAN_DETAILS: 'step-scan-details',
   USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
@@ -55,6 +56,11 @@ export const entities = {
     resourceName: 'Container Unwanted Program',
     _class: 'Finding',
     _type: 'tenable_container_unwanted_program',
+  },
+  VULN: {
+    resourceName: 'Vulnerability',
+    _class: 'Finding',
+    _type: 'tenable_vulnerability',
   },
   VULNERABILITY: {
     resourceName: 'Vulnerability',
