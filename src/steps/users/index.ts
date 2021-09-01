@@ -38,6 +38,6 @@ export const userStep: Step<
   name: 'Fetch Users',
   entities: [entities.USER],
   relationships: [relationships.ACCOUNT_HAS_USER],
-  dependsOn: [],
+  dependsOn: [StepIds.ACCOUNT],
   executionHandler: fetchUsers,
 };
