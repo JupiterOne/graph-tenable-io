@@ -133,7 +133,7 @@ export async function fetchAssets(
     await jobState.addRelationship(
       createRelationshipToTargetEntity({
         from: assetEntity,
-        _class: RelationshipClass.SCANS,
+        _class: RelationshipClass.IS,
         to: createTargetHostEntity(asset),
       }),
     );
@@ -293,9 +293,9 @@ export const scanSteps: Step<
     id: StepIds.ASSETS,
     name: 'Fetch Assets',
     entities: [entities.ASSET],
-    relationships: [],
-    mappedRelationships: [MappedRelationships.ASSET_SCANS_HOST],
-    dependsOn: [],
+    relationships: [relationships.ACCOUNT_HAS_ASSET],
+    mappedRelationships: [MappedRelationships.ASSET_IS_HOST],
+    dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchAssets,
   },
   {
