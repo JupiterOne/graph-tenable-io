@@ -11,6 +11,7 @@ import {
 export type TargetEntity = {
   targetEntity: TargetEntityProperties & { _key: string; _type: string };
   targetFilterKeys: TargetFilterKey[];
+  skipTargetCreation?: boolean;
 };
 
 export function createRelationshipToTargetEntity(options: {
