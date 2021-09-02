@@ -27,7 +27,7 @@ export const entities = {
   },
   ASSET: {
     resourceName: 'Asset',
-    _class: 'HostAgent',
+    _class: 'Record',
     _type: 'tenable_asset',
   },
   CONTAINER: {
@@ -154,10 +154,10 @@ export const relationships = {
 };
 
 export const MappedRelationships = {
-  ASSET_SCANS_HOST: {
-    _type: 'tenable_asset_scans_host',
+  ASSET_IS_HOST: {
+    _type: 'tenable_asset_is_host',
     sourceType: entities.ASSET._type,
-    _class: RelationshipClass.SCANS,
+    _class: RelationshipClass.IS,
     targetType: 'host',
     direction: RelationshipDirection.FORWARD,
   },

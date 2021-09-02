@@ -11,7 +11,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
      * ENDPOINT: https://cloud.tenable.com/assets/export
      * PATTERN: Fetch Entities
      */
-    id: 'fetch-assets',
+    id: 'step-assets',
     name: 'Fetch Assets',
     entities: [
       {
@@ -37,8 +37,8 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
         direction: RelationshipDirection.FORWARD,
       },
     ],
-    dependsOn: ['fetch-account'],
-    implemented: false,
+    dependsOn: ['step-account'],
+    implemented: true,
   },
   {
     /**

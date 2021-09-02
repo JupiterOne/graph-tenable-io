@@ -7,7 +7,7 @@ import {
   ContainerUnwantedProgram,
 } from '@jupiterone/tenable-client-nodejs';
 import { Account } from '../../types';
-import { normalizeCVSS2Severity } from '../scans/converters';
+import { normalizeCVSS2Severity } from '../vulnerabilities/converters';
 import {
   generateEntityKey,
   generateRelationshipKey,

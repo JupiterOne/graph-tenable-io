@@ -81,7 +81,7 @@ The following entities are created:
 | Resources                  | Entity `_type`                       | Entity `_class`         |
 | -------------------------- | ------------------------------------ | ----------------------- |
 | Account                    | `tenable_account`                    | `Account`               |
-| Asset                      | `tenable_asset`                      | `HostAgent`             |
+| Asset                      | `tenable_asset`                      | `Record`                |
 | Container                  | `tenable_container`                  | `Image`                 |
 | Container Finding          | `tenable_container_finding`          | `Finding`               |
 | Container Malware          | `tenable_container_malware`          | `Finding`               |
@@ -98,6 +98,7 @@ The following relationships are created/mapped:
 
 | Source Entity `_type`           | Relationship `_class` | Target Entity `_type`                                         |
 | ------------------------------- | --------------------- | ------------------------------------------------------------- |
+| `tenable_account`               | **HAS**               | `tenable_asset`                                               |
 | `tenable_account`               | **HAS**               | `tenable_container`                                           |
 | `tenable_account`               | **HAS**               | `tenable_user`                                                |
 | `tenable_container`             | **HAS**               | `tenable_container_report`                                    |
