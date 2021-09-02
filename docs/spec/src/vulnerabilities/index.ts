@@ -170,7 +170,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
      * PATTERN: Build Child Relationships
      */
     id: 'build-asset-vuln-relationships',
-    name: 'Build Asset -> Vuln Relationships',
+    name: 'Build Asset -> Vulnerability Relationships',
     entities: [],
     relationships: [
       {
@@ -189,8 +189,8 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
         direction: RelationshipDirection.REVERSE,
       },
     ],
-    dependsOn: ['fetch-assets', 'fetch-vulnerabilities'],
-    implemented: false,
+    dependsOn: ['step-assets', 'step-vulnerabilities'],
+    implemented: true,
   },
   {
     /**

@@ -35,7 +35,10 @@ import {
   createVulnerabilityEntity,
   createTargetCveEntities,
 } from './converters';
-import { createRelationshipToTargetEntity } from '../../utils/targetEntities';
+import {
+  createRelationshipFromTargetEntity,
+  createRelationshipToTargetEntity,
+} from '../../utils/targetEntities';
 import { getAccount } from '../../initializeContext';
 import { createAccountEntity } from '../account/converters';
 
@@ -158,6 +161,68 @@ export async function fetchVulnerabilities(
   });
 }
 
+export async function buildAssetVulnerabilityRelationships(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+): Promise<void> {
+  const { jobState, logger } = context;
+
+  await jobState.iterateEntities(
+    { _type: entities.VULN._type },
+    async (vulnEntity) => {
+      const vuln = getRawData<VulnerabilityExport>(vulnEntity);
+      if (!vuln) {
+        logger.warn(
+          {
+            _key: vulnEntity._key,
+          },
+          'Could not get vuln raw data from vulnerability entity.',
+        );
+        return;
+      }
+
+      const assetEntity = await jobState.findEntity(vuln.asset.uuid);
+      if (!assetEntity) {
+        logger.warn(
+          {
+            'vuln._key': vulnEntity._key,
+            'asset.uuid': vuln.asset.uuid,
+          },
+          'Could not find asset specified by vulnerability in job state.',
+        );
+        return;
+      }
+
+      const asset = getRawData<AssetExport>(assetEntity);
+      if (!asset) {
+        logger.warn(
+          {
+            'vuln._key': vulnEntity._key,
+            'asset._key': assetEntity._key,
+          },
+          'Could not get asset raw data from asset entity.',
+        );
+        return;
+      }
+
+      await jobState.addRelationship(
+        createDirectRelationship({
+          from: assetEntity,
+          _class: RelationshipClass.HAS,
+          to: vulnEntity,
+        }),
+      );
+
+      await jobState.addRelationship(
+        createRelationshipFromTargetEntity({
+          from: createTargetHostEntity(asset),
+          _class: RelationshipClass.HAS,
+          to: vulnEntity,
+        }),
+      );
+    },
+  );
+}
+
 export async function buildVulnerabilityCveRelationships(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
 ): Promise<void> {
@@ -172,7 +237,7 @@ export async function buildVulnerabilityCveRelationships(
           {
             _key: vulnEntity._key,
           },
-          'Could not get vuln raw data from job state.',
+          'Could not get vuln raw data from vulnerability entity.',
         );
         return;
       }
@@ -355,6 +420,15 @@ export const scanSteps: Step<
     relationships: [],
     dependsOn: [],
     executionHandler: fetchVulnerabilities,
+  },
+  {
+    id: StepIds.ASSET_VULNERABILITY_RELATIONSHIPS,
+    name: 'Build Asset -> Vulnerability Relationships',
+    entities: [],
+    relationships: [relationships.ASSET_HAS_VULN],
+    mappedRelationships: [MappedRelationships.HOST_HAS_VULN],
+    dependsOn: [StepIds.ASSETS, StepIds.VULNERABILITIES],
+    executionHandler: buildVulnerabilityCveRelationships,
   },
   {
     id: StepIds.VULNERABILITY_CVE_RELATIONSHIPS,

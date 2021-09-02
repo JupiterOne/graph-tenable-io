@@ -18,16 +18,18 @@ and this project adheres to
 
 - Added support for ingesting the following **new** relationships:
 
-  | Source            | \_class | Target          |
-  | ----------------- | ------- | --------------- |
-  | `tenable_account` | **HAS** | `tenable_asset` |
+  | Source            | \_class | Target                  |
+  | ----------------- | ------- | ----------------------- |
+  | `tenable_account` | **HAS** | `tenable_asset`         |
+  | `tenable_asset`   | **HAS** | `tenable_vulnerability` |
 
 - Added support for ingesting the following **new** mapped relationships:
 
-  | Source                  | \_class | Target                                                        |
-  | ----------------------- | ------- | ------------------------------------------------------------- |
-  | `tenable_asset`         | **IS**  | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
-  | `tenable_vulnerability` | **IS**  | `cve`                                                         |
+  | Source                  | \_class | Target                  |
+  | ----------------------- | ------- | ----------------------- |
+  | `tenable_asset`         | **IS**  | `<host>`                |
+  | `<host>`                | **HAS** | `tenable_vulnerability` |
+  | `tenable_vulnerability` | **IS**  | `<cve>`                 |
 
 ### Changed
 
@@ -37,19 +39,19 @@ and this project adheres to
 
 - Removed support for ingesting the following mapped relationships:
 
-  | Source         | \_class   | Target                                                        |
-  | -------------- | --------- | ------------------------------------------------------------- |
-  | `tenable_scan` | **SCANS** | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
+  | Source         | \_class   | Target   |
+  | -------------- | --------- | -------- |
+  | `tenable_scan` | **SCANS** | `<host>` |
 
 ## 7.2.0 - 2021-07-20
 
 ### Added
 
-- Added support for ingesting the following **new** relationships:
+- Added support for ingesting the following **new** mapped relationships:
 
-  | Source         | \_class   | Target                                                        |
-  | -------------- | --------- | ------------------------------------------------------------- |
-  | `tenable_scan` | **SCANS** | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
+  | Source         | \_class   | Target   |
+  | -------------- | --------- | -------- |
+  | `tenable_scan` | **SCANS** | `<host>` |
 
 - Added `TenableClient.iterateAssets()` method. Made other asset export
   endpoints private.

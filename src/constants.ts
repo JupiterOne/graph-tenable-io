@@ -14,6 +14,7 @@ export const StepIds = {
   ASSETS: 'step-assets',
   VULNERABILITIES: 'step-vulnerabilities',
   VULNERABILITY_CVE_RELATIONSHIPS: 'build-vuln-cve-relationships',
+  ASSET_VULNERABILITY_RELATIONSHIPS: 'build-asset-vuln-relationships',
   SCAN_DETAILS: 'step-scan-details',
   USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
@@ -158,6 +159,12 @@ export const relationships = {
     _class: RelationshipClass.IS,
     targetType: 'vulnerability',
   },
+  ASSET_HAS_VULN: {
+    _type: 'tenable_asset_has_vulnerability',
+    sourceType: entities.ASSET._type,
+    _class: RelationshipClass.HAS,
+    targetType: entities.VULN._type,
+  },
 };
 
 export const MappedRelationships = {
@@ -167,6 +174,13 @@ export const MappedRelationships = {
     _class: RelationshipClass.IS,
     targetType: 'host',
     direction: RelationshipDirection.FORWARD,
+  },
+  HOST_HAS_VULN: {
+    _type: 'host_has_tenable_vulnerability',
+    sourceType: entities.VULNERABILITY._type,
+    _class: RelationshipClass.HAS,
+    targetType: 'host',
+    direction: RelationshipDirection.REVERSE,
   },
   VULNERABILITY_IS_CVE: {
     _type: 'tenable_vulnerability_is_cve',
