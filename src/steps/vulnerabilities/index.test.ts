@@ -36,23 +36,6 @@ afterEach(async () => {
   }
 });
 
-function separateRelationships(
-  relationships: Relationship[],
-  isTarget: (r: Relationship) => boolean,
-) {
-  const targets: Relationship[] = [];
-  const rest: Relationship[] = [];
-
-  for (const r of relationships) {
-    if (isTarget(r)) {
-      targets.push(r);
-    } else {
-      rest.push(r);
-    }
-  }
-  return { targets, rest };
-}
-
 describe('fetch-assets', () => {
   test('success', async () => {
     recording = setupTenableRecording({
@@ -79,7 +62,7 @@ describe('fetch-assets', () => {
     const {
       targets: mappedAssetHostRelationships,
       rest: accountAssetRealtionships,
-    } = separateRelationships(
+    } = filterGraphObjects(
       context.jobState.collectedRelationships,
       (r) => !!r._mapping,
     );
