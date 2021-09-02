@@ -157,7 +157,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
       {
         resourceName: 'Vulnerability',
         _class: 'Finding',
-        _type: 'tenable_vulnerability',
+        _type: 'tenable_vulnerability_finding',
       },
     ],
     relationships: [],
@@ -174,16 +174,16 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [],
     relationships: [
       {
-        _type: 'tenable_asset_has_vulnerability',
+        _type: 'tenable_asset_has_vulnerability_finding',
         sourceType: 'tenable_asset',
         _class: RelationshipClass.HAS,
-        targetType: 'tenable_vulnerability',
+        targetType: 'tenable_vulnerability_finding',
       },
     ],
     mappedRelationships: [
       {
-        _type: 'host_has_tenable_vulnerability',
-        sourceType: 'tenable_vulnerability',
+        _type: 'host_has_tenable_vulnerability_finding',
+        sourceType: 'tenable_vulnerability_finding',
         _class: RelationshipClass.HAS,
         targetType: 'host',
         direction: RelationshipDirection.REVERSE,
@@ -202,10 +202,10 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [],
     relationships: [
       {
-        _type: 'tenable_scanner_identified_vulnerability',
+        _type: 'tenable_scanner_identified_vulnerability_finding',
         sourceType: 'tenable_scanner',
         _class: RelationshipClass.IDENTIFIED,
-        targetType: 'tenable_vulnerability',
+        targetType: 'tenable_vulnerability_finding',
       },
     ],
     dependsOn: ['fetch-scanners', 'fetch-vulnerabilities'],
@@ -221,10 +221,10 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [],
     relationships: [
       {
-        _type: 'tenable_agent_identified_vulnerability',
+        _type: 'tenable_agent_identified_vulnerability_finding',
         sourceType: 'tenable_agent',
         _class: RelationshipClass.IDENTIFIED,
-        targetType: 'tenable_vulnerability',
+        targetType: 'tenable_vulnerability_finding',
       },
     ],
     dependsOn: ['fetch-agents', 'fetch-vulnerabilities'],
@@ -241,8 +241,8 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     relationships: [],
     mappedRelationships: [
       {
-        _type: 'tenable_vulnerability_is_cve',
-        sourceType: 'tenable_vulnerability',
+        _type: 'tenable_vulnerability_finding_is_cve',
+        sourceType: 'tenable_vulnerability_finding',
         _class: RelationshipClass.IS,
         targetType: 'cve',
         direction: RelationshipDirection.FORWARD,

@@ -54,7 +54,7 @@ export const Entities = {
   VULNERABILITY: {
     resourceName: 'Vulnerability',
     _class: 'Finding',
-    _type: 'tenable_vulnerability',
+    _type: 'tenable_vulnerability_finding',
   },
   USER: {
     resourceName: 'User',
@@ -107,7 +107,7 @@ export const Relationships = {
     targetType: Entities.CONTAINER_UNWANTED_PROGRAM._type,
   },
   ASSET_HAS_VULN: {
-    _type: 'tenable_asset_has_vulnerability',
+    _type: 'tenable_asset_has_vulnerability_finding',
     sourceType: Entities.ASSET._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.VULNERABILITY._type,
@@ -123,14 +123,14 @@ export const MappedRelationships = {
     direction: RelationshipDirection.FORWARD,
   },
   HOST_HAS_VULN: {
-    _type: 'host_has_tenable_vulnerability',
+    _type: 'host_has_tenable_vulnerability_finding',
     sourceType: Entities.VULNERABILITY._type,
     _class: RelationshipClass.HAS,
     targetType: 'host',
     direction: RelationshipDirection.REVERSE,
   },
   VULNERABILITY_IS_CVE: {
-    _type: 'tenable_vulnerability_is_cve',
+    _type: 'tenable_vulnerability_finding_is_cve',
     sourceType: Entities.VULNERABILITY._type,
     _class: RelationshipClass.IS,
     targetType: 'cve',

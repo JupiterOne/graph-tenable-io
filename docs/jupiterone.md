@@ -88,7 +88,7 @@ The following entities are created:
 | Container Report           | `tenable_container_report`           | `Assessment`    |
 | Container Unwanted Program | `tenable_container_unwanted_program` | `Finding`       |
 | User                       | `tenable_user`                       | `User`          |
-| Vulnerability              | `tenable_vulnerability`              | `Finding`       |
+| Vulnerability              | `tenable_vulnerability_finding`      | `Finding`       |
 
 ### Relationships
 
@@ -99,7 +99,7 @@ The following relationships are created/mapped:
 | `tenable_account`          | **HAS**               | `tenable_asset`                      |
 | `tenable_account`          | **HAS**               | `tenable_container`                  |
 | `tenable_account`          | **HAS**               | `tenable_user`                       |
-| `tenable_asset`            | **HAS**               | `tenable_vulnerability`              |
+| `tenable_asset`            | **HAS**               | `tenable_vulnerability_finding`      |
 | `tenable_container`        | **HAS**               | `tenable_container_report`           |
 | `tenable_container_report` | **IDENTIFIED**        | `tenable_container_finding`          |
 | `tenable_container_report` | **IDENTIFIED**        | `tenable_container_malware`          |
@@ -109,11 +109,11 @@ The following relationships are created/mapped:
 
 The following mapped relationships are created:
 
-| Source Entity `_type`   | Relationship `_class` | Target Entity `_type` | Direction |
-| ----------------------- | --------------------- | --------------------- | --------- |
-| `tenable_vulnerability` | **HAS**               | `*host*`              | REVERSE   |
-| `tenable_asset`         | **IS**                | `*host*`              | FORWARD   |
-| `tenable_vulnerability` | **IS**                | `*cve*`               | FORWARD   |
+| Source Entity `_type`           | Relationship `_class` | Target Entity `_type` | Direction |
+| ------------------------------- | --------------------- | --------------------- | --------- |
+| `tenable_vulnerability_finding` | **HAS**               | `*host*`              | REVERSE   |
+| `tenable_asset`                 | **IS**                | `*host*`              | FORWARD   |
+| `tenable_vulnerability_finding` | **IS**                | `*cve*`               | FORWARD   |
 
 <!--
 ********************************************************************************

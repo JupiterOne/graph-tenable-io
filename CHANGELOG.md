@@ -18,18 +18,18 @@ and this project adheres to
 
 - Added support for ingesting the following **new** relationships:
 
-  | Source            | \_class | Target                  |
-  | ----------------- | ------- | ----------------------- |
-  | `tenable_account` | **HAS** | `tenable_asset`         |
-  | `tenable_asset`   | **HAS** | `tenable_vulnerability` |
+  | Source            | \_class | Target                          |
+  | ----------------- | ------- | ------------------------------- |
+  | `tenable_account` | **HAS** | `tenable_asset`                 |
+  | `tenable_asset`   | **HAS** | `tenable_vulnerability_finding` |
 
 - Added support for ingesting the following **new** mapped relationships:
 
-  | Source                  | \_class | Target                  |
-  | ----------------------- | ------- | ----------------------- |
-  | `tenable_asset`         | **IS**  | `<host>`                |
-  | `<host>`                | **HAS** | `tenable_vulnerability` |
-  | `tenable_vulnerability` | **IS**  | `<cve>`                 |
+  | Source                          | \_class | Target                          |
+  | ------------------------------- | ------- | ------------------------------- |
+  | `tenable_asset`                 | **IS**  | `<host>`                        |
+  | `<host>`                        | **HAS** | `tenable_vulnerability_finding` |
+  | `tenable_vulnerability_finding` | **IS**  | `<cve>`                         |
 
 ### Changed
 
@@ -39,10 +39,10 @@ and this project adheres to
 
 - Removed support for ingesting the following entities:
 
-  | Resources             | Entity `_type`                  | Entity `_class`         |
-  | --------------------- | ------------------------------- | ----------------------- |
-  | Scan                  | `tenable_scan`                  | `Assessment`, `Service` |
-  | Vulnerability Finding | `tenable_vulnerability_finding` | `Finding`               |
+  | Resources     | Entity `_type`          | Entity `_class`         |
+  | ------------- | ----------------------- | ----------------------- |
+  | Scan          | `tenable_scan`          | `Assessment`, `Service` |
+  | Vulnerability | `tenable_vulnerability` | `Vulnerability`         |
 
 - Removed support for ingesting the following relationships:
 
