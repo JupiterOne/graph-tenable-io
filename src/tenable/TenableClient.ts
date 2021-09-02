@@ -15,8 +15,6 @@ import * as attempt from '@lifeomic/attempt';
 import {
   AssetExport,
   AssetsExportStatusResponse,
-  AssetSummary,
-  AssetVulnerabilityInfo,
   CancelExportResponse,
   Container,
   ContainerReport,
@@ -25,9 +23,6 @@ import {
   ExportAssetsResponse,
   ExportVulnerabilitiesOptions,
   ExportVulnerabilitiesResponse,
-  RecentScanDetail,
-  RecentScanSummary,
-  ScanHostVulnerability,
   User,
   VulnerabilitiesExportStatusResponse,
   VulnerabilityExport,
@@ -90,90 +85,7 @@ export default class TenableClient {
     return usersResponse.users;
   }
 
-  public async fetchScans(): Promise<RecentScanSummary[]> {
-    const scansResponse = await this.retryRequest(() =>
-      this.client.fetchScans(),
-    );
-    this.logger.info(
-      { scans: length(scansResponse.scans) },
-      'Fetched Tenable scans',
-    );
-    return scansResponse.scans;
-  }
-
-  public async fetchScanDetail(
-    scan: RecentScanSummary,
-  ): Promise<RecentScanDetail | undefined> {
-    try {
-      const scanResponse = await this.retryRequest(() =>
-        this.client.fetchScanDetail(scan),
-      );
-
-      const { info, hosts, vulnerabilities } = scanResponse;
-
-      this.logger.info(
-        {
-          scan: { id: scan.id, uuid: scan.uuid },
-          hosts: length(hosts),
-          vulnerabilities: length(vulnerabilities),
-        },
-        'Fetched Tenable scan details',
-      );
-
-      return {
-        ...scan,
-        hosts,
-        info,
-        vulnerabilities,
-      };
-    } catch (err) {
-      // This seems to occur when a scan is listed but for whatever reason is no
-      // longer accessible, even to an `Administrator`.
-      if (err.statusCode === 403) {
-        this.logger.warn(
-          { err, scan: { uuid: scan.uuid, id: scan.id } },
-          'Scan details forbidden',
-        );
-      } else {
-        throw err;
-      }
-    }
-  }
-
-  public async fetchAssetVulnerabilityInfo(
-    assetUuid: string,
-    vulnerability: ScanHostVulnerability,
-  ): Promise<AssetVulnerabilityInfo | undefined> {
-    const logData = {
-      assetId: assetUuid,
-      pluginId: vulnerability.plugin_id,
-    };
-    try {
-      const vulnerabilitiesResponse = await this.retryRequest(() =>
-        this.client.fetchAssetVulnerabilityInfo(assetUuid, vulnerability),
-      );
-
-      this.logger.info(logData, 'Fetched Tenable asset vulnerability info');
-
-      return vulnerabilitiesResponse.info;
-    } catch (err) {
-      if (err.statusCode === 404) {
-        this.logger.info(
-          { ...logData, err },
-          'Vulnerabilities details not found for asset',
-        );
-      } else if (err.statusCode === 500) {
-        this.logger.warn(
-          { ...logData, err },
-          'Tenable API returned an internal service error for the asset vulnerabilities.',
-        );
-      } else {
-        throw err;
-      }
-    }
-  }
-
-  public async exportVulnerabilities(
+  private async exportVulnerabilities(
     options: ExportVulnerabilitiesOptions,
   ): Promise<ExportVulnerabilitiesResponse> {
     const exportResponse = await this.retryRequest(() =>
@@ -191,7 +103,7 @@ export default class TenableClient {
     return exportResponse;
   }
 
-  public async cancelVulnerabilitiesExport(
+  private async cancelVulnerabilitiesExport(
     exportUuid: string,
   ): Promise<CancelExportResponse> {
     const cancelExportResponse = await this.retryRequest(() =>
@@ -208,7 +120,7 @@ export default class TenableClient {
     return cancelExportResponse;
   }
 
-  public async fetchVulnerabilitiesExportStatus(
+  private async fetchVulnerabilitiesExportStatus(
     exportUuid: string,
   ): Promise<VulnerabilitiesExportStatusResponse> {
     const exportStatusResponse = await this.retryRequest(() =>
@@ -226,7 +138,7 @@ export default class TenableClient {
     return exportStatusResponse;
   }
 
-  public async fetchVulnerabilitiesExportChunk(
+  private async fetchVulnerabilitiesExportChunk(
     exportUuid: string,
     chunkId: number,
   ): Promise<VulnerabilityExport[]> {
@@ -416,53 +328,6 @@ export default class TenableClient {
       { concurrency: 3 },
     );
     return { exportUuid };
-  }
-
-  public async fetchScanHostVulnerabilities(
-    scanId: number,
-    hostId: number,
-  ): Promise<ScanHostVulnerability[]> {
-    const logData = {
-      scan: { id: scanId },
-      host: { id: hostId },
-    };
-    try {
-      const vulnerabilitiesResponse = await this.retryRequest(() =>
-        this.client.fetchScanHostVulnerabilities(scanId, hostId),
-      );
-
-      this.logger.info(
-        {
-          ...logData,
-          vulnerabilities: length(vulnerabilitiesResponse.vulnerabilities),
-        },
-        'Fetched Tenable scan host vulnerabilities',
-      );
-      return vulnerabilitiesResponse.vulnerabilities;
-    } catch (err) {
-      if (err.statusCode === 404) {
-        this.logger.info(
-          { ...logData, err },
-          'Could not find information on host vulnerabilities',
-        );
-        return [];
-      } else {
-        throw err;
-      }
-    }
-  }
-
-  public async fetchAssets(): Promise<AssetSummary[]> {
-    const assetsResponse = await this.retryRequest(() =>
-      this.client.fetchAssets(),
-    );
-
-    this.logger.info(
-      { assets: length(assetsResponse.assets) },
-      'Fetched Tenable assets',
-    );
-
-    return assetsResponse.assets;
   }
 
   public async fetchContainers(): Promise<Container[]> {
