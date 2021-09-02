@@ -101,6 +101,7 @@ The following relationships are created/mapped:
 | `tenable_account`               | **HAS**               | `tenable_asset`                                               |
 | `tenable_account`               | **HAS**               | `tenable_container`                                           |
 | `tenable_account`               | **HAS**               | `tenable_user`                                                |
+| `tenable_asset`                 | **HAS**               | `tenable_vulnerability`                                       |
 | `tenable_container`             | **HAS**               | `tenable_container_report`                                    |
 | `tenable_container_report`      | **IDENTIFIED**        | `tenable_container_finding`                                   |
 | `tenable_container_report`      | **IDENTIFIED**        | `tenable_container_malware`                                   |
