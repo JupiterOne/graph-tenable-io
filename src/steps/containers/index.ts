@@ -4,7 +4,7 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
-import { entities, relationships, StepIds } from '../../constants';
+import { Entities, Relationships, StepIds } from '../../constants';
 import {
   containerFindingEntityKey,
   createReportUnwantedProgramRelationship,
@@ -57,7 +57,7 @@ export async function fetchContainerReports(
   });
 
   await jobState.iterateEntities(
-    { _type: entities.CONTAINER._type },
+    { _type: Entities.CONTAINER._type },
     async (containerEntity) => {
       const container = getRawData<Container>(containerEntity);
 
@@ -131,8 +131,8 @@ export const containerSteps: Step<
   {
     id: StepIds.CONTAINERS,
     name: 'Fetch Containers',
-    entities: [entities.CONTAINER],
-    relationships: [relationships.ACCOUNT_HAS_CONTAINER],
+    entities: [Entities.CONTAINER],
+    relationships: [Relationships.ACCOUNT_HAS_CONTAINER],
     dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchContainers,
   },
@@ -140,16 +140,16 @@ export const containerSteps: Step<
     id: StepIds.CONTAINER_REPORTS,
     name: 'Fetch Container Reports',
     entities: [
-      entities.CONTAINER_REPORT,
-      entities.CONTAINER_FINDING,
-      entities.CONTAINER_MALWARE,
-      entities.CONTAINER_UNWANTED_PROGRAM,
+      Entities.CONTAINER_REPORT,
+      Entities.CONTAINER_FINDING,
+      Entities.CONTAINER_MALWARE,
+      Entities.CONTAINER_UNWANTED_PROGRAM,
     ],
     relationships: [
-      relationships.CONTAINER_HAS_REPORT,
-      relationships.REPORT_IDENTIFIED_FINDING,
-      relationships.REPORT_IDENTIFIED_MALWARE,
-      relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM,
+      Relationships.CONTAINER_HAS_REPORT,
+      Relationships.REPORT_IDENTIFIED_FINDING,
+      Relationships.REPORT_IDENTIFIED_MALWARE,
+      Relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM,
     ],
     dependsOn: [StepIds.CONTAINERS],
     executionHandler: fetchContainerReports,

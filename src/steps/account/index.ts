@@ -3,7 +3,7 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
-import { entities, StepIds } from '../../constants';
+import { Entities, StepIds } from '../../constants';
 import { createAccountEntity } from './converters';
 import { getAccount } from '../../initializeContext';
 
@@ -18,7 +18,7 @@ export const accountStep: Step<
 > = {
   id: StepIds.ACCOUNT,
   name: 'Fetch Account',
-  entities: [entities.ACCOUNT],
+  entities: [Entities.ACCOUNT],
   relationships: [],
   dependsOn: [],
   executionHandler: fetchAccount,

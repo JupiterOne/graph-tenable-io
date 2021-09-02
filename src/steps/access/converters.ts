@@ -1,5 +1,5 @@
 import { Relationship } from '@jupiterone/integration-sdk-core';
-import { entities, relationships } from '../../constants';
+import { Entities, Relationships } from '../../constants';
 import { User } from '@jupiterone/tenable-client-nodejs';
 import { Account } from '../../types';
 import {
@@ -9,9 +9,9 @@ import {
 
 export function createUserEntity(user: User) {
   return {
-    _key: generateEntityKey(entities.USER._type, user.id),
-    _type: entities.USER._type,
-    _class: entities.USER._class,
+    _key: generateEntityKey(Entities.USER._type, user.id),
+    _type: Entities.USER._type,
+    _class: Entities.USER._class,
     id: user.id.toString(),
     uuid: user.uuid,
     userName: user.user_name,
@@ -34,19 +34,19 @@ export function createAccountUserRelationship(
   account: Account,
   user: User,
 ): Relationship {
-  const parentKey = generateEntityKey(entities.ACCOUNT._type, account.id);
-  const childKey = generateEntityKey(entities.USER._type, user.id);
+  const parentKey = generateEntityKey(Entities.ACCOUNT._type, account.id);
+  const childKey = generateEntityKey(Entities.USER._type, user.id);
   const relationKey = generateRelationshipKey(
     parentKey,
-    relationships.ACCOUNT_HAS_USER._class,
+    Relationships.ACCOUNT_HAS_USER._class,
     childKey,
   );
 
   const relationship: Relationship = {
-    _class: relationships.ACCOUNT_HAS_USER._class,
+    _class: Relationships.ACCOUNT_HAS_USER._class,
     _fromEntityKey: parentKey,
     _key: relationKey,
-    _type: relationships.ACCOUNT_HAS_USER._type,
+    _type: Relationships.ACCOUNT_HAS_USER._type,
     _toEntityKey: childKey,
   };
   return relationship;

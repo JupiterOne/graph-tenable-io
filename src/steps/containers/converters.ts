@@ -1,4 +1,4 @@
-import { entities, relationships } from '../../constants';
+import { Entities, Relationships } from '../../constants';
 import {
   Container,
   ContainerReport,
@@ -16,9 +16,9 @@ import getTime from '../../utils/getTime';
 
 export function createContainerEntity(container: Container) {
   return {
-    _key: generateEntityKey(entities.CONTAINER._type, container.id),
-    _type: entities.CONTAINER._type,
-    _class: entities.CONTAINER._class,
+    _key: generateEntityKey(Entities.CONTAINER._type, container.id),
+    _type: Entities.CONTAINER._type,
+    _class: Entities.CONTAINER._class,
     _rawData: [{ name: 'default', rawData: container }],
     id: container.id,
     repoId: container.repo_id,
@@ -40,16 +40,16 @@ export function createAccountContainerRelationship(
   account: Account,
   container: Container,
 ) {
-  const parentKey = generateEntityKey(entities.ACCOUNT._type, account.id);
-  const childKey = generateEntityKey(entities.CONTAINER._type, container.id);
+  const parentKey = generateEntityKey(Entities.ACCOUNT._type, account.id);
+  const childKey = generateEntityKey(Entities.CONTAINER._type, container.id);
   const relationKey = generateRelationshipKey(
     parentKey,
-    relationships.ACCOUNT_HAS_CONTAINER._class,
+    Relationships.ACCOUNT_HAS_CONTAINER._class,
     childKey,
   );
   const relationship = {
-    _class: relationships.ACCOUNT_HAS_CONTAINER._class,
-    _type: relationships.ACCOUNT_HAS_CONTAINER._type,
+    _class: Relationships.ACCOUNT_HAS_CONTAINER._class,
+    _type: Relationships.ACCOUNT_HAS_CONTAINER._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,
@@ -60,9 +60,9 @@ export function createAccountContainerRelationship(
 export function createReportEntity(report: ContainerReport) {
   const reportId = report.sha256;
   const reportEntity = {
-    _key: generateEntityKey(entities.CONTAINER_REPORT._type, reportId),
-    _type: entities.CONTAINER_REPORT._type,
-    _class: entities.CONTAINER_REPORT._class,
+    _key: generateEntityKey(Entities.CONTAINER_REPORT._type, reportId),
+    _type: Entities.CONTAINER_REPORT._type,
+    _class: Entities.CONTAINER_REPORT._class,
     _rawData: [{ name: 'default', rawData: report }],
     id: reportId,
     displayName: report.image_name,
@@ -86,20 +86,20 @@ export function createContainerReportRelationship(
   container: Container,
   report: ContainerReport,
 ) {
-  const parentKey = generateEntityKey(entities.CONTAINER._type, container.id);
+  const parentKey = generateEntityKey(Entities.CONTAINER._type, container.id);
   const childKey = generateEntityKey(
-    entities.CONTAINER_REPORT._type,
+    Entities.CONTAINER_REPORT._type,
     report.sha256,
   );
   const relationKey = generateRelationshipKey(
     parentKey,
-    relationships.CONTAINER_HAS_REPORT._class,
+    Relationships.CONTAINER_HAS_REPORT._class,
     childKey,
   );
 
   const relationship = {
-    _class: relationships.CONTAINER_HAS_REPORT._class,
-    _type: relationships.CONTAINER_HAS_REPORT._type,
+    _class: Relationships.CONTAINER_HAS_REPORT._class,
+    _type: Relationships.CONTAINER_HAS_REPORT._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,
@@ -115,8 +115,8 @@ export function createContainerFindingEntity(finding: ContainerFinding) {
 
   return {
     _key: containerFindingEntityKey(finding),
-    _type: entities.CONTAINER_FINDING._type,
-    _class: entities.CONTAINER_FINDING._class,
+    _type: Entities.CONTAINER_FINDING._type,
+    _class: Entities.CONTAINER_FINDING._class,
     _rawData: [{ name: 'default', rawData: finding }],
     displayName: displayName(finding),
     referenceId: nvdFinding.reference_id,
@@ -141,7 +141,7 @@ export function createContainerFindingEntity(finding: ContainerFinding) {
 export function containerFindingEntityKey(finding: ContainerFinding) {
   const { nvdFinding } = finding;
   return generateEntityKey(
-    entities.CONTAINER_FINDING._type,
+    Entities.CONTAINER_FINDING._type,
     `${nvdFinding.cve}_${nvdFinding.cwe}`,
   );
 }
@@ -156,19 +156,19 @@ export function createReportFindingRelationship(
   finding: ContainerFinding,
 ) {
   const parentKey = generateEntityKey(
-    entities.CONTAINER_REPORT._type,
+    Entities.CONTAINER_REPORT._type,
     reportSha256,
   );
   const childKey = containerFindingEntityKey(finding);
   const relationKey = generateRelationshipKey(
     parentKey,
-    relationships.REPORT_IDENTIFIED_FINDING._class,
+    Relationships.REPORT_IDENTIFIED_FINDING._class,
     childKey,
   );
 
   return {
-    _class: relationships.REPORT_IDENTIFIED_FINDING._class,
-    _type: relationships.REPORT_IDENTIFIED_FINDING._type,
+    _class: Relationships.REPORT_IDENTIFIED_FINDING._class,
+    _type: Relationships.REPORT_IDENTIFIED_FINDING._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,
@@ -178,8 +178,8 @@ export function createReportFindingRelationship(
 export function createMalwareEntity(malware: ContainerMalware) {
   return {
     _key: malwareEntityKey(malware),
-    _type: entities.CONTAINER_MALWARE._type,
-    _class: entities.CONTAINER_MALWARE._class,
+    _type: Entities.CONTAINER_MALWARE._type,
+    _class: Entities.CONTAINER_MALWARE._class,
     _rawData: [{ name: 'default', rawData: malware }],
     displayName: malware.infectedFile,
     infectedFile: malware.infectedFile,
@@ -190,7 +190,7 @@ export function createMalwareEntity(malware: ContainerMalware) {
 }
 
 export function malwareEntityKey(malware: ContainerMalware) {
-  return generateEntityKey(entities.CONTAINER_MALWARE._type, malware.md5);
+  return generateEntityKey(Entities.CONTAINER_MALWARE._type, malware.md5);
 }
 
 export function createReportMalwareRelationship(
@@ -198,19 +198,19 @@ export function createReportMalwareRelationship(
   malware: ContainerMalware,
 ) {
   const parentKey = generateEntityKey(
-    entities.CONTAINER_REPORT._type,
+    Entities.CONTAINER_REPORT._type,
     reportSha256,
   );
   const childKey = malwareEntityKey(malware);
   const relationKey = generateRelationshipKey(
     parentKey,
-    relationships.REPORT_IDENTIFIED_MALWARE._class,
+    Relationships.REPORT_IDENTIFIED_MALWARE._class,
     childKey,
   );
 
   return {
-    _class: relationships.REPORT_IDENTIFIED_MALWARE._class,
-    _type: relationships.REPORT_IDENTIFIED_MALWARE._type,
+    _class: Relationships.REPORT_IDENTIFIED_MALWARE._class,
+    _type: Relationships.REPORT_IDENTIFIED_MALWARE._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,
@@ -222,8 +222,8 @@ export function createUnwantedProgramEntity(
 ) {
   return {
     _key: unwantedProgramEntityKey(unwantedProgram),
-    _type: entities.CONTAINER_UNWANTED_PROGRAM._type,
-    _class: entities.CONTAINER_UNWANTED_PROGRAM._class,
+    _type: Entities.CONTAINER_UNWANTED_PROGRAM._type,
+    _class: Entities.CONTAINER_UNWANTED_PROGRAM._class,
     _rawData: [{ name: 'default', rawData: unwantedProgram }],
     displayName: unwantedProgram.file,
     file: unwantedProgram.file,
@@ -236,7 +236,7 @@ export function unwantedProgramEntityKey(
   unwantedProgram: ContainerUnwantedProgram,
 ) {
   return generateEntityKey(
-    entities.CONTAINER_UNWANTED_PROGRAM._type,
+    Entities.CONTAINER_UNWANTED_PROGRAM._type,
     unwantedProgram.md5,
   );
 }
@@ -246,19 +246,19 @@ export function createReportUnwantedProgramRelationship(
   unwantedProgram: ContainerUnwantedProgram,
 ) {
   const parentKey = generateEntityKey(
-    entities.CONTAINER_REPORT._type,
+    Entities.CONTAINER_REPORT._type,
     reportSha256,
   );
   const childKey = unwantedProgramEntityKey(unwantedProgram);
   const relationKey = generateRelationshipKey(
     parentKey,
-    relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
+    Relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
     childKey,
   );
 
   return {
-    _class: relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
-    _type: relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
+    _class: Relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._class,
+    _type: Relationships.REPORT_IDENTIFIED_UNWANTED_PROGRAM._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,
