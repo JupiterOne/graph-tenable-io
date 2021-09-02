@@ -1,5 +1,5 @@
 import { createIntegrationEntity } from '@jupiterone/integration-sdk-core';
-import { entities } from '../../constants';
+import { Entities } from '../../constants';
 import {
   AssetExport,
   VulnerabilityExport,
@@ -13,8 +13,8 @@ export function createAssetEntity(data: AssetExport) {
     entityData: {
       source: data,
       assign: {
-        _class: entities.ASSET._class,
-        _type: entities.ASSET._type,
+        _class: Entities.ASSET._class,
+        _type: Entities.ASSET._type,
         _key: data.id,
 
         // JupiterOne required properties
@@ -223,11 +223,11 @@ export function createVulnerabilityEntity(
       source: vuln,
       assign: {
         _key: generateEntityKey(
-          entities.VULN._type,
+          Entities.VULNERABILITY._type,
           `${vuln.scan.uuid}_${vuln.plugin.id}_${vuln.asset.uuid}`,
         ),
-        _type: entities.VULN._type,
-        _class: entities.VULN._class,
+        _type: Entities.VULNERABILITY._type,
+        _class: Entities.VULNERABILITY._class,
         // additional asset properties can be added
         'asset.uuid': vuln.asset.uuid,
         first_found: vuln.first_found,

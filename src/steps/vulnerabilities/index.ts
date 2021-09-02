@@ -7,9 +7,9 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { TenableIntegrationConfig } from '../../config';
 import {
-  entities,
+  Entities,
   MappedRelationships,
-  relationships,
+  Relationships,
   StepIds,
 } from '../../constants';
 import TenableClient from '../../tenable/TenableClient';
@@ -82,7 +82,7 @@ export async function buildAssetVulnerabilityRelationships(
   const { jobState, logger } = context;
 
   await jobState.iterateEntities(
-    { _type: entities.VULN._type },
+    { _type: Entities.VULNERABILITY._type },
     async (vulnEntity) => {
       const vuln = getRawData<VulnerabilityExport>(vulnEntity);
       if (!vuln) {
@@ -144,7 +144,7 @@ export async function buildVulnerabilityCveRelationships(
   const { jobState, logger } = context;
 
   await jobState.iterateEntities(
-    { _type: entities.VULN._type },
+    { _type: Entities.VULNERABILITY._type },
     async (vulnEntity) => {
       const vuln = getRawData<VulnerabilityExport>(vulnEntity);
       if (!vuln) {
@@ -176,8 +176,8 @@ export const scanSteps: Step<
   {
     id: StepIds.ASSETS,
     name: 'Fetch Assets',
-    entities: [entities.ASSET],
-    relationships: [relationships.ACCOUNT_HAS_ASSET],
+    entities: [Entities.ASSET],
+    relationships: [Relationships.ACCOUNT_HAS_ASSET],
     mappedRelationships: [MappedRelationships.ASSET_IS_HOST],
     dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchAssets,
@@ -185,7 +185,7 @@ export const scanSteps: Step<
   {
     id: StepIds.VULNERABILITIES,
     name: 'Fetch Vulnerabilities',
-    entities: [entities.VULN],
+    entities: [Entities.VULNERABILITY],
     relationships: [],
     dependsOn: [],
     executionHandler: fetchVulnerabilities,
@@ -194,7 +194,7 @@ export const scanSteps: Step<
     id: StepIds.ASSET_VULNERABILITY_RELATIONSHIPS,
     name: 'Build Asset -> Vulnerability Relationships',
     entities: [],
-    relationships: [relationships.ASSET_HAS_VULN],
+    relationships: [Relationships.ASSET_HAS_VULN],
     mappedRelationships: [MappedRelationships.HOST_HAS_VULN],
     dependsOn: [StepIds.ASSETS, StepIds.VULNERABILITIES],
     executionHandler: buildVulnerabilityCveRelationships,

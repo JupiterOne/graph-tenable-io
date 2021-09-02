@@ -23,7 +23,7 @@ import {
   Recording,
   getTenableMatchRequestsBy,
 } from '../../../test/recording';
-import { entities, relationships } from '../../constants';
+import { Entities, Relationships } from '../../constants';
 import { v4 as uuid } from 'uuid';
 import { createAssetEntity, createVulnerabilityEntity } from './converters';
 import { filterGraphObjects } from '../../../test/helpers/filterGraphObjects';
@@ -56,7 +56,7 @@ describe('fetch-assets', () => {
 
     expect(assetEntities.length).toBeGreaterThan(0);
     expect(assetEntities).toMatchGraphObjectSchema({
-      _class: entities.ASSET._class,
+      _class: Entities.ASSET._class,
     });
 
     const {
@@ -71,7 +71,7 @@ describe('fetch-assets', () => {
     expect(accountAssetRealtionships).toMatchDirectRelationshipSchema({
       schema: {
         properties: {
-          _type: { const: relationships.ACCOUNT_HAS_ASSET._type },
+          _type: { const: Relationships.ACCOUNT_HAS_ASSET._type },
         },
       },
     });
@@ -114,7 +114,7 @@ describe('fetch-assets', () => {
 
       expect(context.jobState.collectedEntities.length).toBeGreaterThan(0);
       expect(context.jobState.collectedEntities).toMatchGraphObjectSchema({
-        _class: entities.ASSET._class,
+        _class: Entities.ASSET._class,
       });
 
       const azureMappedRelationships = (
@@ -154,7 +154,7 @@ describe('fetch-vulnerabilities', () => {
     // TODO record test with vulnerabilityEntities.length > 0
     // expect(vulnerabilityEntities.length).toBeGreaterThan(0);
     expect(vulnerabilityEntities).toMatchGraphObjectSchema({
-      _class: entities.VULN._class,
+      _class: Entities.VULNERABILITY._class,
     });
   });
 });
@@ -273,8 +273,8 @@ describe('build-asset-vuln-relationships', () => {
     expect(directRelationships).toMatchDirectRelationshipSchema({
       schema: {
         properties: {
-          _type: { const: relationships.ASSET_HAS_VULN._type },
-          _class: { const: relationships.ASSET_HAS_VULN._class },
+          _type: { const: Relationships.ASSET_HAS_VULN._type },
+          _class: { const: Relationships.ASSET_HAS_VULN._class },
         },
       },
     });
