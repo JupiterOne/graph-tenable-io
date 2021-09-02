@@ -91,6 +91,7 @@ export function createTargetHostEntity(data: AssetExport): TargetEntity {
   let targetFilter;
 
   if (data.aws_ec2_instance_id) {
+    // TODO test EC2 instance mapping and attempt to build _key property
     targetFilter = {
       instanceId: data.aws_ec2_instance_id,
       _type: 'aws_instance',
@@ -102,6 +103,7 @@ export function createTargetHostEntity(data: AssetExport): TargetEntity {
       _type: 'azure_vm',
     };
   } else if (data.gcp_instance_id) {
+    // TODO test GCP instance mapping and attempt to build _key property
     targetFilter = {
       id: data.gcp_instance_id,
       projectId: data.gcp_project_id,
@@ -129,6 +131,7 @@ export function createTargetHostEntity(data: AssetExport): TargetEntity {
       ...targetFilter,
     },
     targetFilterKeys: [Object.keys(targetFilter)],
+    skipTargetCreation: true,
   };
 }
 
