@@ -15,6 +15,7 @@ import {
   RecentScanDetail,
   RecentScanSummary,
   ScanHostVulnerability,
+  VulnerabilityExport,
   VulnerabilityState,
 } from '@jupiterone/tenable-client-nodejs';
 
@@ -446,15 +447,51 @@ describe('iterateAssets', () => {
 
     jest.useFakeTimers();
     const assets: AssetExport[] = [];
-    client
-      .iterateAssets((a) => {
-        assets.push(a);
-      })
-      .then(() => expect(assets.length).toBeGreaterThan(0))
-      .catch((e) => e);
+    const iterateAssetsPromise = client.iterateAssets((a) => {
+      assets.push(a);
+    });
 
+    // allow sleep() to run to completion once
+    await flushPromises();
     jest.runAllTimers();
     await flushPromises();
+
+    await iterateAssetsPromise;
+    expect(assets.length).toBeGreaterThan(0);
+    jest.useRealTimers();
+  });
+});
+
+describe('iterateVulnerabilities', () => {
+  test('should iterate all vulnerabilities', async () => {
+    recording = setupTenableRecording({
+      directory: __dirname,
+      name: 'iterateVulnerabilities-success',
+      options: {
+        matchRequestsBy: getTenableMatchRequestsBy(config),
+      },
+    });
+
+    const client = new TenableClient({
+      logger: getIntegrationLogger(),
+      accessToken: config.accessKey,
+      secretToken: config.secretKey,
+    });
+
+    jest.useFakeTimers();
+    const vulnerabilities: VulnerabilityExport[] = [];
+    const iterateVulnerabilitiesPromise = client.iterateVulnerabilities((v) => {
+      vulnerabilities.push(v);
+    });
+
+    // allow sleep() to run to completion once
+    await flushPromises();
+    jest.runAllTimers();
+    await flushPromises();
+
+    await iterateVulnerabilitiesPromise;
+    // TODO create a vuln in Tenable and enable the following expect:
+    // expect(vulnerabilities.length).toBeGreaterThan(0);
     jest.useRealTimers();
   });
 });

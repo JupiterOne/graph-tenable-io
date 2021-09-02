@@ -4,7 +4,7 @@ import {
   Relationship,
 } from '@jupiterone/integration-sdk-core';
 import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
-import { fetchAssets } from '.';
+import { fetchAssets, fetchVulnerabilities } from '.';
 import { config } from '../../../test/config';
 import {
   setupTenableRecording,
@@ -131,6 +131,32 @@ describe('fetch-assets', () => {
           '/subscriptions/d3803fd6-2ba4-4286-80aa-f3d613ad59a7/resourceGroups/J1DEV/providers/Microsoft.Compute/virtualMachines/tenable-nessus',
         ]),
       );
+    });
+  });
+});
+
+describe('fetch-vulnerabilities', () => {
+  test('success', async () => {
+    recording = setupTenableRecording({
+      directory: __dirname,
+      name: 'fetch-vulnerabilities',
+      options: {
+        matchRequestsBy: getTenableMatchRequestsBy(config),
+      },
+    });
+
+    const context = createMockStepExecutionContext({
+      instanceConfig: config,
+    });
+
+    await fetchVulnerabilities(context);
+
+    const vulnerabilityEntities = context.jobState.collectedEntities;
+
+    // TODO record test with vulnerabilityEntities.length > 0
+    // expect(vulnerabilityEntities.length).toBeGreaterThan(0);
+    expect(vulnerabilityEntities).toMatchGraphObjectSchema({
+      _class: entities.VULN._class,
     });
   });
 });

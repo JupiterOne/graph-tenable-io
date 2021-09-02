@@ -388,6 +388,61 @@ export function createScanFindingRelationship({
   };
 }
 
+export function getTargetsForAsset(asset: AssetExport): string[] {
+  return [asset.fqdns, asset.ipv4s, asset.ipv6s, asset.mac_addresses].reduce(
+    (a, e) => [...a, ...e],
+  );
+}
+
+export function createVulnerabilityEntity(
+  vuln: VulnerabilityExport,
+  targetsForAsset: string[],
+) {
+  const numericPriority = vuln.plugin.vpr && vuln.plugin.vpr.score;
+  const priority = numericPriority && getPriority(numericPriority);
+  return createIntegrationEntity({
+    entityData: {
+      source: vuln,
+      assign: {
+        _key: generateEntityKey(
+          entities.VULN._type,
+          `${vuln.scan.uuid}_${vuln.plugin.id}_${vuln.asset.uuid}`,
+        ),
+        _type: entities.VULN._type,
+        _class: entities.VULN._class,
+        // additional asset properties can be added
+        'asset.uuid': vuln.asset.uuid,
+        first_found: vuln.first_found,
+        last_found: vuln.last_found,
+        output: vuln.output,
+        // additional plugin properties can be added
+        'plugin.id': vuln.plugin.id,
+        'port.port': vuln.port.port,
+        'port.protocol': vuln.port.protocol,
+        'port.service': vuln.port.service,
+        // additional scan properties can be added
+        'scan.uuid': vuln.scan.uuid,
+        'scan.started_at': vuln.scan.started_at,
+        'scan.completed_at': vuln.scan.completed_at,
+        severity: vuln.severity,
+        severity_default_id: vuln.severity_default_id,
+        severity_id: vuln.severity_id,
+        severity_modification_type: vuln.severity_modification_type,
+        state: vuln.state,
+
+        // Add targets for mapping rules.
+        targets: targetsForAsset,
+
+        // data model properties
+        numericPriority,
+        priority,
+        firstSeenOn: getTime(vuln.first_found),
+        lastSeenOn: getTime(vuln.last_found),
+      },
+    },
+  });
+}
+
 export function createVulnerabilityFindingEntity(data: {
   scan: RecentScanSummary;
   asset: AssetExport | undefined;

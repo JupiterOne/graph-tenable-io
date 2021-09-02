@@ -2,6 +2,7 @@ import { version as graphTenablePackageVersion } from '../../package.json';
 import Client, {
   ExportStatus,
   TenableRepsonse,
+  VulnerabilityState,
 } from '@jupiterone/tenable-client-nodejs';
 
 import {
@@ -31,10 +32,9 @@ import {
   VulnerabilitiesExportStatusResponse,
   VulnerabilityExport,
 } from '@jupiterone/tenable-client-nodejs';
-import isAfter from 'date-fns/isAfter';
 import { sleep } from '@lifeomic/attempt';
 import pMap from 'p-map';
-import addMinutes from 'date-fns/addMinutes';
+import { addMinutes, getUnixTime, isAfter, sub } from 'date-fns';
 
 function length(resources?: any[]): number {
   return resources ? resources.length : 0;
@@ -246,6 +246,62 @@ export default class TenableClient {
     return vulnerabilitiesExportResponse;
   }
 
+  public async iterateVulnerabilities(
+    callback: (vuln: VulnerabilityExport) => void | Promise<void>,
+    options?: {
+      timeoutInMinutes?: number;
+      exportVulnerabilitiesOptions?: ExportVulnerabilitiesOptions;
+    },
+  ) {
+    const exportVulnerabilitiesOptions =
+      options?.exportVulnerabilitiesOptions || {
+        num_assets: 50,
+        filters: {
+          since: getUnixTime(sub(Date.now(), { days: 35 })),
+          state: [
+            VulnerabilityState.Open,
+            VulnerabilityState.Reopened,
+            VulnerabilityState.Fixed,
+          ],
+        },
+      };
+    const timeoutInMinutes = options?.timeoutInMinutes || 30;
+    const { export_uuid: exportUuid } = await this.exportVulnerabilities(
+      exportVulnerabilitiesOptions,
+    );
+    let { status, chunks_available: chunksAvailable } =
+      await this.fetchVulnerabilitiesExportStatus(exportUuid);
+    const timeLimit = addMinutes(Date.now(), timeoutInMinutes);
+    while ([ExportStatus.Processing, ExportStatus.Queued].includes(status)) {
+      if (isAfter(Date.now(), timeLimit)) {
+        await this.cancelVulnerabilitiesExport(exportUuid);
+        throw new IntegrationError({
+          code: 'TenableClientApiError',
+          message: `Vulnerability export ${exportUuid} failed to finish processing in time limit`,
+        });
+      }
+
+      ({ status, chunks_available: chunksAvailable } =
+        await this.fetchVulnerabilitiesExportStatus(exportUuid));
+      await sleep(60_000); // Sleep 60 seconds between status checks.
+    }
+
+    await pMap(
+      chunksAvailable,
+      async (chunkId) => {
+        const vulns = await this.fetchVulnerabilitiesExportChunk(
+          exportUuid,
+          chunkId,
+        );
+        for (const vuln of vulns) {
+          await callback(vuln);
+        }
+      },
+      { concurrency: 3 },
+    );
+    return { exportUuid };
+  }
+
   private async exportAssets(
     options: ExportAssetsOptions,
   ): Promise<ExportAssetsResponse> {
@@ -346,7 +402,7 @@ export default class TenableClient {
 
       ({ status, chunks_available: chunksAvailable } =
         await this.fetchAssetsExportStatus(exportUuid));
-      await sleep(60_000); // Sleep 5 seconds between status checks.
+      await sleep(60_000); // Sleep 60 seconds between status checks.
     }
 
     await pMap(
