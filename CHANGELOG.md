@@ -24,9 +24,10 @@ and this project adheres to
 
 - Added support for ingesting the following **new** mapped relationships:
 
-  | Source          | \_class   | Target                                                        |
-  | --------------- | --------- | ------------------------------------------------------------- |
-  | `tenable_asset` | **SCANS** | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
+  | Source                  | \_class | Target                                                        |
+  | ----------------------- | ------- | ------------------------------------------------------------- |
+  | `tenable_asset`         | **IS**  | `aws_instance,azure_vm,google_compute_instance,tenable_asset` |
+  | `tenable_vulnerability` | **IS**  | `cve`                                                         |
 
 ### Changed
 

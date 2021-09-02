@@ -33,6 +33,7 @@ import {
   createVulnerabilityFindingRelationship,
   createAssetEntity,
   createVulnerabilityEntity,
+  createTargetCveEntities,
 } from './converters';
 import { createRelationshipToTargetEntity } from '../../utils/targetEntities';
 import { getAccount } from '../../initializeContext';
@@ -155,6 +156,38 @@ export async function fetchVulnerabilities(
     // TODO add `targets` property from the asset.
     await jobState.addEntity(createVulnerabilityEntity(vuln, []));
   });
+}
+
+export async function buildVulnerabilityCveRelationships(
+  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+): Promise<void> {
+  const { jobState, logger } = context;
+
+  await jobState.iterateEntities(
+    { _type: entities.VULN._type },
+    async (vulnEntity) => {
+      const vuln = getRawData<VulnerabilityExport>(vulnEntity);
+      if (!vuln) {
+        logger.warn(
+          {
+            _key: vulnEntity._key,
+          },
+          'Could not get vuln raw data from job state.',
+        );
+        return;
+      }
+
+      for (const targetCveEntity of createTargetCveEntities(vuln)) {
+        await jobState.addRelationship(
+          createRelationshipToTargetEntity({
+            from: vulnEntity,
+            _class: RelationshipClass.IS,
+            to: targetCveEntity,
+          }),
+        );
+      }
+    },
+  );
 }
 
 export async function fetchScanDetails(
@@ -322,6 +355,15 @@ export const scanSteps: Step<
     relationships: [],
     dependsOn: [],
     executionHandler: fetchVulnerabilities,
+  },
+  {
+    id: StepIds.VULNERABILITY_CVE_RELATIONSHIPS,
+    name: 'Build Vulnerability -> CVE Mapped Relationships',
+    entities: [],
+    relationships: [],
+    mappedRelationships: [MappedRelationships.VULNERABILITY_IS_CVE],
+    dependsOn: [StepIds.VULNERABILITIES],
+    executionHandler: buildVulnerabilityCveRelationships,
   },
   {
     id: StepIds.SCAN_DETAILS,

@@ -4,7 +4,17 @@ import {
   Relationship,
 } from '@jupiterone/integration-sdk-core';
 import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
-import { fetchAssets, fetchVulnerabilities } from '.';
+import {
+  VulnerabilityExportAsset,
+  VulnerabilityExportPlugin,
+  VulnerabilityExportPort,
+  VulnerabilityExportScan,
+} from '@jupiterone/tenable-client-nodejs';
+import {
+  buildVulnerabilityCveRelationships,
+  fetchAssets,
+  fetchVulnerabilities,
+} from '.';
 import { config } from '../../../test/config';
 import {
   setupTenableRecording,
@@ -12,6 +22,7 @@ import {
   getTenableMatchRequestsBy,
 } from '../../../test/recording';
 import { entities, relationships } from '../../constants';
+import { createVulnerabilityEntity } from './converters';
 
 let recording: Recording;
 
@@ -158,5 +169,53 @@ describe('fetch-vulnerabilities', () => {
     expect(vulnerabilityEntities).toMatchGraphObjectSchema({
       _class: entities.VULN._class,
     });
+  });
+});
+
+describe('build-vuln-cve-relationships', () => {
+  function createMockVulnerabilityEntity(options: { cves?: string[] }) {
+    return createVulnerabilityEntity(
+      {
+        asset: {
+          uuid: '',
+        } as VulnerabilityExportAsset,
+        output: '',
+        plugin: { cve: options.cves || [] } as VulnerabilityExportPlugin,
+        port: {} as VulnerabilityExportPort,
+        scan: {} as VulnerabilityExportScan,
+        severity: '',
+        severity_default_id: 0,
+        severity_id: 0,
+        severity_modification_type: '',
+        first_found: '',
+        last_found: '',
+        state: '',
+      },
+      [],
+    );
+  }
+  test('success', async () => {
+    const context = createMockStepExecutionContext({
+      instanceConfig: config,
+      entities: [createMockVulnerabilityEntity({ cves: ['CVE-2017-16114'] })],
+    });
+
+    await buildVulnerabilityCveRelationships(context);
+
+    expect(context.jobState.collectedEntities).toHaveLength(0);
+
+    expect(context.jobState.collectedRelationships).toHaveLength(1);
+    expect(context.jobState.collectedRelationships).toTargetEntities([
+      createIntegrationEntity({
+        entityData: {
+          source: {},
+          assign: {
+            _class: 'Vulnerability',
+            _type: 'cve',
+            _key: 'cve-2017-16114',
+          },
+        },
+      }),
+    ]);
   });
 });

@@ -443,6 +443,23 @@ export function createVulnerabilityEntity(
   });
 }
 
+export function createTargetCveEntities(
+  data: VulnerabilityExport,
+): TargetEntity[] {
+  return data.plugin.cve.map((cve) => {
+    return {
+      targetEntity: {
+        _class: 'Vulnerability',
+        _type: 'cve',
+        _key: cve.toLowerCase(),
+        name: cve.toUpperCase(),
+        displayName: cve.toUpperCase(),
+      },
+      targetFilterKeys: [['_type', '_key']],
+    };
+  });
+}
+
 export function createVulnerabilityFindingEntity(data: {
   scan: RecentScanSummary;
   asset: AssetExport | undefined;
