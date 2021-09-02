@@ -112,6 +112,16 @@ The following relationships are created/mapped:
 | `tenable_user`                  | **OWNS**              | `tenable_scan`                                                |
 | `tenable_vulnerability_finding` | **IS**                | `vulnerability`                                               |
 
+### Mapped Relationships
+
+The following mapped relationships are created:
+
+| Source Entity `_type`   | Relationship `_class` | Target Entity `_type` | Direction |
+| ----------------------- | --------------------- | --------------------- | --------- |
+| `tenable_vulnerability` | **HAS**               | `*host*`              | REVERSE   |
+| `tenable_asset`         | **IS**                | `*host*`              | FORWARD   |
+| `tenable_vulnerability` | **IS**                | `*cve*`               | FORWARD   |
+
 <!--
 ********************************************************************************
 END OF GENERATED DOCUMENTATION AFTER BELOW MARKER
