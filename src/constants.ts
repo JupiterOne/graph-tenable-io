@@ -3,20 +3,12 @@ import {
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
-export const SetDataKeys = {
-  USERS: 'data-users',
-  ASSET_MAP: 'data-asset-map',
-};
-
 export const StepIds = {
   ACCOUNT: 'step-account',
-  SCANS: 'step-scans',
   ASSETS: 'step-assets',
   VULNERABILITIES: 'step-vulnerabilities',
   VULNERABILITY_CVE_RELATIONSHIPS: 'build-vuln-cve-relationships',
   ASSET_VULNERABILITY_RELATIONSHIPS: 'build-asset-vuln-relationships',
-  SCAN_DETAILS: 'step-scan-details',
-  USER_SCAN_RELATIONSHIPS: 'step-user-scan-relationships',
   USERS: 'step-users',
   CONTAINERS: 'step-containers',
   CONTAINER_REPORTS: 'step-container-reports',
@@ -64,21 +56,6 @@ export const entities = {
     _class: 'Finding',
     _type: 'tenable_vulnerability',
   },
-  VULNERABILITY: {
-    resourceName: 'Vulnerability',
-    _class: 'Vulnerability',
-    _type: 'tenable_vulnerability',
-  },
-  VULN_FINDING: {
-    resourceName: 'Vulnerability Finding',
-    _class: 'Finding',
-    _type: 'tenable_vulnerability_finding',
-  },
-  SCAN: {
-    resourceName: 'Scan',
-    _class: ['Assessment', 'Service'],
-    _type: 'tenable_scan',
-  },
   USER: {
     resourceName: 'User',
     _class: 'User',
@@ -98,18 +75,6 @@ export const relationships = {
     sourceType: entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: entities.ASSET._type,
-  },
-  USER_OWNS_SCAN: {
-    _type: 'tenable_user_owns_scan',
-    sourceType: entities.USER._type,
-    _class: RelationshipClass.OWNS,
-    targetType: entities.SCAN._type,
-  },
-  SCAN_SCANS_ASSET: {
-    _type: 'tenable_scan_scans_asset',
-    sourceType: entities.SCAN._type,
-    _class: RelationshipClass.SCANS,
-    targetType: 'aws_instance,azure_vm,google_compute_instance,tenable_asset',
   },
   ACCOUNT_HAS_CONTAINER: {
     _type: 'tenable_account_has_container',
@@ -141,24 +106,6 @@ export const relationships = {
     _class: RelationshipClass.IDENTIFIED,
     targetType: entities.CONTAINER_UNWANTED_PROGRAM._type,
   },
-  SCAN_IDENTIFIED_FINDING: {
-    _type: 'tenable_scan_identified_finding',
-    sourceType: entities.SCAN._type,
-    _class: RelationshipClass.IDENTIFIED,
-    targetType: entities.VULN_FINDING._type,
-  },
-  SCAN_IDENTIFIED_VULNERABILITY: {
-    _type: 'tenable_scan_identified_vulnerability',
-    sourceType: entities.SCAN._type,
-    _class: RelationshipClass.IDENTIFIED,
-    targetType: entities.VULNERABILITY._type,
-  },
-  FINDING_IS_VULNERABILITY: {
-    _type: 'tenable_vulnerability_finding_is_vulnerability',
-    sourceType: entities.VULN_FINDING._type,
-    _class: RelationshipClass.IS,
-    targetType: 'vulnerability',
-  },
   ASSET_HAS_VULN: {
     _type: 'tenable_asset_has_vulnerability',
     sourceType: entities.ASSET._type,
@@ -177,7 +124,7 @@ export const MappedRelationships = {
   },
   HOST_HAS_VULN: {
     _type: 'host_has_tenable_vulnerability',
-    sourceType: entities.VULNERABILITY._type,
+    sourceType: entities.VULN._type,
     _class: RelationshipClass.HAS,
     targetType: 'host',
     direction: RelationshipDirection.REVERSE,
