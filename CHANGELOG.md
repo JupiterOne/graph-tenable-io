@@ -37,6 +37,23 @@ and this project adheres to
 
 ### Remvoved
 
+- Removed support for ingesting the following entities:
+
+  | Resources             | Entity `_type`                  | Entity `_class`         |
+  | --------------------- | ------------------------------- | ----------------------- |
+  | Scan                  | `tenable_scan`                  | `Assessment`, `Service` |
+  | Vulnerability Finding | `tenable_vulnerability_finding` | `Finding`               |
+
+- Removed support for ingesting the following relationships:
+
+  | Source                          | \_class        | Target                          |
+  | ------------------------------- | -------------- | ------------------------------- |
+  | `tenable_scan`                  | **IDENTIFIED** | `tenable_vulnerability_finding` |
+  | `tenable_scan`                  | **IDENTIFIED** | `tenable_vulnerability`         |
+  | `tenable_scan`                  | **SCANS**      | `<host>`                        |
+  | `tenable_user`                  | **OWNS**       | `tenable_scan`                  |
+  | `tenable_vulnerability_finding` | **IS**         | `vulnerability`                 |
+
 - Removed support for ingesting the following mapped relationships:
 
   | Source         | \_class   | Target   |
