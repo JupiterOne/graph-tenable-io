@@ -29,7 +29,7 @@ import {
 } from '@jupiterone/tenable-client-nodejs';
 import { sleep } from '@lifeomic/attempt';
 import pMap from 'p-map';
-import { addMinutes, getUnixTime, isAfter, sub } from 'date-fns';
+import { addMinutes, isAfter } from 'date-fns';
 
 function length(resources?: any[]): number {
   return resources ? resources.length : 0;
@@ -169,7 +169,6 @@ export default class TenableClient {
       options?.exportVulnerabilitiesOptions || {
         num_assets: 50,
         filters: {
-          since: getUnixTime(sub(Date.now(), { days: 35 })),
           state: [
             VulnerabilityState.Open,
             VulnerabilityState.Reopened,

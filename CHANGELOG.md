@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Changed the `iterateVulnerabilities` method to fetch all open/reopened/fixed
+  vulns. Previously, the integration iterated only vulns from the last 35 days.
+
 ## [8.0.0] - 2021-09-09
 
 ### Added
