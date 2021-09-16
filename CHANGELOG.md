@@ -11,6 +11,7 @@ and this project adheres to
 ### Fixed
 
 - Prevent duplicate keys for `tenable_asset` entities
+- Prevent duplicate keys for `tenable_vulnerability_finding` entities
 
 ## [8.0.0] - 2021-09-09
 

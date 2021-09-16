@@ -82,7 +82,17 @@ export async function fetchVulnerabilities(
 
   await provider.iterateVulnerabilities(async (vuln) => {
     // TODO add `targets` property from the asset.
-    await jobState.addEntity(createVulnerabilityEntity(vuln, []));
+    const vulnerabilityEntity = createVulnerabilityEntity(vuln, []);
+    if (await jobState.hasKey(vulnerabilityEntity._key)) {
+      logger.warn(
+        {
+          _key: vulnerabilityEntity._key,
+        },
+        'Warning: duplicate tenable_vulnerability_finding _key encountered',
+      );
+      return;
+    }
+    await jobState.addEntity(vulnerabilityEntity);
   });
 }
 
