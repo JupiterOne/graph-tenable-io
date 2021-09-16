@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Prevent duplicate keys for `tenable_asset` entities
+
 ## [8.0.0] - 2021-09-09
 
 ### Added

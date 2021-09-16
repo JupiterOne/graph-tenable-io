@@ -42,7 +42,17 @@ export async function fetchAssets(
   });
 
   await provider.iterateAssets(async (asset) => {
-    const assetEntity = await jobState.addEntity(createAssetEntity(asset));
+    const assetEntity = createAssetEntity(asset);
+    if (await jobState.hasKey(assetEntity._key)) {
+      logger.warn(
+        {
+          _key: assetEntity._key,
+        },
+        'Warning: duplicate asset _key encountered',
+      );
+      return;
+    }
+    await jobState.addEntity(assetEntity);
     await jobState.addRelationship(
       createDirectRelationship({
         from: accountEntity,
