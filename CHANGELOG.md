@@ -12,6 +12,8 @@ and this project adheres to
 
 - Prevent duplicate keys for `tenable_asset` entities
 - Prevent duplicate keys for `tenable_vulnerability_finding` entities
+- Prevent `Cannot read property 'map' of undefined` when iterating CVEs for
+  `tenable_vulnerability_finding`
 
 ## [8.0.0] - 2021-09-09
 
