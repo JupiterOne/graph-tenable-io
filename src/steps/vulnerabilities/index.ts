@@ -42,7 +42,17 @@ export async function fetchAssets(
   });
 
   await provider.iterateAssets(async (asset) => {
-    const assetEntity = await jobState.addEntity(createAssetEntity(asset));
+    const assetEntity = createAssetEntity(asset);
+    if (await jobState.hasKey(assetEntity._key)) {
+      logger.warn(
+        {
+          _key: assetEntity._key,
+        },
+        'Warning: duplicate asset _key encountered',
+      );
+      return;
+    }
+    await jobState.addEntity(assetEntity);
     await jobState.addRelationship(
       createDirectRelationship({
         from: accountEntity,
@@ -72,7 +82,17 @@ export async function fetchVulnerabilities(
 
   await provider.iterateVulnerabilities(async (vuln) => {
     // TODO add `targets` property from the asset.
-    await jobState.addEntity(createVulnerabilityEntity(vuln, []));
+    const vulnerabilityEntity = createVulnerabilityEntity(vuln, []);
+    if (await jobState.hasKey(vulnerabilityEntity._key)) {
+      logger.warn(
+        {
+          _key: vulnerabilityEntity._key,
+        },
+        'Warning: duplicate tenable_vulnerability_finding _key encountered',
+      );
+      return;
+    }
+    await jobState.addEntity(vulnerabilityEntity);
   });
 }
 
