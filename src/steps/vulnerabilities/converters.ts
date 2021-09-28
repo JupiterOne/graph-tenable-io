@@ -231,6 +231,7 @@ export function createVulnerabilityEntity(
         ),
         _type: Entities.VULNERABILITY._type,
         _class: Entities.VULNERABILITY._class,
+        name: vuln.plugin.name,
         // additional asset properties can be added
         'asset.uuid': vuln.asset.uuid,
         first_found: vuln.first_found,

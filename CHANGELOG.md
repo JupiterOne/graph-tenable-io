@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.0.4] - 2021-09-28
+
+### Fixed
+
+- Added `name` property to `tenable_vulnerability_finding` entities
+
 ## [8.0.3] - 2021-09-28
 
 ### Fixed
