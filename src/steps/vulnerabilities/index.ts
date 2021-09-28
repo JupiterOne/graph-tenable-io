@@ -225,7 +225,7 @@ export const scanSteps: Step<
     relationships: [Relationships.ASSET_HAS_VULN],
     mappedRelationships: [MappedRelationships.HOST_HAS_VULN],
     dependsOn: [StepIds.ASSETS, StepIds.VULNERABILITIES],
-    executionHandler: buildVulnerabilityCveRelationships,
+    executionHandler: buildAssetVulnerabilityRelationships,
   },
   {
     id: StepIds.VULNERABILITY_CVE_RELATIONSHIPS,
