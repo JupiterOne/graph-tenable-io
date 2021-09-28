@@ -178,13 +178,21 @@ export async function buildVulnerabilityCveRelationships(
       }
 
       for (const targetCveEntity of createTargetCveEntities(vuln)) {
-        await jobState.addRelationship(
-          createRelationshipToTargetEntity({
-            from: vulnEntity,
-            _class: RelationshipClass.IS,
-            to: targetCveEntity,
-          }),
-        );
+        const vulnCveMappedRelationship = createRelationshipToTargetEntity({
+          from: vulnEntity,
+          _class: RelationshipClass.IS,
+          to: targetCveEntity,
+        });
+        if (await jobState.hasKey(vulnCveMappedRelationship._key)) {
+          logger.warn(
+            {
+              _key: vulnCveMappedRelationship._key,
+            },
+            'Warning: duplicate tenable_vulnerability_finding_is_cve _key encountered',
+          );
+          break;
+        }
+        await jobState.addRelationship(vulnCveMappedRelationship);
       }
     },
   );
