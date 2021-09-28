@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.0.3] - 2021-09-28
+
+### Fixed
+
+- Enabled `buildAssetVulnerabilityRelationships` step, which was accidentally
+  disabled
+
 ## [8.0.2] - 2021-09-28
 
 ### Fixed
