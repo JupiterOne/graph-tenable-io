@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.1.0] - 2021-10-28
+
+### Changed
+
+- Set `skipTargetCreation: true` on mapped relationships to tenable hosts
+
 ## [8.0.4] - 2021-09-28
 
 ### Fixed
