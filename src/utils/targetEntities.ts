@@ -24,6 +24,7 @@ export function createRelationshipToTargetEntity(options: {
     _class: options._class,
     target: options.to.targetEntity,
     targetFilterKeys: options.to.targetFilterKeys,
+    skipTargetCreation: options.to.skipTargetCreation,
   });
 }
 
@@ -37,6 +38,7 @@ export function createRelationshipFromTargetEntity(options: {
     _class: options._class,
     target: options.from.targetEntity,
     targetFilterKeys: options.from.targetFilterKeys,
+    skipTargetCreation: options.from.skipTargetCreation,
     relationshipDirection: RelationshipDirection.REVERSE,
   });
 }
