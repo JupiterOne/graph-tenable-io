@@ -1,9 +1,9 @@
-# Tenable Cloud Permissions
+# Tenable.io Permissions
 
-Tenable Cloud scans are created in the **Vulnerability Management** section,
-which also ends up managing scans where the results are found in **Web App
-Scanning**. These scans have fine grained control over their management and
-visibility, and the **User Role** will impact visibility of scans.
+Tenable.io scans are created in the **Vulnerability Management** section, which
+also ends up managing scans where the results are found in **Web App Scanning**.
+These scans have fine grained control over their management and visibility, and
+the **User Role** will impact visibility of scans.
 
 **Basic** **Scan Operator** **Standard** **Scan Manager**
 
