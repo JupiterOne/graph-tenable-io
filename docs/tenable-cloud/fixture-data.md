@@ -1,4 +1,4 @@
-# Tenable Cloud Fixture Data
+# Tenable.io Fixture Data
 
 Nock was used to record API responses from Tenable.io. To update the recordings,
 it is helpful to setup a Tenable demo account that includes elements the
