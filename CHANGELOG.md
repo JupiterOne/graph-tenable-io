@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.1.0] - 2021-10-28
+
 ### Changed
 
 - Changed the project / package name from `@jupiterone/graph-tenable-cloud` to
