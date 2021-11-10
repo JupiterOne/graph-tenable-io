@@ -12,6 +12,16 @@ and this project adheres to
 
 ### Changed
 
+- Changed the project / package name from `@jupiterone/graph-tenable-cloud` to
+  `@jupiterone/graph-tenable-io`. As a result, all versions from `v8.1.0` and
+  _below_ can be imported using `@jupiterone/graph-tenable-cloud`, and all
+  versions _above_ `v8.1.0` should be imported using
+  `@jupiterone/graph-tenable-io`
+
+## [8.1.0] - 2021-10-28
+
+### Changed
+
 - Set `skipTargetCreation: true` on mapped relationships to tenable hosts
 
 ## [8.0.4] - 2021-09-28
