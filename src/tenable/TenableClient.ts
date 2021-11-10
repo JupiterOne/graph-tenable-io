@@ -55,7 +55,7 @@ export default class TenableClient {
       accessKey: accessToken,
       secretKey: secretToken,
       vendor: 'JupiterOne',
-      product: 'graph-tenable-cloud',
+      product: 'graph-tenable-io',
       build: graphTenablePackageVersion,
     });
     this.logger = logger;

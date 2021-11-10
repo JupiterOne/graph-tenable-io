@@ -1,9 +1,9 @@
 {
-  "name": "@jupiterone/graph-tenable-cloud",
+  "name": "@jupiterone/graph-tenable-io",
   "version": "8.1.0",
   "description": "A JupiterOne managed integration for https://www.tenable.com/products/tenable-io",
   "main": "src/index.js",
-  "repository": "https://github.com/JupiterOne/graph-tenable-cloud",
+  "repository": "https://github.com/JupiterOne/graph-tenable-io",
   "license": "MPL-2.0",
   "files": [
     "src"
