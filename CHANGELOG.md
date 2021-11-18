@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.1.1] - 2021-11-18
+
 ### Changed
 
 - Import `@jupiterone/integration-sdk-core` from `peerDependencies`
