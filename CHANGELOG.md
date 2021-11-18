@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.0.2] - 2021-09-28
+
+### Fixed
+
+- Prevent duplicate keys for `tenable_vulnerability_finding_is_cve` mapped
+  relationships
+
 ## [8.0.1] - 2021-09-16
 
 ### Fixed
