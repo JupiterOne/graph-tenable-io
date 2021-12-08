@@ -10,8 +10,10 @@ and this project adheres to
 
 ### Changed
 
-- Introduce an integration config property called `assetApiTimeoutInMinutes` for
-  configuring timeout of asset API
+- Introduce the following integration config properties for configuring API
+  timeouts
+  - `assetApiTimeoutInMinutes`
+  - `vulnerabilityApiTimeoutInMinutes`
 
 ## [8.1.1] - 2021-11-18
 

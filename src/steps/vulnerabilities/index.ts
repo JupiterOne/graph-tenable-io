@@ -83,26 +83,38 @@ export async function fetchVulnerabilities(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
+  const { vulnerabilityApiTimeoutInMinutes, accessKey, secretKey } =
+    instance.config;
   const provider = new TenableClient({
     logger: logger,
-    accessToken: instance.config.accessKey,
-    secretToken: instance.config.secretKey,
+    accessToken: accessKey,
+    secretToken: secretKey,
   });
 
-  await provider.iterateVulnerabilities(async (vuln) => {
-    // TODO add `targets` property from the asset.
-    const vulnerabilityEntity = createVulnerabilityEntity(vuln, []);
-    if (await jobState.hasKey(vulnerabilityEntity._key)) {
-      logger.warn(
-        {
-          _key: vulnerabilityEntity._key,
-        },
-        'Warning: duplicate tenable_vulnerability_finding _key encountered',
-      );
-      return;
-    }
-    await jobState.addEntity(vulnerabilityEntity);
-  });
+  logger.info(
+    { vulnerabilityApiTimeoutInMinutes },
+    'Attempting to vulnerabilities...',
+  );
+
+  await provider.iterateVulnerabilities(
+    async (vuln) => {
+      // TODO add `targets` property from the asset.
+      const vulnerabilityEntity = createVulnerabilityEntity(vuln, []);
+      if (await jobState.hasKey(vulnerabilityEntity._key)) {
+        logger.warn(
+          {
+            _key: vulnerabilityEntity._key,
+          },
+          'Warning: duplicate tenable_vulnerability_finding _key encountered',
+        );
+        return;
+      }
+      await jobState.addEntity(vulnerabilityEntity);
+    },
+    {
+      timeoutInMinutes: vulnerabilityApiTimeoutInMinutes,
+    },
+  );
 }
 
 export async function buildAssetVulnerabilityRelationships(
