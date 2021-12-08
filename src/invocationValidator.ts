@@ -2,10 +2,19 @@ import {
   IntegrationConfigLoadError,
   IntegrationExecutionContext,
   IntegrationValidationError,
-} from "@jupiterone/integration-sdk-core";
+} from '@jupiterone/integration-sdk-core';
 
-import { TenableIntegrationConfig } from "./config";
-import TenableClient from "./tenable/TenableClient";
+import { TenableIntegrationConfig } from './config';
+import TenableClient from './tenable/TenableClient';
+import { toNum } from './utils/dataType';
+
+const ONE_DAY_MINUTES = 1440;
+const MAXIMUM_ASSET_API_TIMEOUT_IN_MINUTES = ONE_DAY_MINUTES - 30;
+
+function isValidAssetApiTimeoutInMinutes(timeout?: number) {
+  if (timeout === undefined) return true;
+  return timeout >= 0 && timeout <= MAXIMUM_ASSET_API_TIMEOUT_IN_MINUTES;
+}
 
 /**
  * Performs validation of the execution before the execution handler function is
@@ -31,7 +40,20 @@ export default async function invocationValidator(
   } = executionContext;
   if (!config.accessKey || !config.secretKey) {
     throw new IntegrationConfigLoadError(
-      "config requires all of { accessKey, secretKey }",
+      'config requires all of { accessKey, secretKey }',
+    );
+  }
+
+  // Mutate the value of `config.assetApiTimeoutInMinutes`, so that each of
+  // the integration steps will have the properly parsed value.
+  const assetApiTimeoutInMinutes =
+    (executionContext.instance.config.assetApiTimeoutInMinutes = toNum(
+      config.assetApiTimeoutInMinutes,
+    ));
+
+  if (!isValidAssetApiTimeoutInMinutes(assetApiTimeoutInMinutes)) {
+    throw new IntegrationConfigLoadError(
+      `'assetApiTimeoutInMinutes' config value is invalid (val=${assetApiTimeoutInMinutes}, min=0, max=${MAXIMUM_ASSET_API_TIMEOUT_IN_MINUTES})`,
     );
   }
 

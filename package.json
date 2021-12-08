@@ -33,11 +33,12 @@
     "p-map": "^4.0.0"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^7.0.0"
+    "@jupiterone/integration-sdk-core": "^7.4.1"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-dev-tools": "^7.0.0",
-    "@jupiterone/integration-sdk-testing": "^7.0.0",
+    "@jupiterone/integration-sdk-core": "7.4.0",
+    "@jupiterone/integration-sdk-dev-tools": "7.4.0",
+    "@jupiterone/integration-sdk-testing": "7.4.0",
     "@types/nock": "10.0.3",
     "@types/node-fetch": "^2.3.2",
     "dotenv": "^10.0.0",

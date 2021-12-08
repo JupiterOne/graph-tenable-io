@@ -8,7 +8,7 @@ import { generateEntityKey } from '../../utils/generateKey';
 import getTime from '../../utils/getTime';
 import { TargetEntity } from '../../utils/targetEntities';
 
-export function createAssetEntity(data: AssetExport) {
+export function createAssetEntity(data: AssetExport): any {
   return createIntegrationEntity({
     entityData: {
       source: data,
@@ -218,7 +218,7 @@ export function getTargetsForAsset(asset: AssetExport): string[] {
 export function createVulnerabilityEntity(
   vuln: VulnerabilityExport,
   targetsForAsset: string[],
-) {
+): any {
   const numericPriority = vuln.plugin.vpr && vuln.plugin.vpr.score;
   const priority = numericPriority && getPriority(numericPriority);
   return createIntegrationEntity({

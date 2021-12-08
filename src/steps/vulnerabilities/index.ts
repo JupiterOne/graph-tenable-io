@@ -35,39 +35,48 @@ export async function fetchAssets(
 ): Promise<void> {
   const { jobState, logger, instance } = context;
   const accountEntity = createAccountEntity(getAccount(context));
+  const { assetApiTimeoutInMinutes, accessKey, secretKey } = instance.config;
+
   const provider = new TenableClient({
     logger: logger,
-    accessToken: instance.config.accessKey,
-    secretToken: instance.config.secretKey,
+    accessToken: accessKey,
+    secretToken: secretKey,
   });
 
-  await provider.iterateAssets(async (asset) => {
-    const assetEntity = createAssetEntity(asset);
-    if (await jobState.hasKey(assetEntity._key)) {
-      logger.warn(
-        {
-          _key: assetEntity._key,
-        },
-        'Warning: duplicate asset _key encountered',
+  logger.info({ assetApiTimeoutInMinutes }, 'Attempting to fetch assets...');
+
+  await provider.iterateAssets(
+    async (asset) => {
+      const assetEntity = createAssetEntity(asset);
+      if (await jobState.hasKey(assetEntity._key)) {
+        logger.warn(
+          {
+            _key: assetEntity._key,
+          },
+          'Warning: duplicate asset _key encountered',
+        );
+        return;
+      }
+      await jobState.addEntity(assetEntity);
+      await jobState.addRelationship(
+        createDirectRelationship({
+          from: accountEntity,
+          _class: RelationshipClass.HAS,
+          to: assetEntity,
+        }),
       );
-      return;
-    }
-    await jobState.addEntity(assetEntity);
-    await jobState.addRelationship(
-      createDirectRelationship({
-        from: accountEntity,
-        _class: RelationshipClass.HAS,
-        to: assetEntity,
-      }),
-    );
-    await jobState.addRelationship(
-      createRelationshipToTargetEntity({
-        from: assetEntity,
-        _class: RelationshipClass.IS,
-        to: createTargetHostEntity(asset),
-      }),
-    );
-  });
+      await jobState.addRelationship(
+        createRelationshipToTargetEntity({
+          from: assetEntity,
+          _class: RelationshipClass.IS,
+          to: createTargetHostEntity(asset),
+        }),
+      );
+    },
+    {
+      timeoutInMinutes: assetApiTimeoutInMinutes,
+    },
+  );
 }
 
 export async function fetchVulnerabilities(

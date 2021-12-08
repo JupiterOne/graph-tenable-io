@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Introduce an integration config property called `assetApiTimeoutInMinutes` for
+  configuring timeout of asset API
+
 ## [8.1.1] - 2021-11-18
 
 ### Changed
