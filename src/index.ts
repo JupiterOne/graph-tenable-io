@@ -20,6 +20,9 @@ export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationCon
       assetApiTimeoutInMinutes: {
         type: 'string',
       },
+      vulnerabilityApiTimeoutInMinutes: {
+        type: 'string',
+      },
     },
     validateInvocation: invocationValidator,
     integrationSteps: [accountStep, ...containerSteps, ...scanSteps, userStep],

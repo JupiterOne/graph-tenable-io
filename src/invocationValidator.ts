@@ -9,11 +9,11 @@ import TenableClient from './tenable/TenableClient';
 import { toNum } from './utils/dataType';
 
 const ONE_DAY_MINUTES = 1440;
-const MAXIMUM_ASSET_API_TIMEOUT_IN_MINUTES = ONE_DAY_MINUTES - 30;
+const MAXIMUM_API_TIMEOUT_IN_MINUTES = ONE_DAY_MINUTES - 30;
 
-function isValidAssetApiTimeoutInMinutes(timeout?: number) {
+function isValidApiTimeoutInMinutes(timeout?: number) {
   if (timeout === undefined) return true;
-  return timeout >= 0 && timeout <= MAXIMUM_ASSET_API_TIMEOUT_IN_MINUTES;
+  return timeout >= 0 && timeout <= MAXIMUM_API_TIMEOUT_IN_MINUTES;
 }
 
 /**
@@ -51,9 +51,22 @@ export default async function invocationValidator(
       config.assetApiTimeoutInMinutes,
     ));
 
-  if (!isValidAssetApiTimeoutInMinutes(assetApiTimeoutInMinutes)) {
+  if (!isValidApiTimeoutInMinutes(assetApiTimeoutInMinutes)) {
     throw new IntegrationConfigLoadError(
-      `'assetApiTimeoutInMinutes' config value is invalid (val=${assetApiTimeoutInMinutes}, min=0, max=${MAXIMUM_ASSET_API_TIMEOUT_IN_MINUTES})`,
+      `'assetApiTimeoutInMinutes' config value is invalid (val=${assetApiTimeoutInMinutes}, min=0, max=${MAXIMUM_API_TIMEOUT_IN_MINUTES})`,
+    );
+  }
+
+  // Mutate the value of `config.assetApiTimeoutInMinutes`, so that each of
+  // the integration steps will have the properly parsed value.
+  const vulnerabilityApiTimeoutInMinutes =
+    (executionContext.instance.config.vulnerabilityApiTimeoutInMinutes = toNum(
+      config.vulnerabilityApiTimeoutInMinutes,
+    ));
+
+  if (!isValidApiTimeoutInMinutes(vulnerabilityApiTimeoutInMinutes)) {
+    throw new IntegrationConfigLoadError(
+      `'vulnerabilityApiTimeoutInMinutes' config value is invalid (val=${vulnerabilityApiTimeoutInMinutes}, min=0, max=${MAXIMUM_API_TIMEOUT_IN_MINUTES})`,
     );
   }
 
