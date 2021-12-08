@@ -6,6 +6,7 @@ import {
 
 import { TenableIntegrationConfig } from './config';
 import TenableClient from './tenable/TenableClient';
+import { toNum } from './utils/dataType';
 
 const ONE_DAY_MINUTES = 1440;
 const MAXIMUM_ASSET_API_TIMEOUT_IN_MINUTES = ONE_DAY_MINUTES - 30;
@@ -43,7 +44,12 @@ export default async function invocationValidator(
     );
   }
 
-  const { assetApiTimeoutInMinutes } = config;
+  // Mutate the value of `config.assetApiTimeoutInMinutes`, so that each of
+  // the integration steps will have the properly parsed value.
+  const assetApiTimeoutInMinutes =
+    (executionContext.instance.config.assetApiTimeoutInMinutes = toNum(
+      config.assetApiTimeoutInMinutes,
+    ));
 
   if (!isValidAssetApiTimeoutInMinutes(assetApiTimeoutInMinutes)) {
     throw new IntegrationConfigLoadError(
