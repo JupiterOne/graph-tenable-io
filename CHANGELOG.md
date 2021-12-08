@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.2.0] - 2021-12-08
+
 ### Changed
 
 - Introduce the following integration config properties for configuring API
