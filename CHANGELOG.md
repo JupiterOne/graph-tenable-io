@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.0] - 2021-03-01
+
+## Added
+
+- Introduce exploit-related properties to the `Vulnerability` entity.
+
 ## [8.2.0] - 2021-12-08
 
 ### Changed

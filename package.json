@@ -26,7 +26,7 @@
     "prepush": "yarn lint && yarn type-check && jest --changedSince main"
   },
   "dependencies": {
-    "@jupiterone/tenable-client-nodejs": "^0.1.2",
+    "@jupiterone/tenable-client-nodejs": "^0.1.3",
     "@lifeomic/attempt": "^3.0.0",
     "date-fns": "^2.21.3",
     "node-fetch": "^2.3.0",
