@@ -251,6 +251,15 @@ export function createVulnerabilityEntity(
         severity_id: vuln.severity_id,
         severity_modification_type: vuln.severity_modification_type,
         state: vuln.state,
+        exploit_available: vuln.plugin.exploit_available,
+        exploit_framework_canvas: vuln.plugin.exploit_framework_canvas,
+        exploit_framework_core: vuln.plugin.exploit_framework_core,
+        exploit_framework_d2_elliot: vuln.plugin.exploit_framework_d2_elliot,
+        exploit_framework_exploithub: vuln.plugin.exploit_framework_exploithub,
+        exploit_framework_metasploit: vuln.plugin.exploit_framework_metasploit,
+        exploitability_ease: vuln.plugin.exploitability_ease,
+        exploited_by_malware: vuln.plugin.exploited_by_malware,
+        exploited_by_nessus: vuln.plugin.exploited_by_nessus,
 
         // Add targets for mapping rules.
         targets: targetsForAsset,
