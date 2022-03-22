@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.1] - 2022-04-07
+
+## Changed
+
+- Updated `@jupiterone/integration-sdk-*` to `v8.9.0`
+- Updated vulnerable packages
+- ran prettier on project
+- enforce prettier style in ci
+
 ## [8.3.0] - 2021-03-01
 
 ## Added
