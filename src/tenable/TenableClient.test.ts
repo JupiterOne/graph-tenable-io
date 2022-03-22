@@ -206,7 +206,7 @@ describe('iterateAssets', () => {
     await iterateAssetsPromise;
     expect(assets.length).toBeGreaterThan(0);
     jest.useRealTimers();
-  }, 100000);
+  });
 });
 
 describe('iterateVulnerabilities', () => {
