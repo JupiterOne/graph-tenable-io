@@ -1,6 +1,6 @@
-import { IntegrationStepExecutionContext } from "@jupiterone/integration-sdk-core";
-import { TenableIntegrationConfig } from "./config";
-import { Account } from "./types";
+import { IntegrationStepExecutionContext } from '@jupiterone/integration-sdk-core';
+import { TenableIntegrationConfig } from './config';
+import { Account } from './types';
 
 export function getAccount(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,

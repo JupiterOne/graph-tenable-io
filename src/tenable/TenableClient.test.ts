@@ -193,7 +193,7 @@ describe('iterateAssets', () => {
       secretToken: config.secretKey,
     });
 
-    jest.useFakeTimers();
+    jest.useFakeTimers('legacy'); // https://jestjs.io/blog/2021/05/25/jest-27#flipping-defaults
     const assets: AssetExport[] = [];
     const iterateAssetsPromise = client.iterateAssets((a) => {
       assets.push(a);
@@ -203,11 +203,10 @@ describe('iterateAssets', () => {
     await flushPromises();
     jest.runAllTimers();
     await flushPromises();
-
     await iterateAssetsPromise;
     expect(assets.length).toBeGreaterThan(0);
     jest.useRealTimers();
-  });
+  }, 100000);
 });
 
 describe('iterateVulnerabilities', () => {
@@ -226,7 +225,7 @@ describe('iterateVulnerabilities', () => {
       secretToken: config.secretKey,
     });
 
-    jest.useFakeTimers();
+    jest.useFakeTimers('legacy'); // https://jestjs.io/blog/2021/05/25/jest-27#flipping-defaults
     const vulnerabilities: VulnerabilityExport[] = [];
     const iterateVulnerabilitiesPromise = client.iterateVulnerabilities((v) => {
       vulnerabilities.push(v);

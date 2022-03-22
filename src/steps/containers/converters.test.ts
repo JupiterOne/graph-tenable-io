@@ -5,6 +5,7 @@ import {
   ContainerMalware,
   ContainerUnwantedProgram,
 } from '@jupiterone/tenable-client-nodejs';
+import { Entities } from '../../constants';
 import { Account } from '../../types';
 import {
   createContainerEntity,
@@ -37,9 +38,9 @@ test('convert container entity', () => {
   };
 
   expect(createContainerEntity(container)).toEqual({
-    _class: 'Image',
+    _class: Entities.CONTAINER._class,
     _key: 'tenable_container_6549098203417933758',
-    _type: 'tenable_container',
+    _type: Entities.CONTAINER._type,
     _rawData: [{ name: 'default', rawData: container }],
     createdAt: 1555496818509,
     digest:
@@ -111,9 +112,9 @@ test('convert report entity', () => {
   };
 
   expect(createReportEntity(report)).toEqual({
-    _class: 'Assessment',
+    _class: Entities.CONTAINER_REPORT._class,
     _key: 'tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
-    _type: 'tenable_container_report',
+    _type: Entities.CONTAINER_REPORT._type,
     _rawData: [{ name: 'default', rawData: report }],
     createdAt: 1555496818509,
     digest: 'c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
@@ -212,9 +213,9 @@ test('container finding', () => {
   };
 
   expect(createContainerFindingEntity(data)).toEqual({
-    _class: 'Finding',
+    _class: Entities.CONTAINER_FINDING._class,
     _key: 'tenable_container_finding_cve-123_cwe-234',
-    _type: 'tenable_container_finding',
+    _type: Entities.CONTAINER_FINDING._type,
     _rawData: [{ name: 'default', rawData: data }],
     displayName: 'cve-123/cwe-234',
     accessComplexity: 'string',
@@ -306,9 +307,9 @@ test('convert container vulnerability entity', () => {
   };
 
   expect(createMalwareEntity(malware)).toEqual({
-    _class: 'Finding',
+    _class: Entities.CONTAINER_MALWARE._class,
     _key: 'tenable_container_malware_malwareMd5',
-    _type: 'tenable_container_malware',
+    _type: Entities.CONTAINER_MALWARE._type,
     _rawData: [
       {
         name: 'default',
@@ -375,9 +376,9 @@ test('convert container vulnerability entity', () => {
   };
 
   expect(createUnwantedProgramEntity(unwantedProgram)).toEqual({
-    _class: 'Finding',
+    _class: Entities.CONTAINER_UNWANTED_PROGRAM._class,
     _key: 'tenable_container_unwanted_program_unwantedProgramMd5',
-    _type: 'tenable_container_unwanted_program',
+    _type: Entities.CONTAINER_UNWANTED_PROGRAM._type,
     _rawData: [
       {
         name: 'default',

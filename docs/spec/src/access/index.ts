@@ -13,7 +13,7 @@ export const accessSpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'User',
-        _class: 'User',
+        _class: ['User'],
         _type: 'tenable_user',
       },
     ],
