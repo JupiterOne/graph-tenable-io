@@ -1,4 +1,5 @@
 import { User } from '@jupiterone/tenable-client-nodejs';
+import { Entities } from '../../constants';
 import { Account } from '../../types';
 import { createAccountUserRelationship, createUserEntity } from './converters';
 
@@ -23,9 +24,9 @@ test('convert user entity', () => {
   const userEntity = createUserEntity(user);
 
   expect(userEntity).toEqual({
-    _class: 'User',
+    _class: Entities.USER._class,
     _key: 'tenable_user_2',
-    _type: 'tenable_user',
+    _type: Entities.USER._type,
     containerUuid: 'a01249a3-3547-4961-9d5d-9c74d296169d',
     displayName: 'Denis Arkhireev',
     email: 'denis.arkhireev@dualbootpartners.com',

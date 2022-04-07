@@ -2,21 +2,20 @@ import {
   Recording,
   setupRecording,
   SetupRecordingInput,
-} from "@jupiterone/integration-sdk-testing";
-import { TenableIntegrationConfig } from "../src/config";
+} from '@jupiterone/integration-sdk-testing';
+import { TenableIntegrationConfig } from '../src/config';
 
 export { Recording };
 
 export function setupTenableRecording(input: SetupRecordingInput) {
   return setupRecording({
-    redactedRequestHeaders: ["x-apikeys"],
+    redactedRequestHeaders: ['x-apikeys'],
     ...input,
   });
 }
 
-type MatchRequestsBy = Required<
-  SetupRecordingInput
->["options"]["matchRequestsBy"];
+type MatchRequestsBy =
+  Required<SetupRecordingInput>['options']['matchRequestsBy'];
 
 export function getTenableMatchRequestsBy(
   config: TenableIntegrationConfig,

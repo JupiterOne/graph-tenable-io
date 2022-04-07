@@ -1,6 +1,9 @@
 import {
   RelationshipClass,
   RelationshipDirection,
+  StepEntityMetadata,
+  StepMappedRelationshipMetadata,
+  StepRelationshipMetadata,
 } from '@jupiterone/integration-sdk-core';
 
 export const StepIds = {
@@ -14,56 +17,77 @@ export const StepIds = {
   CONTAINER_REPORTS: 'step-container-reports',
 };
 
-export const Entities = {
+export const Entities: Record<
+  | 'ACCOUNT'
+  | 'ASSET'
+  | 'CONTAINER'
+  | 'CONTAINER_REPORT'
+  | 'CONTAINER_FINDING'
+  | 'CONTAINER_MALWARE'
+  | 'CONTAINER_UNWANTED_PROGRAM'
+  | 'VULNERABILITY'
+  | 'USER',
+  StepEntityMetadata
+> = {
   ACCOUNT: {
     resourceName: 'Account',
-    _class: 'Account',
+    _class: ['Account'],
     _type: 'tenable_account',
   },
   ASSET: {
     resourceName: 'Asset',
-    _class: 'Record',
+    _class: ['Record'],
     _type: 'tenable_asset',
   },
   CONTAINER: {
     resourceName: 'Container',
-    _class: 'Image',
+    _class: ['Image'],
     _type: 'tenable_container',
   },
   // TODO does the report entity simply include container details, can we really get rid of this entity?
   CONTAINER_REPORT: {
     resourceName: 'Container Report',
-    _class: 'Assessment',
+    _class: ['Assessment'],
     _type: 'tenable_container_report',
   },
   CONTAINER_FINDING: {
     resourceName: 'Container Finding',
-    _class: 'Finding',
+    _class: ['Finding'],
     _type: 'tenable_container_finding',
   },
   CONTAINER_MALWARE: {
     resourceName: 'Container Malware',
-    _class: 'Finding',
+    _class: ['Finding'],
     _type: 'tenable_container_malware',
   },
   CONTAINER_UNWANTED_PROGRAM: {
     resourceName: 'Container Unwanted Program',
-    _class: 'Finding',
+    _class: ['Finding'],
     _type: 'tenable_container_unwanted_program',
   },
   VULNERABILITY: {
     resourceName: 'Vulnerability',
-    _class: 'Finding',
+    _class: ['Finding'],
     _type: 'tenable_vulnerability_finding',
   },
   USER: {
     resourceName: 'User',
-    _class: 'User',
+    _class: ['User'],
     _type: 'tenable_user',
   },
 };
-
-export const Relationships = {
+//TODO fix these
+export const Relationships: Record<
+  | 'ACCOUNT_HAS_USER'
+  | 'ACCOUNT_HAS_ASSET'
+  | 'ACCOUNT_HAS_CONTAINER'
+  | 'CONTAINER_HAS_REPORT'
+  | 'REPORT_IDENTIFIED_FINDING'
+  | 'REPORT_IDENTIFIED_MALWARE'
+  | 'REPORT_IDENTIFIED_UNWANTED_PROGRAM'
+  | 'ASSET_HAS_VULN',
+  StepRelationshipMetadata
+> = {
   ACCOUNT_HAS_USER: {
     _type: 'tenable_account_has_user',
     sourceType: Entities.ACCOUNT._type,
@@ -114,7 +138,10 @@ export const Relationships = {
   },
 };
 
-export const MappedRelationships = {
+export const MappedRelationships: Record<
+  'ASSET_IS_HOST' | 'HOST_HAS_VULN' | 'VULNERABILITY_IS_CVE',
+  StepMappedRelationshipMetadata
+> = {
   ASSET_IS_HOST: {
     _type: 'tenable_asset_is_host',
     sourceType: Entities.ASSET._type,

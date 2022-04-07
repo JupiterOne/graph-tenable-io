@@ -16,7 +16,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'Asset',
-        _class: 'Record',
+        _class: ['Record'],
         _type: 'tenable_asset',
       },
     ],
@@ -50,7 +50,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'Scanner',
-        _class: 'Scanner',
+        _class: ['Scanner'],
         _type: 'tenable_scanner',
       },
     ],
@@ -103,7 +103,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'Agent',
-        _class: 'HostAgent',
+        _class: ['HostAgent'],
         _type: 'tenable_agent',
       },
     ],
@@ -156,7 +156,7 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'Vulnerability',
-        _class: 'Finding',
+        _class: ['Finding'],
         _type: 'tenable_vulnerability_finding',
       },
     ],

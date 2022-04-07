@@ -13,7 +13,7 @@ export const containerSpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'Container',
-        _class: 'Image',
+        _class: ['Image'],
         _type: 'tenable_container',
       },
     ],
@@ -38,22 +38,22 @@ export const containerSpec: StepSpec<TenableIntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'Container Report',
-        _class: 'Assessment',
+        _class: ['Assessment'],
         _type: 'tenable_container_report',
       },
       {
         resourceName: 'Container Finding',
-        _class: 'Finding',
+        _class: ['Finding'],
         _type: 'tenable_container_finding',
       },
       {
         resourceName: 'Container Malware',
-        _class: 'Finding',
+        _class: ['Finding'],
         _type: 'tenable_container_malware',
       },
       {
         resourceName: 'Container Unwanted Program',
-        _class: 'Finding',
+        _class: ['Finding'],
         _type: 'tenable_container_unwanted_program',
       },
     ],

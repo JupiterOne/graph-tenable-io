@@ -17,7 +17,7 @@ export const invocationConfig: IntegrationSpecConfig<TenableIntegrationConfig> =
         entities: [
           {
             resourceName: 'Account',
-            _class: 'Account',
+            _class: ['Account'],
             _type: 'tenable_account',
           },
         ],
