@@ -1,4 +1,7 @@
-import { createIntegrationEntity } from '@jupiterone/integration-sdk-core';
+import {
+  createIntegrationEntity,
+  parseTimePropertyValue,
+} from '@jupiterone/integration-sdk-core';
 import { Entities } from '../../constants';
 import {
   AssetExport,
@@ -25,17 +28,21 @@ export function createAssetEntity(data: AssetExport): any {
         deletedBy: data.deleted_by || undefined,
         hasAgent: data.has_agent,
         hasPluginResults: data.has_plugin_results,
-        createdAt: data.created_at,
-        terminatedAt: data.terminated_at,
+        createdAt: parseTimePropertyValue(data.created_at),
+        terminatedAt: parseTimePropertyValue(data.terminated_at),
         terminatedBy: data.terminated_by,
-        updatedAt: data.updated_at,
-        deletedAt: data.deleted_at,
-        firstSeen: data.first_seen,
-        lastSeen: data.last_seen,
-        firstScanTime: data.first_scan_time,
-        lastScanTime: data.last_scan_time,
-        lastAuthenticatedScanDate: data.last_authenticated_scan_date,
-        lastLicensedScanDate: data.last_licensed_scan_date,
+        updatedAt: parseTimePropertyValue(data.updated_at),
+        deletedAt: parseTimePropertyValue(data.deleted_at),
+        firstSeen: parseTimePropertyValue(data.first_seen),
+        lastSeen: parseTimePropertyValue(data.last_seen),
+        firstScanTime: parseTimePropertyValue(data.first_scan_time),
+        lastScanTime: parseTimePropertyValue(data.last_scan_time),
+        lastAuthenticatedScanDate: parseTimePropertyValue(
+          data.last_authenticated_scan_date,
+        ),
+        lastLicensedScanDate: parseTimePropertyValue(
+          data.last_licensed_scan_date,
+        ),
         lastScanId: data.last_scan_id,
         lastScheduleId: data.last_schedule_id,
         agentUuid: data.agent_uuid,
