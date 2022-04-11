@@ -8,9 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.2] - 2022-04-11
+
+### Fixed
+
+- Fixed a bug where datetime properties for `tenable_asset`s were strings
+  instead of a parsed number.
+
 ## [8.3.1] - 2022-04-07
 
-## Changed
+### Changed
 
 - Updated `@jupiterone/integration-sdk-*` to `v8.9.0`
 - Updated vulnerable packages
@@ -19,7 +26,7 @@ and this project adheres to
 
 ## [8.3.0] - 2021-03-01
 
-## Added
+### Added
 
 - Introduce exploit-related properties to the `Vulnerability` entity.
 
