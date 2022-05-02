@@ -3,10 +3,12 @@
   "version": "8.3.2",
   "description": "A JupiterOne managed integration for https://www.tenable.com/products/tenable-io",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "repository": "https://github.com/JupiterOne/graph-tenable-io",
   "license": "MPL-2.0",
   "files": [
-    "src"
+    "src",
+    "jupiterone"
   ],
   "publishConfig": {
     "access": "public"
@@ -23,8 +25,10 @@
     "test": "jest",
     "test:env": "LOAD_ENV=1 yarn test",
     "test:ci": "yarn format:check && yarn lint && yarn type-check && yarn test",
-    "build": "tsc -p tsconfig.dist.json --declaration && cp README.md dist/README.md",
-    "prepush": "yarn lint && yarn type-check && jest --changedSince main"
+    "build": "tsc -p tsconfig.dist.json --declaration && cp README.md dist/README.md && cp -r jupiterone/ dist/jupiterone/",
+    "prepush": "yarn format:check && yarn lint && yarn type-check && jest --changedSince main",
+    "validate:questions": "j1-integration validate-question-file -a $MANAGED_QUESTIONS_JUPITERONE_ACCOUNT_ID -k $MANAGED_QUESTIONS_JUPITERONE_API_KEY",
+    "validate:questions:dry": "j1-integration validate-question-file --dry-run"
   },
   "dependencies": {
     "@jupiterone/tenable-client-nodejs": "^0.1.3",

@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `codeql-analysis` workflow
+- `questions` workflow
+- `jupiterone/questions/questions.yaml`
+
 ## [8.3.2] - 2022-04-11
 
 ### Fixed
