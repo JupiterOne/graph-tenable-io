@@ -198,10 +198,9 @@ describe('iterateAssets', () => {
     const iterateAssetsPromise = client.iterateAssets((a) => {
       assets.push(a);
     });
-
     // allow sleep() to run to completion once
     await flushPromises();
-    jest.runAllTimers();
+    jest.advanceTimersByTime(60000);
     await flushPromises();
     await iterateAssetsPromise;
     expect(assets.length).toBeGreaterThan(0);
@@ -233,7 +232,7 @@ describe('iterateVulnerabilities', () => {
 
     // allow sleep() to run to completion once
     await flushPromises();
-    jest.runAllTimers();
+    jest.advanceTimersByTime(60000);
     await flushPromises();
 
     await iterateVulnerabilitiesPromise;
