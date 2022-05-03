@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.3] - 2022-05-03
+
+- Updated `@jupiterone/integration-sdk-*` to `v8.13.1`
+- fix breakage in test due to jest timers
+
 ## [8.3.2] - 2022-04-11
 
 ### Fixed
