@@ -10,7 +10,7 @@ and this project adheres to
 
 ## [8.3.4] - 2022-05-04
 
-- reduce raw data for vuln and assets
+- Limit raw data for vuln and assets
 
 ## [8.3.3] - 2022-05-03
 
