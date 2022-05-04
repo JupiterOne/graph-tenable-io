@@ -13,10 +13,7 @@ import {
   StepIds,
 } from '../../constants';
 import TenableClient from '../../tenable/TenableClient';
-import {
-  AssetExport,
-  VulnerabilityExport,
-} from '@jupiterone/tenable-client-nodejs';
+import { AssetExport } from '@jupiterone/tenable-client-nodejs';
 import {
   createTargetHostEntity,
   createAssetEntity,
@@ -29,6 +26,19 @@ import {
 } from '../../utils/targetEntities';
 import { getAccount } from '../../initializeContext';
 import { createAccountEntity } from '../account/converters';
+
+export interface VulnerabilityExportLimitedRawData {
+  cves: string[] | undefined;
+  asset_uuid: string | undefined;
+}
+
+export interface AssetExportLimitedRawData {
+  aws_ec2_instance_id: string | null;
+  azure_resource_id: string | null;
+  gcp_instance_id: string | null;
+  gcp_project_id: string | null;
+  id: string;
+}
 
 export async function fetchAssets(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -93,7 +103,7 @@ export async function fetchVulnerabilities(
 
   logger.info(
     { vulnerabilityApiTimeoutInMinutes },
-    'Attempting to vulnerabilities...',
+    'Attempting to fetch vulnerabilities...',
   );
 
   await provider.iterateVulnerabilities(
@@ -125,8 +135,9 @@ export async function buildAssetVulnerabilityRelationships(
   await jobState.iterateEntities(
     { _type: Entities.VULNERABILITY._type },
     async (vulnEntity) => {
-      const vuln = getRawData<VulnerabilityExport>(vulnEntity);
-      if (!vuln) {
+      const vulnRawData =
+        getRawData<VulnerabilityExportLimitedRawData>(vulnEntity);
+      if (!vulnRawData) {
         logger.warn(
           {
             _key: vulnEntity._key,
@@ -136,20 +147,20 @@ export async function buildAssetVulnerabilityRelationships(
         return;
       }
 
-      const assetEntity = await jobState.findEntity(vuln.asset.uuid);
+      const assetEntity = await jobState.findEntity(vulnRawData.asset_uuid);
       if (!assetEntity) {
         logger.warn(
           {
             'vuln._key': vulnEntity._key,
-            'asset.uuid': vuln.asset.uuid,
+            'asset.uuid': vulnRawData.asset_uuid,
           },
           'Could not find asset specified by vulnerability in job state.',
         );
         return;
       }
 
-      const asset = getRawData<AssetExport>(assetEntity);
-      if (!asset) {
+      const assetRawData = getRawData<AssetExport>(assetEntity);
+      if (!assetRawData) {
         logger.warn(
           {
             'vuln._key': vulnEntity._key,
@@ -170,7 +181,7 @@ export async function buildAssetVulnerabilityRelationships(
 
       await jobState.addRelationship(
         createRelationshipFromTargetEntity({
-          from: createTargetHostEntity(asset),
+          from: createTargetHostEntity(assetRawData),
           _class: RelationshipClass.HAS,
           to: vulnEntity,
         }),
@@ -187,8 +198,9 @@ export async function buildVulnerabilityCveRelationships(
   await jobState.iterateEntities(
     { _type: Entities.VULNERABILITY._type },
     async (vulnEntity) => {
-      const vuln = getRawData<VulnerabilityExport>(vulnEntity);
-      if (!vuln) {
+      const vulnRawData =
+        getRawData<VulnerabilityExportLimitedRawData>(vulnEntity);
+      if (!vulnRawData) {
         logger.warn(
           {
             _key: vulnEntity._key,
@@ -198,7 +210,7 @@ export async function buildVulnerabilityCveRelationships(
         return;
       }
 
-      for (const targetCveEntity of createTargetCveEntities(vuln)) {
+      for (const targetCveEntity of createTargetCveEntities(vulnRawData)) {
         const vulnCveMappedRelationship = createRelationshipToTargetEntity({
           from: vulnEntity,
           _class: RelationshipClass.IS,

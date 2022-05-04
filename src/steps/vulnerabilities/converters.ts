@@ -10,11 +10,27 @@ import {
 import { generateEntityKey } from '../../utils/generateKey';
 import getTime from '../../utils/getTime';
 import { TargetEntity } from '../../utils/targetEntities';
+import {
+  AssetExportLimitedRawData,
+  VulnerabilityExportLimitedRawData,
+} from '.';
+
+const skippedRawDataSource = {
+  uploadStatus: 'LIMITED',
+  uploadStatusReason: 'Raw data currently limited for this entity type',
+};
 
 export function createAssetEntity(data: AssetExport): any {
   return createIntegrationEntity({
     entityData: {
-      source: data,
+      source: {
+        ...skippedRawDataSource,
+        aws_ec2_instance_id: data.aws_ec2_instance_id,
+        azure_resource_id: data.azure_resource_id,
+        gcp_instance_id: data.gcp_instance_id,
+        gcp_project_id: data.gcp_project_id,
+        id: data.id,
+      },
       assign: {
         _class: Entities.ASSET._class,
         _type: Entities.ASSET._type,
@@ -94,7 +110,9 @@ export function createAssetEntity(data: AssetExport): any {
   });
 }
 
-export function createTargetHostEntity(data: AssetExport): TargetEntity {
+export function createTargetHostEntity(
+  data: AssetExportLimitedRawData,
+): TargetEntity {
   let targetFilter;
 
   if (data.aws_ec2_instance_id) {
@@ -230,7 +248,11 @@ export function createVulnerabilityEntity(
   const priority = numericPriority && getPriority(numericPriority);
   return createIntegrationEntity({
     entityData: {
-      source: vuln,
+      source: {
+        ...skippedRawDataSource,
+        cves: vuln.plugin.cve,
+        asset_uuid: vuln.asset.uuid,
+      },
       assign: {
         _key: generateEntityKey(
           Entities.VULNERABILITY._type,
@@ -282,9 +304,9 @@ export function createVulnerabilityEntity(
 }
 
 export function createTargetCveEntities(
-  data: VulnerabilityExport,
+  data: VulnerabilityExportLimitedRawData,
 ): TargetEntity[] {
-  const cves: string[] | undefined = data.plugin.cve;
+  const { cves } = data;
   return (cves || []).map((cve) => {
     return {
       targetEntity: {
