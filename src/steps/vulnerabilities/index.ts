@@ -57,7 +57,7 @@ export async function fetchAssets(
 
   await provider.iterateAssets(
     async (asset) => {
-      const assetEntity = createAssetEntity(asset);
+      const assetEntity = createAssetEntity(asset, logger);
       if (await jobState.hasKey(assetEntity._key)) {
         logger.warn(
           {
@@ -109,7 +109,7 @@ export async function fetchVulnerabilities(
   await provider.iterateVulnerabilities(
     async (vuln) => {
       // TODO add `targets` property from the asset.
-      const vulnerabilityEntity = createVulnerabilityEntity(vuln, []);
+      const vulnerabilityEntity = createVulnerabilityEntity(vuln, [], logger);
       if (await jobState.hasKey(vulnerabilityEntity._key)) {
         logger.warn(
           {
