@@ -29,7 +29,7 @@ export function createAssetEntity(data: AssetExport): any {
         azure_resource_id: data.azure_resource_id,
         gcp_instance_id: data.gcp_instance_id,
         gcp_project_id: data.gcp_project_id,
-        id: data,
+        id: data.id,
       },
       assign: {
         _class: Entities.ASSET._class,
