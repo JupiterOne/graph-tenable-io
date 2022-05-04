@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.4] - 2022-05-04
+
+- reduce raw data for vuln and assets
+
 ## [8.3.3] - 2022-05-03
 
 - Updated `@jupiterone/integration-sdk-*` to `v8.13.1`
