@@ -1,0 +1,4 @@
+---
+sourceId: managed:tenable-cloud
+integrationDefinitionId: '${integration_definition_id}'
+questions: []

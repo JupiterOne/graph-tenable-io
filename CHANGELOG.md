@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `codeql-analysis` workflow
+- `questions` workflow
+- `jupiterone/questions/questions.yaml`
+
 ## [8.3.4] - 2022-05-04
 
 - Limit raw data for vuln and assets
