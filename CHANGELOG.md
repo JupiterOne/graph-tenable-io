@@ -14,6 +14,15 @@ and this project adheres to
 - `questions` workflow
 - `jupiterone/questions/questions.yaml`
 
+## [8.3.4] - 2022-05-04
+
+- Limit raw data for vuln and assets
+
+## [8.3.3] - 2022-05-03
+
+- Updated `@jupiterone/integration-sdk-*` to `v8.13.1`
+- fix breakage in test due to jest timers
+
 ## [8.3.2] - 2022-04-11
 
 ### Fixed
