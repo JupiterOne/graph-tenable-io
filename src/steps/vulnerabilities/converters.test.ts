@@ -1,4 +1,9 @@
-import { getPriority, getSeverity, normalizeCVSS2Severity } from './converters';
+import {
+  getLargestItemKeyAndByteSize,
+  getPriority,
+  getSeverity,
+  normalizeCVSS2Severity,
+} from './converters';
 
 describe('getSeverity from numericSeverity', () => {
   test('Informational for 0', () => {
@@ -97,6 +102,42 @@ describe('normalizeCVSS2Severity', () => {
     expect(normalizeCVSS2Severity(11)).toEqual({
       numericSeverity: 11,
       severity: undefined,
+    });
+  });
+});
+
+describe('getLargestItemKeyAndByteSize', () => {
+  test('will return largest key and size when it is string', () => {
+    const stringProp = new Array(700000).join('aaaaaaaaaa').toString();
+    const toCheck = {
+      stringProp,
+      numberProp: 16,
+      booleanProp: false,
+      objectProp: {
+        smallerStringProp: new Array(500000).join('aaaaaaaaaa').toString(),
+      },
+    };
+    const largestItemAndKey = getLargestItemKeyAndByteSize(toCheck);
+    expect(largestItemAndKey).toEqual({
+      key: 'stringProp',
+      size: Buffer.byteLength(JSON.stringify(stringProp)),
+    });
+  });
+
+  test('will return largest key and size when it is object', () => {
+    const stringProp = new Array(700000).join('aaaaaaaaaa').toString();
+    const toCheck = {
+      smallerStringProp: new Array(500000).join('aaaaaaaaaa').toString(),
+      numberProp: 16,
+      booleanProp: false,
+      objectProp: {
+        stringProp,
+      },
+    };
+    const largestItemAndKey = getLargestItemKeyAndByteSize(toCheck);
+    expect(largestItemAndKey).toEqual({
+      key: 'objectProp',
+      size: Buffer.byteLength(JSON.stringify(toCheck.objectProp)),
     });
   });
 });

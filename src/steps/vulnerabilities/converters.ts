@@ -26,15 +26,17 @@ interface KeyAndSize {
   size: number;
 }
 
-function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
+export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
   const largestItem: KeyAndSize = { key: '', size: 0 };
   for (const item in data) {
-    const length = data[item]
-      ? Buffer.byteLength(JSON.stringify(data[item]))
-      : 0;
-    if (length > largestItem.size) {
-      largestItem.key = item;
-      largestItem.size = length;
+    if (['object', 'string'].includes(typeof item)) {
+      const length = data[item]
+        ? Buffer.byteLength(JSON.stringify(data[item]))
+        : 0;
+      if (length > largestItem.size) {
+        largestItem.key = item;
+        largestItem.size = length;
+      }
     }
   }
 
@@ -48,17 +50,17 @@ export function createAssetEntity(
   try {
     const size = Buffer.byteLength(JSON.stringify(data));
     if (size > 1048576) {
-      logger.warn(
+      logger.info(
         {
           assetId: data.id,
           totalSize: size,
           largestItem: getLargestItemKeyAndByteSize(data),
         },
-        'Encoutered rawData of size > 1MB',
+        'Encountered rawData of size > 1MB',
       );
     }
   } catch (err) {
-    logger.warn({ err }, 'encountered error when checking rawData size');
+    logger.warn({ err }, 'Encountered error when checking rawData size');
   }
   return createIntegrationEntity({
     entityData: {
@@ -289,7 +291,7 @@ export function createVulnerabilityEntity(
   try {
     const size = Buffer.byteLength(JSON.stringify(vuln));
     if (size > 1048576) {
-      logger.warn(
+      logger.info(
         {
           asset_uuid: vuln.asset.uuid,
           cves: vuln.plugin.cve,
@@ -298,11 +300,11 @@ export function createVulnerabilityEntity(
           totalSize: size,
           largetsItem: getLargestItemKeyAndByteSize(vuln),
         },
-        'Encoutered rawData of size > 1MB',
+        'Encountered rawData of size > 1MB',
       );
     }
   } catch (err) {
-    logger.warn({ err }, 'encountered error when checking rawData size');
+    logger.warn({ err }, 'Encountered error when checking rawData size');
   }
   return createIntegrationEntity({
     entityData: {
