@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.5] - 2022-05-05
+
 ### Added
 
 - `codeql-analysis` workflow
