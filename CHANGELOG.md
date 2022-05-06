@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.6] - 2022-05-06
+
+- log large entities size characteristics to identify possible poison pill(s)
+  from tenable api
+
 ## [8.3.5] - 2022-05-05
 
 ### Added
