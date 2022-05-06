@@ -1,5 +1,6 @@
 import {
   createIntegrationEntity,
+  IntegrationLogger,
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
 import { Entities } from '../../constants';
@@ -20,7 +21,47 @@ const skippedRawDataSource = {
   uploadStatusReason: 'Raw data currently limited for this entity type',
 };
 
-export function createAssetEntity(data: AssetExport): any {
+interface KeyAndSize {
+  key: string;
+  size: number;
+}
+
+export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
+  const largestItem: KeyAndSize = { key: '', size: 0 };
+  for (const item in data) {
+    if (['object', 'string'].includes(typeof item)) {
+      const length = data[item]
+        ? Buffer.byteLength(JSON.stringify(data[item]))
+        : 0;
+      if (length > largestItem.size) {
+        largestItem.key = item;
+        largestItem.size = length;
+      }
+    }
+  }
+
+  return largestItem;
+}
+
+export function createAssetEntity(
+  data: AssetExport,
+  logger: IntegrationLogger,
+): any {
+  try {
+    const size = Buffer.byteLength(JSON.stringify(data));
+    if (size > 1048576) {
+      logger.info(
+        {
+          assetId: data.id,
+          totalSize: size,
+          largestItem: getLargestItemKeyAndByteSize(data),
+        },
+        'Encountered rawData of size > 1MB',
+      );
+    }
+  } catch (err) {
+    logger.warn({ err }, 'Encountered error when checking rawData size');
+  }
   return createIntegrationEntity({
     entityData: {
       source: {
@@ -243,9 +284,28 @@ export function getTargetsForAsset(asset: AssetExport): string[] {
 export function createVulnerabilityEntity(
   vuln: VulnerabilityExport,
   targetsForAsset: string[],
+  logger: IntegrationLogger,
 ): any {
   const numericPriority = vuln.plugin.vpr && vuln.plugin.vpr.score;
   const priority = numericPriority && getPriority(numericPriority);
+  try {
+    const size = Buffer.byteLength(JSON.stringify(vuln));
+    if (size > 1048576) {
+      logger.info(
+        {
+          asset_uuid: vuln.asset.uuid,
+          cves: vuln.plugin.cve,
+          scanId: vuln.scan.uuid,
+          pluginId: vuln.plugin.id,
+          totalSize: size,
+          largetsItem: getLargestItemKeyAndByteSize(vuln),
+        },
+        'Encountered rawData of size > 1MB',
+      );
+    }
+  } catch (err) {
+    logger.warn({ err }, 'Encountered error when checking rawData size');
+  }
   return createIntegrationEntity({
     entityData: {
       source: {

@@ -1,5 +1,6 @@
 import {
   createIntegrationEntity,
+  IntegrationLogger,
   MappedRelationship,
   Relationship,
 } from '@jupiterone/integration-sdk-core';
@@ -179,6 +180,7 @@ describe('build-vuln-cve-relationships', () => {
         state: '',
       },
       [],
+      jest.fn() as unknown as IntegrationLogger,
     );
   }
 
@@ -228,6 +230,7 @@ describe('build-asset-vuln-relationships', () => {
         state: '',
       },
       [],
+      jest.fn() as unknown as IntegrationLogger,
     );
   }
 
@@ -235,7 +238,10 @@ describe('build-asset-vuln-relationships', () => {
     const partialAssetExport: Partial<AssetExport> = {
       id: options.assetId,
     };
-    return createAssetEntity(partialAssetExport as AssetExport);
+    return createAssetEntity(
+      partialAssetExport as AssetExport,
+      jest.fn() as unknown as IntegrationLogger,
+    );
   }
 
   function separateAssetVulnRelationships(
