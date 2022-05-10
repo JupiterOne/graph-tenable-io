@@ -1,5 +1,6 @@
 import {
   createIntegrationEntity,
+  Entity,
   IntegrationLogger,
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
@@ -46,7 +47,7 @@ export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
 export function createAssetEntity(
   data: AssetExport,
   logger: IntegrationLogger,
-): any {
+): Entity {
   try {
     const size = Buffer.byteLength(JSON.stringify(data));
     if (size > 1048576) {
@@ -56,11 +57,11 @@ export function createAssetEntity(
           totalSize: size,
           largestItem: getLargestItemKeyAndByteSize(data),
         },
-        'Encountered rawData of size > 1MB',
+        'Encountered entity of size > 1MB',
       );
     }
   } catch (err) {
-    logger.warn({ err }, 'Encountered error when checking rawData size');
+    logger.warn({ err }, 'Encountered error when checking entity size');
   }
   return createIntegrationEntity({
     entityData: {
@@ -285,7 +286,7 @@ export function createVulnerabilityEntity(
   vuln: VulnerabilityExport,
   targetsForAsset: string[],
   logger: IntegrationLogger,
-): any {
+): Entity {
   const numericPriority = vuln.plugin.vpr && vuln.plugin.vpr.score;
   const priority = numericPriority && getPriority(numericPriority);
   try {
@@ -300,11 +301,11 @@ export function createVulnerabilityEntity(
           totalSize: size,
           largetsItem: getLargestItemKeyAndByteSize(vuln),
         },
-        'Encountered rawData of size > 1MB',
+        'Encountered entity of size > 1MB',
       );
     }
   } catch (err) {
-    logger.warn({ err }, 'Encountered error when checking rawData size');
+    logger.warn({ err }, 'Encountered error when checking entity size');
   }
   return createIntegrationEntity({
     entityData: {
@@ -325,7 +326,6 @@ export function createVulnerabilityEntity(
         'asset.uuid': vuln.asset.uuid,
         first_found: vuln.first_found,
         last_found: vuln.last_found,
-        output: vuln.output,
         // additional plugin properties can be added
         'plugin.id': vuln.plugin.id,
         'port.port': vuln.port.port,
