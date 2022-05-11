@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.7] - 2022-05-10
+
+- remove `output` from the properties of `tenable_vulnerability_finding`
+  entities
+
 ## [8.3.6] - 2022-05-06
 
 - log large entities size characteristics to identify possible poison pill(s)
