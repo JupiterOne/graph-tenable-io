@@ -13,7 +13,10 @@ import {
   StepIds,
 } from '../../constants';
 import TenableClient from '../../tenable/TenableClient';
-import { AssetExport } from '@jupiterone/tenable-client-nodejs';
+import {
+  AssetExport,
+  VulnerabilityExport,
+} from '@jupiterone/tenable-client-nodejs';
 import {
   createTargetHostEntity,
   createAssetEntity,
@@ -26,19 +29,6 @@ import {
 } from '../../utils/targetEntities';
 import { getAccount } from '../../initializeContext';
 import { createAccountEntity } from '../account/converters';
-
-export interface VulnerabilityExportLimitedRawData {
-  cves: string[] | undefined;
-  asset_uuid: string | undefined;
-}
-
-export interface AssetExportLimitedRawData {
-  aws_ec2_instance_id: string | null;
-  azure_resource_id: string | null;
-  gcp_instance_id: string | null;
-  gcp_project_id: string | null;
-  id: string;
-}
 
 export async function fetchAssets(
   context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
@@ -135,8 +125,7 @@ export async function buildAssetVulnerabilityRelationships(
   await jobState.iterateEntities(
     { _type: Entities.VULNERABILITY._type },
     async (vulnEntity) => {
-      const vulnRawData =
-        getRawData<VulnerabilityExportLimitedRawData>(vulnEntity);
+      const vulnRawData = getRawData<VulnerabilityExport>(vulnEntity);
       if (!vulnRawData) {
         logger.warn(
           {
@@ -147,12 +136,12 @@ export async function buildAssetVulnerabilityRelationships(
         return;
       }
 
-      const assetEntity = await jobState.findEntity(vulnRawData.asset_uuid);
+      const assetEntity = await jobState.findEntity(vulnRawData.asset.uuid);
       if (!assetEntity) {
         logger.warn(
           {
             'vuln._key': vulnEntity._key,
-            'asset.uuid': vulnRawData.asset_uuid,
+            'asset.uuid': vulnRawData.asset.uuid,
           },
           'Could not find asset specified by vulnerability in job state.',
         );
@@ -198,8 +187,7 @@ export async function buildVulnerabilityCveRelationships(
   await jobState.iterateEntities(
     { _type: Entities.VULNERABILITY._type },
     async (vulnEntity) => {
-      const vulnRawData =
-        getRawData<VulnerabilityExportLimitedRawData>(vulnEntity);
+      const vulnRawData = getRawData<VulnerabilityExport>(vulnEntity);
       if (!vulnRawData) {
         logger.warn(
           {

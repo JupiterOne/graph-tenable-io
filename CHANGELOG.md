@@ -8,6 +8,9 @@ and this project adheres to
 
 ## [Unreleased]
 
+- bump sdk to pull in new rawData trimming logic
+- add rawData back to vulns and assets
+
 ## [8.3.7] - 2022-05-10
 
 - remove `output` from the properties of `tenable_vulnerability_finding`
