@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.8] - 2022-05-17
+
 - bump sdk to pull in new rawData trimming logic
 - add rawData back to vulns and assets
 
