@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.3.9] 2022-05-24
+
+- bump sdk to pull in more rawData trimming improvements
+
 ## [8.3.8] - 2022-05-17
 
 - bump sdk to pull in new rawData trimming logic
