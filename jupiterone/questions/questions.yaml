@@ -1,4 +1,93 @@
 ---
 sourceId: managed:tenable-cloud
 integrationDefinitionId: '${integration_definition_id}'
-questions: []
+questions:
+- id: managed-question-what-tenable-container-images-have-findings
+  title: What tenable container images have findings?
+  description: 
+    Return all Tenable container images have had an assessment identify vulnerabilities.
+    View list of all findings and remediation guidance in the second query.
+  queries:
+  - name: Container Image Findings
+    resultsAre: INFORMATIVE
+    query: |
+      FIND tenable_container AS i 
+        THAT HAS Assessment AS a 
+        THAT IDENTIFIED Finding AS f
+  - name: View Remediation Guidance
+    resultsAre: INFORMATIVE
+    query: |
+      FIND tenable_container AS i 
+        THAT HAS Assessment AS a 
+        THAT IDENTIFIED Finding AS f 
+      RETURN 
+        f.cvssScore AS 'cvssScore',
+        f.severity AS 'Severity', 
+        f.cve AS 'CVE', f.cwe AS 'CWE', 
+        f.remediation AS 'Remediation', 
+        count(f) as '# of Findings' 
+        ORDER BY cvssScore DESC
+  tags:
+  - finding
+  - vuln
+  - container
+  - image
+  - tenable
+- id: managed-question-what-containers-images-have-had-tenable-scans
+  title: What containers images have had tenable scans?
+  description: Return a list of container images assessed by Tenable
+  queries:
+    - query: |
+        FIND tenable_container AS i 
+          THAT HAS Assessment AS a
+        RETURN 
+          i.id AS 'Image ID', 
+          i.name as 'Image Name',
+          i.status as 'Status', 
+          i.platform as 'Platform', 
+          i.repoName as 'Repo Name',
+          count(a) AS '# of Assessments'
+  tags:
+  - finding
+  - vuln
+  - container
+  - image
+  - tenable
+  - assessment
+- id: managed-question-what-are-my-open-tenable-container-findings
+  title: What are my open tenable container findings?
+  description: 
+    Return a list of Tenable container image vulnerabilities identified 
+    in order of severity along with remediation guidance.  
+    View how many container images are impacted by the specific vulnerability 
+    identified in the second query to help identify 
+    which issues are most impactful to development teams today.
+  queries:
+  - name: Finding Results
+    resultsAre: INFORMATIVE
+    query: |
+      FIND tenable_container AS i 
+        THAT HAS Assessment AS a 
+        THAT IDENTIFIED Finding AS f 
+      RETURN 
+        f.cvssScore AS 'cvssScore',f.severity AS 'Severity', 
+        f.cve AS 'CVE', f.cwe AS 'CWE', 
+        f.remediation AS 'Remediation', 
+        count(f) as '# of Findings' ORDER BY cvssScore DESC
+  - name: Which Container Images have the findings?
+    resultsAre: INFORMATIVE
+    query: |
+      FIND tenable_container AS i 
+        THAT HAS Assessment AS a 
+        THAT IDENTIFIED Finding AS f 
+      RETURN 
+        f.cvssScore AS 'cvssScore',f.severity AS 'Severity', 
+        i.name AS 'Image Imapacted', 
+        count(f) AS '# of Findings' 
+        ORDER BY cvssScore DESC
+  tags:
+  - finding
+  - vuln
+  - container
+  - image
+  - tenable
