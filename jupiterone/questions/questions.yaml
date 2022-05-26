@@ -83,6 +83,7 @@ questions:
       RETURN 
         f.cvssScore AS 'cvssScore',f.severity AS 'Severity', 
         i.name AS 'Image Imapacted', 
+        i.id AS 'Image ID',
         count(f) AS '# of Findings' 
         ORDER BY cvssScore DESC
   tags:
