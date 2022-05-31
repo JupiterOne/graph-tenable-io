@@ -127,9 +127,9 @@ export function createAssetEntity(
         servicenowSysid: data.servicenow_sysid,
         // bigfix
         bigfixAssetId: data.bigfix_asset_id,
+        tags: data.tags?.map((tag) => `${tag.key}=${tag.value}`),
         // TODO Add sources, tags, networkInterfaces
         // sources: data.sources,
-        // tags: data.tags,
         // networkInterfaces: data.network_interfaces,
       },
     },
@@ -302,13 +302,23 @@ export function createVulnerabilityEntity(
         name: vuln.plugin.name,
         // additional asset properties can be added
         'asset.uuid': vuln.asset.uuid,
+        assetHostname: vuln.asset.hostname,
+        assetIpv4: vuln.asset.ipv4,
+        assetDeviceType: vuln.asset.device_type,
+        // TODO (INT-3768) add asset.mac_address to typings of tenable client, it is in api response
+        //assetMacAddress: vuln.asset.mac_address
+        // TODO (INT-3768) add agent_uuid to typings of tenable client, it is in api response
+        // agentId: vuln.asset.agent_uuid,
         first_found: vuln.first_found,
         last_found: vuln.last_found,
         // additional plugin properties can be added
         'plugin.id': vuln.plugin.id,
+        stigSeverity: vuln.plugin.stig_severity,
         'port.port': vuln.port.port,
         'port.protocol': vuln.port.protocol,
         'port.service': vuln.port.service,
+        vprScore: numericPriority,
+        riskFactor: vuln.plugin.risk_factor,
         // additional scan properties can be added
         'scan.uuid': vuln.scan.uuid,
         'scan.started_at': vuln.scan.started_at,
