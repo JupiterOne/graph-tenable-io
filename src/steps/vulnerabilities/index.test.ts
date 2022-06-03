@@ -29,6 +29,15 @@ import { v4 as uuid } from 'uuid';
 import { createAssetEntity, createVulnerabilityEntity } from './converters';
 import { filterGraphObjects } from '../../../test/helpers/filterGraphObjects';
 
+jest.mock('@lifeomic/attempt', () => {
+  // you MUST comment this block and add a large timeout (1 million ms to be safe) when re-recording tests
+  const attempt = jest.requireActual('@lifeomic/attempt');
+  return {
+    ...attempt,
+    sleep: () => Promise.resolve(),
+  };
+});
+
 let recording: Recording;
 
 afterEach(async () => {
@@ -37,20 +46,34 @@ afterEach(async () => {
   }
 });
 
+function generatePathnameFunction(toInsert) {
+  return (pathname, req) => {
+    return pathname.replace(
+      /\/export\/([0-9]|[a-z]|-)*\//g,
+      `/export/${toInsert}/`,
+    );
+  };
+}
+
 describe('fetch-assets', () => {
   test('success', async () => {
     recording = setupTenableRecording({
       directory: __dirname,
       name: 'fetch-assets',
       options: {
-        matchRequestsBy: getTenableMatchRequestsBy(config),
+        matchRequestsBy: getTenableMatchRequestsBy(config, {
+          url: {
+            pathname: generatePathnameFunction(
+              'd8ba52b9-829d-415d-bbf3-97efd375a187', // you MUST change this to the new export uuid if you re-record
+            ),
+          },
+        }),
       },
     });
 
     const context = createMockStepExecutionContext({
       instanceConfig: config,
     });
-
     await fetchAssets(context);
 
     const assetEntities = context.jobState.collectedEntities;
@@ -86,7 +109,14 @@ describe('fetch-assets', () => {
         directory: __dirname,
         name: 'fetch-assets::mapped-relationships::azure_vm',
         options: {
-          matchRequestsBy: getTenableMatchRequestsBy(config),
+          matchRequestsBy: getTenableMatchRequestsBy(config, {
+            url: {
+              pathname: generatePathnameFunction(
+                // you MUST change this to new export uuid if you re-record
+                '1cbc9795-bd70-434a-92e1-b69db929a274',
+              ),
+            },
+          }),
         },
       });
 
@@ -140,7 +170,14 @@ describe('fetch-vulnerabilities', () => {
       directory: __dirname,
       name: 'fetch-vulnerabilities',
       options: {
-        matchRequestsBy: getTenableMatchRequestsBy(config),
+        matchRequestsBy: getTenableMatchRequestsBy(config, {
+          url: {
+            pathname: generatePathnameFunction(
+              // you MUST change this to new export uuid if you re-record
+              'f36739a5-d033-4ab5-b623-c97913251ac4',
+            ),
+          },
+        }),
       },
     });
 
@@ -151,12 +188,12 @@ describe('fetch-vulnerabilities', () => {
     await fetchVulnerabilities(context);
 
     const vulnerabilityEntities = context.jobState.collectedEntities;
+    expect(vulnerabilityEntities.length).toBe(58);
 
-    // TODO record test with vulnerabilityEntities.length > 0
-    // expect(vulnerabilityEntities.length).toBeGreaterThan(0);
+    /*     // TODO (INT-4010): add required props
     expect(vulnerabilityEntities).toMatchGraphObjectSchema({
       _class: Entities.VULNERABILITY._class,
-    });
+    }); */
   });
 });
 
@@ -191,7 +228,6 @@ describe('build-vuln-cve-relationships', () => {
     });
 
     await buildVulnerabilityCveRelationships(context);
-
     expect(context.jobState.collectedEntities).toHaveLength(0);
 
     expect(context.jobState.collectedRelationships).toHaveLength(1);
