@@ -8,6 +8,20 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.4.0] 2022-06-03
+
+- add the following properties
+  - on asset entity
+    - tags
+  - on vulnerability entity
+    - assetHostname
+    - assetIpv4
+    - assetDeviceType
+    - stigSeverity
+    - vprScore
+    - riskFactor
+- add tests using vulnerability data form tenable vulnerability export api
+
 ## [8.3.9] 2022-05-24
 
 - bump sdk to pull in more rawData trimming improvements
