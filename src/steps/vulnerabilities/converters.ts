@@ -5,10 +5,7 @@ import {
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
 import { Entities } from '../../constants';
-import {
-  AssetExport,
-  VulnerabilityExport,
-} from '@jupiterone/tenable-client-nodejs';
+import { AssetExport, VulnerabilityExport } from '../../tenable/client';
 import { generateEntityKey } from '../../utils/generateKey';
 import getTime from '../../utils/getTime';
 import { TargetEntity } from '../../utils/targetEntities';

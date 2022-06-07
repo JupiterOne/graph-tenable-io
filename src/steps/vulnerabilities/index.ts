@@ -13,10 +13,7 @@ import {
   StepIds,
 } from '../../constants';
 import TenableClient from '../../tenable/TenableClient';
-import {
-  AssetExport,
-  VulnerabilityExport,
-} from '@jupiterone/tenable-client-nodejs';
+import { AssetExport, VulnerabilityExport } from '../../tenable/client';
 import {
   createTargetHostEntity,
   createAssetEntity,

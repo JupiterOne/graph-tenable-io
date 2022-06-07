@@ -9,10 +9,7 @@ import {
 } from '../../test/recording';
 
 import TenableClient from './TenableClient';
-import {
-  AssetExport,
-  VulnerabilityExport,
-} from '@jupiterone/tenable-client-nodejs';
+import { AssetExport, VulnerabilityExport } from './client';
 
 let recording: Recording;
 
