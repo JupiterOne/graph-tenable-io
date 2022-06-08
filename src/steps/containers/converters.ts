@@ -5,7 +5,7 @@ import {
   ContainerFinding,
   ContainerMalware,
   ContainerUnwantedProgram,
-} from '@jupiterone/tenable-client-nodejs';
+} from '../../tenable/client';
 import { Account } from '../../types';
 import { normalizeCVSS2Severity } from '../vulnerabilities/converters';
 import {

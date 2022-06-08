@@ -3,7 +3,7 @@ import Client, {
   ExportStatus,
   TenableRepsonse,
   VulnerabilityState,
-} from '@jupiterone/tenable-client-nodejs';
+} from './client';
 
 import {
   IntegrationError,
@@ -26,7 +26,7 @@ import {
   User,
   VulnerabilitiesExportStatusResponse,
   VulnerabilityExport,
-} from '@jupiterone/tenable-client-nodejs';
+} from './client';
 import { sleep } from '@lifeomic/attempt';
 import pMap from 'p-map';
 import { addMinutes, getUnixTime, isAfter, sub } from 'date-fns';

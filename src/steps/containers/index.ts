@@ -16,7 +16,7 @@ import {
 } from './converters';
 import { getAccount } from '../../initializeContext';
 import TenableClient from '../../tenable/TenableClient';
-import { Container } from '@jupiterone/tenable-client-nodejs';
+import { Container } from '../../tenable/client';
 import {
   createAccountContainerRelationship,
   createContainerEntity,

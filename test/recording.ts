@@ -22,7 +22,7 @@ export function setupTenableRecording(input: SetupRecordingInput) {
 function redactValuesDeep(obj, keysMap: Map<String, any>) {
   return _.transform(obj, function (result: any, value: any, key: string) {
     // transform to a new object
-    let newValue = keysMap.get(key) || value; // if the key is in keysMap use the replacement value, if not use the original key's value
+    const newValue = keysMap.get(key) || value; // if the key is in keysMap use the replacement value, if not use the original key's value
     if (_.isArray(value)) {
       if (keysMap.has(key)) {
         // the key whose value is array is to be redacted, set each element to target redacted value

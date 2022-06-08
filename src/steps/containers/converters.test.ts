@@ -4,7 +4,7 @@ import {
   ContainerFinding,
   ContainerMalware,
   ContainerUnwantedProgram,
-} from '@jupiterone/tenable-client-nodejs';
+} from '../../tenable/client';
 import { Entities } from '../../constants';
 import { Account } from '../../types';
 import {

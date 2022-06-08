@@ -11,7 +11,7 @@ import {
   VulnerabilityExportPlugin,
   VulnerabilityExportPort,
   VulnerabilityExportScan,
-} from '@jupiterone/tenable-client-nodejs';
+} from '../../tenable/client';
 import {
   buildAssetVulnerabilityRelationships,
   buildVulnerabilityCveRelationships,

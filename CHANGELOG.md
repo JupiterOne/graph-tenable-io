@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+- move @jupiterone/tenable-client-nodejs to this repo
+
 ## [8.4.0] 2022-06-03
 
 - add the following properties
