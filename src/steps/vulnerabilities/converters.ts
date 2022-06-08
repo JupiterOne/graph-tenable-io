@@ -302,10 +302,8 @@ export function createVulnerabilityEntity(
         assetHostname: vuln.asset.hostname,
         assetIpv4: vuln.asset.ipv4,
         assetDeviceType: vuln.asset.device_type,
-        // TODO (INT-3768) add asset.mac_address to typings of tenable client, it is in api response
-        //assetMacAddress: vuln.asset.mac_address
-        // TODO (INT-3768) add agent_uuid to typings of tenable client, it is in api response
-        // agentId: vuln.asset.agent_uuid,
+        assetMacAddress: vuln.asset.mac_address,
+        agentId: vuln.asset.agent_uuid,
         first_found: vuln.first_found,
         last_found: vuln.last_found,
         // additional plugin properties can be added
