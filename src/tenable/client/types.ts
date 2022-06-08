@@ -562,6 +562,8 @@ export interface VulnerabilityExportAsset {
   operating_system: string[];
   network_id: string;
   tracked: boolean;
+  mac_address: string;
+  agent_uuid: string;
 }
 
 export interface VulnerabilityExportPlugin {

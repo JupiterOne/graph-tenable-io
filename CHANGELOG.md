@@ -9,6 +9,7 @@ and this project adheres to
 ## [Unreleased]
 
 - move @jupiterone/tenable-client-nodejs to this repo
+- add assetMacAddress and agentId to vulnerability entity
 
 ## [8.4.0] 2022-06-03
 
