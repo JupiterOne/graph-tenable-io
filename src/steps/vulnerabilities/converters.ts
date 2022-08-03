@@ -51,6 +51,7 @@ export function createAssetEntity(
   } catch (err) {
     logger.warn({ err }, 'Encountered error when checking entity size');
   }
+
   return createIntegrationEntity({
     entityData: {
       source: data,
@@ -72,8 +73,9 @@ export function createAssetEntity(
         terminatedBy: data.terminated_by,
         updatedAt: parseTimePropertyValue(data.updated_at),
         deletedAt: parseTimePropertyValue(data.deleted_at),
-        firstSeen: parseTimePropertyValue(data.first_seen),
-        lastSeen: parseTimePropertyValue(data.last_seen),
+        // UI will not convert these two to human readable date, do not use epoch
+        firstSeen: data.first_seen,
+        lastSeen: data.last_seen,
         firstScanTime: parseTimePropertyValue(data.first_scan_time),
         lastScanTime: parseTimePropertyValue(data.last_scan_time),
         lastAuthenticatedScanDate: parseTimePropertyValue(
