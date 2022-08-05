@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [8.5.1] 2022-08-05
+
 - fix tenable_asset `firstSeen` and `lastSeen` properties to be human-readable
 
 ## [8.5.0] 2022-06-08
