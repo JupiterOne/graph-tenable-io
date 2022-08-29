@@ -92,3 +92,22 @@ questions:
   - container
   - image
   - tenable
+
+- id: managed-question-which-tenable-assets-were-last-scanned?
+  title: Which Tenable assets were last reported scanned.
+  description: 
+    Return a list of the latest Tenable asset scans.
+  queries:
+  - name: Latest Tenable Asset Scans
+    resultsAre: INFORMATIVE
+    query: |
+      FIND UNIQUE tenable_asset THAT IS tenable_asset AS last
+      RETURN
+        last.displayName AS "Display Name", last.agentUuid,
+        last.lastAuthenticatedScanDate AS "Last Authenticated Scan Date",
+        last.lastLicensedScanDate AS "Last Licensed Scan Date",
+        last.lastScanId AS "Last Scan ID", last.lastScanTime AS "Last ScanTime", 
+        last.lastScheduleId AS "Last Scheduled"
+  tags:
+  - assets
+  - tenable
