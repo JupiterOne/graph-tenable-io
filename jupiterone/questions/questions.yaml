@@ -93,8 +93,8 @@ questions:
   - image
   - tenable
 
-- id: managed-question-which-tenable-assets-were-last-scanned?
-  title: Which Tenable assets were last reported scanned.
+- id: managed-question-which-tenable-assets-were-last-scanned
+  title: Which Tenable assets were time stamped and scans reported?
   description: 
     Return a list of the latest Tenable asset scans.
   queries:
