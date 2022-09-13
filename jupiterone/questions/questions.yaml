@@ -103,7 +103,7 @@ questions:
     query: |
       FIND UNIQUE tenable_asset THAT IS tenable_asset AS last
       RETURN
-        last.displayName AS "Display Name", last.agentUuid,
+        last.displayName AS "Display Name", last.agentUuid AS "Agent Uuid",
         last.lastAuthenticatedScanDate AS "Last Authenticated Scan Date",
         last.lastLicensedScanDate AS "Last Licensed Scan Date",
         last.lastScanId AS "Last Scan ID", last.lastScanTime AS "Last ScanTime", 
