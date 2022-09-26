@@ -1,55 +1,150 @@
 import { Entities, Relationships } from '../../constants';
 import {
-  Container,
+  ContainerImage,
   ContainerReport,
   ContainerFinding,
   ContainerMalware,
   ContainerUnwantedProgram,
+  ContainerRepository,
+  Service,
 } from '../../tenable/client';
 import { Account } from '../../types';
-import { normalizeCVSS2Severity } from '../vulnerabilities/converters';
+import { getSeverity } from '../vulnerabilities/converters';
 import {
   generateEntityKey,
   generateRelationshipKey,
 } from '../../utils/generateKey';
 import getTime from '../../utils/getTime';
+import { parseTimePropertyValue } from '@jupiterone/integration-sdk-core';
+import { getServiceKey } from '../service/converters';
 
-export function createContainerEntity(container: Container) {
+function generateImageKey(image: ContainerImage) {
+  return `${image.repoName}:${image.name}:${image.tag}`;
+}
+
+export function createContainerRepositoryEntity(repo: ContainerRepository) {
   return {
-    _key: generateEntityKey(Entities.CONTAINER._type, container.id),
-    _type: Entities.CONTAINER._type,
-    _class: Entities.CONTAINER._class,
-    _rawData: [{ name: 'default', rawData: container }],
-    id: container.id,
-    repoId: container.repo_id,
-    platform: container.platform,
-    displayName: container.name,
-    name: container.name,
-    size: container.size,
-    digest: container.digest,
-    repoName: container.repo_name,
-    score: container.score,
-    status: container.status,
-    createdAt: getTime(container.created_at)!,
-    updatedAt: getTime(container.updated_at)!,
-    numberOfVulnerabilities: container.number_of_vulnerabilities,
+    _key: generateEntityKey(Entities.CONTAINER_REPOSITORY._type, repo.name),
+    _type: Entities.CONTAINER_REPOSITORY._type,
+    _class: Entities.CONTAINER_REPOSITORY._class,
+    _rawData: [{ name: 'default', rawData: repo }],
+    name: repo.name,
+    displayName: repo.name,
+    imagesCount: repo.imagesCount,
+    labelsCount: repo.labelsCount,
+    vulnerabilitiesCount: repo.vulnerabilitiesCount,
+    malwareCount: repo.malwareCount,
+    pullCount: repo.pullCount,
+    pushCount: repo.pushCount,
+    totalBytes: repo.totalBytes,
   };
 }
 
-export function createAccountContainerRelationship(
+export function createContainerImageEntity(image: ContainerImage) {
+  return {
+    _key: generateEntityKey(
+      Entities.CONTAINER_IMAGE._type,
+      generateImageKey(image),
+    ),
+    _type: Entities.CONTAINER_IMAGE._type,
+    _class: Entities.CONTAINER_IMAGE._class,
+    _rawData: [{ name: 'default', rawData: image }],
+    repoId: image.repoId,
+    repoName: image.repoName,
+    name: image.name,
+    displayName: image.name,
+    tag: image.tag,
+    digest: image.digest,
+    hasReport: image.hasReport,
+    reportUrl: image.reportUrl,
+    hasInventory: image.hasInventory,
+    status: image.status,
+    lastJobStatus: image.lastJobStatus,
+    score: image.score,
+    numberOfVulns: image.numberOfVulns,
+    numberOfMalware: image.numberOfMalware,
+    pullCount: image.pullCount,
+    pushCount: image.pushCount,
+    source: image.source,
+    createdAt: parseTimePropertyValue(image.createdAt),
+    updatedAt: parseTimePropertyValue(image.updatedAt),
+    finishedAt: parseTimePropertyValue(image.finishedAt),
+    uploadedAt: parseTimePropertyValue(image.uploadedAt),
+    lastScanned: parseTimePropertyValue(image.lastScanned),
+    imageHash: image.imageHash,
+    size: image.size,
+    'layers.size': image.layers.map((img) => img.size),
+    'layers.digest': image.layers.map((img) => img.digest),
+    os: image.os,
+    osVersion: image.osVersion,
+  };
+}
+
+export function createAccountContainerRepositoryRelationship(
   account: Account,
-  container: Container,
+  repo: ContainerRepository,
 ) {
   const parentKey = generateEntityKey(Entities.ACCOUNT._type, account.id);
-  const childKey = generateEntityKey(Entities.CONTAINER._type, container.id);
+  const childKey = generateEntityKey(
+    Entities.CONTAINER_REPOSITORY._type,
+    repo.name,
+  );
   const relationKey = generateRelationshipKey(
     parentKey,
-    Relationships.ACCOUNT_HAS_CONTAINER._class,
+    Relationships.ACCOUNT_HAS_CONTAINER_REPOSITORY._class,
     childKey,
   );
   const relationship = {
-    _class: Relationships.ACCOUNT_HAS_CONTAINER._class,
-    _type: Relationships.ACCOUNT_HAS_CONTAINER._type,
+    _class: Relationships.ACCOUNT_HAS_CONTAINER_REPOSITORY._class,
+    _type: Relationships.ACCOUNT_HAS_CONTAINER_REPOSITORY._type,
+    _fromEntityKey: parentKey,
+    _key: relationKey,
+    _toEntityKey: childKey,
+  };
+  return relationship;
+}
+
+export function createServiceContainerImageRelationship(
+  service: Service,
+  image: ContainerImage,
+) {
+  const parentKey = getServiceKey(service);
+  const childKey = generateEntityKey(
+    Entities.CONTAINER_IMAGE._type,
+    generateImageKey(image),
+  );
+  const relationKey = generateRelationshipKey(
+    parentKey,
+    Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._class,
+    childKey,
+  );
+  const relationship = {
+    _class: Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._class,
+    _type: Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._type,
+    _fromEntityKey: parentKey,
+    _key: relationKey,
+    _toEntityKey: childKey,
+  };
+  return relationship;
+}
+
+export function createAccountContainerImageRelationship(
+  account: Account,
+  image: ContainerImage,
+) {
+  const parentKey = generateEntityKey(Entities.ACCOUNT._type, account.id);
+  const childKey = generateEntityKey(
+    Entities.CONTAINER_IMAGE._type,
+    generateImageKey(image),
+  );
+  const relationKey = generateRelationshipKey(
+    parentKey,
+    Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._class,
+    childKey,
+  );
+  const relationship = {
+    _class: Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._class,
+    _type: Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,
@@ -83,23 +178,26 @@ export function createReportEntity(report: ContainerReport) {
 }
 
 export function createContainerReportRelationship(
-  container: Container,
+  image: ContainerImage,
   report: ContainerReport,
 ) {
-  const parentKey = generateEntityKey(Entities.CONTAINER._type, container.id);
+  const parentKey = generateEntityKey(
+    Entities.CONTAINER_IMAGE._type,
+    generateImageKey(image),
+  );
   const childKey = generateEntityKey(
     Entities.CONTAINER_REPORT._type,
     report.sha256,
   );
   const relationKey = generateRelationshipKey(
     parentKey,
-    Relationships.CONTAINER_HAS_REPORT._class,
+    Relationships.CONTAINER_IMAGE_HAS_REPORT._class,
     childKey,
   );
 
   const relationship = {
-    _class: Relationships.CONTAINER_HAS_REPORT._class,
-    _type: Relationships.CONTAINER_HAS_REPORT._type,
+    _class: Relationships.CONTAINER_IMAGE_HAS_REPORT._class,
+    _type: Relationships.CONTAINER_IMAGE_HAS_REPORT._type,
     _fromEntityKey: parentKey,
     _key: relationKey,
     _toEntityKey: childKey,
@@ -109,22 +207,23 @@ export function createContainerReportRelationship(
 
 export function createContainerFindingEntity(finding: ContainerFinding) {
   const { nvdFinding } = finding;
-  const { numericSeverity, severity } = normalizeCVSS2Severity(
-    nvdFinding.cvss_score,
-  );
+  const numericSeverity = Number(nvdFinding.cvss_score);
+  const severity = getSeverity(numericSeverity);
 
   return {
     _key: containerFindingEntityKey(finding),
     _type: Entities.CONTAINER_FINDING._type,
     _class: Entities.CONTAINER_FINDING._class,
     _rawData: [{ name: 'default', rawData: finding }],
+    category: nvdFinding.access_vector,
     displayName: displayName(finding),
     referenceId: nvdFinding.reference_id,
     cve: nvdFinding.cve,
-    publishedDate: nvdFinding.published_date,
-    modifiedDate: nvdFinding.modified_date,
+    publishedDate: parseTimePropertyValue(nvdFinding.published_date),
+    modifiedDate: parseTimePropertyValue(nvdFinding.modified_date),
     description: nvdFinding.description,
     cvssScore: nvdFinding.cvss_score,
+    vector: nvdFinding.cvss_vector,
     accessVector: nvdFinding.access_vector,
     accessComplexity: nvdFinding.access_complexity,
     auth: nvdFinding.auth,

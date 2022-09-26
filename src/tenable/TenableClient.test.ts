@@ -131,40 +131,6 @@ describe.skip('TenableClient data fetch', () => {
     nockDone();
   });
 
-  test('fetchContainers ok', async () => {
-    const { nockDone } = await nock.back('containers-ok.json', {
-      before: prepareScope,
-    });
-
-    const response = await client.fetchContainers();
-    expect(response.length).not.toEqual(0);
-    nockDone();
-  });
-
-  test('fetchReportByImageDigest image with vulnerabilities', async () => {
-    const { nockDone } = await nock.back('container-report-vulns.json', {
-      before: prepareScope,
-    });
-
-    const response = await client.fetchReportByImageDigest(
-      'sha256:5887b9b394294f66c2f8ef1b4bdddbdd7fcc4512df5ee470c5e74f6e8ed603c6',
-    );
-    expect(response).not.toEqual({});
-    nockDone();
-  });
-
-  test('fetchReportByImageDigest image with no vulnerabilities', async () => {
-    const { nockDone } = await nock.back('container-report-no-vulns.json', {
-      before: prepareScope,
-    });
-
-    const response = await client.fetchReportByImageDigest(
-      'sha256:1edb77942782fc99d6b1ad53c78dd602ae5ee4f26e49edb49555faf749574ae9',
-    );
-    expect(response).not.toEqual({});
-    nockDone();
-  });
-
   afterAll(() => {
     nock.restore();
   });

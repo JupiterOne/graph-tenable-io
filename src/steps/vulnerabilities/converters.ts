@@ -7,7 +7,6 @@ import {
 import { Entities } from '../../constants';
 import { AssetExport, VulnerabilityExport } from '../../tenable/client';
 import { generateEntityKey } from '../../utils/generateKey';
-import getTime from '../../utils/getTime';
 import { TargetEntity } from '../../utils/targetEntities';
 
 interface KeyAndSize {
@@ -297,7 +296,18 @@ export function createVulnerabilityEntity(
         ),
         _type: Entities.VULNERABILITY._type,
         _class: Entities.VULNERABILITY._class,
+        // schema
         name: vuln.plugin.name,
+        category: vuln.asset.device_type,
+        status: vuln.state,
+        severity: vuln.plugin.risk_factor,
+        numericSeverity: vuln.plugin.cvss3_base_score,
+        vector: vuln.plugin.cvss3_vector?.raw || '',
+        // Add targets for mapping rules.
+        targets: targetsForAsset,
+        open: vuln.state === 'OPEN',
+        references: vuln.plugin.see_also,
+
         // additional asset properties can be added
         'asset.uuid': vuln.asset.uuid,
         assetHostname: vuln.asset.hostname,
@@ -305,8 +315,8 @@ export function createVulnerabilityEntity(
         assetDeviceType: vuln.asset.device_type,
         assetMacAddress: vuln.asset.mac_address,
         agentId: vuln.asset.agent_uuid,
-        first_found: vuln.first_found,
-        last_found: vuln.last_found,
+        firstFound: parseTimePropertyValue(vuln.first_found),
+        lastFound: parseTimePropertyValue(vuln.last_found),
         // additional plugin properties can be added
         'plugin.id': vuln.plugin.id,
         stigSeverity: vuln.plugin.stig_severity,
@@ -317,31 +327,27 @@ export function createVulnerabilityEntity(
         riskFactor: vuln.plugin.risk_factor,
         // additional scan properties can be added
         'scan.uuid': vuln.scan.uuid,
-        'scan.started_at': vuln.scan.started_at,
-        'scan.completed_at': vuln.scan.completed_at,
-        severity: vuln.severity,
-        severity_default_id: vuln.severity_default_id,
-        severity_id: vuln.severity_id,
-        severity_modification_type: vuln.severity_modification_type,
+        'scan.startedAt': parseTimePropertyValue(vuln.scan.started_at),
+        'scan.completedAt': parseTimePropertyValue(vuln.scan.completed_at),
+        severityDefaultId: vuln.severity_default_id,
+        severityId: vuln.severity_id,
+        severityModificationType: vuln.severity_modification_type,
         state: vuln.state,
-        exploit_available: vuln.plugin.exploit_available,
-        exploit_framework_canvas: vuln.plugin.exploit_framework_canvas,
-        exploit_framework_core: vuln.plugin.exploit_framework_core,
-        exploit_framework_d2_elliot: vuln.plugin.exploit_framework_d2_elliot,
-        exploit_framework_exploithub: vuln.plugin.exploit_framework_exploithub,
-        exploit_framework_metasploit: vuln.plugin.exploit_framework_metasploit,
-        exploitability_ease: vuln.plugin.exploitability_ease,
-        exploited_by_malware: vuln.plugin.exploited_by_malware,
-        exploited_by_nessus: vuln.plugin.exploited_by_nessus,
-
-        // Add targets for mapping rules.
-        targets: targetsForAsset,
+        exploitAvailable: vuln.plugin.exploit_available,
+        exploitFrameworkCanvas: vuln.plugin.exploit_framework_canvas,
+        exploitFrameworkCore: vuln.plugin.exploit_framework_core,
+        exploitFrameworkD2Elliot: vuln.plugin.exploit_framework_d2_elliot,
+        exploitFrameworkExploithub: vuln.plugin.exploit_framework_exploithub,
+        exploitFrameworkMetasploit: vuln.plugin.exploit_framework_metasploit,
+        exploitabilityEase: vuln.plugin.exploitability_ease,
+        exploitedByMalware: vuln.plugin.exploited_by_malware,
+        exploitedByNessus: vuln.plugin.exploited_by_nessus,
 
         // data model properties
         numericPriority,
         priority,
-        firstSeenOn: getTime(vuln.first_found),
-        lastSeenOn: getTime(vuln.last_found),
+        firstSeenOn: parseTimePropertyValue(vuln.first_found),
+        lastSeenOn: parseTimePropertyValue(vuln.last_found),
       },
     },
   });

@@ -5,24 +5,24 @@ import { StepSpec } from '../types';
 export const containerSpec: StepSpec<TenableIntegrationConfig>[] = [
   {
     /**
-     * ENDPOINT: https://cloud.tenable.com/container-security/api/v1/container/list
+     * ENDPOINT: https://cloud.tenable.com/container-security/api/v2/repositories
      * PATTERN: Fetch Entities
      */
-    id: 'step-containers',
-    name: 'Fetch Containers',
+    id: 'step-container-repositories',
+    name: 'Fetch Container Repositories',
     entities: [
       {
-        resourceName: 'Container',
-        _class: ['Image'],
-        _type: 'tenable_container',
+        resourceName: 'Container Repository',
+        _class: ['Repository'],
+        _type: 'tenable_container_repository',
       },
     ],
     relationships: [
       {
-        _type: 'tenable_account_has_container',
+        _type: 'tenable_account_has_container_repository',
         sourceType: 'tenable_account',
         _class: RelationshipClass.HAS,
-        targetType: 'tenable_container',
+        targetType: 'tenable_container_repository',
       },
     ],
     dependsOn: ['step-account'],
@@ -30,7 +30,56 @@ export const containerSpec: StepSpec<TenableIntegrationConfig>[] = [
   },
   {
     /**
-     * ENDPOINT: https://cloud.tenable.com/container-security/api/v1/reports/by_image_digest?image_digest=${digestId}
+     * ENDPOINT: https://cloud.tenable.com/container-security/api/v2/images
+     * PATTERN: Fetch Entities
+     */
+    id: 'step-container-images',
+    name: 'Fetch Container Images',
+    entities: [
+      {
+        resourceName: 'Container Image',
+        _class: ['Image'],
+        _type: 'tenable_container_image',
+      },
+    ],
+    relationships: [
+      {
+        _type: 'tenable_account_has_container_image',
+        sourceType: 'tenable_account',
+        _class: RelationshipClass.HAS,
+        targetType: 'tenable_container_image',
+      },
+      {
+        _type: 'tenable_scanner_scans_container_image',
+        sourceType: 'tenable_scanner',
+        _class: RelationshipClass.SCANS,
+        targetType: 'tenable_container_image',
+      },
+    ],
+    dependsOn: ['step-account', 'step-service'],
+    implemented: true,
+  },
+  {
+    /**
+     * PATTERN: Fetch Child Relationships
+     */
+    id: 'build-repository-images-relationships',
+    name: 'Build Repository Images Relationships',
+    entities: [],
+    relationships: [
+      {
+        _type: 'tenable_container_repository_has_image',
+        sourceType: 'tenable_container_repository',
+        _class: RelationshipClass.HAS,
+        targetType: 'tenable_container_image',
+      },
+    ],
+    dependsOn: ['step-container-images', 'step-container-repositories'],
+    implemented: true,
+  },
+  {
+    /**
+     * ENDPOINT: https://cloud.tenable.com/container-security/api/v2/reports/${container_repository}/${container_image}/${container_image_tag}
      * PATTERN: Fetch Child Entities
      */
     id: 'step-container-reports',
@@ -59,10 +108,28 @@ export const containerSpec: StepSpec<TenableIntegrationConfig>[] = [
     ],
     relationships: [
       {
-        _type: 'tenable_container_has_container_report',
-        sourceType: 'tenable_container',
+        _type: 'tenable_container_image_has_report',
+        sourceType: 'tenable_container_image',
         _class: RelationshipClass.HAS,
         targetType: 'tenable_container_report',
+      },
+      {
+        _type: 'tenable_container_image_has_finding',
+        sourceType: 'tenable_container_image',
+        _class: RelationshipClass.HAS,
+        targetType: 'tenable_container_finding',
+      },
+      {
+        _type: 'tenable_container_image_has_malware',
+        sourceType: 'tenable_container_image',
+        _class: RelationshipClass.HAS,
+        targetType: 'tenable_container_malware',
+      },
+      {
+        _type: 'tenable_container_image_has_unwanted_program',
+        sourceType: 'tenable_container_image',
+        _class: RelationshipClass.HAS,
+        targetType: 'tenable_container_unwanted_program',
       },
       {
         _type: 'tenable_container_report_identified_finding',
@@ -83,7 +150,7 @@ export const containerSpec: StepSpec<TenableIntegrationConfig>[] = [
         targetType: 'tenable_container_unwanted_program',
       },
     ],
-    dependsOn: ['step-containers'],
+    dependsOn: ['step-container-images'],
     implemented: true,
   },
 ];

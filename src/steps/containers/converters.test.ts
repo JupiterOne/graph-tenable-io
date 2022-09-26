@@ -1,15 +1,16 @@
 import {
-  Container,
+  ContainerImage,
   ContainerReport,
   ContainerFinding,
   ContainerMalware,
   ContainerUnwantedProgram,
+  ContainerRepository,
 } from '../../tenable/client';
 import { Entities } from '../../constants';
 import { Account } from '../../types';
 import {
-  createContainerEntity,
-  createAccountContainerRelationship,
+  createContainerImageEntity,
+  createAccountContainerImageRelationship,
   createReportEntity,
   createContainerReportRelationship,
   createContainerFindingEntity,
@@ -18,76 +19,136 @@ import {
   createReportMalwareRelationship,
   createUnwantedProgramEntity,
   createReportUnwantedProgramRelationship,
+  createContainerRepositoryEntity,
 } from './converters';
+import { generateEntityKey } from '../../utils/generateKey';
 
-test('convert container entity', () => {
-  const container: Container = {
-    number_of_vulnerabilities: '0',
-    name: 'graph-tenable-app',
-    size: '2420',
-    digest:
-      'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
-    repo_name: 'graph-tenable-app',
-    score: '0.0',
-    id: '6549098203417933758',
-    status: 'ready',
-    created_at: '2019-04-17T10:26:58.509Z',
-    repo_id: '907096124672081622',
-    platform: 'Docker',
-    updated_at: '2019-04-17T23:31:28.996Z',
-  };
+const repo: ContainerRepository = {
+  name: 'library',
+  imagesCount: 2,
+  labelsCount: 2,
+  vulnerabilitiesCount: 174,
+  malwareCount: 0,
+  pullCount: 0,
+  pushCount: 5,
+  totalBytes: 352035549,
+};
 
-  expect(createContainerEntity(container)).toEqual({
-    _class: Entities.CONTAINER._class,
-    _key: 'tenable_container_6549098203417933758',
-    _type: Entities.CONTAINER._type,
-    _rawData: [{ name: 'default', rawData: container }],
-    createdAt: 1555496818509,
-    digest:
-      'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
-    displayName: 'graph-tenable-app',
-    id: '6549098203417933758',
-    name: 'graph-tenable-app',
-    numberOfVulnerabilities: '0',
-    platform: 'Docker',
-    repoId: '907096124672081622',
-    repoName: 'graph-tenable-app',
-    score: '0.0',
-    size: '2420',
-    status: 'ready',
-    updatedAt: 1555543888996,
+const container: ContainerImage = {
+  repoId: '5647947539604158566',
+  repoName: 'library',
+  name: 'alpine',
+  tag: 'latest',
+  digest:
+    'sha256:d259bb12b9be326d0368131b35710fa5243b90751798888be566bf35cadaf2d2',
+  hasReport: true,
+  hasInventory: false,
+  status: 'scanned',
+  lastJobStatus: 'completed',
+  score: 0,
+  numberOfVulns: 0,
+  numberOfMalware: 0,
+  pullCount: '0',
+  pushCount: '1',
+  source: 'pushed',
+  createdAt: '2021-06-22T14:32:30.402Z',
+  updatedAt: '2022-09-25T12:47:11.814Z',
+  finishedAt: '2022-09-25T12:47:11.770Z',
+  imageHash: 'd4ff818577bc',
+  size: '528',
+  layers: [
+    {
+      size: 2811478,
+      digest:
+        'sha256:5843afab387455b37944e709ee8c78d7520df80f8d01cf7f861aae63beeddb6b',
+    },
+  ],
+  os: 'Alpine',
+  osVersion: '3.14.0',
+  repository: 'library',
+  riskScore: 0,
+  reportUrl:
+    '/container-security/api/v1/reports/by_image_digest?sha256:d259bb12b9be326d0368131b35710fa5243b90751798888be566bf35cadaf2d2',
+  uploadedAt: '2021-06-22T14:32:30.402Z',
+  lastScanned: '2022-09-25T12:47:11.770Z',
+};
+
+test('convert container repository entity', () => {
+  expect(createContainerRepositoryEntity(repo)).toEqual({
+    _key: generateEntityKey(Entities.CONTAINER_REPOSITORY._type, repo.name),
+    _type: Entities.CONTAINER_REPOSITORY._type,
+    _class: Entities.CONTAINER_REPOSITORY._class,
+    _rawData: [{ name: 'default', rawData: repo }],
+    name: 'library',
+    displayName: 'library',
+    imagesCount: 2,
+    labelsCount: 2,
+    vulnerabilitiesCount: 174,
+    malwareCount: 0,
+    pullCount: 0,
+    pushCount: 5,
+    totalBytes: 352035549,
   });
 });
 
-test('convert account container relationship', () => {
+test('convert container image entity', () => {
+  expect(createContainerImageEntity(container)).toEqual({
+    _class: Entities.CONTAINER_IMAGE._class,
+    _key: 'tenable_container_image_library:alpine:latest',
+    _type: Entities.CONTAINER_IMAGE._type,
+    _rawData: [{ name: 'default', rawData: container }],
+    repoId: '5647947539604158566',
+    repoName: 'library',
+    name: 'alpine',
+    displayName: 'alpine',
+    tag: 'latest',
+    digest:
+      'sha256:d259bb12b9be326d0368131b35710fa5243b90751798888be566bf35cadaf2d2',
+    hasReport: true,
+    reportUrl:
+      '/container-security/api/v1/reports/by_image_digest?sha256:d259bb12b9be326d0368131b35710fa5243b90751798888be566bf35cadaf2d2',
+    hasInventory: false,
+    status: 'scanned',
+    lastJobStatus: 'completed',
+    score: 0,
+    numberOfVulns: 0,
+    numberOfMalware: 0,
+    pullCount: '0',
+    pushCount: '1',
+    source: 'pushed',
+    createdAt: 1624372350402,
+    updatedAt: 1664110031814,
+    finishedAt: 1664110031770,
+    uploadedAt: 1624372350402,
+    lastScanned: 1664110031770,
+    imageHash: 'd4ff818577bc',
+    size: '528',
+    'layers.size': [2811478],
+    'layers.digest': [
+      'sha256:5843afab387455b37944e709ee8c78d7520df80f8d01cf7f861aae63beeddb6b',
+    ],
+    os: 'Alpine',
+    osVersion: '3.14.0',
+  });
+});
+
+test('convert account container image relationship', () => {
   const account: Account = {
     id: 'TestId',
     name: 'TestName',
   };
-  const container: Container = {
-    number_of_vulnerabilities: '0',
-    name: 'graph-tenable-app',
-    size: '2420',
-    digest:
-      'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
-    repo_name: 'graph-tenable-app',
-    score: '0.0',
-    id: '6549098203417933758',
-    status: 'ready',
-    created_at: '2019-04-17T10:26:58.509Z',
-    repo_id: '907096124672081622',
-    platform: 'Docker',
-    updated_at: '2019-04-17T23:31:28.996Z',
-  };
 
-  const relationship = createAccountContainerRelationship(account, container);
+  const relationship = createAccountContainerImageRelationship(
+    account,
+    container,
+  );
 
   expect(relationship).toEqual({
     _class: 'HAS',
     _fromEntityKey: 'tenable_account_TestId',
-    _key: 'tenable_account_TestId_has_tenable_container_6549098203417933758',
-    _toEntityKey: 'tenable_container_6549098203417933758',
-    _type: 'tenable_account_has_container',
+    _key: 'tenable_account_TestId_has_tenable_container_image_library:alpine:latest',
+    _toEntityKey: 'tenable_container_image_library:alpine:latest',
+    _type: 'tenable_account_has_container_image',
   });
 });
 
@@ -134,22 +195,7 @@ test('convert report entity', () => {
   });
 });
 
-test('convert container report relationship', () => {
-  const container: Container = {
-    number_of_vulnerabilities: '0',
-    name: 'graph-tenable-app',
-    size: '2420',
-    digest:
-      'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
-    repo_name: 'graph-tenable-app',
-    score: '0.0',
-    id: '6549098203417933758',
-    status: 'ready',
-    created_at: '2019-04-17T10:26:58.509Z',
-    repo_id: '907096124672081622',
-    platform: 'Docker',
-    updated_at: '2019-04-17T23:31:28.996Z',
-  };
+test('convert container image report relationship', () => {
   const report: ContainerReport = {
     malware: [],
     sha256:
@@ -173,11 +219,11 @@ test('convert container report relationship', () => {
 
   expect(relationship).toEqual({
     _class: 'HAS',
-    _fromEntityKey: 'tenable_container_6549098203417933758',
-    _key: 'tenable_container_6549098203417933758_has_tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
+    _fromEntityKey: 'tenable_container_image_library:alpine:latest',
+    _key: 'tenable_container_image_library:alpine:latest_has_tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
     _toEntityKey:
       'tenable_container_report_sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
-    _type: 'tenable_container_has_container_report',
+    _type: 'tenable_container_image_has_report',
   });
 });
 
@@ -186,10 +232,12 @@ test('container finding', () => {
     nvdFinding: {
       reference_id: 'findingId',
       cve: 'cve-123',
+      snyk_id: 'string',
       published_date: 'string',
       modified_date: 'string',
       description: 'string',
       cvss_score: '2.3',
+      cvss_vector: 'CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:H',
       access_vector: 'string',
       access_complexity: 'string',
       auth: 'string',
@@ -205,9 +253,7 @@ test('container finding', () => {
       {
         name: 'string',
         version: 'string',
-        release: 'string',
-        epoch: 'string',
-        rawString: 'string',
+        type: 'string',
       },
     ],
   };
@@ -222,18 +268,18 @@ test('container finding', () => {
     accessVector: 'string',
     auth: 'string',
     availabilityImpact: 'string',
+    category: 'string',
     confidentialityImpact: 'string',
     cve: 'cve-123',
     cvssScore: '2.3',
     cwe: 'cwe-234',
     description: 'string',
     integrityImpact: 'string',
-    modifiedDate: 'string',
-    publishedDate: 'string',
     referenceId: 'findingId',
     remediation: 'string',
     severity: 'Low',
     numericSeverity: 2.3,
+    vector: 'CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:H',
   });
 });
 
@@ -261,10 +307,12 @@ test('convert report container vulnerability relationship', () => {
       reference_id: 'findingId',
       cve: 'cve-123',
       cpe: ['string'],
+      snyk_id: 'string',
       published_date: 'string',
       modified_date: 'string',
       description: 'string',
       cvss_score: 'string',
+      cvss_vector: 'CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:H',
       access_vector: 'string',
       access_complexity: 'string',
       auth: 'string',
@@ -279,9 +327,7 @@ test('convert report container vulnerability relationship', () => {
       {
         name: 'string',
         version: 'string',
-        release: 'string',
-        epoch: 'string',
-        rawString: 'string',
+        type: 'string',
       },
     ],
   };

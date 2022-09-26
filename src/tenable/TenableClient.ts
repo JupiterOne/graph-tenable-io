@@ -1,5 +1,7 @@
 import { version as graphTenablePackageVersion } from '../../package.json';
 import Client, {
+  ContainerImage,
+  ContainerRepository,
   ExportStatus,
   TenableRepsonse,
   VulnerabilityState,
@@ -16,7 +18,6 @@ import {
   AssetExport,
   AssetsExportStatusResponse,
   CancelExportResponse,
-  Container,
   ContainerReport,
   ErrorBody,
   ExportAssetsOptions,
@@ -31,9 +32,13 @@ import { sleep } from '@lifeomic/attempt';
 import pMap from 'p-map';
 import { addMinutes, getUnixTime, isAfter, sub } from 'date-fns';
 
+const PAGE_ENTITY_COUNT_LIMIT = 10;
+
 function length(resources?: any[]): number {
   return resources ? resources.length : 0;
 }
+
+export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
 export default class TenableClient {
   private readonly logger: IntegrationLogger;
@@ -61,6 +66,19 @@ export default class TenableClient {
     this.logger = logger;
     this.retryMaxAttempts =
       retryMaxAttempts === undefined ? 10 : retryMaxAttempts;
+  }
+
+  private async paginated(
+    cb: (offset: number, limit: number) => Promise<number>,
+  ) {
+    let offset = 0;
+    const limit = PAGE_ENTITY_COUNT_LIMIT;
+    let totalCount = 0;
+
+    do {
+      totalCount = await cb(offset, limit);
+      offset += limit;
+    } while (offset < totalCount);
   }
 
   public async fetchUserPermissions() {
@@ -330,29 +348,62 @@ export default class TenableClient {
     return { exportUuid };
   }
 
-  public async fetchContainers(): Promise<Container[]> {
-    const containersResponse = await this.retryRequest(() =>
-      this.client.fetchContainers(),
-    );
+  public async iterateContainerRepositories(
+    callback: ResourceIteratee<ContainerRepository>,
+  ) {
+    await this.paginated(async (offset, limit) => {
+      const {
+        items,
+        pagination: { total },
+      } = await this.retryRequest(() =>
+        this.client.fetchContainerRepositories(offset, limit),
+      );
 
-    this.logger.info(
-      { containers: length(containersResponse) },
-      'Fetched Tenable assets',
-    );
+      for (const repository of items) {
+        await callback(repository);
+      }
 
-    return containersResponse;
+      return total;
+    });
   }
 
-  public async fetchReportByImageDigest(
-    digestId: string,
+  public async iterateContainerImages(
+    callback: ResourceIteratee<ContainerImage>,
+  ) {
+    await this.paginated(async (offset, limit) => {
+      const {
+        items,
+        pagination: { total },
+      } = await this.retryRequest(() =>
+        this.client.fetchContainerImages(offset, limit),
+      );
+
+      for (const image of items) {
+        const { repoName, name: imageName, tag } = image;
+        const imageDetails = await this.retryRequest(() =>
+          this.client.fetchContainerImageDetails(repoName, imageName, tag),
+        );
+        await callback({ ...image, ...imageDetails });
+      }
+
+      return total;
+    });
+  }
+
+  public async fetchContainerImageReport(
+    repo: string,
+    image: string,
+    tag: string,
   ): Promise<ContainerReport> {
     const reportResponse = await this.retryRequest(() =>
-      this.client.fetchReportByImageDigest(digestId),
+      this.client.fetchContainerImageReport(repo, image, tag),
     );
 
     this.logger.info(
       {
-        digestId,
+        repo,
+        image,
+        tag,
         malware: length(reportResponse.malware),
         findings: length(reportResponse.findings),
         unwantedPrograms: length(reportResponse.potentially_unwanted_programs),
