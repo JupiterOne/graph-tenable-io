@@ -303,10 +303,16 @@ export function createVulnerabilityEntity(
         severity: vuln.plugin.risk_factor,
         numericSeverity: vuln.plugin.cvss3_base_score,
         vector: vuln.plugin.cvss3_vector?.raw || '',
-        // Add targets for mapping rules.
-        targets: targetsForAsset,
+        cve: vuln.plugin.cve || undefined,
+        cpe: vuln.plugin.cpe || undefined,
+        description: vuln.plugin.description,
+        recommendation: vuln.plugin.solution,
+        impact: vuln.plugin.synopsis,
         open: vuln.state === 'OPEN',
         references: vuln.plugin.see_also,
+
+        // Add targets for mapping rules.
+        targets: targetsForAsset,
 
         // additional asset properties can be added
         'asset.uuid': vuln.asset.uuid,
