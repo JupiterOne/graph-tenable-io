@@ -610,6 +610,7 @@ export interface VulnerabilityExport {
   severity_modification_type: string;
   first_found: string;
   last_found: string;
+  last_fixed?: string;
   state: string;
 }
 

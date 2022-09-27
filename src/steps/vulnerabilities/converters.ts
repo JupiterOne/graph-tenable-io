@@ -345,6 +345,9 @@ export function createVulnerabilityEntity(
         // data model properties
         numericPriority,
         priority,
+        firstSeenOn: parseTimePropertyValue(vuln.first_found),
+        lastSeenOn: parseTimePropertyValue(vuln.last_found),
+        lastFixedOn: parseTimePropertyValue(vuln.last_fixed),
       },
     },
   });
