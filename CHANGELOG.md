@@ -8,6 +8,31 @@ and this project adheres to
 
 ## [Unreleased]
 
+- refactor Container Security to v2 as v1 has been deprecated.
+- the following **new** entities have been added:
+
+| Resources            | Entity `_type`                 | Entity `_class` |
+| -------------------- | ------------------------------ | --------------- |
+| Container Image      | `tenable_container_image`      | `Image`         |
+| Container Repository | `tenable_container_repository` | `Repository`    |
+| Service              | `tenable_scanner`              | `Service`       |
+
+### Relationships
+
+- the following **new** relationships have been added:
+
+| Source Entity `_type`          | Relationship `_class` | Target Entity `_type`                |
+| ------------------------------ | --------------------- | ------------------------------------ |
+| `tenable_account`              | **PROVIDES**          | `tenable_scanner`                    |
+| `tenable_account`              | **HAS**               | `tenable_container_image`            |
+| `tenable_account`              | **HAS**               | `tenable_container_repository`       |
+| `tenable_scanner`              | **SCANS**             | `tenable_container_image`            |
+| `tenable_container_image`      | **HAS**               | `tenable_container_report`           |
+| `tenable_container_image`      | **HAS**               | `tenable_container_finding`          |
+| `tenable_container_image`      | **HAS**               | `tenable_container_malware`          |
+| `tenable_container_image`      | **HAS**               | `tenable_container_unwanted_program` |
+| `tenable_container_repository` | **HAS**               | `tenable_container_image`            |
+
 ## [8.5.1] 2022-08-05
 
 - fix tenable_asset `firstSeen` and `lastSeen` properties to be human-readable
