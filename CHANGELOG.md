@@ -12,6 +12,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+- add the following properties to the `tenable_vulnerability_finding`: `cve`,
+  `cpe`, `description`, `recommendation`, `impact`.
+
+## [Unreleased]
+
 - refactor Container Security to v2 as v1 has been deprecated.
 - the following **new** entities have been added:
 
