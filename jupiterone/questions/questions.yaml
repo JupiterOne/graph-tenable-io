@@ -101,7 +101,7 @@ questions:
   - name: Latest Tenable Asset Scans
     resultsAre: INFORMATIVE
     query: |
-      FIND UNIQUE tenable_asset THAT IS tenable_asset AS last
+      FIND tenable_asset THAT IS tenable_asset AS last
       RETURN
         last.displayName AS "Display Name", last.agentUuid AS "Agent Uuid",
         last.lastAuthenticatedScanDate AS "Last Authenticated Scan Date",
