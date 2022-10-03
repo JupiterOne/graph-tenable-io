@@ -6,7 +6,6 @@ import {
   ContainerMalware,
   ContainerUnwantedProgram,
   ContainerRepository,
-  Service,
 } from '../../tenable/client';
 import { Account } from '../../types';
 import { getSeverity } from '../vulnerabilities/converters';
@@ -15,29 +14,35 @@ import {
   generateRelationshipKey,
 } from '../../utils/generateKey';
 import getTime from '../../utils/getTime';
-import { parseTimePropertyValue } from '@jupiterone/integration-sdk-core';
-import { getServiceKey } from '../service/converters';
+import {
+  createIntegrationEntity,
+  parseTimePropertyValue,
+} from '@jupiterone/integration-sdk-core';
 
 function generateImageKey(image: ContainerImage) {
   return `${image.repoName}:${image.name}:${image.tag}`;
 }
 
 export function createContainerRepositoryEntity(repo: ContainerRepository) {
-  return {
-    _key: generateEntityKey(Entities.CONTAINER_REPOSITORY._type, repo.name),
-    _type: Entities.CONTAINER_REPOSITORY._type,
-    _class: Entities.CONTAINER_REPOSITORY._class,
-    _rawData: [{ name: 'default', rawData: repo }],
-    name: repo.name,
-    displayName: repo.name,
-    imagesCount: repo.imagesCount,
-    labelsCount: repo.labelsCount,
-    vulnerabilitiesCount: repo.vulnerabilitiesCount,
-    malwareCount: repo.malwareCount,
-    pullCount: repo.pullCount,
-    pushCount: repo.pushCount,
-    totalBytes: repo.totalBytes,
-  };
+  return createIntegrationEntity({
+    entityData: {
+      source: repo,
+      assign: {
+        _key: generateEntityKey(Entities.CONTAINER_REPOSITORY._type, repo.name),
+        _type: Entities.CONTAINER_REPOSITORY._type,
+        _class: Entities.CONTAINER_REPOSITORY._class,
+        name: repo.name,
+        displayName: repo.name,
+        imagesCount: repo.imagesCount,
+        labelsCount: repo.labelsCount,
+        vulnerabilitiesCount: repo.vulnerabilitiesCount,
+        malwareCount: repo.malwareCount,
+        pullCount: repo.pullCount,
+        pushCount: repo.pushCount,
+        totalBytes: repo.totalBytes,
+      },
+    },
+  });
 }
 
 export function createContainerImageEntity(image: ContainerImage) {
@@ -104,30 +109,6 @@ export function createAccountContainerRepositoryRelationship(
   return relationship;
 }
 
-export function createServiceContainerImageRelationship(
-  service: Service,
-  image: ContainerImage,
-) {
-  const parentKey = getServiceKey(service);
-  const childKey = generateEntityKey(
-    Entities.CONTAINER_IMAGE._type,
-    generateImageKey(image),
-  );
-  const relationKey = generateRelationshipKey(
-    parentKey,
-    Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._class,
-    childKey,
-  );
-  const relationship = {
-    _class: Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._class,
-    _type: Relationships.ACCOUNT_HAS_CONTAINER_IMAGE._type,
-    _fromEntityKey: parentKey,
-    _key: relationKey,
-    _toEntityKey: childKey,
-  };
-  return relationship;
-}
-
 export function createAccountContainerImageRelationship(
   account: Account,
   image: ContainerImage,
@@ -161,6 +142,7 @@ export function createReportEntity(report: ContainerReport) {
     _rawData: [{ name: 'default', rawData: report }],
     id: reportId,
     displayName: report.image_name,
+    name: report.image_name,
     sha256: report.sha256,
     digest: report.digest,
     dockerImageId: report.docker_image_id,
@@ -173,6 +155,10 @@ export function createReportEntity(report: ContainerReport) {
     osVersion: report.os_version,
     createdAt: getTime(report.created_at)!,
     updatedAt: getTime(report.updated_at)!,
+    category: 'Risk Assessment',
+    summary: `findings: ${report.findings.length}, malwares: ${report.malware.length}, unwanted programs: ${report.potentially_unwanted_programs.length}`,
+    // TODO: can we determine this?
+    internal: false,
   };
   return reportEntity;
 }
@@ -217,6 +203,7 @@ export function createContainerFindingEntity(finding: ContainerFinding) {
     _rawData: [{ name: 'default', rawData: finding }],
     category: nvdFinding.access_vector,
     displayName: displayName(finding),
+    name: displayName(finding),
     referenceId: nvdFinding.reference_id,
     cve: nvdFinding.cve,
     publishedDate: parseTimePropertyValue(nvdFinding.published_date),
@@ -234,6 +221,8 @@ export function createContainerFindingEntity(finding: ContainerFinding) {
     remediation: nvdFinding.remediation,
     numericSeverity,
     severity,
+    // TODO: can we determine this?
+    open: true,
   };
 }
 

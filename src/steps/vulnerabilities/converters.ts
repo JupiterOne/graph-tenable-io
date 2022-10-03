@@ -68,18 +68,18 @@ export function createAssetEntity(
         hasAgent: data.has_agent,
         hasPluginResults: data.has_plugin_results,
         createdAt: parseTimePropertyValue(data.created_at),
-        terminatedAt: parseTimePropertyValue(data.terminated_at),
+        terminatedOn: parseTimePropertyValue(data.terminated_at),
         terminatedBy: data.terminated_by,
-        updatedAt: parseTimePropertyValue(data.updated_at),
-        deletedAt: parseTimePropertyValue(data.deleted_at),
+        updatedOn: parseTimePropertyValue(data.updated_at),
+        deletedOn: parseTimePropertyValue(data.deleted_at),
         firstSeenOn: parseTimePropertyValue(data.first_seen),
         lastSeenOn: parseTimePropertyValue(data.last_seen),
-        firstScanTime: parseTimePropertyValue(data.first_scan_time),
-        lastScanTime: parseTimePropertyValue(data.last_scan_time),
-        lastAuthenticatedScanDate: parseTimePropertyValue(
+        firstScanTimeOn: parseTimePropertyValue(data.first_scan_time),
+        lastScanTimeOn: parseTimePropertyValue(data.last_scan_time),
+        lastAuthenticatedScanDateOn: parseTimePropertyValue(
           data.last_authenticated_scan_date,
         ),
-        lastLicensedScanDate: parseTimePropertyValue(
+        lastLicensedScanDateOn: parseTimePropertyValue(
           data.last_licensed_scan_date,
         ),
         lastScanId: data.last_scan_id,
@@ -315,8 +315,8 @@ export function createVulnerabilityEntity(
         assetDeviceType: vuln.asset.device_type,
         assetMacAddress: vuln.asset.mac_address,
         agentId: vuln.asset.agent_uuid,
-        firstFound: parseTimePropertyValue(vuln.first_found),
-        lastFound: parseTimePropertyValue(vuln.last_found),
+        firstFoundOn: parseTimePropertyValue(vuln.first_found),
+        lastFoundOn: parseTimePropertyValue(vuln.last_found),
         // additional plugin properties can be added
         'plugin.id': vuln.plugin.id,
         stigSeverity: vuln.plugin.stig_severity,
@@ -327,8 +327,8 @@ export function createVulnerabilityEntity(
         riskFactor: vuln.plugin.risk_factor,
         // additional scan properties can be added
         'scan.uuid': vuln.scan.uuid,
-        'scan.startedAt': parseTimePropertyValue(vuln.scan.started_at),
-        'scan.completedAt': parseTimePropertyValue(vuln.scan.completed_at),
+        'scan.startedOn': parseTimePropertyValue(vuln.scan.started_at),
+        'scan.completedOn': parseTimePropertyValue(vuln.scan.completed_at),
         severityDefaultId: vuln.severity_default_id,
         severityId: vuln.severity_id,
         severityModificationType: vuln.severity_modification_type,
@@ -342,12 +342,9 @@ export function createVulnerabilityEntity(
         exploitabilityEase: vuln.plugin.exploitability_ease,
         exploitedByMalware: vuln.plugin.exploited_by_malware,
         exploitedByNessus: vuln.plugin.exploited_by_nessus,
-
         // data model properties
         numericPriority,
         priority,
-        firstSeenOn: parseTimePropertyValue(vuln.first_found),
-        lastSeenOn: parseTimePropertyValue(vuln.last_found),
       },
     },
   });

@@ -17,6 +17,7 @@ export function createServiceEntity(service: Service) {
     name: service.name,
     displayName: service.name,
     category: ['software', 'other'],
+    function: ['SAST'],
   };
 }
 

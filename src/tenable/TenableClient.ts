@@ -31,8 +31,7 @@ import {
 import { sleep } from '@lifeomic/attempt';
 import pMap from 'p-map';
 import { addMinutes, getUnixTime, isAfter, sub } from 'date-fns';
-
-const PAGE_ENTITY_COUNT_LIMIT = 10;
+import { paginated } from '../utils/pagination';
 
 function length(resources?: any[]): number {
   return resources ? resources.length : 0;
@@ -66,19 +65,6 @@ export default class TenableClient {
     this.logger = logger;
     this.retryMaxAttempts =
       retryMaxAttempts === undefined ? 10 : retryMaxAttempts;
-  }
-
-  private async paginated(
-    cb: (offset: number, limit: number) => Promise<number>,
-  ) {
-    let offset = 0;
-    const limit = PAGE_ENTITY_COUNT_LIMIT;
-    let totalCount = 0;
-
-    do {
-      totalCount = await cb(offset, limit);
-      offset += limit;
-    } while (offset < totalCount);
   }
 
   public async fetchUserPermissions() {
@@ -351,7 +337,7 @@ export default class TenableClient {
   public async iterateContainerRepositories(
     callback: ResourceIteratee<ContainerRepository>,
   ) {
-    await this.paginated(async (offset, limit) => {
+    await paginated(async (offset, limit) => {
       const {
         items,
         pagination: { total },
@@ -370,7 +356,7 @@ export default class TenableClient {
   public async iterateContainerImages(
     callback: ResourceIteratee<ContainerImage>,
   ) {
-    await this.paginated(async (offset, limit) => {
+    await paginated(async (offset, limit) => {
       const {
         items,
         pagination: { total },

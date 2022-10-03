@@ -20,8 +20,8 @@ import {
   createUnwantedProgramEntity,
   createReportUnwantedProgramRelationship,
   createContainerRepositoryEntity,
+  createAccountContainerRepositoryRelationship,
 } from './converters';
-import { generateEntityKey } from '../../utils/generateKey';
 
 const repo: ContainerRepository = {
   name: 'library',
@@ -75,7 +75,7 @@ const container: ContainerImage = {
 
 test('convert container repository entity', () => {
   expect(createContainerRepositoryEntity(repo)).toEqual({
-    _key: generateEntityKey(Entities.CONTAINER_REPOSITORY._type, repo.name),
+    _key: 'tenable_container_repository_library',
     _type: Entities.CONTAINER_REPOSITORY._type,
     _class: Entities.CONTAINER_REPOSITORY._class,
     _rawData: [{ name: 'default', rawData: repo }],
@@ -152,6 +152,26 @@ test('convert account container image relationship', () => {
   });
 });
 
+test('convert account container repository relationship', () => {
+  const account: Account = {
+    id: 'TestId',
+    name: 'TestName',
+  };
+
+  const relationship = createAccountContainerRepositoryRelationship(
+    account,
+    repo,
+  );
+
+  expect(relationship).toEqual({
+    _class: 'HAS',
+    _fromEntityKey: 'tenable_account_TestId',
+    _key: 'tenable_account_TestId_has_tenable_container_repository_library',
+    _toEntityKey: 'tenable_container_repository_library',
+    _type: 'tenable_account_has_container_repository',
+  });
+});
+
 test('convert report entity', () => {
   const report: ContainerReport = {
     malware: [],
@@ -192,6 +212,10 @@ test('convert report entity', () => {
       'sha256:c42a932fda50763cb2a0169dd853f071a37629cfa4a477b81b4ee87c2b0bb3dc',
     tag: 'latest',
     updatedAt: 1555496818509,
+    category: 'Risk Assessment',
+    internal: false,
+    name: 'graph-tenable-app',
+    summary: 'findings: 0, malwares: 0, unwanted programs: 0',
   });
 });
 
@@ -280,6 +304,10 @@ test('container finding', () => {
     severity: 'Low',
     numericSeverity: 2.3,
     vector: 'CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:H',
+    modifiedDate: undefined,
+    name: 'cve-123/cwe-234',
+    open: true,
+    publishedDate: undefined,
   });
 });
 

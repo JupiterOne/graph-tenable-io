@@ -1,6 +1,11 @@
 import { Entities } from '../../constants';
 import { Service } from '../../tenable/client';
-import { createServiceEntity, getServiceKey } from './converters';
+import { Account } from '../../types';
+import {
+  createAccountServiceRelationship,
+  createServiceEntity,
+  getServiceKey,
+} from './converters';
 
 const service: Service = {
   name: 'Tenable Scanner',
@@ -15,5 +20,23 @@ test('convert service entity', () => {
     name: 'Tenable Scanner',
     displayName: 'Tenable Scanner',
     category: ['software', 'other'],
+    function: ['SAST'],
+  });
+});
+
+test('convert account service relationship', () => {
+  const account: Account = {
+    id: 'TestId',
+    name: 'TestName',
+  };
+
+  const relationship = createAccountServiceRelationship(account, service);
+
+  expect(relationship).toEqual({
+    _class: 'PROVIDES',
+    _fromEntityKey: 'tenable_account_TestId',
+    _key: 'tenable_account_TestId|provides|tenable_scanner:Tenable Scanner',
+    _toEntityKey: 'tenable_scanner:Tenable Scanner',
+    _type: 'tenable_account_provides_scanner',
   });
 });
