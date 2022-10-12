@@ -6,6 +6,7 @@ import { accountStep } from './steps/account';
 import { containerSteps } from './steps/containers';
 import { scanSteps } from './steps/vulnerabilities';
 import { userStep } from './steps/access';
+import { serviceSteps } from './steps/service';
 
 export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationConfig> =
   {
@@ -25,5 +26,11 @@ export const invocationConfig: IntegrationInvocationConfig<TenableIntegrationCon
       },
     },
     validateInvocation: invocationValidator,
-    integrationSteps: [accountStep, ...containerSteps, ...scanSteps, userStep],
+    integrationSteps: [
+      accountStep,
+      ...serviceSteps,
+      ...containerSteps,
+      ...scanSteps,
+      userStep,
+    ],
   };

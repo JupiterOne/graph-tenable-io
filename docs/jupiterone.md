@@ -82,11 +82,13 @@ The following entities are created:
 | -------------------------- | ------------------------------------ | --------------- |
 | Account                    | `tenable_account`                    | `Account`       |
 | Asset                      | `tenable_asset`                      | `Record`        |
-| Container                  | `tenable_container`                  | `Image`         |
 | Container Finding          | `tenable_container_finding`          | `Finding`       |
+| Container Image            | `tenable_container_image`            | `Image`         |
 | Container Malware          | `tenable_container_malware`          | `Finding`       |
 | Container Report           | `tenable_container_report`           | `Assessment`    |
+| Container Repository       | `tenable_container_repository`       | `Repository`    |
 | Container Unwanted Program | `tenable_container_unwanted_program` | `Finding`       |
+| Service                    | `tenable_scanner`                    | `Service`       |
 | User                       | `tenable_user`                       | `User`          |
 | Vulnerability              | `tenable_vulnerability_finding`      | `Finding`       |
 
@@ -94,16 +96,23 @@ The following entities are created:
 
 The following relationships are created:
 
-| Source Entity `_type`      | Relationship `_class` | Target Entity `_type`                |
-| -------------------------- | --------------------- | ------------------------------------ |
-| `tenable_account`          | **HAS**               | `tenable_asset`                      |
-| `tenable_account`          | **HAS**               | `tenable_container`                  |
-| `tenable_account`          | **HAS**               | `tenable_user`                       |
-| `tenable_asset`            | **HAS**               | `tenable_vulnerability_finding`      |
-| `tenable_container`        | **HAS**               | `tenable_container_report`           |
-| `tenable_container_report` | **IDENTIFIED**        | `tenable_container_finding`          |
-| `tenable_container_report` | **IDENTIFIED**        | `tenable_container_malware`          |
-| `tenable_container_report` | **IDENTIFIED**        | `tenable_container_unwanted_program` |
+| Source Entity `_type`          | Relationship `_class` | Target Entity `_type`                |
+| ------------------------------ | --------------------- | ------------------------------------ |
+| `tenable_account`              | **HAS**               | `tenable_asset`                      |
+| `tenable_account`              | **HAS**               | `tenable_container_image`            |
+| `tenable_account`              | **HAS**               | `tenable_container_repository`       |
+| `tenable_account`              | **HAS**               | `tenable_user`                       |
+| `tenable_account`              | **PROVIDES**          | `tenable_scanner`                    |
+| `tenable_asset`                | **HAS**               | `tenable_vulnerability_finding`      |
+| `tenable_container_image`      | **HAS**               | `tenable_container_finding`          |
+| `tenable_container_image`      | **HAS**               | `tenable_container_malware`          |
+| `tenable_container_image`      | **HAS**               | `tenable_container_report`           |
+| `tenable_container_image`      | **HAS**               | `tenable_container_unwanted_program` |
+| `tenable_container_report`     | **IDENTIFIED**        | `tenable_container_finding`          |
+| `tenable_container_report`     | **IDENTIFIED**        | `tenable_container_malware`          |
+| `tenable_container_report`     | **IDENTIFIED**        | `tenable_container_unwanted_program` |
+| `tenable_container_repository` | **HAS**               | `tenable_container_image`            |
+| `tenable_scanner`              | **SCANS**             | `tenable_container_image`            |
 
 ### Mapped Relationships
 

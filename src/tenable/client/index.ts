@@ -8,7 +8,9 @@ import {
   AssetsResponse,
   AssetVulnerabilityResponse,
   CancelExportResponse,
-  ContainersResponse,
+  ContainerImageDetails,
+  ContainerImagesResponse,
+  ContainerRepositoryResponse,
   ExportAssetsOptions,
   ExportAssetsResponse,
   ExportVulnerabilitiesOptions,
@@ -164,16 +166,38 @@ export default class TenableClient {
     return this.request<AssetsResponse>('/assets', Method.GET);
   }
 
-  public async fetchContainers() {
-    return this.request<ContainersResponse>(
-      '/container-security/api/v1/container/list',
+  public async fetchContainerRepositories(offset: number, limit: number) {
+    return this.request<ContainerRepositoryResponse>(
+      `/container-security/api/v2/repositories?offset=${offset}&limit=${limit}`,
       Method.GET,
     );
   }
 
-  public async fetchReportByImageDigest(digestId: string) {
+  public async fetchContainerImages(offset: number, limit: number) {
+    return this.request<ContainerImagesResponse>(
+      `/container-security/api/v2/images?offset=${offset}&limit=${limit}`,
+      Method.GET,
+    );
+  }
+
+  public async fetchContainerImageDetails(
+    repo: string,
+    image: string,
+    tag: string,
+  ) {
+    return this.request<ContainerImageDetails>(
+      `/container-security/api/v2/images/${repo}/${image}/${tag}`,
+      Method.GET,
+    );
+  }
+
+  public async fetchContainerImageReport(
+    repo: string,
+    image: string,
+    tag: string,
+  ) {
     return await this.request<ReportResponse>(
-      `/container-security/api/v1/reports/by_image_digest?image_digest=${digestId}`,
+      `/container-security/api/v2/reports/${repo}/${image}/${tag}`,
       Method.GET,
     );
   }
