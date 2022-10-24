@@ -67,7 +67,7 @@ export function createAssetEntity(
         deletedBy: data.deleted_by || undefined,
         hasAgent: data.has_agent,
         hasPluginResults: data.has_plugin_results,
-        createdAt: parseTimePropertyValue(data.created_at),
+        createdOn: parseTimePropertyValue(data.created_at),
         terminatedOn: parseTimePropertyValue(data.terminated_at),
         terminatedBy: data.terminated_by,
         updatedOn: parseTimePropertyValue(data.updated_at),
