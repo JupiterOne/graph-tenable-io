@@ -1,4 +1,4 @@
-export const PAGE_ENTITY_COUNT_LIMIT = 10;
+export const PAGE_ENTITY_COUNT_LIMIT = 1000;
 
 export async function paginated(
   callback: (offset: number, limit: number) => Promise<number>,
