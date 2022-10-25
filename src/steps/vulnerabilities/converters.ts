@@ -67,7 +67,7 @@ export function createAssetEntity(
         deletedBy: data.deleted_by || undefined,
         hasAgent: data.has_agent,
         hasPluginResults: data.has_plugin_results,
-        createdAt: parseTimePropertyValue(data.created_at),
+        createdOn: parseTimePropertyValue(data.created_at),
         terminatedOn: parseTimePropertyValue(data.terminated_at),
         terminatedBy: data.terminated_by,
         updatedOn: parseTimePropertyValue(data.updated_at),
@@ -303,10 +303,16 @@ export function createVulnerabilityEntity(
         severity: vuln.plugin.risk_factor,
         numericSeverity: vuln.plugin.cvss3_base_score,
         vector: vuln.plugin.cvss3_vector?.raw || '',
-        // Add targets for mapping rules.
-        targets: targetsForAsset,
+        cve: vuln.plugin.cve || undefined,
+        cpe: vuln.plugin.cpe || undefined,
+        description: vuln.plugin.description,
+        recommendation: vuln.plugin.solution,
+        impact: vuln.plugin.synopsis,
         open: vuln.state === 'OPEN',
         references: vuln.plugin.see_also,
+
+        // Add targets for mapping rules.
+        targets: targetsForAsset,
 
         // additional asset properties can be added
         'asset.uuid': vuln.asset.uuid,
