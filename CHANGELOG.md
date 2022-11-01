@@ -8,14 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
-- add `last_fixed` property to `tenable_vulnerability_finding` entities.
+## [8.6.0] 2022-11-01
 
-## [Unreleased]
+- add `last_fixed` property to `tenable_vulnerability_finding` entities.
 
 - add the following properties to the `tenable_vulnerability_finding`: `cve`,
   `cpe`, `description`, `recommendation`, `impact`.
-
-## [Unreleased]
 
 - refactor Container Security to v2 as v1 has been deprecated.
 - the following **new** entities have been added:
@@ -25,8 +23,6 @@ and this project adheres to
 | Container Image      | `tenable_container_image`      | `Image`         |
 | Container Repository | `tenable_container_repository` | `Repository`    |
 | Service              | `tenable_scanner`              | `Service`       |
-
-### Relationships
 
 - the following **new** relationships have been added:
 
