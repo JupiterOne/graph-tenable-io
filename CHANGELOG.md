@@ -8,15 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.0.0 - 2022-11-01
+
 - add `last_fixed` property to `tenable_vulnerability_finding` entities.
-
-## [Unreleased]
-
 - add the following properties to the `tenable_vulnerability_finding`: `cve`,
   `cpe`, `description`, `recommendation`, `impact`.
-
-## [Unreleased]
-
 - refactor Container Security to v2 as v1 has been deprecated.
 - the following **new** entities have been added:
 
