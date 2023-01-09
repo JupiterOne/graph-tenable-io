@@ -356,7 +356,6 @@ describe('build-asset-vuln-relationships', () => {
     });
 
     expect(mappedRelationships).toHaveLength(3);
-    console.log(...mappedRelationships);
 
     /**
      * The mapping here uses the same createTargetHostEntity() method used in fetchAssets
