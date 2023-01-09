@@ -30,10 +30,24 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     ],
     mappedRelationships: [
       {
-        _type: 'tenable_asset_is_host',
         sourceType: 'tenable_asset',
+        targetType: 'aws_instance',
         _class: RelationshipClass.IS,
-        targetType: 'host',
+        _type: 'tenable_asset_is_aws_instance',
+        direction: RelationshipDirection.FORWARD,
+      },
+      {
+        sourceType: 'tenable_asset',
+        targetType: 'azure_vm',
+        _class: RelationshipClass.IS,
+        _type: 'tenable_asset_is_azure_vm',
+        direction: RelationshipDirection.FORWARD,
+      },
+      {
+        sourceType: 'tenable_asset',
+        targetType: 'google_compute_instance',
+        _class: RelationshipClass.IS,
+        _type: 'tenable_asset_is_google_compute_instance',
         direction: RelationshipDirection.FORWARD,
       },
     ],
@@ -182,10 +196,25 @@ export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
     ],
     mappedRelationships: [
       {
-        _type: 'host_has_tenable_vulnerability_finding',
+        _type: 'aws_instance_has_tenable_vulnerability_finding',
         sourceType: 'tenable_vulnerability_finding',
         _class: RelationshipClass.HAS,
-        targetType: 'host',
+        targetType: 'aws_instance',
+        direction: RelationshipDirection.REVERSE,
+      },
+
+      {
+        _type: 'azure_vm_has_tenable_vulnerability_finding',
+        sourceType: 'tenable_vulnerability_finding',
+        _class: RelationshipClass.HAS,
+        targetType: 'azure_vm',
+        direction: RelationshipDirection.REVERSE,
+      },
+      {
+        _type: 'google_compute_instance_has_tenable_vulnerability_finding',
+        sourceType: 'tenable_vulnerability_finding',
+        _class: RelationshipClass.HAS,
+        targetType: 'google_compute_instance',
         direction: RelationshipDirection.REVERSE,
       },
     ],

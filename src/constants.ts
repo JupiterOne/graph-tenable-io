@@ -205,21 +205,55 @@ export const Relationships: Record<
 };
 
 export const MappedRelationships: Record<
-  'ASSET_IS_HOST' | 'HOST_HAS_VULN' | 'VULNERABILITY_IS_CVE',
+  | 'TENABLE_ASSET_IS_AZURE_VM'
+  | 'TENABLE_ASSET_IS_GOOGLE_COMPUTE_INSTANCE'
+  | 'TENABLE_ASSET_IS_AWS_INSTANCE'
+  | 'AZURE_VM_HAS_VULNERABILITY'
+  | 'GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY'
+  | 'AWS_INSTANCE_HAS_VULNERABILITY'
+  | 'VULNERABILITY_IS_CVE',
   StepMappedRelationshipMetadata
 > = {
-  ASSET_IS_HOST: {
-    _type: 'tenable_asset_is_host',
+  TENABLE_ASSET_IS_AZURE_VM: {
     sourceType: Entities.ASSET._type,
+    targetType: 'azure_vm',
+    _type: 'tenable_asset_is_azure_vm',
     _class: RelationshipClass.IS,
-    targetType: 'host',
     direction: RelationshipDirection.FORWARD,
   },
-  HOST_HAS_VULN: {
-    _type: 'host_has_tenable_vulnerability_finding',
+  TENABLE_ASSET_IS_GOOGLE_COMPUTE_INSTANCE: {
+    sourceType: Entities.ASSET._type,
+    targetType: 'google_compute_instance',
+    _type: 'tenable_asset_is_google_compute_instance',
+    _class: RelationshipClass.IS,
+    direction: RelationshipDirection.FORWARD,
+  },
+  TENABLE_ASSET_IS_AWS_INSTANCE: {
+    sourceType: Entities.ASSET._type,
+    targetType: 'aws_instance',
+    _type: 'tenable_asset_is_aws_instance',
+    _class: RelationshipClass.IS,
+    direction: RelationshipDirection.FORWARD,
+  },
+  AZURE_VM_HAS_VULNERABILITY: {
     sourceType: Entities.VULNERABILITY._type,
+    targetType: 'azure_vm',
+    _type: 'azure_vm_has_tenable_vulnerability_finding',
     _class: RelationshipClass.HAS,
-    targetType: 'host',
+    direction: RelationshipDirection.REVERSE,
+  },
+  GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY: {
+    sourceType: Entities.VULNERABILITY._type,
+    targetType: 'google_compute_instance',
+    _type: 'google_compute_instance_has_tenable_vulnerability_finding',
+    _class: RelationshipClass.HAS,
+    direction: RelationshipDirection.REVERSE,
+  },
+  AWS_INSTANCE_HAS_VULNERABILITY: {
+    sourceType: Entities.VULNERABILITY._type,
+    targetType: 'aws_instance',
+    _type: 'aws_instance_has_tenable_vulnerability_finding',
+    _class: RelationshipClass.HAS,
     direction: RelationshipDirection.REVERSE,
   },
   VULNERABILITY_IS_CVE: {

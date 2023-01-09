@@ -2,7 +2,6 @@ import {
   getLargestItemKeyAndByteSize,
   getPriority,
   getSeverity,
-  normalizeCVSS2Severity,
 } from './converters';
 
 describe('getSeverity from numericSeverity', () => {
@@ -55,57 +54,6 @@ describe('getPriority from numericPriority', () => {
     expect(getPriority(11)).toEqual('Unknown');
   });
 });
-
-describe('normalizeCVSS2Severity', () => {
-  test('Low for < 4', () => {
-    expect(normalizeCVSS2Severity(0)).toEqual({
-      numericSeverity: 0,
-      severity: 'Low',
-    });
-    expect(normalizeCVSS2Severity(0.1)).toEqual({
-      numericSeverity: 0.1,
-      severity: 'Low',
-    });
-    expect(normalizeCVSS2Severity(3.99)).toEqual({
-      numericSeverity: 3.99,
-      severity: 'Low',
-    });
-  });
-
-  test('Medium for >= 4 < 7', () => {
-    expect(normalizeCVSS2Severity(4)).toEqual({
-      numericSeverity: 4,
-      severity: 'Medium',
-    });
-    expect(normalizeCVSS2Severity(6.99)).toEqual({
-      numericSeverity: 6.99,
-      severity: 'Medium',
-    });
-  });
-
-  test('High for >= 7 < 10', () => {
-    expect(normalizeCVSS2Severity(7)).toEqual({
-      numericSeverity: 7,
-      severity: 'High',
-    });
-    expect(normalizeCVSS2Severity(9.99)).toEqual({
-      numericSeverity: 9.99,
-      severity: 'High',
-    });
-    expect(normalizeCVSS2Severity(10)).toEqual({
-      numericSeverity: 10,
-      severity: 'High',
-    });
-  });
-
-  test('error for unknown severity', () => {
-    expect(normalizeCVSS2Severity(11)).toEqual({
-      numericSeverity: 11,
-      severity: undefined,
-    });
-  });
-});
-
 describe('getLargestItemKeyAndByteSize', () => {
   test('will return largest key and size when it is string', () => {
     const stringProp = new Array(700000).join('aaaaaaaaaa').toString();

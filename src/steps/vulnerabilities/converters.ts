@@ -133,7 +133,9 @@ export function createAssetEntity(
   });
 }
 
-export function createTargetHostEntity(data: AssetExport): TargetEntity {
+export function createTargetHostEntity(
+  data: AssetExport,
+): TargetEntity | undefined {
   let targetFilter;
 
   if (data.aws_ec2_instance_id) {
@@ -156,12 +158,7 @@ export function createTargetHostEntity(data: AssetExport): TargetEntity {
       _type: 'google_compute_instance',
     };
   } else {
-    // just make sure that at least all of the mapped relationships from this integration target the same entity.
-    // `ipv4`, `ipv6`, `mac_address`, and `fqdn` are all arrays, so filtering on them won't do.
-    targetFilter = {
-      id: data.id,
-      _type: 'tenable_asset',
-    };
+    return undefined;
   }
 
   const targetEntity = {
@@ -233,28 +230,6 @@ export function getPriority(numericPriority: number): FindingSeverityPriority {
   }
 }
 
-/**
- * Converts NVD CVSS2 severity values to J1 normalized numeric values. See
- * https://nvd.nist.gov/vuln-metrics/cvss.
- *
- * Throws an `IntegrationError` when the CVSS2 severity value is not recognized.
- */
-export function normalizeCVSS2Severity(cvss2Severity: number | string): {
-  numericSeverity: number;
-  severity: FindingSeverityPriority | undefined;
-} {
-  const numericSeverity = Number(cvss2Severity);
-  let severity;
-  if (numericSeverity < 4) {
-    severity = FindingSeverityPriority.Low;
-  } else if (numericSeverity < 7) {
-    severity = FindingSeverityPriority.Medium;
-  } else if (numericSeverity <= 10) {
-    severity = FindingSeverityPriority.High;
-  }
-  return { numericSeverity, severity };
-}
-
 export function getTargetsForAsset(asset: AssetExport): string[] {
   return [asset.fqdns, asset.ipv4s, asset.ipv6s, asset.mac_addresses].reduce(
     (a, e) => [...a, ...e],
@@ -302,7 +277,7 @@ export function createVulnerabilityEntity(
         status: vuln.state,
         severity: vuln.plugin.risk_factor,
         numericSeverity: vuln.plugin.cvss3_base_score,
-        vector: vuln.plugin.cvss3_vector?.raw || '',
+        vector: vuln.plugin.cvss3_vector?.raw || undefined,
         cve: vuln.plugin.cve || undefined,
         cpe: vuln.plugin.cpe || undefined,
         description: vuln.plugin.description,
@@ -366,7 +341,7 @@ export function createTargetCveEntities(
   return (cves || []).map((cve) => {
     return {
       targetEntity: {
-        _class: 'Vulnerability',
+        _class: ['Vulnerability'],
         _type: 'cve',
         _key: cve.toLowerCase(),
         name: cve.toUpperCase(),
