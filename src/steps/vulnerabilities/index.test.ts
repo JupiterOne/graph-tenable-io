@@ -102,7 +102,7 @@ describe('fetch-assets', () => {
     });
 
     const assetsThatShouldBeMapped = assetEntities.filter((v) => {
-      const raw = getRawData<AssetExport>(v);
+      const raw = getRawData<AssetExport>(v) as AssetExport;
       return (
         raw.aws_ec2_instance_id || raw.azure_resource_id || raw.gcp_instance_id
       );
