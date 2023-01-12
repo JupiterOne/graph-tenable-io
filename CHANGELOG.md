@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.0.1 - 2023-01-12
+
+### Fixed
+
+- `tenable_vulnerability_finding` now properly reflects the correct `severity`.
+
 ## 9.0.0 - 2022-11-01
 
 - add `last_fixed` property to `tenable_vulnerability_finding` entities.

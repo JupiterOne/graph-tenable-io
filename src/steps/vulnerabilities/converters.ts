@@ -300,7 +300,7 @@ export function createVulnerabilityEntity(
         name: vuln.plugin.name,
         category: vuln.asset.device_type,
         status: vuln.state,
-        severity: vuln.plugin.risk_factor,
+        severity: vuln.severity,
         numericSeverity: vuln.plugin.cvss3_base_score,
         vector: vuln.plugin.cvss3_vector?.raw || '',
         cve: vuln.plugin.cve || undefined,
