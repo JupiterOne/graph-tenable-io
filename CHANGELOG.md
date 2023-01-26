@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.0.2 - 2023-01-26
+
+### Added
+
+Added the following properties to `tenable_vulnerability_finding`: -
+cvss3BaseScore - cvss3TemporalScore - cvssBaseScore - cvssTemporalScore -
+cvss3Vector - cvssVector - hasPatch
+
 ## 9.0.1 - 2023-01-12
 
 ### Fixed
