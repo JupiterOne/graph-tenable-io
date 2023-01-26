@@ -354,6 +354,17 @@ export function createVulnerabilityEntity(
         firstSeenOn: parseTimePropertyValue(vuln.first_found),
         lastSeenOn: parseTimePropertyValue(vuln.last_found),
         lastFixedOn: parseTimePropertyValue(vuln.last_fixed),
+
+        // vulnerability prioritization properties
+        cvss3BaseScore: vuln.plugin.cvss3_base_score,
+        cvss3TemporalScore: vuln.plugin.cvss3_temporal_score,
+
+        cvssBaseScore: vuln.plugin.cvss_base_score,
+        cvssTemporalScore: vuln.plugin.cvss_temporal_score,
+
+        cvss3Vector: vuln.plugin.cvss3_vector?.raw,
+        cvssVector: vuln.plugin.cvss_vector?.raw,
+        hasPatch: vuln.plugin.has_patch,
       },
     },
   });
