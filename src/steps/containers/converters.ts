@@ -13,7 +13,6 @@ import {
   generateEntityKey,
   generateRelationshipKey,
 } from '../../utils/generateKey';
-import getTime from '../../utils/getTime';
 import {
   createIntegrationEntity,
   parseTimePropertyValue,
@@ -153,8 +152,8 @@ export function createReportEntity(report: ContainerReport) {
     riskScore: report.risk_score,
     osArchitecture: report.os_architecture,
     osVersion: report.os_version,
-    createdAt: getTime(report.created_at)!,
-    updatedAt: getTime(report.updated_at)!,
+    createdAt: parseTimePropertyValue(report.created_at),
+    updatedAt: parseTimePropertyValue(report.updated_at),
     category: 'Risk Assessment',
     summary: `findings: ${report.findings.length}, malwares: ${report.malware.length}, unwanted programs: ${report.potentially_unwanted_programs.length}`,
     // TODO: can we determine this?

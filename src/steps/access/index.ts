@@ -2,14 +2,14 @@ import {
   IntegrationStepExecutionContext,
   Step,
 } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../config';
+import { IntegrationConfig } from '../../config';
 import { Entities, Relationships, StepIds } from '../../constants';
 import { getAccount } from '../../initializeContext';
 import TenableClient from '../../tenable/TenableClient';
 import { createAccountUserRelationship, createUserEntity } from './converters';
 
 export async function fetchUsers(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
   const client = new TenableClient({
@@ -30,7 +30,7 @@ export async function fetchUsers(
 }
 
 export const userStep: Step<
-  IntegrationStepExecutionContext<TenableIntegrationConfig>
+  IntegrationStepExecutionContext<IntegrationConfig>
 > = {
   id: StepIds.USERS,
   name: 'Fetch Users',

@@ -4,7 +4,7 @@ import {
   IntegrationValidationError,
 } from '@jupiterone/integration-sdk-core';
 
-import { TenableIntegrationConfig } from './config';
+import { IntegrationConfig } from './config';
 import TenableClient from './tenable/TenableClient';
 import { toNum } from './utils/dataType';
 
@@ -32,7 +32,7 @@ function isValidApiTimeoutInMinutes(timeout?: number) {
  * @param executionContext
  */
 export default async function invocationValidator(
-  executionContext: IntegrationExecutionContext<TenableIntegrationConfig>,
+  executionContext: IntegrationExecutionContext<IntegrationConfig>,
 ) {
   const {
     logger,

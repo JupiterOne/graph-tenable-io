@@ -4,7 +4,7 @@ import {
   setupRecording,
   SetupRecordingInput,
 } from '@jupiterone/integration-sdk-testing';
-import { TenableIntegrationConfig } from '../src/config';
+import { IntegrationConfig } from '../src/config';
 import _ from 'lodash';
 
 export { Recording };
@@ -66,7 +66,7 @@ type MatchRequestsBy =
   Required<SetupRecordingInput>['options']['matchRequestsBy'];
 
 export function getTenableMatchRequestsBy(
-  config: TenableIntegrationConfig,
+  config: IntegrationConfig,
   options?: MatchRequestsBy,
 ): MatchRequestsBy {
   return {
