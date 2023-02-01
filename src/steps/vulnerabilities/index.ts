@@ -24,7 +24,7 @@ import {
   createRelationshipFromTargetEntity,
   createRelationshipToTargetEntity,
 } from '../../utils/targetEntities';
-import { getAccount } from '../../initializeContext';
+import { getAccount } from '../account/util';
 import { createAccountEntity } from '../account/converters';
 
 export async function fetchAssets(

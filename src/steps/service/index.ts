@@ -9,7 +9,7 @@ import {
   SERVICE_ENTITY_DATA_KEY,
   StepIds,
 } from '../../constants';
-import { getAccount } from '../../initializeContext';
+import { getAccount } from '../account/util';
 import {
   createAccountServiceRelationship,
   createServiceEntity,
