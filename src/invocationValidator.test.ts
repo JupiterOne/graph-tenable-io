@@ -4,7 +4,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { createMockExecutionContext } from '@jupiterone/integration-sdk-testing';
 import { IntegrationConfig } from './config';
-import invocationValidator from './invocationValidator';
+import validateInvocation from './invocationValidator';
 
 test('should reject when `accessKey` not supplied', async () => {
   const executionContext = createMockExecutionContext<IntegrationConfig>({
@@ -15,7 +15,7 @@ test('should reject when `accessKey` not supplied', async () => {
   });
 
   try {
-    await invocationValidator(executionContext as any);
+    await validateInvocation(executionContext as any);
   } catch (e) {
     expect(e.message).toEqual(
       'config requires all of { accessKey, secretKey }',
@@ -35,7 +35,7 @@ test('should reject when `secretKey` not supplied', async () => {
   });
 
   try {
-    await invocationValidator(executionContext);
+    await validateInvocation(executionContext);
   } catch (e) {
     expect(e.message).toEqual(
       'config requires all of { accessKey, secretKey }',
@@ -55,7 +55,7 @@ test.skip('auth error', async () => {
   });
 
   try {
-    await invocationValidator(executionContext);
+    await validateInvocation(executionContext);
   } catch (e) {
     expect(e.message).toEqual(
       'Unauthorized: https://cloud.tenable.com/session',
@@ -76,7 +76,7 @@ test('should throw if assetApiTimeoutInMinutes below minimum', async () => {
   });
 
   try {
-    await invocationValidator(executionContext);
+    await validateInvocation(executionContext);
   } catch (e) {
     expect(e.message).toEqual(
       "'assetApiTimeoutInMinutes' config value is invalid (val=-1, min=0, max=1410)",
@@ -97,7 +97,7 @@ test('should throw if assetApiTimeoutInMinutes above maximum', async () => {
   });
 
   try {
-    await invocationValidator(executionContext);
+    await validateInvocation(executionContext);
   } catch (e) {
     expect(e.message).toEqual(
       "'assetApiTimeoutInMinutes' config value is invalid (val=1440, min=0, max=1410)",

@@ -24,7 +24,7 @@ import {
   createContainerRepositoryEntity,
   createAccountContainerRepositoryRelationship,
 } from './converters';
-import { getAccount } from '../../initializeContext';
+import { getAccount } from '../account/util';
 import TenableClient from '../../tenable/TenableClient';
 import { ContainerImage } from '../../tenable/client';
 import {

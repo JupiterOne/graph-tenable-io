@@ -5,7 +5,7 @@ import {
 import { IntegrationConfig } from '../../config';
 import { Entities, StepIds } from '../../constants';
 import { createAccountEntity } from './converters';
-import { getAccount } from '../../initializeContext';
+import { getAccount } from './util';
 
 export async function fetchAccount(
   context: IntegrationStepExecutionContext<IntegrationConfig>,

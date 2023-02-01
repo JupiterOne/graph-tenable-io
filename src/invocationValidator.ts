@@ -31,7 +31,7 @@ function isValidApiTimeoutInMinutes(timeout?: number) {
  *
  * @param executionContext
  */
-export default async function invocationValidator(
+export default async function validateInvocation(
   executionContext: IntegrationExecutionContext<IntegrationConfig>,
 ) {
   const {
