@@ -5,7 +5,7 @@ import {
   RelationshipClass,
   Step,
 } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../config';
+import { IntegrationConfig } from '../../config';
 import {
   Entities,
   MappedRelationships,
@@ -28,7 +28,7 @@ import { getAccount } from '../../initializeContext';
 import { createAccountEntity } from '../account/converters';
 
 export async function fetchAssets(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
   const accountEntity = createAccountEntity(getAccount(context));
@@ -77,7 +77,7 @@ export async function fetchAssets(
 }
 
 export async function fetchVulnerabilities(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
   const { vulnerabilityApiTimeoutInMinutes, accessKey, secretKey } =
@@ -115,7 +115,7 @@ export async function fetchVulnerabilities(
 }
 
 export async function buildAssetVulnerabilityRelationships(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger } = context;
 
@@ -177,7 +177,7 @@ export async function buildAssetVulnerabilityRelationships(
 }
 
 export async function buildVulnerabilityCveRelationships(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger } = context;
 
@@ -217,7 +217,7 @@ export async function buildVulnerabilityCveRelationships(
 }
 
 export const scanSteps: Step<
-  IntegrationStepExecutionContext<TenableIntegrationConfig>
+  IntegrationStepExecutionContext<IntegrationConfig>
 >[] = [
   {
     id: StepIds.ASSETS,

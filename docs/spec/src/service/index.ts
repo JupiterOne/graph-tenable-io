@@ -1,8 +1,8 @@
 import { RelationshipClass } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../../../src/config';
+import { IntegrationConfig } from '../../../../src/config';
 import { StepSpec } from '../types';
 
-export const serviceSpec: StepSpec<TenableIntegrationConfig>[] = [
+export const serviceSpec: StepSpec<IntegrationConfig>[] = [
   {
     /**
      * ENDPOINT: <n/a>

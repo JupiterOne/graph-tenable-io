@@ -3,18 +3,16 @@ import {
   IntegrationValidationError,
 } from '@jupiterone/integration-sdk-core';
 import { createMockExecutionContext } from '@jupiterone/integration-sdk-testing';
-import { TenableIntegrationConfig } from './config';
+import { IntegrationConfig } from './config';
 import invocationValidator from './invocationValidator';
 
 test('should reject when `accessKey` not supplied', async () => {
-  const executionContext = createMockExecutionContext<TenableIntegrationConfig>(
-    {
-      instanceConfig: {
-        accessKey: undefined as unknown as string,
-        secretKey: 'YYY',
-      },
+  const executionContext = createMockExecutionContext<IntegrationConfig>({
+    instanceConfig: {
+      accessKey: undefined as unknown as string,
+      secretKey: 'YYY',
     },
-  );
+  });
 
   try {
     await invocationValidator(executionContext as any);
@@ -29,14 +27,12 @@ test('should reject when `accessKey` not supplied', async () => {
 });
 
 test('should reject when `secretKey` not supplied', async () => {
-  const executionContext = createMockExecutionContext<TenableIntegrationConfig>(
-    {
-      instanceConfig: {
-        accessKey: 'XXX',
-        secretKey: undefined as unknown as string,
-      },
+  const executionContext = createMockExecutionContext<IntegrationConfig>({
+    instanceConfig: {
+      accessKey: 'XXX',
+      secretKey: undefined as unknown as string,
     },
-  );
+  });
 
   try {
     await invocationValidator(executionContext);
@@ -51,14 +47,12 @@ test('should reject when `secretKey` not supplied', async () => {
 });
 
 test.skip('auth error', async () => {
-  const executionContext = createMockExecutionContext<TenableIntegrationConfig>(
-    {
-      instanceConfig: {
-        accessKey: 'XXX',
-        secretKey: 'YYY',
-      },
+  const executionContext = createMockExecutionContext<IntegrationConfig>({
+    instanceConfig: {
+      accessKey: 'XXX',
+      secretKey: 'YYY',
     },
-  );
+  });
 
   try {
     await invocationValidator(executionContext);
@@ -73,15 +67,13 @@ test.skip('auth error', async () => {
 });
 
 test('should throw if assetApiTimeoutInMinutes below minimum', async () => {
-  const executionContext = createMockExecutionContext<TenableIntegrationConfig>(
-    {
-      instanceConfig: {
-        accessKey: 'XXX',
-        secretKey: 'YYY',
-        assetApiTimeoutInMinutes: -1,
-      },
+  const executionContext = createMockExecutionContext<IntegrationConfig>({
+    instanceConfig: {
+      accessKey: 'XXX',
+      secretKey: 'YYY',
+      assetApiTimeoutInMinutes: -1,
     },
-  );
+  });
 
   try {
     await invocationValidator(executionContext);
@@ -96,15 +88,13 @@ test('should throw if assetApiTimeoutInMinutes below minimum', async () => {
 });
 
 test('should throw if assetApiTimeoutInMinutes above maximum', async () => {
-  const executionContext = createMockExecutionContext<TenableIntegrationConfig>(
-    {
-      instanceConfig: {
-        accessKey: 'XXX',
-        secretKey: 'YYY',
-        assetApiTimeoutInMinutes: 1440,
-      },
+  const executionContext = createMockExecutionContext<IntegrationConfig>({
+    instanceConfig: {
+      accessKey: 'XXX',
+      secretKey: 'YYY',
+      assetApiTimeoutInMinutes: 1440,
     },
-  );
+  });
 
   try {
     await invocationValidator(executionContext);
