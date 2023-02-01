@@ -64,6 +64,7 @@ expect.extend({
       }
     }
     if (unimplementedSteps.length > 0) {
+      // eslint-disable-next-line no-console
       console.log(
         {
           unimplementedSteps,
