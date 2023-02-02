@@ -49,7 +49,7 @@ export const Entities: Record<
   SERVICE: {
     resourceName: 'Service',
     _type: 'tenable_scanner',
-    _class: 'Service',
+    _class: ['Service'],
   },
   CONTAINER_IMAGE: {
     resourceName: 'Container Image',

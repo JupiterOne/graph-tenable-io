@@ -13,7 +13,7 @@ import {
 export function createUserEntity(user: User) {
   return createIntegrationEntity({
     entityData: {
-      source: {},
+      source: user,
       assign: {
         _key: generateEntityKey(Entities.USER._type, user.id),
         _type: Entities.USER._type,
@@ -24,7 +24,8 @@ export function createUserEntity(user: User) {
         username: user.username,
         email: user.email,
         displayName: user.name,
-        name: user.name,
+        name: user.name || user.email,
+        active: user.enabled === true,
         type: user.type,
         containerUuid: user.container_uuid,
         permissions: user.permissions,
