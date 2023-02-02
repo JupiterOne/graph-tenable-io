@@ -6,6 +6,10 @@ import {
 
 import { IntegrationConfig } from './config';
 import TenableClient from './tenable/TenableClient';
+import {
+  VALID_VULNERABILITY_STATES,
+  VALID_VULNERABILITY_SEVERITIES,
+} from './tenable/client';
 import { toNum } from './utils/dataType';
 
 const ONE_DAY_MINUTES = 1440;
@@ -14,6 +18,36 @@ const MAXIMUM_API_TIMEOUT_IN_MINUTES = ONE_DAY_MINUTES - 30;
 function isValidApiTimeoutInMinutes(timeout?: number) {
   if (timeout === undefined) return true;
   return timeout >= 0 && timeout <= MAXIMUM_API_TIMEOUT_IN_MINUTES;
+}
+
+function validateVulnerabilitySeverities(severities: string) {
+  const severityValues = severities.replace(/\s+/g, '').split(',');
+  for (const severity of severityValues) {
+    if (
+      !(VALID_VULNERABILITY_SEVERITIES as unknown as string[]).includes(
+        severity,
+      )
+    ) {
+      throw new IntegrationValidationError(
+        `Severity - ${severity} - is not valid. Valid vulnerability severities include ${VALID_VULNERABILITY_SEVERITIES.map(
+          (v) => v,
+        )}`,
+      );
+    }
+  }
+}
+
+function validateVulnerabilityStates(states: string) {
+  const statesValues = states.replace(/\s+/g, '').split(',');
+  for (const state of statesValues) {
+    if (!(VALID_VULNERABILITY_STATES as unknown as string[]).includes(state)) {
+      throw new IntegrationValidationError(
+        `Status - ${state} - is not valid. Valid vulnerability status include ${VALID_VULNERABILITY_STATES.map(
+          (v) => v,
+        )}`,
+      );
+    }
+  }
 }
 
 /**
@@ -68,6 +102,20 @@ export default async function validateInvocation(
     throw new IntegrationConfigLoadError(
       `'vulnerabilityApiTimeoutInMinutes' config value is invalid (val=${vulnerabilityApiTimeoutInMinutes}, min=0, max=${MAXIMUM_API_TIMEOUT_IN_MINUTES})`,
     );
+  }
+
+  if (config.vulnerabilitySeverities) {
+    const vulnerabilitySeverities =
+      (executionContext.instance.config.vulnerabilitySeverities =
+        config.vulnerabilitySeverities.replace(/\s+/g, ''));
+    validateVulnerabilitySeverities(vulnerabilitySeverities);
+  }
+
+  if (config.vulnerabilityStates) {
+    const vulnerabilityStates =
+      (executionContext.instance.config.vulnerabilityStates =
+        config.vulnerabilityStates.replace(/\s+/g, ''));
+    validateVulnerabilityStates(vulnerabilityStates);
   }
 
   const provider = new TenableClient({

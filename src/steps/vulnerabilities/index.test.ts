@@ -28,6 +28,7 @@ import { Entities, Relationships } from '../constants';
 import { v4 as uuid } from 'uuid';
 import { createAssetEntity, createVulnerabilityEntity } from './converters';
 import { filterGraphObjects } from '../../../test/helpers/filterGraphObjects';
+import * as Fetch from 'node-fetch';
 
 jest.mock('@lifeomic/attempt', () => {
   // you MUST comment this block and add a large timeout (1 million ms to be safe) when re-recording tests
@@ -46,8 +47,8 @@ afterEach(async () => {
   }
 });
 
-function generatePathnameFunction(toInsert) {
-  return (pathname, req) => {
+function generatePathnameFunction(toInsert: string) {
+  return (pathname: string) => {
     return pathname.replace(
       /\/export\/([0-9]|[a-z]|-)*\//g,
       `/export/${toInsert}/`,
@@ -194,6 +195,83 @@ describe('fetch-vulnerabilities', () => {
     expect(vulnerabilityEntities).toMatchGraphObjectSchema({
       _class: Entities.VULNERABILITY._class,
     }); */
+  });
+
+  test('add vulnerability filters by config parameters', async () => {
+    const testCombinations = [
+      {
+        severities: ['INFO', 'LOW', 'MEDIUM', 'HIGH'],
+        states: ['OPEN', 'REOPENED', 'FIXED'],
+      },
+      { severities: ['INFO', 'LOW', 'MEDIUM'], states: ['OPEN', 'REOPENED'] },
+      { severities: ['INFO', 'LOW'], states: ['OPEN'] },
+      { severities: ['INFO'], states: [] },
+      { severities: [], states: ['OPEN'] },
+      { severities: [], states: [] },
+    ];
+
+    const fetchSpy = jest.spyOn(Fetch, 'default');
+
+    for (const combination of testCombinations) {
+      recording = setupTenableRecording({
+        directory: __dirname,
+        name: 'fetch-vulnerabilities',
+        options: {
+          matchRequestsBy: getTenableMatchRequestsBy(config, {
+            url: {
+              pathname: generatePathnameFunction(
+                // you MUST change this to new export uuid if you re-record
+                'f36739a5-d033-4ab5-b623-c97913251ac4',
+              ),
+            },
+          }),
+        },
+      });
+
+      const context = createMockStepExecutionContext({
+        instanceConfig: {
+          ...config,
+          ...(combination.severities.length > 0 && {
+            vulnerabilitySeverities: combination.severities.join(','),
+          }),
+          ...(combination.states.length > 0 && {
+            vulnerabilityStates: combination.states.join(','),
+          }),
+        },
+      });
+
+      await fetchVulnerabilities(context);
+
+      if (combination.severities.length > 0) {
+        expect(fetchSpy.mock.calls[0][1]).toMatchObject({
+          body: expect.stringContaining(
+            `"severity":[${combination.severities
+              .map((sev) => `"${sev.toLowerCase()}"`)
+              .join(',')}]`,
+          ),
+        });
+      } else {
+        expect(fetchSpy.mock.calls[0][1]).toMatchObject({
+          body: expect.not.stringContaining(`"severity":[`),
+        });
+      }
+
+      if (combination.states.length > 0) {
+        expect(fetchSpy.mock.calls[0][1]).toMatchObject({
+          body: expect.stringContaining(
+            `"state":[${combination.states
+              .map((state) => `"${state.toLowerCase()}"`)
+              .join(',')}]`,
+          ),
+        });
+      } else {
+        expect(fetchSpy.mock.calls[0][1]).toMatchObject({
+          body: expect.not.stringContaining(`"state":[`),
+        });
+      }
+      await recording.stop();
+      fetchSpy.mockClear();
+    }
   });
 });
 

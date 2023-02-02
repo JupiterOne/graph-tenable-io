@@ -4,7 +4,6 @@ import Client, {
   ContainerRepository,
   ExportStatus,
   TenableRepsonse,
-  VulnerabilityState,
 } from './client';
 
 import {
@@ -174,11 +173,7 @@ export default class TenableClient {
         num_assets: 50,
         filters: {
           since: getUnixTime(sub(Date.now(), { days: 35 })),
-          state: [
-            VulnerabilityState.Open,
-            VulnerabilityState.Reopened,
-            VulnerabilityState.Fixed,
-          ],
+          state: ['open', 'reopened', 'fixed'],
         },
       };
     const timeoutInMinutes = options?.timeoutInMinutes || 30;
