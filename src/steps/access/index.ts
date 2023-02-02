@@ -3,7 +3,7 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig } from '../../config';
-import { Entities, Relationships, StepIds } from '../../constants';
+import { Entities, Relationships, StepIds } from '../constants';
 import { getAccount } from '../account/util';
 import TenableClient from '../../tenable/TenableClient';
 import { createAccountUserRelationship, createUserEntity } from './converters';

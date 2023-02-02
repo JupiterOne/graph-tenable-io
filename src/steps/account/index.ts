@@ -3,7 +3,7 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig } from '../../config';
-import { Entities, StepIds } from '../../constants';
+import { Entities, StepIds } from '../constants';
 import { createAccountEntity } from './converters';
 import { getAccount } from './util';
 

@@ -11,7 +11,7 @@ import {
   MappedRelationships,
   Relationships,
   StepIds,
-} from '../../constants';
+} from '../constants';
 import TenableClient from '../../tenable/TenableClient';
 import { AssetExport, VulnerabilityExport } from '../../tenable/client';
 import {

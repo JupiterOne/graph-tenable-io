@@ -1,5 +1,5 @@
 import { User } from '../../tenable/client';
-import { Entities } from '../../constants';
+import { Entities } from '../constants';
 import { Account } from '../../types';
 import { createAccountUserRelationship, createUserEntity } from './converters';
 

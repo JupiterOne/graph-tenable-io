@@ -4,7 +4,7 @@ import {
   IntegrationLogger,
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
-import { Entities } from '../../constants';
+import { Entities } from '../constants';
 import { AssetExport, VulnerabilityExport } from '../../tenable/client';
 import { generateEntityKey } from '../../utils/generateKey';
 import { TargetEntity } from '../../utils/targetEntities';
@@ -231,28 +231,6 @@ export function getPriority(numericPriority: number): FindingSeverityPriority {
   } else {
     return FindingSeverityPriority.Unknown;
   }
-}
-
-/**
- * Converts NVD CVSS2 severity values to J1 normalized numeric values. See
- * https://nvd.nist.gov/vuln-metrics/cvss.
- *
- * Throws an `IntegrationError` when the CVSS2 severity value is not recognized.
- */
-export function normalizeCVSS2Severity(cvss2Severity: number | string): {
-  numericSeverity: number;
-  severity: FindingSeverityPriority | undefined;
-} {
-  const numericSeverity = Number(cvss2Severity);
-  let severity;
-  if (numericSeverity < 4) {
-    severity = FindingSeverityPriority.Low;
-  } else if (numericSeverity < 7) {
-    severity = FindingSeverityPriority.Medium;
-  } else if (numericSeverity <= 10) {
-    severity = FindingSeverityPriority.High;
-  }
-  return { numericSeverity, severity };
 }
 
 export function getTargetsForAsset(asset: AssetExport): string[] {

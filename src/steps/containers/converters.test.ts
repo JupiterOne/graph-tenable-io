@@ -6,7 +6,7 @@ import {
   ContainerUnwantedProgram,
   ContainerRepository,
 } from '../../tenable/client';
-import { Entities } from '../../constants';
+import { Entities } from '../constants';
 import { Account } from '../../types';
 import {
   createContainerImageEntity,

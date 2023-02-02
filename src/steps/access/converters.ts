@@ -1,5 +1,8 @@
-import { Relationship } from '@jupiterone/integration-sdk-core';
-import { Entities, Relationships } from '../../constants';
+import {
+  createIntegrationEntity,
+  Relationship,
+} from '@jupiterone/integration-sdk-core';
+import { Entities, Relationships } from '../constants';
 import { User } from '../../tenable/client';
 import { Account } from '../../types';
 import {
@@ -8,26 +11,31 @@ import {
 } from '../../utils/generateKey';
 
 export function createUserEntity(user: User) {
-  return {
-    _key: generateEntityKey(Entities.USER._type, user.id),
-    _type: Entities.USER._type,
-    _class: Entities.USER._class,
-    id: user.id.toString(),
-    uuid: user.uuid,
-    userName: user.user_name,
-    username: user.username,
-    email: user.email,
-    displayName: user.name,
-    name: user.name,
-    type: user.type,
-    containerUuid: user.container_uuid,
-    permissions: user.permissions,
-    loginFailCount: user.login_fail_count,
-    loginFailTotal: user.login_fail_total,
-    enabled: user.enabled,
-    lastlogin: user.lastlogin,
-    uuidId: user.uuid_id,
-  };
+  return createIntegrationEntity({
+    entityData: {
+      source: {},
+      assign: {
+        _key: generateEntityKey(Entities.USER._type, user.id),
+        _type: Entities.USER._type,
+        _class: Entities.USER._class,
+        id: user.id.toString(),
+        uuid: user.uuid,
+        userName: user.user_name,
+        username: user.username,
+        email: user.email,
+        displayName: user.name,
+        name: user.name,
+        type: user.type,
+        containerUuid: user.container_uuid,
+        permissions: user.permissions,
+        loginFailCount: user.login_fail_count,
+        loginFailTotal: user.login_fail_total,
+        enabled: user.enabled,
+        lastlogin: user.lastlogin,
+        uuidId: user.uuid_id,
+      },
+    },
+  });
 }
 
 export function createAccountUserRelationship(

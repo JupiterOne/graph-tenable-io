@@ -1,5 +1,8 @@
-import { generateRelationshipKey } from '@jupiterone/integration-sdk-core';
-import { Entities, Relationships } from '../../constants';
+import {
+  createIntegrationEntity,
+  generateRelationshipKey,
+} from '@jupiterone/integration-sdk-core';
+import { Entities, Relationships } from '../constants';
 import { Service } from '../../tenable/client';
 import { Account } from '../../types';
 import { generateEntityKey } from '../../utils/generateKey';
@@ -9,16 +12,20 @@ export function getServiceKey(service: Service) {
 }
 
 export function createServiceEntity(service: Service) {
-  return {
-    _key: getServiceKey(service),
-    _type: Entities.SERVICE._type,
-    _class: Entities.SERVICE._class,
-    _rawData: [{ name: 'default', rawData: service }],
-    name: service.name,
-    displayName: service.name,
-    category: ['software', 'other'],
-    function: ['SAST'],
-  };
+  return createIntegrationEntity({
+    entityData: {
+      source: service,
+      assign: {
+        _key: getServiceKey(service),
+        _type: Entities.SERVICE._type,
+        _class: Entities.SERVICE._class,
+        name: service.name,
+        displayName: service.name,
+        category: ['software', 'other'],
+        function: ['SAST'],
+      },
+    },
+  });
 }
 
 export function createAccountServiceRelationship(
