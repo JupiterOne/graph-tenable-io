@@ -34,16 +34,16 @@
   "dependencies": {
     "@lifeomic/attempt": "^3.0.3",
     "date-fns": "^2.21.3",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.6.7",
     "p-map": "^4.0.0"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.14.0"
+    "@jupiterone/integration-sdk-core": "^8.30.1"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.14.0",
-    "@jupiterone/integration-sdk-dev-tools": "^8.14.0",
-    "@jupiterone/integration-sdk-testing": "^8.14.0",
+    "@jupiterone/integration-sdk-core": "^8.30.1",
+    "@jupiterone/integration-sdk-dev-tools": "^8.30.1",
+    "@jupiterone/integration-sdk-testing": "^8.30.1",
     "@types/lodash": "^4.14.182",
     "@types/nock": "10.0.3",
     "@types/node-fetch": "^2.3.2",

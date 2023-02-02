@@ -12,7 +12,7 @@ import {
   Relationships,
   SERVICE_ENTITY_DATA_KEY,
   StepIds,
-} from '../../constants';
+} from '../constants';
 import {
   containerFindingEntityKey,
   createReportUnwantedProgramRelationship,

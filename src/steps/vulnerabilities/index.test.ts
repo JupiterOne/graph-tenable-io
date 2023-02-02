@@ -24,7 +24,7 @@ import {
   Recording,
   getTenableMatchRequestsBy,
 } from '../../../test/recording';
-import { Entities, Relationships } from '../../constants';
+import { Entities, Relationships } from '../constants';
 import { v4 as uuid } from 'uuid';
 import { createAssetEntity, createVulnerabilityEntity } from './converters';
 import { filterGraphObjects } from '../../../test/helpers/filterGraphObjects';

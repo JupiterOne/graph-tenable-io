@@ -1,4 +1,4 @@
-import { Entities } from '../../constants';
+import { Entities } from '../constants';
 import { Service } from '../../tenable/client';
 import { Account } from '../../types';
 import {

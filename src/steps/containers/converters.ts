@@ -1,4 +1,4 @@
-import { Entities, Relationships } from '../../constants';
+import { Entities, Relationships } from '../constants';
 import {
   ContainerImage,
   ContainerReport,
@@ -45,43 +45,47 @@ export function createContainerRepositoryEntity(repo: ContainerRepository) {
 }
 
 export function createContainerImageEntity(image: ContainerImage) {
-  return {
-    _key: generateEntityKey(
-      Entities.CONTAINER_IMAGE._type,
-      generateImageKey(image),
-    ),
-    _type: Entities.CONTAINER_IMAGE._type,
-    _class: Entities.CONTAINER_IMAGE._class,
-    _rawData: [{ name: 'default', rawData: image }],
-    repoId: image.repoId,
-    repoName: image.repoName,
-    name: image.name,
-    displayName: image.name,
-    tag: image.tag,
-    digest: image.digest,
-    hasReport: image.hasReport,
-    reportUrl: image.reportUrl,
-    hasInventory: image.hasInventory,
-    status: image.status,
-    lastJobStatus: image.lastJobStatus,
-    score: image.score,
-    numberOfVulns: image.numberOfVulns,
-    numberOfMalware: image.numberOfMalware,
-    pullCount: image.pullCount,
-    pushCount: image.pushCount,
-    source: image.source,
-    createdOn: parseTimePropertyValue(image.createdAt),
-    updatedOn: parseTimePropertyValue(image.updatedAt),
-    finishedOn: parseTimePropertyValue(image.finishedAt),
-    uploadedOn: parseTimePropertyValue(image.uploadedAt),
-    lastScannedOn: parseTimePropertyValue(image.lastScanned),
-    imageHash: image.imageHash,
-    size: image.size,
-    'layers.size': image.layers.map((img) => img.size),
-    'layers.digest': image.layers.map((img) => img.digest),
-    os: image.os,
-    osVersion: image.osVersion,
-  };
+  return createIntegrationEntity({
+    entityData: {
+      source: image,
+      assign: {
+        _key: generateEntityKey(
+          Entities.CONTAINER_IMAGE._type,
+          generateImageKey(image),
+        ),
+        _type: Entities.CONTAINER_IMAGE._type,
+        _class: Entities.CONTAINER_IMAGE._class,
+        repoId: image.repoId,
+        repoName: image.repoName,
+        name: image.name,
+        displayName: image.name,
+        tag: image.tag,
+        digest: image.digest,
+        hasReport: image.hasReport,
+        reportUrl: image.reportUrl,
+        hasInventory: image.hasInventory,
+        status: image.status,
+        lastJobStatus: image.lastJobStatus,
+        score: image.score,
+        numberOfVulns: image.numberOfVulns,
+        numberOfMalware: image.numberOfMalware,
+        pullCount: image.pullCount,
+        pushCount: image.pushCount,
+        source: image.source,
+        createdOn: parseTimePropertyValue(image.createdAt),
+        updatedOn: parseTimePropertyValue(image.updatedAt),
+        finishedOn: parseTimePropertyValue(image.finishedAt),
+        uploadedOn: parseTimePropertyValue(image.uploadedAt),
+        lastScannedOn: parseTimePropertyValue(image.lastScanned),
+        imageHash: image.imageHash,
+        size: image.size,
+        'layers.size': image.layers.map((img) => img.size),
+        'layers.digest': image.layers.map((img) => img.digest),
+        os: image.os,
+        osVersion: image.osVersion,
+      },
+    },
+  });
 }
 
 export function createAccountContainerRepositoryRelationship(
