@@ -6,6 +6,8 @@ import {
 } from '../../tenable/client';
 import { getUnixTime, sub } from 'date-fns';
 
+const DEFAULT_STATES: VulnerabilityState[] = ['open', 'reopened', 'fixed'];
+
 function parseVulnerabilitySeverities(severities: string) {
   return severities
     .split(',')
@@ -26,8 +28,10 @@ export function buildFilters(
     ...(config.vulnerabilitySeverities && {
       severity: parseVulnerabilitySeverities(config.vulnerabilitySeverities),
     }),
-    ...(config.vulnerabilityStates && {
-      state: parseVulnerabilityStates(config.vulnerabilityStates),
-    }),
+    ...{
+      state: config.vulnerabilityStates
+        ? parseVulnerabilityStates(config.vulnerabilityStates)
+        : DEFAULT_STATES,
+    },
   };
 }

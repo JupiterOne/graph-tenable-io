@@ -531,24 +531,21 @@ export enum ExportStatus {
 // Export Vulnerability Types
 
 export const VALID_VULNERABILITY_SEVERITIES = [
-  'INFO',
-  'LOW',
-  'MEDIUM',
-  'HIGH',
-  'CRITICAL',
+  'info',
+  'low',
+  'medium',
+  'high',
+  'critical',
 ] as const;
-export type VulnerabilitySeverity = Lowercase<
-  typeof VALID_VULNERABILITY_SEVERITIES[number]
->;
+export type VulnerabilitySeverity =
+  typeof VALID_VULNERABILITY_SEVERITIES[number];
 
 export const VALID_VULNERABILITY_STATES = [
-  'OPEN',
-  'REOPENED',
-  'FIXED',
+  'open',
+  'reopened',
+  'fixed',
 ] as const;
-export type VulnerabilityState = Lowercase<
-  typeof VALID_VULNERABILITY_STATES[number]
->;
+export type VulnerabilityState = typeof VALID_VULNERABILITY_STATES[number];
 
 // Note: By default, vulnerability exports will only include
 // vulnerabilities found or fixed within the last 30 days if no

@@ -265,8 +265,9 @@ describe('fetch-vulnerabilities', () => {
           ),
         });
       } else {
+        // When states value in instance config is undefined, pass default values.
         expect(fetchSpy.mock.calls[0][1]).toMatchObject({
-          body: expect.not.stringContaining(`"state":[`),
+          body: expect.stringContaining(`"state":["open","reopened","fixed"]`),
         });
       }
       await recording.stop();
