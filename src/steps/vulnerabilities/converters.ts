@@ -264,6 +264,12 @@ export function createVulnerabilityEntity(
   } catch (err) {
     logger.warn({ err }, 'Encountered error when checking entity size');
   }
+  // The output property is often _very_ large.
+  // We may in the future come up with some use-cases for this property and may
+  // want to do some more fine-grained trimming of this property
+
+  delete vuln.output;
+
   return createIntegrationEntity({
     entityData: {
       source: vuln,
