@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.0.3 - 2023-02-03
+
+### Removed
+
+- removed the `output` property from the `rawData` of
+  `tenable_vulnerability_finding`
+
 ## 9.0.2 - 2023-01-26
 
 ### Added
