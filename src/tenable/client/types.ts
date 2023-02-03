@@ -600,7 +600,7 @@ export interface VulnerabilitiesExportStatusResponse {
 
 export interface VulnerabilityExport {
   asset: VulnerabilityExportAsset;
-  output: string | null;
+  output?: string | null;
   plugin: VulnerabilityExportPlugin;
   port: VulnerabilityExportPort;
   scan: VulnerabilityExportScan;

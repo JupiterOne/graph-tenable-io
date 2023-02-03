@@ -1,6 +1,6 @@
 {
   "name": "@jupiterone/graph-tenable-io",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "description": "A JupiterOne managed integration for https://www.tenable.com/products/tenable-io",
   "main": "src/index.js",
   "types": "src/index.d.ts",
