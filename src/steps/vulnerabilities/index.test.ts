@@ -200,13 +200,13 @@ describe('fetch-vulnerabilities', () => {
   test('add vulnerability filters by config parameters', async () => {
     const testCombinations = [
       {
-        severities: ['INFO', 'LOW', 'MEDIUM', 'HIGH'],
-        states: ['OPEN', 'REOPENED', 'FIXED'],
+        severities: ['info', 'low', 'medium', 'high'],
+        states: ['open', 'reopened', 'fixed'],
       },
-      { severities: ['INFO', 'LOW', 'MEDIUM'], states: ['OPEN', 'REOPENED'] },
-      { severities: ['INFO', 'LOW'], states: ['OPEN'] },
-      { severities: ['INFO'], states: [] },
-      { severities: [], states: ['OPEN'] },
+      { severities: ['info', 'low', 'medium'], states: ['open', 'reopened'] },
+      { severities: ['info', 'low'], states: ['open'] },
+      { severities: ['info'], states: [] },
+      { severities: [], states: ['open'] },
       { severities: [], states: [] },
     ];
 
@@ -246,7 +246,7 @@ describe('fetch-vulnerabilities', () => {
         expect(fetchSpy.mock.calls[0][1]).toMatchObject({
           body: expect.stringContaining(
             `"severity":[${combination.severities
-              .map((sev) => `"${sev.toLowerCase()}"`)
+              .map((sev) => `"${sev}"`)
               .join(',')}]`,
           ),
         });
@@ -260,7 +260,7 @@ describe('fetch-vulnerabilities', () => {
         expect(fetchSpy.mock.calls[0][1]).toMatchObject({
           body: expect.stringContaining(
             `"state":[${combination.states
-              .map((state) => `"${state.toLowerCase()}"`)
+              .map((state) => `"${state}"`)
               .join(',')}]`,
           ),
         });

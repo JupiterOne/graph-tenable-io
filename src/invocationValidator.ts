@@ -20,13 +20,14 @@ function isValidApiTimeoutInMinutes(timeout?: number) {
   return timeout >= 0 && timeout <= MAXIMUM_API_TIMEOUT_IN_MINUTES;
 }
 
-const uppercaseValidSeverities = VALID_VULNERABILITY_SEVERITIES.map((sev) =>
-  sev.toUpperCase(),
-);
 function validateVulnerabilitySeverities(severities: string) {
   const severityValues = severities.replace(/\s+/g, '').split(',');
   for (const severity of severityValues) {
-    if (!uppercaseValidSeverities.includes(severity)) {
+    if (
+      !(VALID_VULNERABILITY_SEVERITIES as unknown as string[]).includes(
+        severity,
+      )
+    ) {
       throw new IntegrationValidationError(
         `Severity - ${severity} - is not valid. Valid vulnerability severities include ${VALID_VULNERABILITY_SEVERITIES.map(
           (v) => v,
@@ -36,13 +37,10 @@ function validateVulnerabilitySeverities(severities: string) {
   }
 }
 
-const uppercaseValidStates = VALID_VULNERABILITY_STATES.map((state) =>
-  state.toUpperCase(),
-);
 function validateVulnerabilityStates(states: string) {
   const statesValues = states.replace(/\s+/g, '').split(',');
   for (const state of statesValues) {
-    if (!uppercaseValidStates.includes(state)) {
+    if (!(VALID_VULNERABILITY_STATES as unknown as string[]).includes(state)) {
       throw new IntegrationValidationError(
         `Status - ${state} - is not valid. Valid vulnerability status include ${VALID_VULNERABILITY_STATES.map(
           (v) => v,

@@ -9,15 +9,11 @@ import { getUnixTime, sub } from 'date-fns';
 const DEFAULT_STATES: VulnerabilityState[] = ['open', 'reopened', 'fixed'];
 
 function parseVulnerabilitySeverities(severities: string) {
-  return severities
-    .split(',')
-    .map((severity) => severity.toLowerCase() as VulnerabilitySeverity);
+  return severities.split(',') as VulnerabilitySeverity[];
 }
 
 function parseVulnerabilityStates(states: string) {
-  return states
-    .split(',')
-    .map((state) => state.toLowerCase() as VulnerabilityState);
+  return states.split(',') as VulnerabilityState[];
 }
 
 export function buildFilters(
