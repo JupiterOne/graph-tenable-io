@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.1.0 - 2023-02-06
+
+### Added
+
+- Added vulnerability filtering (by severity and state) using instance
+  configuration
+
 ## 9.0.4 - 2023-02-06
 
 ### Changed
