@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.0.4 - 2023-02-06
+
+### Changed
+
+- no longer indexing metadata for relationships.
+
 ## 9.0.3 - 2023-02-03
 
 ### Removed
