@@ -21,13 +21,11 @@ export function buildFilters(
 ): ExportVulnerabilitiesFilter {
   return {
     since: getUnixTime(sub(Date.now(), { days: 35 })),
+    state: config.vulnerabilityStates
+      ? parseVulnerabilityStates(config.vulnerabilityStates)
+      : DEFAULT_STATES,
     ...(config.vulnerabilitySeverities && {
       severity: parseVulnerabilitySeverities(config.vulnerabilitySeverities),
     }),
-    ...{
-      state: config.vulnerabilityStates
-        ? parseVulnerabilityStates(config.vulnerabilityStates)
-        : DEFAULT_STATES,
-    },
   };
 }
