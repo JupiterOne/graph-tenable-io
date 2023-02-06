@@ -8,6 +8,8 @@ export interface IntegrationConfig extends IntegrationInstanceConfig {
   secretKey: string;
   vulnerabilityApiTimeoutInMinutes?: number;
   assetApiTimeoutInMinutes?: number;
+  vulnerabilitySeverities?: string;
+  vulnerabilityStates?: string;
 }
 
 export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
@@ -22,6 +24,12 @@ export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
     type: 'string',
   },
   vulnerabilityApiTimeoutInMinutes: {
+    type: 'string',
+  },
+  vulnerabilitySeverities: {
+    type: 'string',
+  },
+  vulnerabilityStates: {
     type: 'string',
   },
 };

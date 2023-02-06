@@ -26,6 +26,7 @@ import {
 } from '../../utils/targetEntities';
 import { getAccount } from '../account/util';
 import { createAccountEntity } from '../account/converters';
+import { buildFilters } from './filters';
 
 export async function fetchAssets(
   context: IntegrationStepExecutionContext<IntegrationConfig>,
@@ -110,6 +111,10 @@ export async function fetchVulnerabilities(
     },
     {
       timeoutInMinutes: vulnerabilityApiTimeoutInMinutes,
+      exportVulnerabilitiesOptions: {
+        num_assets: 50,
+        filters: buildFilters(instance.config),
+      },
     },
   );
 }
