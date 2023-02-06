@@ -20,6 +20,8 @@ export const StepIds = {
   CONTAINER_REPOSITORIES: 'step-container-repositories',
   REPOSITORY_IMAGES_RELATIONSHIPS: 'build-repository-images-relationships',
   CONTAINER_REPORTS: 'step-container-reports',
+  SCANNER_IDS: 'step-scanner-ids',
+  AGENTS: 'step-agents',
 };
 
 export const Entities: Record<
@@ -33,7 +35,8 @@ export const Entities: Record<
   | 'CONTAINER_MALWARE'
   | 'CONTAINER_UNWANTED_PROGRAM'
   | 'VULNERABILITY'
-  | 'USER',
+  | 'USER'
+  | 'AGENT',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -92,6 +95,11 @@ export const Entities: Record<
     _class: ['User'],
     _type: 'tenable_user',
   },
+  AGENT: {
+    resourceName: 'Agent',
+    _class: ['HostAgent'],
+    _type: 'tenable_agent',
+  },
 };
 
 export const Relationships: Record<
@@ -109,7 +117,8 @@ export const Relationships: Record<
   | 'REPORT_IDENTIFIED_FINDING'
   | 'REPORT_IDENTIFIED_MALWARE'
   | 'REPORT_IDENTIFIED_UNWANTED_PROGRAM'
-  | 'ASSET_HAS_VULN',
+  | 'ASSET_HAS_VULN'
+  | 'ACCOUNT_HAS_AGENT',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -246,6 +255,12 @@ export const Relationships: Record<
     indexMetadata: {
       enabled: false,
     },
+  },
+  ACCOUNT_HAS_AGENT: {
+    _type: 'tenable_account_has_agent',
+    sourceType: Entities.ACCOUNT._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.AGENT._type,
   },
 };
 

@@ -2,8 +2,9 @@ export interface Dictionary<T> {
   [key: string]: T;
 }
 
-export type Paginated<T> = {
-  items: T;
+export type Paginated<ListKey extends string, T> = {
+  [key in ListKey]: T;
+} & {
   pagination: {
     offset: number;
     limit: number;
@@ -507,9 +508,47 @@ export interface AssetVulnerabilityRiskInfo {
 
 // --
 
-export type ContainerRepositoryResponse = Paginated<ContainerRepository[]>;
-export type ContainerImagesResponse = Paginated<Image[]>;
+export type ContainerRepositoryResponse = Paginated<
+  'items',
+  ContainerRepository[]
+>;
+export type ContainerImagesResponse = Paginated<'items', Image[]>;
 export type ContainerImage = Image & ContainerImageDetails;
+
+export interface Scanner {
+  id: number;
+}
+export interface ScannerResponse {
+  scanners: Scanner[];
+}
+
+export interface AgentGroupSummary {
+  id: number;
+  name: string;
+}
+
+export interface Agent {
+  id: number;
+  uuid: string;
+  name: string;
+  platform: string;
+  distro: string;
+  ip: string;
+  last_scanned: number;
+  plugin_feed_id: string;
+  core_build: string;
+  core_version: string;
+  linked_on: number;
+  last_connect: number;
+  status: string;
+  groups: AgentGroupSummary[];
+  supports_remote_logs: boolean;
+  network_uuid: string;
+  network_name: string;
+  supports_remote_settings: boolean;
+}
+
+export type ListAgentsResponse = Paginated<'agents', Agent[]>;
 
 export type ReportResponse = ContainerReport;
 

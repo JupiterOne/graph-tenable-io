@@ -4,9 +4,9 @@ import { version as tenableClientNodejsBuildVersion } from '../../../package.jso
 
 import {
   AssetExport,
+  AssetVulnerabilityResponse,
   AssetsExportStatusResponse,
   AssetsResponse,
-  AssetVulnerabilityResponse,
   CancelExportResponse,
   ContainerImageDetails,
   ContainerImagesResponse,
@@ -15,13 +15,15 @@ import {
   ExportAssetsResponse,
   ExportVulnerabilitiesOptions,
   ExportVulnerabilitiesResponse,
+  ListAgentsResponse,
   Method,
   RecentScanSummary,
   ReportResponse,
   ScanHostVulnerability,
   ScanResponse,
-  ScansResponse,
   ScanVulnerabilitiesResponse,
+  ScannerResponse,
+  ScansResponse,
   UserPermissionsResponse,
   UsersResponse,
   VulnerabilitiesExportStatusResponse,
@@ -198,6 +200,17 @@ export default class TenableClient {
   ) {
     return await this.request<ReportResponse>(
       `/container-security/api/v2/reports/${repo}/${image}/${tag}`,
+      Method.GET,
+    );
+  }
+
+  public async fetchScanners() {
+    return await this.request<ScannerResponse>(`/scanners`, Method.GET);
+  }
+
+  public async fetchAgents(scannerId: number, offset: number, limit: number) {
+    return this.request<ListAgentsResponse>(
+      `/scanners/${scannerId}/agents?offset=${offset}&limit=${limit}`,
       Method.GET,
     );
   }
