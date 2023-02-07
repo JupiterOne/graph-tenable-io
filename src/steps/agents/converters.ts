@@ -4,6 +4,7 @@ import {
   createIntegrationEntity,
   Entity,
 } from '@jupiterone/integration-sdk-core';
+import { generateEntityKey } from '../../utils/generateKey';
 
 export function createAgentEntity(agent: Agent): Entity {
   return createIntegrationEntity({
@@ -12,13 +13,16 @@ export function createAgentEntity(agent: Agent): Entity {
       assign: {
         _class: Entities.AGENT._class,
         _type: Entities.AGENT._type,
-        _key: String(agent.id),
+        _key: generateEntityKey(Entities.AGENT._type, agent.id),
 
         // Schema required fields.
+        id: String(agent.id),
+        agentId: agent.id,
         displayName: agent.name,
         function: ['vulnerability-detection'],
 
         // Entity additional data.
+        name: agent.name,
         status: agent.status,
         platform: agent.platform,
         ipAddress: agent.ip,

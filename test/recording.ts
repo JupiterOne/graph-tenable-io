@@ -40,7 +40,9 @@ function redactValuesDeep(obj, keysMap: Map<String, any>) {
 
 function redact(entry): void {
   mutations.unzipGzippedRecordingEntry(entry);
+
   const DEFAULT_REDACT = '[REDACTED]';
+
   const keysToRedactMap = new Map();
   keysToRedactMap.set('ipv4s', DEFAULT_REDACT);
   keysToRedactMap.set('ipv6s', DEFAULT_REDACT);
@@ -49,14 +51,19 @@ function redact(entry): void {
   keysToRedactMap.set('ipv4', DEFAULT_REDACT);
   keysToRedactMap.set('ipv6', DEFAULT_REDACT);
   keysToRedactMap.set('output', DEFAULT_REDACT);
-  const response = JSON.parse(entry.response.content.text);
+  keysToRedactMap.set('ip', DEFAULT_REDACT);
 
-  if (response.forEach) {
+  const response = JSON.parse(entry.response.content.text);
+  if (_.isArray(response)) {
     response.forEach((responseValue, responseIndex) => {
       response[responseIndex] = redactValuesDeep(
         responseValue,
         keysToRedactMap,
       );
+    });
+  } else {
+    Object.keys(response).forEach((key) => {
+      response[key] = redactValuesDeep(response[key], keysToRedactMap);
     });
   }
   entry.response.content.text = JSON.stringify(response);
