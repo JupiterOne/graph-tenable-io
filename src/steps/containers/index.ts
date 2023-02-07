@@ -106,7 +106,7 @@ export async function buildRepositoryImagesRelationship(
       const image = getRawData<ContainerImage>(imageEntity);
 
       if (!image) {
-        logger.warn(
+        logger.debug(
           {
             _key: imageEntity._key,
           },
@@ -147,7 +147,7 @@ export async function fetchContainerReports(
       const image = getRawData<ContainerImage>(imageEntity);
 
       if (!image) {
-        logger.warn(
+        logger.debug(
           {
             _key: imageEntity._key,
           },
