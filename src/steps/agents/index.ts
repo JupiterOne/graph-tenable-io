@@ -28,16 +28,18 @@ export async function fetchAgents(
 
   const scannerIds = (await jobState.getData(DATA_SCANNER_IDS)) as number[];
 
+  let duplicateKeysEncountered = 0;
   for (const scannerId of scannerIds) {
     await provider.iterateAgents(scannerId, async (agent) => {
       const agentEntity = createAgentEntity(agent);
       if (await jobState.hasKey(agentEntity._key)) {
-        logger.warn(
+        logger.debug(
           {
             _key: agentEntity._key,
           },
-          'Warning: duplicate agent _key encountered',
+          'Debug: duplicate agent _key encountered',
         );
+        duplicateKeysEncountered += 1;
         return;
       }
       await jobState.addEntity(agentEntity);
@@ -49,6 +51,13 @@ export async function fetchAgents(
         }),
       );
     });
+  }
+
+  if (duplicateKeysEncountered > 0) {
+    logger.info(
+      { duplicateKeysEncountered },
+      `Found duplicate keys for "tenable_agent" entity`,
+    );
   }
 }
 
