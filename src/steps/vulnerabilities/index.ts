@@ -80,7 +80,8 @@ export async function fetchAssets(
 
   if (duplicateKeysEncountered > 0) {
     logger.info(
-      `Found ${duplicateKeysEncountered} duplicate keys for "tenable_asset" entity`,
+      { duplicateKeysEncountered },
+      `Found duplicate keys for "tenable_asset" entity`,
     );
   }
 }
@@ -130,7 +131,8 @@ export async function fetchVulnerabilities(
 
   if (duplicateKeysEncountered > 0) {
     logger.info(
-      `Found ${duplicateKeysEncountered} duplicate keys for "tenable_vulnerability_finding" entity`,
+      { duplicateKeysEncountered },
+      `Found duplicate keys for "tenable_vulnerability_finding" entity`,
     );
   }
 }
@@ -145,7 +147,7 @@ export async function buildAssetVulnerabilityRelationships(
     async (vulnEntity) => {
       const vulnRawData = getRawData<VulnerabilityExport>(vulnEntity);
       if (!vulnRawData) {
-        logger.debug(
+        logger.warn(
           {
             _key: vulnEntity._key,
           },
@@ -168,7 +170,7 @@ export async function buildAssetVulnerabilityRelationships(
 
       const assetRawData = getRawData<AssetExport>(assetEntity);
       if (!assetRawData) {
-        logger.debug(
+        logger.warn(
           {
             'vuln._key': vulnEntity._key,
             'asset._key': assetEntity._key,
@@ -208,7 +210,7 @@ export async function buildVulnerabilityCveRelationships(
     async (vulnEntity) => {
       const vulnRawData = getRawData<VulnerabilityExport>(vulnEntity);
       if (!vulnRawData) {
-        logger.debug(
+        logger.warn(
           {
             _key: vulnEntity._key,
           },
@@ -240,7 +242,8 @@ export async function buildVulnerabilityCveRelationships(
 
   if (duplicateKeysEncountered > 0) {
     logger.info(
-      `Found ${duplicateKeysEncountered} duplicate keys for "tenable_vulnerability_finding_is_cve" relationship`,
+      { duplicateKeysEncountered },
+      `Found duplicate keys for "tenable_vulnerability_finding_is_cve" relationship`,
     );
   }
 }
