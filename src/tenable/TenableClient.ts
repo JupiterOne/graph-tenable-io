@@ -176,7 +176,7 @@ export default class TenableClient {
           state: ['open', 'reopened', 'fixed'],
         },
       };
-    const timeoutInMinutes = options?.timeoutInMinutes || 30;
+    const timeoutInMinutes = options?.timeoutInMinutes || 180;
     const { export_uuid: exportUuid } = await this.exportVulnerabilities(
       exportVulnerabilitiesOptions,
     );
@@ -294,7 +294,7 @@ export default class TenableClient {
     },
   ) {
     const chunkSize = options?.chunkSize || 100;
-    const timeoutInMinutes = options?.timeoutInMinutes || 30;
+    const timeoutInMinutes = options?.timeoutInMinutes || 180;
     const { export_uuid: exportUuid } = await this.exportAssets({
       chunk_size: chunkSize,
     });
