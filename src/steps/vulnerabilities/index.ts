@@ -43,16 +43,18 @@ export async function fetchAssets(
 
   logger.info({ assetApiTimeoutInMinutes }, 'Attempting to fetch assets...');
 
+  let duplicateKeysEncountered = 0;
   await provider.iterateAssets(
     async (asset) => {
       const assetEntity = createAssetEntity(asset, logger);
       if (await jobState.hasKey(assetEntity._key)) {
-        logger.warn(
+        logger.debug(
           {
             _key: assetEntity._key,
           },
-          'Warning: duplicate asset _key encountered',
+          'Debug: duplicate asset _key encountered',
         );
+        duplicateKeysEncountered += 1;
         return;
       }
       await jobState.addEntity(assetEntity);
@@ -75,6 +77,13 @@ export async function fetchAssets(
       timeoutInMinutes: assetApiTimeoutInMinutes,
     },
   );
+
+  if (duplicateKeysEncountered > 0) {
+    logger.info(
+      { duplicateKeysEncountered },
+      `Found duplicate keys for "tenable_asset" entity`,
+    );
+  }
 }
 
 export async function fetchVulnerabilities(
@@ -94,17 +103,19 @@ export async function fetchVulnerabilities(
     'Attempting to fetch vulnerabilities...',
   );
 
+  let duplicateKeysEncountered = 0;
   await provider.iterateVulnerabilities(
     async (vuln) => {
       // TODO add `targets` property from the asset.
       const vulnerabilityEntity = createVulnerabilityEntity(vuln, [], logger);
       if (await jobState.hasKey(vulnerabilityEntity._key)) {
-        logger.warn(
+        logger.debug(
           {
             _key: vulnerabilityEntity._key,
           },
-          'Warning: duplicate tenable_vulnerability_finding _key encountered',
+          'Debug: duplicate tenable_vulnerability_finding _key encountered',
         );
+        duplicateKeysEncountered += 1;
         return;
       }
       await jobState.addEntity(vulnerabilityEntity);
@@ -117,6 +128,13 @@ export async function fetchVulnerabilities(
       },
     },
   );
+
+  if (duplicateKeysEncountered > 0) {
+    logger.info(
+      { duplicateKeysEncountered },
+      `Found duplicate keys for "tenable_vulnerability_finding" entity`,
+    );
+  }
 }
 
 export async function buildAssetVulnerabilityRelationships(
@@ -140,7 +158,7 @@ export async function buildAssetVulnerabilityRelationships(
 
       const assetEntity = await jobState.findEntity(vulnRawData.asset.uuid);
       if (!assetEntity) {
-        logger.warn(
+        logger.debug(
           {
             'vuln._key': vulnEntity._key,
             'asset.uuid': vulnRawData.asset.uuid,
@@ -186,6 +204,7 @@ export async function buildVulnerabilityCveRelationships(
 ): Promise<void> {
   const { jobState, logger } = context;
 
+  let duplicateKeysEncountered = 0;
   await jobState.iterateEntities(
     { _type: Entities.VULNERABILITY._type },
     async (vulnEntity) => {
@@ -207,18 +226,26 @@ export async function buildVulnerabilityCveRelationships(
           to: targetCveEntity,
         });
         if (await jobState.hasKey(vulnCveMappedRelationship._key)) {
-          logger.warn(
+          logger.debug(
             {
               _key: vulnCveMappedRelationship._key,
             },
-            'Warning: duplicate tenable_vulnerability_finding_is_cve _key encountered',
+            'Debug: duplicate tenable_vulnerability_finding_is_cve _key encountered',
           );
+          duplicateKeysEncountered += 1;
           break;
         }
         await jobState.addRelationship(vulnCveMappedRelationship);
       }
     },
   );
+
+  if (duplicateKeysEncountered > 0) {
+    logger.info(
+      { duplicateKeysEncountered },
+      `Found duplicate keys for "tenable_vulnerability_finding_is_cve" relationship`,
+    );
+  }
 }
 
 export const scanSteps: Step<
