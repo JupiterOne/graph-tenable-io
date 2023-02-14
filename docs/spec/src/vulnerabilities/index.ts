@@ -2,10 +2,10 @@ import {
   RelationshipClass,
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../../../src/config';
+import { IntegrationConfig } from '../../../../src/config';
 import { StepSpec } from '../types';
 
-export const vulnerabilitySpec: StepSpec<TenableIntegrationConfig>[] = [
+export const vulnerabilitySpec: StepSpec<IntegrationConfig>[] = [
   {
     /**
      * ENDPOINT: https://cloud.tenable.com/assets/export

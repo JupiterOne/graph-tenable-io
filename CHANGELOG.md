@@ -8,6 +8,40 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.1.0 - 2023-02-06
+
+### Added
+
+- Added vulnerability filtering (by severity and state) using instance
+  configuration
+
+## 9.0.4 - 2023-02-06
+
+### Changed
+
+- no longer indexing metadata for relationships.
+
+## 9.0.3 - 2023-02-03
+
+### Removed
+
+- removed the `output` property from the `rawData` of
+  `tenable_vulnerability_finding`
+
+## 9.0.2 - 2023-01-26
+
+### Added
+
+Added the following properties to `tenable_vulnerability_finding`: -
+cvss3BaseScore - cvss3TemporalScore - cvssBaseScore - cvssTemporalScore -
+cvss3Vector - cvssVector - hasPatch
+
+## 9.0.1 - 2023-01-12
+
+### Fixed
+
+- `tenable_vulnerability_finding` now properly reflects the correct `severity`.
+
 ## 9.0.0 - 2022-11-01
 
 - add `last_fixed` property to `tenable_vulnerability_finding` entities.

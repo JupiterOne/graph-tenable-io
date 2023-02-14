@@ -1,7 +1,7 @@
 import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 import { config } from '../../../test/config';
 import { setupTenableRecording, Recording } from '../../../test/recording';
-import { Entities, Relationships } from '../../constants';
+import { Entities, Relationships } from '../constants';
 import { fetchAccount } from '../account';
 import { fetchServiceDetails } from '../service';
 

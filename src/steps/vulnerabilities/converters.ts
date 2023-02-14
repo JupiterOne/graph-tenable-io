@@ -4,7 +4,7 @@ import {
   IntegrationLogger,
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
-import { Entities } from '../../constants';
+import { Entities } from '../constants';
 import { AssetExport, VulnerabilityExport } from '../../tenable/client';
 import { generateEntityKey } from '../../utils/generateKey';
 import { TargetEntity } from '../../utils/targetEntities';
@@ -261,6 +261,12 @@ export function createVulnerabilityEntity(
   } catch (err) {
     logger.warn({ err }, 'Encountered error when checking entity size');
   }
+  // The output property is often _very_ large.
+  // We may in the future come up with some use-cases for this property and may
+  // want to do some more fine-grained trimming of this property
+
+  delete vuln.output;
+
   return createIntegrationEntity({
     entityData: {
       source: vuln,
@@ -275,7 +281,7 @@ export function createVulnerabilityEntity(
         name: vuln.plugin.name,
         category: vuln.asset.device_type,
         status: vuln.state,
-        severity: vuln.plugin.risk_factor,
+        severity: vuln.severity,
         numericSeverity: vuln.plugin.cvss3_base_score,
         vector: vuln.plugin.cvss3_vector?.raw || undefined,
         cve: vuln.plugin.cve || undefined,
@@ -329,6 +335,17 @@ export function createVulnerabilityEntity(
         firstSeenOn: parseTimePropertyValue(vuln.first_found),
         lastSeenOn: parseTimePropertyValue(vuln.last_found),
         lastFixedOn: parseTimePropertyValue(vuln.last_fixed),
+
+        // vulnerability prioritization properties
+        cvss3BaseScore: vuln.plugin.cvss3_base_score,
+        cvss3TemporalScore: vuln.plugin.cvss3_temporal_score,
+
+        cvssBaseScore: vuln.plugin.cvss_base_score,
+        cvssTemporalScore: vuln.plugin.cvss_temporal_score,
+
+        cvss3Vector: vuln.plugin.cvss3_vector?.raw,
+        cvssVector: vuln.plugin.cvss_vector?.raw,
+        hasPatch: vuln.plugin.has_patch,
       },
     },
   });

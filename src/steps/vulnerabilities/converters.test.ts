@@ -54,6 +54,7 @@ describe('getPriority from numericPriority', () => {
     expect(getPriority(11)).toEqual('Unknown');
   });
 });
+
 describe('getLargestItemKeyAndByteSize', () => {
   test('will return largest key and size when it is string', () => {
     const stringProp = new Array(700000).join('aaaaaaaaaa').toString();

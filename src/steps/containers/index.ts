@@ -6,13 +6,13 @@ import {
   RelationshipClass,
   Step,
 } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../config';
+import { IntegrationConfig } from '../../config';
 import {
   Entities,
   Relationships,
   SERVICE_ENTITY_DATA_KEY,
   StepIds,
-} from '../../constants';
+} from '../constants';
 import {
   containerFindingEntityKey,
   createReportUnwantedProgramRelationship,
@@ -24,7 +24,7 @@ import {
   createContainerRepositoryEntity,
   createAccountContainerRepositoryRelationship,
 } from './converters';
-import { getAccount } from '../../initializeContext';
+import { getAccount } from '../account/util';
 import TenableClient from '../../tenable/TenableClient';
 import { ContainerImage } from '../../tenable/client';
 import {
@@ -38,7 +38,7 @@ import {
 import { generateEntityKey } from '../../utils/generateKey';
 
 export async function fetchContainerRepositories(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const {
     jobState,
@@ -63,7 +63,7 @@ export async function fetchContainerRepositories(
 }
 
 export async function fetchContainerImages(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
   const client = new TenableClient({
@@ -96,7 +96,7 @@ export async function fetchContainerImages(
 }
 
 export async function buildRepositoryImagesRelationship(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger } = context;
 
@@ -132,7 +132,7 @@ export async function buildRepositoryImagesRelationship(
 }
 
 export async function fetchContainerReports(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
   const client = new TenableClient({
@@ -236,7 +236,7 @@ export async function fetchContainerReports(
 }
 
 export const containerSteps: Step<
-  IntegrationStepExecutionContext<TenableIntegrationConfig>
+  IntegrationStepExecutionContext<IntegrationConfig>
 >[] = [
   {
     id: StepIds.CONTAINER_REPOSITORIES,

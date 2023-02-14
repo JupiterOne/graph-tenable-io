@@ -1,8 +1,8 @@
 import { RelationshipClass } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../../../src/config';
+import { IntegrationConfig } from '../../../../src/config';
 import { StepSpec } from '../types';
 
-export const accessSpec: StepSpec<TenableIntegrationConfig>[] = [
+export const accessSpec: StepSpec<IntegrationConfig>[] = [
   {
     /**
      * ENDPOINT: https://cloud.tenable.com/users
