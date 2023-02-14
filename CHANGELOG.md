@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.2.0 - 2023-02-14
+
+### Fixed
+
+- Fixed `undeclared types encountered during execution`. Specific mapped
+  relationships types for `azure_vm`, `google_compute_instance` and
+  `aws_instance` have been made.
+
+- The updated types are no longer being index metadata.
+
 ## 9.1.0 - 2023-02-06
 
 ### Added
