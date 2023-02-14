@@ -19,12 +19,14 @@ export function createRelationshipToTargetEntity(options: {
   _class: RelationshipClass;
   to: TargetEntity;
 }): MappedRelationship {
+  const { from, _class, to } = options;
   return createMappedRelationship({
-    source: options.from,
-    _class: options._class,
-    target: options.to.targetEntity,
-    targetFilterKeys: options.to.targetFilterKeys,
-    skipTargetCreation: options.to.skipTargetCreation,
+    source: from,
+    _class: _class,
+    _type: `${from._type}_${_class.toLowerCase()}_${to.targetEntity._type}`,
+    target: to.targetEntity,
+    targetFilterKeys: to.targetFilterKeys,
+    skipTargetCreation: to.skipTargetCreation,
   });
 }
 
@@ -33,12 +35,14 @@ export function createRelationshipFromTargetEntity(options: {
   _class: RelationshipClass;
   to: Entity;
 }): MappedRelationship {
+  const { from, _class, to } = options;
   return createMappedRelationship({
-    source: options.to,
-    _class: options._class,
-    target: options.from.targetEntity,
-    targetFilterKeys: options.from.targetFilterKeys,
-    skipTargetCreation: options.from.skipTargetCreation,
+    source: to,
+    _class: _class,
+    _type: `${to._type}_${_class.toLowerCase()}_${from.targetEntity._type}`,
+    target: from.targetEntity,
+    targetFilterKeys: from.targetFilterKeys,
+    skipTargetCreation: from.skipTargetCreation,
     relationshipDirection: RelationshipDirection.REVERSE,
   });
 }

@@ -65,13 +65,17 @@ export async function fetchAssets(
           to: assetEntity,
         }),
       );
-      await jobState.addRelationship(
-        createRelationshipToTargetEntity({
-          from: assetEntity,
-          _class: RelationshipClass.IS,
-          to: createTargetHostEntity(asset),
-        }),
-      );
+
+      const targetEntity = createTargetHostEntity(asset);
+      if (targetEntity) {
+        await jobState.addRelationship(
+          createRelationshipToTargetEntity({
+            from: assetEntity,
+            _class: RelationshipClass.IS,
+            to: targetEntity,
+          }),
+        );
+      }
     },
     {
       timeoutInMinutes: assetApiTimeoutInMinutes,
@@ -188,13 +192,16 @@ export async function buildAssetVulnerabilityRelationships(
         }),
       );
 
-      await jobState.addRelationship(
-        createRelationshipFromTargetEntity({
-          from: createTargetHostEntity(assetRawData),
-          _class: RelationshipClass.HAS,
-          to: vulnEntity,
-        }),
-      );
+      const targetEntity = createTargetHostEntity(assetRawData);
+      if (targetEntity) {
+        await jobState.addRelationship(
+          createRelationshipFromTargetEntity({
+            from: targetEntity,
+            _class: RelationshipClass.HAS,
+            to: vulnEntity,
+          }),
+        );
+      }
     },
   );
 }
@@ -256,7 +263,11 @@ export const scanSteps: Step<
     name: 'Fetch Assets',
     entities: [Entities.ASSET],
     relationships: [Relationships.ACCOUNT_HAS_ASSET],
-    mappedRelationships: [MappedRelationships.ASSET_IS_HOST],
+    mappedRelationships: [
+      MappedRelationships.TENABLE_ASSET_IS_AWS_INSTANCE,
+      MappedRelationships.TENABLE_ASSET_IS_AZURE_VM,
+      MappedRelationships.TENABLE_ASSET_IS_GOOGLE_COMPUTE_INSTANCE,
+    ],
     dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchAssets,
   },
@@ -273,7 +284,11 @@ export const scanSteps: Step<
     name: 'Build Asset -> Vulnerability Relationships',
     entities: [],
     relationships: [Relationships.ASSET_HAS_VULN],
-    mappedRelationships: [MappedRelationships.HOST_HAS_VULN],
+    mappedRelationships: [
+      MappedRelationships.AWS_INSTANCE_HAS_VULNERABILITY,
+      MappedRelationships.AZURE_VM_HAS_VULNERABILITY,
+      MappedRelationships.GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY,
+    ],
     dependsOn: [StepIds.ASSETS, StepIds.VULNERABILITIES],
     executionHandler: buildAssetVulnerabilityRelationships,
   },

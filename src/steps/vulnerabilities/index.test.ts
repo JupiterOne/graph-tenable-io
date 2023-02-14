@@ -1,5 +1,6 @@
 import {
   createIntegrationEntity,
+  getRawData,
   IntegrationLogger,
   MappedRelationship,
   Relationship,
@@ -101,7 +102,16 @@ describe('fetch-assets', () => {
       },
     });
 
-    expect(mappedAssetHostRelationships.length).toBe(assetEntities.length);
+    const assetsThatShouldBeMapped = assetEntities.filter((v) => {
+      const raw = getRawData<AssetExport>(v) as AssetExport;
+      return (
+        raw.aws_ec2_instance_id || raw.azure_resource_id || raw.gcp_instance_id
+      );
+    });
+
+    expect(mappedAssetHostRelationships.length).toBe(
+      assetsThatShouldBeMapped.length,
+    );
   });
 
   describe('tenable_asset -> Host mapped relationships', () => {
@@ -349,9 +359,13 @@ describe('build-asset-vuln-relationships', () => {
     );
   }
 
-  function createMockAssetEntity(options: { assetId: string }) {
+  function createMockAssetEntity(options: {
+    assetId: string;
+    partial?: Partial<AssetExport>;
+  }) {
     const partialAssetExport: Partial<AssetExport> = {
       id: options.assetId,
+      ...options.partial,
     };
     return createAssetEntity(
       partialAssetExport as AssetExport,
@@ -373,14 +387,34 @@ describe('build-asset-vuln-relationships', () => {
     };
   }
 
-  test('success', async () => {
-    const assetId = uuid();
+  test('successfully maps all three CSP asset types', async () => {
+    const ids = [uuid(), uuid(), uuid(), uuid()];
+    const vulnEntities = ids.map((v) =>
+      createMockVulnerabilityEntity({ assetId: v }),
+    );
+    const assetEntities = [
+      createMockAssetEntity({
+        assetId: ids[0],
+        partial: { gcp_instance_id: uuid() },
+      }),
+      createMockAssetEntity({
+        assetId: ids[1],
+        partial: { aws_ec2_instance_id: uuid() },
+      }),
+      createMockAssetEntity({
+        assetId: ids[2],
+        partial: { azure_resource_id: uuid() },
+      }),
+      // entity without one of the properties above should not result
+      // in mapped relationship
+      createMockAssetEntity({
+        assetId: ids[3],
+      }),
+    ];
+
     const context = createMockStepExecutionContext({
       instanceConfig: config,
-      entities: [
-        createMockVulnerabilityEntity({ assetId }),
-        createMockAssetEntity({ assetId }),
-      ],
+      entities: [...vulnEntities, ...assetEntities],
     });
 
     await buildAssetVulnerabilityRelationships(context);
@@ -390,7 +424,7 @@ describe('build-asset-vuln-relationships', () => {
     const { directRelationships, mappedRelationships } =
       separateAssetVulnRelationships(context.jobState.collectedRelationships);
 
-    expect(directRelationships).toHaveLength(1);
+    expect(directRelationships).toHaveLength(4);
     expect(directRelationships).toMatchDirectRelationshipSchema({
       schema: {
         properties: {
@@ -400,7 +434,8 @@ describe('build-asset-vuln-relationships', () => {
       },
     });
 
-    expect(mappedRelationships).toHaveLength(1);
+    expect(mappedRelationships).toHaveLength(3);
+
     /**
      * The mapping here uses the same createTargetHostEntity() method used in fetchAssets
      * We already test the mapped relationship to host in the above test:

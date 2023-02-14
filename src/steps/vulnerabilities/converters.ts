@@ -133,7 +133,9 @@ export function createAssetEntity(
   });
 }
 
-export function createTargetHostEntity(data: AssetExport): TargetEntity {
+export function createTargetHostEntity(
+  data: AssetExport,
+): TargetEntity | undefined {
   let targetFilter;
 
   if (data.aws_ec2_instance_id) {
@@ -156,12 +158,7 @@ export function createTargetHostEntity(data: AssetExport): TargetEntity {
       _type: 'google_compute_instance',
     };
   } else {
-    // just make sure that at least all of the mapped relationships from this integration target the same entity.
-    // `ipv4`, `ipv6`, `mac_address`, and `fqdn` are all arrays, so filtering on them won't do.
-    targetFilter = {
-      id: data.id,
-      _type: 'tenable_asset',
-    };
+    return undefined;
   }
 
   const targetEntity = {
@@ -286,7 +283,7 @@ export function createVulnerabilityEntity(
         status: vuln.state,
         severity: vuln.severity,
         numericSeverity: vuln.plugin.cvss3_base_score,
-        vector: vuln.plugin.cvss3_vector?.raw || '',
+        vector: vuln.plugin.cvss3_vector?.raw || undefined,
         cve: vuln.plugin.cve || undefined,
         cpe: vuln.plugin.cpe || undefined,
         description: vuln.plugin.description,
@@ -361,7 +358,7 @@ export function createTargetCveEntities(
   return (cves || []).map((cve) => {
     return {
       targetEntity: {
-        _class: 'Vulnerability',
+        _class: ['Vulnerability'],
         _type: 'cve',
         _key: cve.toLowerCase(),
         name: cve.toUpperCase(),
