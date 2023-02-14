@@ -265,6 +265,9 @@ export const MappedRelationships: Record<
     _type: 'tenable_asset_is_azure_vm',
     _class: RelationshipClass.IS,
     direction: RelationshipDirection.FORWARD,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   TENABLE_ASSET_IS_GOOGLE_COMPUTE_INSTANCE: {
     sourceType: Entities.ASSET._type,
@@ -272,6 +275,9 @@ export const MappedRelationships: Record<
     _type: 'tenable_asset_is_google_compute_instance',
     _class: RelationshipClass.IS,
     direction: RelationshipDirection.FORWARD,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   TENABLE_ASSET_IS_AWS_INSTANCE: {
     sourceType: Entities.ASSET._type,
@@ -279,6 +285,9 @@ export const MappedRelationships: Record<
     _type: 'tenable_asset_is_aws_instance',
     _class: RelationshipClass.IS,
     direction: RelationshipDirection.FORWARD,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   AZURE_VM_HAS_VULNERABILITY: {
     sourceType: Entities.VULNERABILITY._type,
@@ -286,6 +295,9 @@ export const MappedRelationships: Record<
     _type: 'azure_vm_has_tenable_vulnerability_finding',
     _class: RelationshipClass.HAS,
     direction: RelationshipDirection.REVERSE,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY: {
     sourceType: Entities.VULNERABILITY._type,
@@ -293,12 +305,18 @@ export const MappedRelationships: Record<
     _type: 'google_compute_instance_has_tenable_vulnerability_finding',
     _class: RelationshipClass.HAS,
     direction: RelationshipDirection.REVERSE,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   AWS_INSTANCE_HAS_VULNERABILITY: {
     sourceType: Entities.VULNERABILITY._type,
     targetType: 'aws_instance',
     _type: 'aws_instance_has_tenable_vulnerability_finding',
     _class: RelationshipClass.HAS,
+    indexMetadata: {
+      enabled: false,
+    },
     direction: RelationshipDirection.REVERSE,
   },
   VULNERABILITY_IS_CVE: {
@@ -307,5 +325,8 @@ export const MappedRelationships: Record<
     _class: RelationshipClass.IS,
     targetType: 'cve',
     direction: RelationshipDirection.FORWARD,
+    indexMetadata: {
+      enabled: false,
+    },
   },
 };
