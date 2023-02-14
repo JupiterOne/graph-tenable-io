@@ -5,7 +5,7 @@ import {
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
 
-import { Entities } from '../../constants';
+import { Entities } from '../constants';
 import {
   AssetExport,
   AssetExportTag,
