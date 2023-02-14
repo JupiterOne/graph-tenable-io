@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-import { TenableIntegrationConfig } from '../src/config';
+import { IntegrationConfig } from '../src/config';
 
 if (process.env.LOAD_ENV) {
   dotenv.config({
@@ -8,7 +8,7 @@ if (process.env.LOAD_ENV) {
   });
 }
 
-export const config: TenableIntegrationConfig = {
+export const config: IntegrationConfig = {
   accessKey: process.env.ACCESS_KEY || 'accessKey',
   secretKey: process.env.SECRET_KEY || 'secretKey',
 };

@@ -4,6 +4,7 @@ import {
   IntegrationLogger,
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
+
 import { Entities } from '../../constants';
 import {
   AssetExport,
@@ -252,28 +253,6 @@ export function getPriority(numericPriority: number): FindingSeverityPriority {
   }
 }
 
-/**
- * Converts NVD CVSS2 severity values to J1 normalized numeric values. See
- * https://nvd.nist.gov/vuln-metrics/cvss.
- *
- * Throws an `IntegrationError` when the CVSS2 severity value is not recognized.
- */
-export function normalizeCVSS2Severity(cvss2Severity: number | string): {
-  numericSeverity: number;
-  severity: FindingSeverityPriority | undefined;
-} {
-  const numericSeverity = Number(cvss2Severity);
-  let severity;
-  if (numericSeverity < 4) {
-    severity = FindingSeverityPriority.Low;
-  } else if (numericSeverity < 7) {
-    severity = FindingSeverityPriority.Medium;
-  } else if (numericSeverity <= 10) {
-    severity = FindingSeverityPriority.High;
-  }
-  return { numericSeverity, severity };
-}
-
 export function getTargetsForAsset(asset: AssetExport): string[] {
   return [asset.fqdns, asset.ipv4s, asset.ipv6s, asset.mac_addresses].reduce(
     (a, e) => [...a, ...e],
@@ -305,6 +284,12 @@ export function createVulnerabilityEntity(
   } catch (err) {
     logger.warn({ err }, 'Encountered error when checking entity size');
   }
+  // The output property is often _very_ large.
+  // We may in the future come up with some use-cases for this property and may
+  // want to do some more fine-grained trimming of this property
+
+  delete vuln.output;
+
   return createIntegrationEntity({
     entityData: {
       source: vuln,
@@ -319,7 +304,7 @@ export function createVulnerabilityEntity(
         name: vuln.plugin.name,
         category: vuln.asset.device_type,
         status: vuln.state,
-        severity: vuln.plugin.risk_factor,
+        severity: vuln.severity,
         numericSeverity: vuln.plugin.cvss3_base_score,
         vector: vuln.plugin.cvss3_vector?.raw || '',
         cve: vuln.plugin.cve || undefined,
@@ -373,6 +358,17 @@ export function createVulnerabilityEntity(
         firstSeenOn: parseTimePropertyValue(vuln.first_found),
         lastSeenOn: parseTimePropertyValue(vuln.last_found),
         lastFixedOn: parseTimePropertyValue(vuln.last_fixed),
+
+        // vulnerability prioritization properties
+        cvss3BaseScore: vuln.plugin.cvss3_base_score,
+        cvss3TemporalScore: vuln.plugin.cvss3_temporal_score,
+
+        cvssBaseScore: vuln.plugin.cvss_base_score,
+        cvssTemporalScore: vuln.plugin.cvss_temporal_score,
+
+        cvss3Vector: vuln.plugin.cvss3_vector?.raw,
+        cvssVector: vuln.plugin.cvss_vector?.raw,
+        hasPatch: vuln.plugin.has_patch,
       },
     },
   });

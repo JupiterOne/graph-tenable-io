@@ -49,7 +49,7 @@ export const Entities: Record<
   SERVICE: {
     resourceName: 'Service',
     _type: 'tenable_scanner',
-    _class: 'Service',
+    _class: ['Service'],
   },
   CONTAINER_IMAGE: {
     resourceName: 'Container Image',
@@ -93,7 +93,7 @@ export const Entities: Record<
     _type: 'tenable_user',
   },
 };
-//TODO fix these
+
 export const Relationships: Record<
   | 'ACCOUNT_HAS_USER'
   | 'ACCOUNT_HAS_ASSET'
@@ -117,90 +117,135 @@ export const Relationships: Record<
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.USER._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   ACCOUNT_HAS_ASSET: {
     _type: 'tenable_account_has_asset',
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.ASSET._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   ACCOUNT_PROVIDES_SERVICE: {
     _type: 'tenable_account_provides_scanner',
     _class: RelationshipClass.PROVIDES,
     sourceType: Entities.ACCOUNT._type,
     targetType: Entities.SERVICE._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   ACCOUNT_HAS_CONTAINER_REPOSITORY: {
     _type: 'tenable_account_has_container_repository',
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.CONTAINER_REPOSITORY._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   CONTAINER_REPOSITORY_HAS_IMAGE: {
     _type: 'tenable_container_repository_has_image',
     sourceType: Entities.CONTAINER_REPOSITORY._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.CONTAINER_IMAGE._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   ACCOUNT_HAS_CONTAINER_IMAGE: {
     _type: 'tenable_account_has_container_image',
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.CONTAINER_IMAGE._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   SERVICE_SCANS_CONTAINER_IMAGE: {
     _type: 'tenable_scanner_scans_container_image',
     sourceType: Entities.SERVICE._type,
     _class: RelationshipClass.SCANS,
     targetType: Entities.CONTAINER_IMAGE._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   CONTAINER_IMAGE_HAS_REPORT: {
     _type: 'tenable_container_image_has_report',
     sourceType: Entities.CONTAINER_IMAGE._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.CONTAINER_REPORT._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   CONTAINER_IMAGE_HAS_FINDING: {
     _type: 'tenable_container_image_has_finding',
     sourceType: Entities.CONTAINER_IMAGE._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.CONTAINER_FINDING._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   CONTAINER_IMAGE_HAS_MALWARE: {
     _type: 'tenable_container_image_has_malware',
     sourceType: Entities.CONTAINER_IMAGE._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.CONTAINER_MALWARE._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   CONTAINER_IMAGE_HAS_UNWANTED_PROGRAM: {
     _type: 'tenable_container_image_has_unwanted_program',
     sourceType: Entities.CONTAINER_IMAGE._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.CONTAINER_UNWANTED_PROGRAM._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   REPORT_IDENTIFIED_FINDING: {
     _type: 'tenable_container_report_identified_finding',
     sourceType: Entities.CONTAINER_REPORT._type,
     _class: RelationshipClass.IDENTIFIED,
     targetType: Entities.CONTAINER_FINDING._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   REPORT_IDENTIFIED_MALWARE: {
     _type: 'tenable_container_report_identified_malware',
     sourceType: Entities.CONTAINER_REPORT._type,
     _class: RelationshipClass.IDENTIFIED,
     targetType: Entities.CONTAINER_MALWARE._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   REPORT_IDENTIFIED_UNWANTED_PROGRAM: {
     _type: 'tenable_container_report_identified_unwanted_program',
     sourceType: Entities.CONTAINER_REPORT._type,
     _class: RelationshipClass.IDENTIFIED,
     targetType: Entities.CONTAINER_UNWANTED_PROGRAM._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
   ASSET_HAS_VULN: {
     _type: 'tenable_asset_has_vulnerability_finding',
     sourceType: Entities.ASSET._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.VULNERABILITY._type,
+    indexMetadata: {
+      enabled: false,
+    },
   },
 };
 

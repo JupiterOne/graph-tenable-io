@@ -4,7 +4,6 @@ import Client, {
   ContainerRepository,
   ExportStatus,
   TenableRepsonse,
-  VulnerabilityState,
 } from './client';
 
 import {
@@ -174,14 +173,10 @@ export default class TenableClient {
         num_assets: 50,
         filters: {
           since: getUnixTime(sub(Date.now(), { days: 35 })),
-          state: [
-            VulnerabilityState.Open,
-            VulnerabilityState.Reopened,
-            VulnerabilityState.Fixed,
-          ],
+          state: ['open', 'reopened', 'fixed'],
         },
       };
-    const timeoutInMinutes = options?.timeoutInMinutes || 30;
+    const timeoutInMinutes = options?.timeoutInMinutes || 180;
     const { export_uuid: exportUuid } = await this.exportVulnerabilities(
       exportVulnerabilitiesOptions,
     );
@@ -299,7 +294,7 @@ export default class TenableClient {
     },
   ) {
     const chunkSize = options?.chunkSize || 100;
-    const timeoutInMinutes = options?.timeoutInMinutes || 30;
+    const timeoutInMinutes = options?.timeoutInMinutes || 180;
     const { export_uuid: exportUuid } = await this.exportAssets({
       chunk_size: chunkSize,
     });

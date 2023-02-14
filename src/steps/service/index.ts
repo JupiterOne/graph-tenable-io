@@ -2,21 +2,21 @@ import {
   IntegrationStepExecutionContext,
   Step,
 } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../config';
+import { IntegrationConfig } from '../../config';
 import {
   Entities,
   Relationships,
   SERVICE_ENTITY_DATA_KEY,
   StepIds,
-} from '../../constants';
-import { getAccount } from '../../initializeContext';
+} from '../constants';
+import { getAccount } from '../account/util';
 import {
   createAccountServiceRelationship,
   createServiceEntity,
 } from './converters';
 
 export async function fetchServiceDetails(
-  context: IntegrationStepExecutionContext<TenableIntegrationConfig>,
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState } = context;
 
@@ -36,7 +36,7 @@ export async function fetchServiceDetails(
 }
 
 export const serviceSteps: Step<
-  IntegrationStepExecutionContext<TenableIntegrationConfig>
+  IntegrationStepExecutionContext<IntegrationConfig>
 >[] = [
   {
     id: StepIds.SERVICE,

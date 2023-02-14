@@ -1,8 +1,8 @@
 import { RelationshipClass } from '@jupiterone/integration-sdk-core';
-import { TenableIntegrationConfig } from '../../../../src/config';
+import { IntegrationConfig } from '../../../../src/config';
 import { StepSpec } from '../types';
 
-export const containerSpec: StepSpec<TenableIntegrationConfig>[] = [
+export const containerSpec: StepSpec<IntegrationConfig>[] = [
   {
     /**
      * ENDPOINT: https://cloud.tenable.com/container-security/api/v2/repositories
