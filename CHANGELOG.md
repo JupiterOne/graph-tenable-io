@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.3.0 - 2023-02-15
+
+### Added
+
+- Ingest `tenable_agent` entity and add relationship to `tenable_account`.
+
+### Fixed
+
+- Skip duplicate relationships.
+
 ## 9.2.0 - 2023-02-14
 
 ### Fixed
