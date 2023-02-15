@@ -3,6 +3,7 @@ import { Entities } from '../constants';
 import {
   createIntegrationEntity,
   Entity,
+  parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
 import { generateEntityKey } from '../../utils/generateKey';
 
@@ -27,8 +28,8 @@ export function createAgentEntity(agent: Agent): Entity {
         platform: agent.platform,
         ipAddress: agent.ip,
         linkedOn: agent.linked_on,
-        lastConnect: agent.last_connect,
-        lastScanned: agent.last_scanned,
+        lastConnectedOn: parseTimePropertyValue(agent.last_connect, 'sec'),
+        lastScannedOn: parseTimePropertyValue(agent.last_scanned, 'sec'),
       },
     },
   });
