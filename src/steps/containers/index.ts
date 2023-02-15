@@ -176,16 +176,21 @@ export async function fetchContainerReports(
           );
         }
 
-        await jobState.addRelationship(
-          createReportFindingRelationship(report.sha256, finding),
+        const reportFindingRelationship = createReportFindingRelationship(
+          report.sha256,
+          finding,
         );
-        await jobState.addRelationship(
-          createDirectRelationship({
-            from: imageEntity,
-            _class: RelationshipClass.HAS,
-            to: findingEntity,
-          }),
-        );
+
+        if (jobState.hasKey(reportFindingRelationship._key)) {
+          await jobState.addRelationship(reportFindingRelationship);
+        }
+
+        const imageFindingRelationship = createDirectRelationship({
+          from: imageEntity,
+          _class: RelationshipClass.HAS,
+          to: findingEntity,
+        });
+        await jobState.addRelationship(imageFindingRelationship);
       }
 
       for (const malware of report.malware) {
@@ -198,16 +203,22 @@ export async function fetchContainerReports(
           );
         }
 
-        await jobState.addRelationship(
-          createReportMalwareRelationship(report.sha256, malware),
+        const reportMalwareRelationship = createReportMalwareRelationship(
+          report.sha256,
+          malware,
         );
-        await jobState.addRelationship(
-          createDirectRelationship({
-            from: imageEntity,
-            _class: RelationshipClass.HAS,
-            to: malwareEntity,
-          }),
-        );
+        if (jobState.hasKey(reportMalwareRelationship._key)) {
+          await jobState.addRelationship(reportMalwareRelationship);
+        }
+
+        const imageMalwareRelationship = createDirectRelationship({
+          from: imageEntity,
+          _class: RelationshipClass.HAS,
+          to: malwareEntity,
+        });
+
+        if (jobState.hasKey(imageMalwareRelationship._key))
+          await jobState.addRelationship(imageMalwareRelationship);
       }
 
       for (const program of report.potentially_unwanted_programs) {
@@ -220,16 +231,22 @@ export async function fetchContainerReports(
           );
         }
 
-        await jobState.addRelationship(
-          createReportUnwantedProgramRelationship(report.sha256, program),
-        );
-        await jobState.addRelationship(
-          createDirectRelationship({
-            from: imageEntity,
-            _class: RelationshipClass.HAS,
-            to: programEntity,
-          }),
-        );
+        const reportUnwantedProgramRelationship =
+          createReportUnwantedProgramRelationship(report.sha256, program);
+
+        if (jobState.hasKey(reportUnwantedProgramRelationship._key)) {
+          await jobState.addRelationship(reportUnwantedProgramRelationship);
+        }
+
+        const imageProgramRelationship = createDirectRelationship({
+          from: imageEntity,
+          _class: RelationshipClass.HAS,
+          to: programEntity,
+        });
+
+        if (jobState.hasKey(imageProgramRelationship._key)) {
+          await jobState.addRelationship(imageProgramRelationship);
+        }
       }
     },
   );
