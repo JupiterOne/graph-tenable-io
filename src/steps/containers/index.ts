@@ -181,7 +181,7 @@ export async function fetchContainerReports(
           finding,
         );
 
-        if (jobState.hasKey(reportFindingRelationship._key)) {
+        if (!jobState.hasKey(reportFindingRelationship._key)) {
           await jobState.addRelationship(reportFindingRelationship);
         }
 
@@ -190,7 +190,10 @@ export async function fetchContainerReports(
           _class: RelationshipClass.HAS,
           to: findingEntity,
         });
-        await jobState.addRelationship(imageFindingRelationship);
+
+        if (!jobState.hasKey(imageFindingRelationship._key)) {
+          await jobState.addRelationship(imageFindingRelationship);
+        }
       }
 
       for (const malware of report.malware) {
@@ -207,7 +210,7 @@ export async function fetchContainerReports(
           report.sha256,
           malware,
         );
-        if (jobState.hasKey(reportMalwareRelationship._key)) {
+        if (!jobState.hasKey(reportMalwareRelationship._key)) {
           await jobState.addRelationship(reportMalwareRelationship);
         }
 
@@ -217,7 +220,7 @@ export async function fetchContainerReports(
           to: malwareEntity,
         });
 
-        if (jobState.hasKey(imageMalwareRelationship._key))
+        if (!jobState.hasKey(imageMalwareRelationship._key))
           await jobState.addRelationship(imageMalwareRelationship);
       }
 
@@ -234,7 +237,7 @@ export async function fetchContainerReports(
         const reportUnwantedProgramRelationship =
           createReportUnwantedProgramRelationship(report.sha256, program);
 
-        if (jobState.hasKey(reportUnwantedProgramRelationship._key)) {
+        if (!jobState.hasKey(reportUnwantedProgramRelationship._key)) {
           await jobState.addRelationship(reportUnwantedProgramRelationship);
         }
 
@@ -244,7 +247,7 @@ export async function fetchContainerReports(
           to: programEntity,
         });
 
-        if (jobState.hasKey(imageProgramRelationship._key)) {
+        if (!jobState.hasKey(imageProgramRelationship._key)) {
           await jobState.addRelationship(imageProgramRelationship);
         }
       }
