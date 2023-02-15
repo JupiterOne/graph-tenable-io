@@ -1,8 +1,10 @@
 import { version as graphTenablePackageVersion } from '../../package.json';
 import Client, {
+  Agent,
   ContainerImage,
   ContainerRepository,
   ExportStatus,
+  Scanner,
   TenableRepsonse,
 } from './client';
 
@@ -393,6 +395,36 @@ export default class TenableClient {
     );
 
     return reportResponse;
+  }
+
+  public async iterateScanners(callback: ResourceIteratee<Scanner>) {
+    const { scanners } = await this.retryRequest(() =>
+      this.client.fetchScanners(),
+    );
+
+    for (const scanner of scanners) {
+      await callback(scanner);
+    }
+  }
+
+  public async iterateAgents(
+    scannerId: number,
+    callback: ResourceIteratee<Agent>,
+  ) {
+    await paginated(async (offset, limit) => {
+      const {
+        agents,
+        pagination: { total },
+      } = await this.retryRequest(() =>
+        this.client.fetchAgents(scannerId, offset, limit),
+      );
+
+      for (const agent of agents) {
+        await callback(agent);
+      }
+
+      return total;
+    });
   }
 
   private async retryRequest<T>(request: () => Promise<TenableRepsonse<T>>) {

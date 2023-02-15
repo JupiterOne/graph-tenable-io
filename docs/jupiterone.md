@@ -82,6 +82,7 @@ The following entities are created:
 | Resources                  | Entity `_type`                       | Entity `_class` |
 | -------------------------- | ------------------------------------ | --------------- |
 | Account                    | `tenable_account`                    | `Account`       |
+| Agent                      | `tenable_agent`                      | `HostAgent`     |
 | Asset                      | `tenable_asset`                      | `Record`        |
 | Container Finding          | `tenable_container_finding`          | `Finding`       |
 | Container Image            | `tenable_container_image`            | `Image`         |
@@ -99,6 +100,7 @@ The following relationships are created:
 
 | Source Entity `_type`          | Relationship `_class` | Target Entity `_type`                |
 | ------------------------------ | --------------------- | ------------------------------------ |
+| `tenable_account`              | **HAS**               | `tenable_agent`                      |
 | `tenable_account`              | **HAS**               | `tenable_asset`                      |
 | `tenable_account`              | **HAS**               | `tenable_container_image`            |
 | `tenable_account`              | **HAS**               | `tenable_container_repository`       |
