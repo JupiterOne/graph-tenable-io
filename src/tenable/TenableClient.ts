@@ -471,6 +471,7 @@ export default class TenableClient {
           return retryDelay;
         },
         handleError: (err, context) => {
+          this.logger.info({ err: { ...err } }, 'Encountered error from API');
           if (![429, 500, 504].includes(err.statusCode)) {
             context.abort();
           }
