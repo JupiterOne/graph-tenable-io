@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.3.2 - 2023-02-20
+
+### Added
+
+- Add additional logging to `handleError`
+
+## 9.3.1 - 2023-02-15
+
+- rerelease of 9.3.0
+
 ## 9.3.0 - 2023-02-15
 
 ### Added
