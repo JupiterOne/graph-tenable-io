@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.3.3 - 2023-02-21
+
+### Changed
+
+- Updated error handling and retry logic.
+
 ## 9.3.2 - 2023-02-20
 
 ### Added

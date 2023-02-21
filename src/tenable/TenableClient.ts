@@ -432,7 +432,7 @@ export default class TenableClient {
 
     return attempt.retry(
       async () => {
-        retryDelay = 0;
+        retryDelay = 3000;
         const response = await request();
 
         if (response.status === 429) {
@@ -447,19 +447,21 @@ export default class TenableClient {
         }
 
         if (response.status >= 400) {
-          let message: string | undefined;
           try {
             const errorBody: ErrorBody = await response.json();
-            message = errorBody.message;
+            const message = errorBody.message;
+            this.logger.info(
+              { errMessage: message },
+              'Encountered error from API',
+            );
           } catch (e) {
             // pass
           }
           throw new IntegrationProviderAPIError({
             code: 'TenableClientApiError',
-            message: message || `${response.statusText}: ${response.url}`,
             status: response.status,
             endpoint: response.url,
-            statusText: message!,
+            statusText: response.statusText,
           });
         } else {
           return response.json();
@@ -471,8 +473,7 @@ export default class TenableClient {
           return retryDelay;
         },
         handleError: (err, context) => {
-          this.logger.info({ err: { ...err } }, 'Encountered error from API');
-          if (![429, 500, 504].includes(err.statusCode)) {
+          if (![429, 500, 502, 504].includes(err.statusCode)) {
             context.abort();
           }
           if (err.statusCode === 500 && context.attemptsRemaining > 2) {
