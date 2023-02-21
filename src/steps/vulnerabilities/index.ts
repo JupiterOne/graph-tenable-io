@@ -184,13 +184,14 @@ export async function buildAssetVulnerabilityRelationships(
         return;
       }
 
-      await jobState.addRelationship(
-        createDirectRelationship({
-          from: assetEntity,
-          _class: RelationshipClass.HAS,
-          to: vulnEntity,
-        }),
-      );
+      const assetVulnRelationship = createDirectRelationship({
+        from: assetEntity,
+        _class: RelationshipClass.HAS,
+        to: vulnEntity,
+      });
+      if (!jobState.hasKey(assetVulnRelationship._key)) {
+        await jobState.addRelationship(assetVulnRelationship);
+      }
 
       const targetEntity = createTargetHostEntity(assetRawData);
       if (targetEntity) {
