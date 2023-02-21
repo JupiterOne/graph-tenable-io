@@ -7,7 +7,7 @@ import {
   fetchContainerImages,
   fetchContainerReports,
   fetchContainerRepositories,
-} from '.';
+} from './handlers';
 import { fetchAccount } from '../account';
 import { fetchServiceDetails } from '../service';
 
