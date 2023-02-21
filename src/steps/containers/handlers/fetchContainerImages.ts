@@ -32,9 +32,13 @@ export async function fetchContainerImages(
     const imageEntity = createContainerImageEntity(image);
     await Promise.all([
       jobState.addEntity(imageEntity),
-      jobState.addRelationship(
-        createAccountContainerImageRelationship(account, image),
-      ),
+      (async () => {
+        const accountContainerImageRelationship =
+          createAccountContainerImageRelationship(account, image);
+        if (!jobState.hasKey(accountContainerImageRelationship._key)) {
+          await jobState.addRelationship(accountContainerImageRelationship);
+        }
+      })(),
       jobState.addRelationship(
         createDirectRelationship({
           _class: RelationshipClass.SCANS,
