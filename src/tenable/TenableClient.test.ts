@@ -58,7 +58,7 @@ describe.skip('new TenableClient', () => {
 
 // See docs/tenable-cloud/fixture-data.md
 
-describe.skip('TenableClient fetch errors', () => {
+describe('TenableClient fetch errors', () => {
   test('fetch error', async () => {
     const scope = nock(`https://${TENABLE_COM}`).get(/.*/).reply(404);
     const client = getClient();
@@ -93,6 +93,18 @@ describe.skip('TenableClient fetch errors', () => {
       .reply(404);
     const client = getClient();
     await expect(client.fetchUsers()).rejects.toThrow(/404/);
+    scope.done();
+  });
+
+  test('abort non-retriable errors', async () => {
+    const scope = nock(`https://${TENABLE_COM}`)
+      .get('/users')
+      .reply(403, 'Forbidden', {
+        'Content-Type': 'text/html',
+      });
+    const client = getClient();
+    await expect(client.fetchUsers()).rejects.toThrow(/403/);
+    expect(scope.pendingMocks().length).toBe(0);
     scope.done();
   });
 });

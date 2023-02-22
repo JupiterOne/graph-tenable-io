@@ -5,7 +5,7 @@ import Client, {
   ContainerRepository,
   ExportStatus,
   Scanner,
-  TenableRepsonse,
+  TenableResponse,
 } from './client';
 
 import {
@@ -427,7 +427,7 @@ export default class TenableClient {
     });
   }
 
-  private async retryRequest<T>(request: () => Promise<TenableRepsonse<T>>) {
+  private async retryRequest<T>(request: () => Promise<TenableResponse<T>>) {
     let retryDelay = 0;
 
     return attempt.retry(
@@ -473,10 +473,11 @@ export default class TenableClient {
           return retryDelay;
         },
         handleError: (err, context) => {
-          if (![429, 500, 502, 504].includes(err.statusCode)) {
+          if (![429, 500, 502, 504].includes(err.status)) {
             context.abort();
+            return;
           }
-          if (err.statusCode === 500 && context.attemptsRemaining > 2) {
+          if (err.status === 500 && context.attemptsRemaining > 2) {
             context.attemptsRemaining = 2;
           }
           this.logger.info(

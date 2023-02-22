@@ -268,9 +268,9 @@ export const MappedRelationships: Record<
   | 'TENABLE_ASSET_IS_AZURE_VM'
   | 'TENABLE_ASSET_IS_GOOGLE_COMPUTE_INSTANCE'
   | 'TENABLE_ASSET_IS_AWS_INSTANCE'
-  | 'AZURE_VM_HAS_VULNERABILITY'
-  | 'GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY'
-  | 'AWS_INSTANCE_HAS_VULNERABILITY'
+  | 'VULNERABILITY_HAS_AZURE_VM'
+  | 'VULNERABILITY_HAS_GOOGLE_COMPUTE_INSTANCE'
+  | 'VULNERABILITY_HAS_AWS_INSTANCE'
   | 'VULNERABILITY_IS_CVE',
   StepMappedRelationshipMetadata
 > = {
@@ -304,30 +304,30 @@ export const MappedRelationships: Record<
       enabled: false,
     },
   },
-  AZURE_VM_HAS_VULNERABILITY: {
+  VULNERABILITY_HAS_AZURE_VM: {
     sourceType: Entities.VULNERABILITY._type,
     targetType: 'azure_vm',
-    _type: 'azure_vm_has_tenable_vulnerability_finding',
+    _type: 'tenable_vulnerability_finding_has_azure_vm',
     _class: RelationshipClass.HAS,
     direction: RelationshipDirection.REVERSE,
     indexMetadata: {
       enabled: false,
     },
   },
-  GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY: {
+  VULNERABILITY_HAS_GOOGLE_COMPUTE_INSTANCE: {
     sourceType: Entities.VULNERABILITY._type,
     targetType: 'google_compute_instance',
-    _type: 'google_compute_instance_has_tenable_vulnerability_finding',
+    _type: 'tenable_vulnerability_finding_has_google_compute_instance',
     _class: RelationshipClass.HAS,
     direction: RelationshipDirection.REVERSE,
     indexMetadata: {
       enabled: false,
     },
   },
-  AWS_INSTANCE_HAS_VULNERABILITY: {
+  VULNERABILITY_HAS_AWS_INSTANCE: {
     sourceType: Entities.VULNERABILITY._type,
     targetType: 'aws_instance',
-    _type: 'aws_instance_has_tenable_vulnerability_finding',
+    _type: 'tenable_vulnerability_finding_has_aws_instance',
     _class: RelationshipClass.HAS,
     indexMetadata: {
       enabled: false,

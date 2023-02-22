@@ -184,13 +184,14 @@ export async function buildAssetVulnerabilityRelationships(
         return;
       }
 
-      await jobState.addRelationship(
-        createDirectRelationship({
-          from: assetEntity,
-          _class: RelationshipClass.HAS,
-          to: vulnEntity,
-        }),
-      );
+      const assetVulnRelationship = createDirectRelationship({
+        from: assetEntity,
+        _class: RelationshipClass.HAS,
+        to: vulnEntity,
+      });
+      if (!jobState.hasKey(assetVulnRelationship._key)) {
+        await jobState.addRelationship(assetVulnRelationship);
+      }
 
       const targetEntity = createTargetHostEntity(assetRawData);
       if (targetEntity) {
@@ -285,9 +286,9 @@ export const scanSteps: Step<
     entities: [],
     relationships: [Relationships.ASSET_HAS_VULN],
     mappedRelationships: [
-      MappedRelationships.AWS_INSTANCE_HAS_VULNERABILITY,
-      MappedRelationships.AZURE_VM_HAS_VULNERABILITY,
-      MappedRelationships.GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY,
+      MappedRelationships.VULNERABILITY_HAS_AWS_INSTANCE,
+      MappedRelationships.VULNERABILITY_HAS_AZURE_VM,
+      MappedRelationships.VULNERABILITY_HAS_GOOGLE_COMPUTE_INSTANCE,
     ],
     dependsOn: [StepIds.ASSETS, StepIds.VULNERABILITIES],
     executionHandler: buildAssetVulnerabilityRelationships,

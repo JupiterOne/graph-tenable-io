@@ -26,7 +26,10 @@ export async function fetchAgents(
     secretToken: secretKey,
   });
 
-  const scannerIds = (await jobState.getData(DATA_SCANNER_IDS)) as number[];
+  const scannerIds = await jobState.getData<number[]>(DATA_SCANNER_IDS);
+  if (!scannerIds) {
+    return;
+  }
 
   let duplicateKeysEncountered = 0;
   for (const scannerId of scannerIds) {
