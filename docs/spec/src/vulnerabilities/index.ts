@@ -196,7 +196,7 @@ export const vulnerabilitySpec: StepSpec<IntegrationConfig>[] = [
     ],
     mappedRelationships: [
       {
-        _type: 'aws_instance_has_tenable_vulnerability_finding',
+        _type: 'tenable_vulnerability_finding_has_aws_instance',
         sourceType: 'tenable_vulnerability_finding',
         _class: RelationshipClass.HAS,
         targetType: 'aws_instance',
@@ -204,14 +204,14 @@ export const vulnerabilitySpec: StepSpec<IntegrationConfig>[] = [
       },
 
       {
-        _type: 'azure_vm_has_tenable_vulnerability_finding',
+        _type: 'tenable_vulnerability_finding_has_azure_vm',
         sourceType: 'tenable_vulnerability_finding',
         _class: RelationshipClass.HAS,
         targetType: 'azure_vm',
         direction: RelationshipDirection.REVERSE,
       },
       {
-        _type: 'google_compute_instance_has_tenable_vulnerability_finding',
+        _type: 'tenable_vulnerability_finding_has_google_compute_instance',
         sourceType: 'tenable_vulnerability_finding',
         _class: RelationshipClass.HAS,
         targetType: 'google_compute_instance',

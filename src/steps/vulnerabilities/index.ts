@@ -286,9 +286,9 @@ export const scanSteps: Step<
     entities: [],
     relationships: [Relationships.ASSET_HAS_VULN],
     mappedRelationships: [
-      MappedRelationships.AWS_INSTANCE_HAS_VULNERABILITY,
-      MappedRelationships.AZURE_VM_HAS_VULNERABILITY,
-      MappedRelationships.GOOGLE_COMPUTE_INSTANCE_HAS_VULNERABILITY,
+      MappedRelationships.VULNERABILITY_HAS_AWS_INSTANCE,
+      MappedRelationships.VULNERABILITY_HAS_AZURE_VM,
+      MappedRelationships.VULNERABILITY_HAS_GOOGLE_COMPUTE_INSTANCE,
     ],
     dependsOn: [StepIds.ASSETS, StepIds.VULNERABILITIES],
     executionHandler: buildAssetVulnerabilityRelationships,
