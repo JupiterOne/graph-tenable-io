@@ -32,7 +32,7 @@ import {
 
 export * from './types';
 
-export interface TenableRepsonse<T> extends NodeFetchResponse {
+export interface TenableResponse<T> extends NodeFetchResponse {
   json(): Promise<T>;
 }
 
@@ -219,7 +219,7 @@ export default class TenableClient {
     url: string,
     method: Method,
     body?: {},
-  ): Promise<TenableRepsonse<T>> {
+  ): Promise<TenableResponse<T>> {
     const requestOptions: RequestInit = {
       method,
       headers: this.headers,

@@ -5,7 +5,7 @@ import Client, {
   ContainerRepository,
   ExportStatus,
   Scanner,
-  TenableRepsonse,
+  TenableResponse,
 } from './client';
 
 import {
@@ -427,7 +427,7 @@ export default class TenableClient {
     });
   }
 
-  private async retryRequest<T>(request: () => Promise<TenableRepsonse<T>>) {
+  private async retryRequest<T>(request: () => Promise<TenableResponse<T>>) {
     let retryDelay = 0;
 
     return attempt.retry(
