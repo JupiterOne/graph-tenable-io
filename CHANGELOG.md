@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.3.4 - 2023-02-22
+
+### Fixed
+
+- Duplicate keys errors.
+- Disable steps that need permissions.
+- Undeclared types error for mapped relationships.
+- Request retry logic.
+
 ## 9.3.3 - 2023-02-21
 
 ### Changed
