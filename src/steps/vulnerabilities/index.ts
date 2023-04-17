@@ -110,8 +110,7 @@ export async function fetchVulnerabilities(
   let duplicateKeysEncountered = 0;
   await provider.iterateVulnerabilities(
     async (vuln) => {
-      // TODO add `targets` property from the asset.
-      const vulnerabilityEntity = createVulnerabilityEntity(vuln, [], logger);
+      const vulnerabilityEntity = createVulnerabilityEntity(vuln, logger);
       if (await jobState.hasKey(vulnerabilityEntity._key)) {
         logger.debug(
           {

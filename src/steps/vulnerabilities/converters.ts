@@ -238,7 +238,6 @@ export function getTargetsForAsset(asset: AssetExport): string[] {
 
 export function createVulnerabilityEntity(
   vuln: VulnerabilityExport,
-  targetsForAsset: string[],
   logger: IntegrationLogger,
 ): Entity {
   const numericPriority = vuln.plugin.vpr && vuln.plugin.vpr.score;
@@ -293,7 +292,7 @@ export function createVulnerabilityEntity(
         references: vuln.plugin.see_also,
 
         // Add targets for mapping rules.
-        targets: targetsForAsset,
+        targets: [vuln.asset.ipv4],
 
         // additional asset properties can be added
         'asset.uuid': vuln.asset.uuid,
