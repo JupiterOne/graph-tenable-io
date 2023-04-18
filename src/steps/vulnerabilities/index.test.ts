@@ -305,7 +305,6 @@ describe('build-vuln-cve-relationships', () => {
         last_found: '',
         state: '',
       },
-      [],
       jest.fn() as unknown as IntegrationLogger,
     );
   }
@@ -354,7 +353,6 @@ describe('build-asset-vuln-relationships', () => {
         last_found: '',
         state: '',
       },
-      [],
       jest.fn() as unknown as IntegrationLogger,
     );
   }
