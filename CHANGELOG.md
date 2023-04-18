@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 9.3.5 - 2023-04-18
+
+### Fixed
+
+- New target added to create a relationship between
+  tenable_vulnerability_finding and vsphere_host
+
 ## 9.3.4 - 2023-02-22
 
 ### Fixed
