@@ -13,7 +13,7 @@ and this project adheres to
 ### Fixed
 
 - New target added to create a relationship between
-  tenable_vulnerability_finding and vsphere_host
+  `tenable_vulnerability_finding` and `vsphere_host`.
 
 ## 9.3.4 - 2023-02-22
 
