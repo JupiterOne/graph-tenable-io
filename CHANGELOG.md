@@ -1,3 +1,16 @@
+# v8.5.2 (Wed Apr 26 2023)
+
+#### 🐛 Bug Fix
+
+- INT-7813 Fix Adding auto versioning [#232](https://github.com/JupiterOne/graph-tenable-io/pull/232) ([@jroblesx](https://github.com/jroblesx))
+- INT-7813 Adding auto versioning [#231](https://github.com/JupiterOne/graph-tenable-io/pull/231) ([@jroblesx](https://github.com/jroblesx))
+
+#### Authors: 1
+
+- Jean R. Robles G. ([@jroblesx](https://github.com/jroblesx))
+
+---
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
