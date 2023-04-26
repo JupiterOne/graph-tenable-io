@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@lifeomic/attempt": "^3.0.3",
+    "auto": "^10.46.0",
     "date-fns": "^2.21.3",
     "node-fetch": "^2.6.7",
     "p-map": "^4.0.0"
@@ -52,5 +53,21 @@
     "lodash": "^4.17.21",
     "nock": "^10.0.6",
     "uuid": "^8.3.2"
+  },
+  "auto": {
+    "plugins": [
+      [
+        "npm",
+        {
+          "setRcToken": false,
+          "publishFolder": "."
+        }
+      ],
+      "released"
+    ],
+    "onlyPublishWithReleaseLabel": true,
+    "shipit": {
+      "prerelease": false
+    }
   }
 }
