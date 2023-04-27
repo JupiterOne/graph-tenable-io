@@ -2,7 +2,9 @@
 
 #### 🐛 Bug Fix
 
-- INT-7813 Integration deployments workflow [#233](https://github.com/JupiterOne/graph-tenable-io/pull/233) ([@jroblesx](https://github.com/jroblesx))
+- INT-7813 Integration deployments workflow
+  [#233](https://github.com/JupiterOne/graph-tenable-io/pull/233)
+  ([@jroblesx](https://github.com/jroblesx))
 
 #### Authors: 1
 
