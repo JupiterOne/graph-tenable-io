@@ -1,3 +1,15 @@
+# v9.3.9 (Thu Apr 27 2023)
+
+#### 🐛 Bug Fix
+
+- INT-7813 Integration deployments workflow [#233](https://github.com/JupiterOne/graph-tenable-io/pull/233) ([@jroblesx](https://github.com/jroblesx))
+
+#### Authors: 1
+
+- Jean R. Robles G. ([@jroblesx](https://github.com/jroblesx))
+
+---
+
 # v8.5.2 (Thu Apr 27 2023)
 
 #### 🐛 Bug Fix
