@@ -4,8 +4,13 @@ import {
   IntegrationLogger,
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
+
 import { Entities } from '../constants';
-import { AssetExport, VulnerabilityExport } from '../../tenable/client';
+import {
+  AssetExport,
+  AssetExportTag,
+  VulnerabilityExport,
+} from '../../tenable/client';
 import { generateEntityKey } from '../../utils/generateKey';
 import { TargetEntity } from '../../utils/targetEntities';
 
@@ -29,6 +34,21 @@ export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
   }
 
   return largestItem;
+}
+
+export function getTagProperties(data?: AssetExportTag[]) {
+  if (!data) return {};
+
+  let tagKey;
+  return data.reduce((obj, curTag) => {
+    tagKey = `tags.${curTag.key}`;
+    if (Object.keys(obj).indexOf(tagKey) != -1) {
+      obj[tagKey] = [...obj[tagKey], curTag.value];
+    } else {
+      obj[tagKey] = [curTag.value];
+    }
+    return obj;
+  }, {});
 }
 
 export function createAssetEntity(
@@ -124,7 +144,7 @@ export function createAssetEntity(
         servicenowSysid: data.servicenow_sysid,
         // bigfix
         bigfixAssetId: data.bigfix_asset_id,
-        tags: data.tags?.map((tag) => `${tag.key}=${tag.value}`),
+        ...getTagProperties(data.tags),
         // TODO Add sources, tags, networkInterfaces
         // sources: data.sources,
         // networkInterfaces: data.network_interfaces,
