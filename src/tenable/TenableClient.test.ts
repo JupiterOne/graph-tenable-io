@@ -30,7 +30,7 @@ const SECRET_KEY =
 const TENABLE_COM = 'cloud.tenable.com';
 const RETRY_MAX_ATTEMPTS = 4;
 
-function prepareScope(def: nock.NockDefinition) {
+function prepareScope(def: nock.Definition) {
   def.scope = `https://${TENABLE_COM}`;
 }
 
