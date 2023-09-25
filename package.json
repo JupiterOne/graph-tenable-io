@@ -6,6 +6,9 @@
   "types": "src/index.d.ts",
   "repository": "https://github.com/JupiterOne/graph-tenable-io",
   "license": "MPL-2.0",
+  "engines": {
+    "node": ">=18.0.0 <19.x"
+  },
   "files": [
     "src",
     "jupiterone"
@@ -39,19 +42,19 @@
     "p-map": "^4.0.0"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.30.1"
+    "@jupiterone/integration-sdk-core": "^10.6.0"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.30.1",
-    "@jupiterone/integration-sdk-dev-tools": "^8.30.1",
-    "@jupiterone/integration-sdk-testing": "^8.30.1",
+    "@jupiterone/integration-sdk-core": "^10.6.0",
+    "@jupiterone/integration-sdk-dev-tools": "^10.6.0",
+    "@jupiterone/integration-sdk-testing": "^10.6.0",
     "@types/lodash": "^4.14.182",
     "@types/nock": "10.0.3",
     "@types/node-fetch": "^2.3.2",
     "@types/uuid": "^9.0.0",
     "dotenv": "^10.0.0",
     "lodash": "^4.17.21",
-    "nock": "^10.0.6",
+    "nock": "^13.3.3",
     "uuid": "^8.3.2"
   },
   "auto": {

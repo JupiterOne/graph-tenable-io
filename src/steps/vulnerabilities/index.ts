@@ -46,7 +46,7 @@ export async function fetchAssets(
   let duplicateKeysEncountered = 0;
   await provider.iterateAssets(
     async (asset) => {
-      const assetEntity = createAssetEntity(asset, logger);
+      const assetEntity = createAssetEntity(asset);
       if (await jobState.hasKey(assetEntity._key)) {
         logger.debug(
           {

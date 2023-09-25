@@ -3,6 +3,7 @@ import {
   Entity,
   IntegrationLogger,
   parseTimePropertyValue,
+  assignTags,
 } from '@jupiterone/integration-sdk-core';
 import { Entities } from '../constants';
 import { AssetExport, VulnerabilityExport } from '../../tenable/client';
@@ -31,27 +32,8 @@ export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
   return largestItem;
 }
 
-export function createAssetEntity(
-  data: AssetExport,
-  logger: IntegrationLogger,
-): Entity {
-  try {
-    const size = Buffer.byteLength(JSON.stringify(data));
-    if (size > 1048576) {
-      logger.info(
-        {
-          assetId: data.id,
-          totalSize: size,
-          largestItem: getLargestItemKeyAndByteSize(data),
-        },
-        'Encountered entity of size > 1MB',
-      );
-    }
-  } catch (err) {
-    logger.warn({ err }, 'Encountered error when checking entity size');
-  }
-
-  return createIntegrationEntity({
+export function createAssetEntity(data: AssetExport): Entity {
+  const entity = createIntegrationEntity({
     entityData: {
       source: data,
       assign: {
@@ -124,13 +106,33 @@ export function createAssetEntity(
         servicenowSysid: data.servicenow_sysid,
         // bigfix
         bigfixAssetId: data.bigfix_asset_id,
-        tags: data.tags?.map((tag) => `${tag.key}=${tag.value}`),
         // TODO Add sources, tags, networkInterfaces
         // sources: data.sources,
         // networkInterfaces: data.network_interfaces,
       },
     },
   });
+  const perKeyCount = {};
+  const parsedTags: {
+    key?: string;
+    value?: string;
+  }[] = [];
+  data.tags?.forEach((tag) => {
+    if (perKeyCount[tag.key]) {
+      parsedTags.push({
+        key: `${tag.key}.${perKeyCount[tag.key]}`,
+        value: tag.value,
+      });
+    } else {
+      parsedTags.push({
+        key: tag.key,
+        value: tag.value,
+      });
+    }
+    perKeyCount[tag.key] = perKeyCount[tag.key] ?? 0 + 1;
+  });
+  assignTags(entity, parsedTags);
+  return entity;
 }
 
 export function createTargetHostEntity(

@@ -365,10 +365,7 @@ describe('build-asset-vuln-relationships', () => {
       id: options.assetId,
       ...options.partial,
     };
-    return createAssetEntity(
-      partialAssetExport as AssetExport,
-      jest.fn() as unknown as IntegrationLogger,
-    );
+    return createAssetEntity(partialAssetExport as AssetExport);
   }
 
   function separateAssetVulnRelationships(
