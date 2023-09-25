@@ -35,7 +35,7 @@ export async function fetchAgents(
   for (const scannerId of scannerIds) {
     await provider.iterateAgents(scannerId, async (agent) => {
       const agentEntity = createAgentEntity(agent);
-      if (await jobState.hasKey(agentEntity._key)) {
+      if (jobState.hasKey(agentEntity._key)) {
         logger.debug(
           {
             _key: agentEntity._key,

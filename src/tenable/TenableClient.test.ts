@@ -30,7 +30,7 @@ const SECRET_KEY =
 const TENABLE_COM = 'cloud.tenable.com';
 const RETRY_MAX_ATTEMPTS = 4;
 
-function prepareScope(def: nock.NockDefinition) {
+function prepareScope(def: nock.Definition) {
   def.scope = `https://${TENABLE_COM}`;
 }
 
@@ -168,7 +168,7 @@ describe('iterateAssets', () => {
       secretToken: config.secretKey,
     });
 
-    jest.useFakeTimers('legacy'); // https://jestjs.io/blog/2021/05/25/jest-27#flipping-defaults
+    jest.useFakeTimers({ legacyFakeTimers: true }); // https://jestjs.io/blog/2021/05/25/jest-27#flipping-defaults
     const assets: AssetExport[] = [];
     const iterateAssetsPromise = client.iterateAssets((a) => {
       assets.push(a);
@@ -199,7 +199,7 @@ describe('iterateVulnerabilities', () => {
       secretToken: config.secretKey,
     });
 
-    jest.useFakeTimers('legacy'); // https://jestjs.io/blog/2021/05/25/jest-27#flipping-defaults
+    jest.useFakeTimers({ legacyFakeTimers: true }); // https://jestjs.io/blog/2021/05/25/jest-27#flipping-defaults
     const vulnerabilities: VulnerabilityExport[] = [];
     const iterateVulnerabilitiesPromise = client.iterateVulnerabilities((v) => {
       vulnerabilities.push(v);

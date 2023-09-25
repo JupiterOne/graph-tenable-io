@@ -448,7 +448,7 @@ export default class TenableClient {
 
         if (response.status >= 400) {
           try {
-            const errorBody: ErrorBody = await response.json();
+            const errorBody: ErrorBody = (await response.json()) as ErrorBody;
             const message = errorBody.message;
             this.logger.info(
               { errMessage: message },
