@@ -1,3 +1,20 @@
+# v9.4.0 (Mon Sep 25 2023)
+
+#### 🚀 Enhancement
+
+- Upgrade SDK - Upgrade to NODE 18 [#236](https://github.com/JupiterOne/graph-tenable-io/pull/236) (gonzaloavalosribas@Gonzalos-MacBook-Pro.local)
+
+#### 🐛 Bug Fix
+
+- Update integration-deployment.yml [#235](https://github.com/JupiterOne/graph-tenable-io/pull/235) ([@Nick-NCSU](https://github.com/Nick-NCSU))
+
+#### Authors: 2
+
+- Gonzalo Avalos Ribas ([@Gonzalo-Avalos-Ribas](https://github.com/Gonzalo-Avalos-Ribas))
+- Nick Thompson ([@Nick-NCSU](https://github.com/Nick-NCSU))
+
+---
+
 # v9.3.9 (Thu Apr 27 2023)
 
 #### 🐛 Bug Fix
