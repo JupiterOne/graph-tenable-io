@@ -47,7 +47,7 @@ export async function fetchAssets(
   await provider.iterateAssets(
     async (asset) => {
       const assetEntity = createAssetEntity(asset);
-      if (await jobState.hasKey(assetEntity._key)) {
+      if (jobState.hasKey(assetEntity._key)) {
         logger.debug(
           {
             _key: assetEntity._key,
@@ -111,7 +111,7 @@ export async function fetchVulnerabilities(
   await provider.iterateVulnerabilities(
     async (vuln) => {
       const vulnerabilityEntity = createVulnerabilityEntity(vuln, logger);
-      if (await jobState.hasKey(vulnerabilityEntity._key)) {
+      if (jobState.hasKey(vulnerabilityEntity._key)) {
         logger.debug(
           {
             _key: vulnerabilityEntity._key,
@@ -232,7 +232,7 @@ export async function buildVulnerabilityCveRelationships(
           _class: RelationshipClass.IS,
           to: targetCveEntity,
         });
-        if (await jobState.hasKey(vulnCveMappedRelationship._key)) {
+        if (jobState.hasKey(vulnCveMappedRelationship._key)) {
           logger.debug(
             {
               _key: vulnCveMappedRelationship._key,
