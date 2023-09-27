@@ -1,3 +1,15 @@
+# v9.4.1 (Wed Sep 27 2023)
+
+#### 🐛 Bug Fix
+
+- Add postversion script [#237](https://github.com/JupiterOne/graph-tenable-io/pull/237) (gonzaloavalosribas@Gonzalos-MacBook-Pro.local)
+
+#### Authors: 1
+
+- Gonzalo Avalos Ribas ([@Gonzalo-Avalos-Ribas](https://github.com/Gonzalo-Avalos-Ribas))
+
+---
+
 # v9.4.0 (Mon Sep 25 2023)
 
 #### 🚀 Enhancement
