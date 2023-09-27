@@ -199,7 +199,7 @@ describe('fetch-vulnerabilities', () => {
     await fetchVulnerabilities(context);
 
     const vulnerabilityEntities = context.jobState.collectedEntities;
-    expect(vulnerabilityEntities.length).toBe(58);
+    expect(vulnerabilityEntities.length).toBe(101);
 
     /*     // TODO (INT-4010): add required props
     expect(vulnerabilityEntities).toMatchGraphObjectSchema({
