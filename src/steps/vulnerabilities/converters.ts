@@ -244,27 +244,6 @@ export function createVulnerabilityEntity(
 ): Entity {
   const numericPriority = vuln.plugin.vpr && vuln.plugin.vpr.score;
   const priority = numericPriority && getPriority(numericPriority);
-  try {
-    const size = Buffer.byteLength(JSON.stringify(vuln));
-    if (size > 1048576) {
-      logger.info(
-        {
-          asset_uuid: vuln.asset.uuid,
-          cves: vuln.plugin.cve,
-          scanId: vuln.scan.uuid,
-          pluginId: vuln.plugin.id,
-          totalSize: size,
-          largetsItem: getLargestItemKeyAndByteSize(vuln),
-        },
-        'Encountered entity of size > 1MB',
-      );
-    }
-  } catch (err) {
-    logger.warn({ err }, 'Encountered error when checking entity size');
-  }
-  // The output property is often _very_ large.
-  // We may in the future come up with some use-cases for this property and may
-  // want to do some more fine-grained trimming of this property
 
   delete vuln.output;
 
@@ -274,7 +253,7 @@ export function createVulnerabilityEntity(
       assign: {
         _key: generateEntityKey(
           Entities.VULNERABILITY._type,
-          `${vuln.scan.uuid}_${vuln.plugin.id}_${vuln.asset.uuid}`,
+          `${vuln.scan.uuid}_${vuln.plugin.id}_${vuln.asset.uuid}_${vuln.port.port}`,
         ),
         _type: Entities.VULNERABILITY._type,
         _class: Entities.VULNERABILITY._class,
