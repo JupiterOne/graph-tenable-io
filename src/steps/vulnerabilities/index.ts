@@ -122,12 +122,7 @@ export async function fetchVulnerabilities(
       }
       try {
         await jobState.addEntity(vulnerabilityEntity);
-      } catch (error) {
-        logger.info(
-          error,
-          'Error ocurred while creating "tenable_vulnerability_finding" entity',
-        );
-      }
+      } catch (error) {}
     },
     {
       timeoutInMinutes: vulnerabilityApiTimeoutInMinutes,
