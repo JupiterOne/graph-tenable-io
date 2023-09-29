@@ -122,7 +122,9 @@ export async function fetchVulnerabilities(
       }
       try {
         await jobState.addEntity(vulnerabilityEntity);
-      } catch (error) {}
+      } catch (error) {
+        /* Empty for now, will remove try/catch when we have a report of duplicated keys */
+      }
     },
     {
       timeoutInMinutes: vulnerabilityApiTimeoutInMinutes,
