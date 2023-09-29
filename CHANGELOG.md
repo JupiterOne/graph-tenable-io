@@ -1,3 +1,15 @@
+# v9.4.3 (Fri Sep 29 2023)
+
+#### 🐛 Bug Fix
+
+- Log duplicated key report [#239](https://github.com/JupiterOne/graph-tenable-io/pull/239) (gonzaloavalosribas@Gonzalos-MacBook-Pro.local)
+
+#### Authors: 1
+
+- Gonzalo Avalos Ribas ([@Gonzalo-Avalos-Ribas](https://github.com/Gonzalo-Avalos-Ribas))
+
+---
+
 # v9.4.2 (Wed Sep 27 2023)
 
 #### 🐛 Bug Fix
