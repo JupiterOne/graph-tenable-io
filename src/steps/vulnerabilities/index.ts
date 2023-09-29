@@ -119,9 +119,15 @@ export async function fetchVulnerabilities(
           'Debug: duplicate tenable_vulnerability_finding _key encountered',
         );
         duplicateKeysEncountered += 1;
-        return;
       }
-      await jobState.addEntity(vulnerabilityEntity);
+      try {
+        await jobState.addEntity(vulnerabilityEntity);
+      } catch (error) {
+        logger.info(
+          error,
+          'Error ocurred while creating "tenable_vulnerability_finding" entity',
+        );
+      }
     },
     {
       timeoutInMinutes: vulnerabilityApiTimeoutInMinutes,
