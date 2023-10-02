@@ -253,7 +253,7 @@ export function createVulnerabilityEntity(
       assign: {
         _key: generateEntityKey(
           Entities.VULNERABILITY._type,
-          `${vuln.scan.uuid}_${vuln.plugin.id}_${vuln.asset.uuid}_${vuln.port.port}`,
+          `${vuln.scan.uuid}_${vuln.plugin.id}_${vuln.asset.uuid}_${vuln.port.port}_${vuln.port.protocol}`,
         ),
         _type: Entities.VULNERABILITY._type,
         _class: Entities.VULNERABILITY._class,
