@@ -1,3 +1,15 @@
+# v9.4.4 (Mon Oct 02 2023)
+
+#### 🐛 Bug Fix
+
+- Int 8674 add protocol to key [#240](https://github.com/JupiterOne/graph-tenable-io/pull/240) (gonzaloavalosribas@Gonzalos-MacBook-Pro.local)
+
+#### Authors: 1
+
+- Gonzalo Avalos Ribas ([@Gonzalo-Avalos-Ribas](https://github.com/Gonzalo-Avalos-Ribas))
+
+---
+
 # v9.4.3 (Fri Sep 29 2023)
 
 #### 🐛 Bug Fix
