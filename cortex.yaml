@@ -1,0 +1,14 @@
+openapi: 3.0.1
+info:
+  title: '@jupiterone/graph-tenable-io'
+  description: >-
+    A JupiterOne managed integration for
+    https://www.tenable.com/products/tenable-io
+  x-cortex-git:
+    github:
+      repository: JupiterOne/graph-tenable-io
+  x-cortex-owners:
+    - type: group
+      name: JupiterOne/integrations
+  x-cortex-service-groups: tier-4
+  x-cortex-tag: '@jupiterone/graph-tenable-io'

@@ -2,10 +2,13 @@
   "name": "@jupiterone/graph-tenable-io",
   "version": "9.4.4",
   "description": "A JupiterOne managed integration for https://www.tenable.com/products/tenable-io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JupiterOne/graph-tenable-io"
+  },
+  "license": "MPL-2.0",
   "main": "src/index.js",
   "types": "src/index.d.ts",
-  "repository": "https://github.com/JupiterOne/graph-tenable-io",
-  "license": "MPL-2.0",
   "engines": {
     "node": ">=18.0.0 <19.x"
   },
