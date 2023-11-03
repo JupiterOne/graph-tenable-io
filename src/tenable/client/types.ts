@@ -708,6 +708,7 @@ export interface VulnerabilityExportPlugin {
   vuln_publication_date: string | null;
   vpr?: VulnerabilityExportVpr | null;
   stig_severity: string | null;
+  unsupported_by_vendor?: boolean | null;
 }
 
 export interface VulnerabilityExportXrefsEntity {

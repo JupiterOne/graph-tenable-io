@@ -308,6 +308,7 @@ export function createVulnerabilityEntity(
         exploitFrameworkMetasploit: vuln.plugin.exploit_framework_metasploit,
         exploitabilityEase: vuln.plugin.exploitability_ease,
         exploitedByMalware: vuln.plugin.exploited_by_malware,
+        upsupportedByVendor: vuln.plugin.unsupported_by_vendor,
         exploitedByNessus: vuln.plugin.exploited_by_nessus,
         // data model properties
         numericPriority,
