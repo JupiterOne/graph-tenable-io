@@ -1,3 +1,20 @@
+# v9.4.5 (Fri Nov 03 2023)
+
+#### 🐛 Bug Fix
+
+- add unsupportedByVendor property [#241](https://github.com/JupiterOne/graph-tenable-io/pull/241) ([@zemberdotnet](https://github.com/zemberdotnet))
+
+#### ⚠️ Pushed to `main`
+
+- Populate CODEOWENRS, baseline package.json and baseline cortex.yaml ([@jablonnc](https://github.com/jablonnc))
+
+#### Authors: 2
+
+- Matthew Zember ([@zemberdotnet](https://github.com/zemberdotnet))
+- Noah Jablonski ([@jablonnc](https://github.com/jablonnc))
+
+---
+
 # v9.4.4 (Mon Oct 02 2023)
 
 #### 🐛 Bug Fix
