@@ -10,5 +10,6 @@ info:
   x-cortex-owners:
     - type: group
       name: JupiterOne/integrations
-  x-cortex-service-groups: tier-4
   x-cortex-tag: '@jupiterone/graph-tenable-io'
+  x-cortex-service-groups:
+    - tier-4
