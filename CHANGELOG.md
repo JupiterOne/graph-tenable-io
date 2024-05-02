@@ -1,3 +1,20 @@
+# v9.5.0 (Thu May 02 2024)
+
+#### 🚀 Enhancement
+
+- APP-15128 - Fetching more macAddresses [#242](https://github.com/JupiterOne/graph-tenable-io/pull/242) ([@mknoedel](https://github.com/mknoedel))
+
+#### ⚠️ Pushed to `main`
+
+- Apply remove-codeql with multi-gitter [ci skip] ([@electricgull](https://github.com/electricgull))
+
+#### Authors: 2
+
+- Cameron Griffin ([@electricgull](https://github.com/electricgull))
+- Michael Knoedel ([@mknoedel](https://github.com/mknoedel))
+
+---
+
 # v9.4.5 (Fri Nov 03 2023)
 
 #### 🐛 Bug Fix
