@@ -1,9 +1,9 @@
 import {
+  assignTags,
   createIntegrationEntity,
   Entity,
   IntegrationLogger,
   parseTimePropertyValue,
-  assignTags,
 } from '@jupiterone/integration-sdk-core';
 import { Entities } from '../constants';
 import { AssetExport, VulnerabilityExport } from '../../tenable/client';
@@ -30,6 +30,42 @@ export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
   }
 
   return largestItem;
+}
+
+/**
+ * Extracts unique MAC addresses based on specified FQDNs from network interfaces,
+ * and combines them with additional MAC addresses provided in the data.
+ *
+ * @example
+ * const data = {
+ *   fqdns: ['example.com', 'test.com'],
+ *   mac_addresses: ['00:11:22:33:44:55', '00:11:22:33:44:66'],
+ *   network_interfaces: [
+ *     {
+ *       fqdns: ['example.com'],
+ *       mac_addresses: ['00:AA:BB:CC:DD:EE']
+ *     },
+ *     {
+ *       fqdns: ['another.com'],
+ *       mac_addresses: ['00:FF:EE:DD:CC:BB']
+ *     }
+ *   ]
+ * };
+ * const macs = getMacAddresses(data);
+ * console.log(macs); // Output: ['00:AA:BB:CC:DD:EE', '00:11:22:33:44:55', '00:11:22:33:44:66']
+ */
+export function getMacAddresses(data: AssetExport): string[] {
+  const { fqdns, mac_addresses, network_interfaces } = data;
+  const qualifiedMacAddresses =
+    (fqdns
+      ?.flatMap(
+        (dns) =>
+          network_interfaces.find(
+            (ni) => ni.fqdns?.length && ni.fqdns.includes(dns),
+          )?.mac_addresses,
+      )
+      ?.filter(Boolean) as string[] | undefined) ?? [];
+  return [...new Set([...qualifiedMacAddresses, ...(mac_addresses ?? [])])]; // Ensures uniqueness
 }
 
 export function createAssetEntity(data: AssetExport): Entity {
@@ -75,7 +111,7 @@ export function createAssetEntity(data: AssetExport): Entity {
         ipv4s: data.ipv4s,
         ipv6s: data.ipv6s,
         fqdns: data.fqdns,
-        macAddresses: data.mac_addresses,
+        macAddresses: getMacAddresses(data),
         netbiosNames: data.netbios_names,
         operatingSystems: data.operating_systems,
         // Provider-specific properties
