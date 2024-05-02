@@ -1,8 +1,10 @@
 import {
   getLargestItemKeyAndByteSize,
+  getMacAddresses,
   getPriority,
   getSeverity,
 } from './converters';
+import { AssetExport } from '../../tenable/client';
 
 describe('getSeverity from numericSeverity', () => {
   test('Informational for 0', () => {
@@ -88,5 +90,89 @@ describe('getLargestItemKeyAndByteSize', () => {
       key: 'objectProp',
       size: Buffer.byteLength(JSON.stringify(toCheck.objectProp)),
     });
+  });
+});
+
+describe('getMacAddresses', () => {
+  test('returns unique MAC addresses based on FQDNs and direct list', () => {
+    const data = {
+      fqdns: ['example.com', 'test.com'],
+      mac_addresses: ['00:11:22:33:44:55', '00:11:22:33:44:66'],
+      network_interfaces: [
+        {
+          fqdns: ['example.com'],
+          mac_addresses: ['00:AA:BB:CC:DD:EE'],
+        },
+        {
+          fqdns: ['another.com'],
+          mac_addresses: ['00:FF:EE:DD:CC:BB'],
+        },
+      ],
+    } as AssetExport;
+    expect(getMacAddresses(data)).toEqual([
+      '00:AA:BB:CC:DD:EE',
+      '00:11:22:33:44:55',
+      '00:11:22:33:44:66',
+    ]);
+  });
+
+  test('handles no FQDNs provided', () => {
+    const data = {
+      fqdns: [],
+      mac_addresses: ['00:11:22:33:44:55'],
+      network_interfaces: [
+        {
+          fqdns: ['example.com'],
+          mac_addresses: ['00:AA:BB:CC:DD:EE'],
+        },
+      ],
+    } as unknown as AssetExport;
+    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
+  });
+
+  test('handles no network interfaces provided', () => {
+    const data = {
+      fqdns: ['example.com'],
+      mac_addresses: ['00:11:22:33:44:55'],
+      network_interfaces: [],
+    } as unknown as AssetExport;
+    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
+  });
+
+  test('ignores network interfaces without matching FQDNs', () => {
+    const data = {
+      fqdns: ['test.com'],
+      mac_addresses: ['00:11:22:33:44:55'],
+      network_interfaces: [
+        {
+          fqdns: ['example.com'],
+          mac_addresses: ['00:AA:BB:CC:DD:EE'],
+        },
+      ],
+    } as unknown as AssetExport;
+    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
+  });
+
+  test('returns empty array when no FQDNs or mac_addresses are provided', () => {
+    const data = {
+      fqdns: [],
+      mac_addresses: [],
+      network_interfaces: [],
+    } as unknown as AssetExport;
+    expect(getMacAddresses(data)).toEqual([]);
+  });
+
+  test('removes duplicate MAC addresses', () => {
+    const data = {
+      fqdns: ['example.com'],
+      mac_addresses: ['00:11:22:33:44:55'],
+      network_interfaces: [
+        {
+          fqdns: ['example.com'],
+          mac_addresses: ['00:11:22:33:44:55'],
+        },
+      ],
+    } as unknown as AssetExport;
+    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
   });
 });
