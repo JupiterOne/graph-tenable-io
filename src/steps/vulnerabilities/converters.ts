@@ -33,39 +33,49 @@ export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
 }
 
 /**
- * Extracts unique MAC addresses based on specified FQDNs from network interfaces,
- * and combines them with additional MAC addresses provided in the data.
+ * Extracts MAC addresses associated with public IP addresses from Tenable asset data.
+ * It filters out MAC addresses associated with private and special-use IP addresses,
+ * including APIPA and local-link IPv6 addresses, to focus only on those that are most likely to be unique and publicly routable.
  *
- * @example
- * const data = {
- *   fqdns: ['example.com', 'test.com'],
- *   mac_addresses: ['00:11:22:33:44:55', '00:11:22:33:44:66'],
- *   network_interfaces: [
- *     {
- *       fqdns: ['example.com'],
- *       mac_addresses: ['00:AA:BB:CC:DD:EE']
- *     },
- *     {
- *       fqdns: ['another.com'],
- *       mac_addresses: ['00:FF:EE:DD:CC:BB']
- *     }
- *   ]
- * };
- * const macs = getMacAddresses(data);
- * console.log(macs); // Output: ['00:AA:BB:CC:DD:EE', '00:11:22:33:44:55', '00:11:22:33:44:66']
+ * This function checks both IPv4 and IPv6 addresses:
+ * - For IPv4, it excludes addresses within private ranges like 10.x.x.x, 172.16.x.x to 172.31.x.x, 192.168.x.x, and APIPA range 169.254.x.x.
+ * - For IPv6, it excludes Unique Local Addresses (ULA) starting with fc00:: or fd00:: and link-local addresses starting with fe80::.
+ * MAC addresses from the top-level of the asset data are included, assuming they are associated with public IPs unless specified otherwise.
  */
 export function getMacAddresses(data: AssetExport): string[] {
-  const { fqdns, mac_addresses, network_interfaces } = data;
-  const qualifiedMacAddresses =
-    (fqdns
-      ?.flatMap(
-        (dns) =>
-          network_interfaces.find(
-            (ni) => ni.fqdns?.length && ni.fqdns.includes(dns),
-          )?.mac_addresses,
-      )
-      ?.filter(Boolean) as string[] | undefined) ?? [];
-  return [...new Set([...qualifiedMacAddresses, ...(mac_addresses ?? [])])]; // Ensures uniqueness
+  const isPublicIp = (ip: string): boolean => {
+    const privateIp10Regex = /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/; // Matches 10.x.x.x
+    const privateIp172Regex = /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/; // Matches 172.16.x.x to 172.31.x.x
+    const privateIp192Regex = /^192\.168\.\d{1,3}\.\d{1,3}$/; // Matches 192.168.x.x
+    const apipaRegex = /^169\.254\.\d{1,3}\.\d{1,3}$/; // Matches 169.254.x.x (APIPA)
+    const privateIpv6Regex = /^(fc00::|fd00::|fe80::)/; // Matches IPv6 private
+    return !(
+      privateIp10Regex.test(ip) ||
+      privateIp172Regex.test(ip) ||
+      privateIp192Regex.test(ip) ||
+      apipaRegex.test(ip) ||
+      privateIpv6Regex.test(ip)
+    );
+  };
+
+  const publicMacAddresses = new Set<string>();
+
+  // Extract MAC addresses associated with at least one public IP address from network interfaces
+  data.network_interfaces?.forEach((ni) => {
+    const hasPublicIp =
+      (ni.ipv4s?.length && ni.ipv4s.some(isPublicIp)) ||
+      (ni.ipv6s?.length && ni.ipv6s.some(isPublicIp));
+    if (hasPublicIp) {
+      ni.mac_addresses.forEach((mac) => publicMacAddresses.add(mac));
+    }
+  });
+
+  // Include top-level MAC addresses, assuming they are associated with public IPs
+  data.mac_addresses?.forEach((mac) => {
+    publicMacAddresses.add(mac);
+  });
+
+  return [...publicMacAddresses];
 }
 
 export function createAssetEntity(data: AssetExport): Entity {
