@@ -93,86 +93,71 @@ describe('getLargestItemKeyAndByteSize', () => {
   });
 });
 
-describe('getMacAddresses', () => {
-  test('returns unique MAC addresses based on FQDNs and direct list', () => {
-    const data = {
-      fqdns: ['example.com', 'test.com'],
-      mac_addresses: ['00:11:22:33:44:55', '00:11:22:33:44:66'],
+describe('getMacAddresses Tests', () => {
+  test('should filter out duplicates and return unique MAC addresses', () => {
+    const testData: AssetExport = {
       network_interfaces: [
         {
-          fqdns: ['example.com'],
-          mac_addresses: ['00:AA:BB:CC:DD:EE'],
+          mac_addresses: ['00:1B:44:11:3A:B7'],
+          ipv4s: ['8.8.8.8'], // Public IP
         },
         {
-          fqdns: ['another.com'],
-          mac_addresses: ['00:FF:EE:DD:CC:BB'],
+          mac_addresses: ['00:1B:44:11:3A:B7'], // Duplicate MAC
+          ipv4s: ['8.8.4.4'], // Another Public IP
         },
       ],
     } as AssetExport;
-    expect(getMacAddresses(data)).toEqual([
-      '00:AA:BB:CC:DD:EE',
-      '00:11:22:33:44:55',
-      '00:11:22:33:44:66',
-    ]);
+    const result = getMacAddresses(testData);
+    expect(result).toEqual(['00:1B:44:11:3A:B7']); // Expect only one entry despite duplicates
   });
 
-  test('handles no FQDNs provided', () => {
-    const data = {
-      fqdns: [],
-      mac_addresses: ['00:11:22:33:44:55'],
+  test('should use interfaces with both private and public IPs, treating them as public', () => {
+    const testData: AssetExport = {
       network_interfaces: [
         {
-          fqdns: ['example.com'],
-          mac_addresses: ['00:AA:BB:CC:DD:EE'],
+          mac_addresses: ['00:1B:44:11:3A:B8'],
+          ipv4s: ['192.168.1.1', '8.8.8.8'], // Mixed private and public IPs
+        },
+      ],
+    } as AssetExport;
+    const result = getMacAddresses(testData);
+    expect(result).toEqual(['00:1B:44:11:3A:B8']); // Expect no MAC addresses since private IP is present
+  });
+
+  test('should return MAC addresses only associated with public IPs even if no IPs are public in other interfaces', () => {
+    const testData: AssetExport = {
+      network_interfaces: [
+        {
+          mac_addresses: ['00:1B:44:11:3A:B9'],
+          ipv4s: ['192.168.1.1'], // Private IP
+        },
+        {
+          mac_addresses: ['00:1B:44:11:3A:BA'],
+          ipv4s: ['8.8.8.8'], // Public IP
+        },
+      ],
+    } as AssetExport;
+    const result = getMacAddresses(testData);
+    expect(result).toEqual(['00:1B:44:11:3A:BA']); // Only public IP associated MAC returned
+  });
+
+  test('should handle cases where no network interfaces are provided', () => {
+    const testData: AssetExport = {} as AssetExport;
+    const result = getMacAddresses(testData);
+    expect(result).toEqual([]); // Expect no results when no data is provided
+  });
+
+  test('should properly handle entries without any IPs specified', () => {
+    const testData: AssetExport = {
+      network_interfaces: [
+        {
+          mac_addresses: ['00:1B:44:11:3A:BC'],
+          ipv4s: [], // No IPs listed
+          ipv6s: [], // No IPs listed
         },
       ],
     } as unknown as AssetExport;
-    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
-  });
-
-  test('handles no network interfaces provided', () => {
-    const data = {
-      fqdns: ['example.com'],
-      mac_addresses: ['00:11:22:33:44:55'],
-      network_interfaces: [],
-    } as unknown as AssetExport;
-    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
-  });
-
-  test('ignores network interfaces without matching FQDNs', () => {
-    const data = {
-      fqdns: ['test.com'],
-      mac_addresses: ['00:11:22:33:44:55'],
-      network_interfaces: [
-        {
-          fqdns: ['example.com'],
-          mac_addresses: ['00:AA:BB:CC:DD:EE'],
-        },
-      ],
-    } as unknown as AssetExport;
-    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
-  });
-
-  test('returns empty array when no FQDNs or mac_addresses are provided', () => {
-    const data = {
-      fqdns: [],
-      mac_addresses: [],
-      network_interfaces: [],
-    } as unknown as AssetExport;
-    expect(getMacAddresses(data)).toEqual([]);
-  });
-
-  test('removes duplicate MAC addresses', () => {
-    const data = {
-      fqdns: ['example.com'],
-      mac_addresses: ['00:11:22:33:44:55'],
-      network_interfaces: [
-        {
-          fqdns: ['example.com'],
-          mac_addresses: ['00:11:22:33:44:55'],
-        },
-      ],
-    } as unknown as AssetExport;
-    expect(getMacAddresses(data)).toEqual(['00:11:22:33:44:55']);
+    const result = getMacAddresses(testData);
+    expect(result).toEqual([]); // No IPs mean no public IPs, thus no MACs returned
   });
 });
