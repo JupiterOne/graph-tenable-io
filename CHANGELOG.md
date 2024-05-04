@@ -1,3 +1,15 @@
+# v9.6.0 (Sat May 04 2024)
+
+#### 🚀 Enhancement
+
+- APP-15128 - Use ipAddress filtering when determining which macAddress to use for assets and agents [#243](https://github.com/JupiterOne/graph-tenable-io/pull/243) ([@mknoedel](https://github.com/mknoedel))
+
+#### Authors: 1
+
+- Michael Knoedel ([@mknoedel](https://github.com/mknoedel))
+
+---
+
 # v9.5.0 (Thu May 02 2024)
 
 #### 🚀 Enhancement
