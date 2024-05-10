@@ -112,6 +112,7 @@ The following relationships are created:
 | `tenable_account`              | **HAS**               | `tenable_container_repository`       |
 | `tenable_account`              | **HAS**               | `tenable_user`                       |
 | `tenable_account`              | **PROVIDES**          | `tenable_scanner`                    |
+| `tenable_agent`                | **PROTECTS**          | `tenable_asset`                      |
 | `tenable_asset`                | **HAS**               | `tenable_vulnerability_finding`      |
 | `tenable_container_image`      | **HAS**               | `tenable_container_finding`          |
 | `tenable_container_image`      | **HAS**               | `tenable_container_malware`          |
