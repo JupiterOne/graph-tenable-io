@@ -114,7 +114,7 @@ export const agentsSteps: Step<
     id: StepIds.AGENT_RELATIONSHIPS,
     name: 'Fetch Agents',
     entities: [],
-    relationships: [Relationships.ACCOUNT_HAS_AGENT],
+    relationships: [Relationships.HOSTAGENT_PROTECTS_DEVICE],
     dependsOn: [StepIds.ASSETS, StepIds.AGENTS],
     executionHandler: buildAgentRelationships,
   },
