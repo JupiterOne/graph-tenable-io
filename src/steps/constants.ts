@@ -22,6 +22,7 @@ export const StepIds = {
   CONTAINER_REPORTS: 'step-container-reports',
   SCANNER_IDS: 'step-scanner-ids',
   AGENTS: 'step-agents',
+  AGENT_RELATIONSHIPS: 'build-agent-relationships',
 };
 
 export const Entities: Record<
@@ -118,7 +119,8 @@ export const Relationships: Record<
   | 'REPORT_IDENTIFIED_MALWARE'
   | 'REPORT_IDENTIFIED_UNWANTED_PROGRAM'
   | 'ASSET_HAS_VULN'
-  | 'ACCOUNT_HAS_AGENT',
+  | 'ACCOUNT_HAS_AGENT'
+  | 'HOSTAGENT_PROTECTS_DEVICE',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -261,6 +263,12 @@ export const Relationships: Record<
     sourceType: Entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.AGENT._type,
+  },
+  HOSTAGENT_PROTECTS_DEVICE: {
+    _type: 'tenable_agent_has_asset',
+    sourceType: Entities.AGENT._type,
+    _class: RelationshipClass.PROTECTS,
+    targetType: Entities.ASSET._type,
   },
 };
 

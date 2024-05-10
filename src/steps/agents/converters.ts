@@ -14,7 +14,7 @@ export function createAgentEntity(agent: Agent): Entity {
       assign: {
         _class: Entities.AGENT._class,
         _type: Entities.AGENT._type,
-        _key: generateEntityKey(Entities.AGENT._type, agent.id),
+        _key: generateEntityKey(Entities.AGENT._type, agent.uuid),
 
         // Schema required fields.
         id: String(agent.id),

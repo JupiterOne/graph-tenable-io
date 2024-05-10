@@ -11,6 +11,7 @@ import { DATA_SCANNER_IDS } from '../scanners/constants';
 import { createAgentEntity } from './converters';
 import { getAccount } from '../account/util';
 import { createAccountEntity } from '../account/converters';
+import { generateEntityKey } from '../../utils/generateKey';
 
 export async function fetchAgents(
   context: IntegrationStepExecutionContext<IntegrationConfig>,
@@ -64,13 +65,57 @@ export async function fetchAgents(
   }
 }
 
-export const agentsStep: Step<
+export async function buildAgentRelationships(
+  context: IntegrationStepExecutionContext<IntegrationConfig>,
+): Promise<void> {
+  const { jobState, logger } = context;
+
+  await jobState.iterateEntities(
+    { _type: Entities.ASSET._type },
+    async (assetEntity) => {
+      if (assetEntity.hasAgent && assetEntity.agentUuid) {
+        const agentEntity = await jobState.findEntity(
+          generateEntityKey(
+            Entities.AGENT._type,
+            assetEntity.agentUuid as string,
+          ),
+        );
+        if (agentEntity) {
+          await jobState.addRelationship(
+            createDirectRelationship({
+              from: agentEntity,
+              _class: RelationshipClass.PROTECTS,
+              to: assetEntity,
+            }),
+          );
+        } else {
+          logger.warn(
+            { assetKey: assetEntity._key, agentUuid: assetEntity.agentUuid },
+            `Asset's host agent could not be found`,
+          );
+        }
+      }
+    },
+  );
+}
+
+export const agentsSteps: Step<
   IntegrationStepExecutionContext<IntegrationConfig>
-> = {
-  id: StepIds.AGENTS,
-  name: 'Fetch Agents',
-  entities: [Entities.AGENT],
-  relationships: [Relationships.ACCOUNT_HAS_AGENT],
-  dependsOn: [StepIds.ACCOUNT, StepIds.SCANNER_IDS],
-  executionHandler: fetchAgents,
-};
+>[] = [
+  {
+    id: StepIds.AGENTS,
+    name: 'Fetch Agents',
+    entities: [Entities.AGENT],
+    relationships: [Relationships.ACCOUNT_HAS_AGENT],
+    dependsOn: [StepIds.ACCOUNT, StepIds.SCANNER_IDS],
+    executionHandler: fetchAgents,
+  },
+  {
+    id: StepIds.AGENT_RELATIONSHIPS,
+    name: 'Build Host Agent Protects Agents Relationship',
+    entities: [],
+    relationships: [Relationships.HOSTAGENT_PROTECTS_DEVICE],
+    dependsOn: [StepIds.ASSETS, StepIds.AGENTS],
+    executionHandler: buildAgentRelationships,
+  },
+];
