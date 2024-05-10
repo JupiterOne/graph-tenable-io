@@ -112,7 +112,7 @@ export const agentsSteps: Step<
   },
   {
     id: StepIds.AGENT_RELATIONSHIPS,
-    name: 'Fetch Agents',
+    name: 'Build Host Agent Protects Agents Relationship',
     entities: [],
     relationships: [Relationships.HOSTAGENT_PROTECTS_DEVICE],
     dependsOn: [StepIds.ASSETS, StepIds.AGENTS],
