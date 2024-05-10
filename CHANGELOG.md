@@ -1,3 +1,15 @@
+# v9.7.0 (Fri May 10 2024)
+
+#### 🚀 Enhancement
+
+- APP-15195 - tenable_host -PROTECTS-> tenable_agent [#244](https://github.com/JupiterOne/graph-tenable-io/pull/244) ([@mknoedel](https://github.com/mknoedel))
+
+#### Authors: 1
+
+- Michael Knoedel ([@mknoedel](https://github.com/mknoedel))
+
+---
+
 # v9.6.0 (Sat May 04 2024)
 
 #### 🚀 Enhancement
