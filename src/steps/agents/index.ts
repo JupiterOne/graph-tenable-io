@@ -73,12 +73,13 @@ export async function buildAgentRelationships(
   await jobState.iterateEntities(
     { _type: Entities.ASSET._type },
     async (assetEntity) => {
-      if (assetEntity.hasAgent && assetEntity.agentUuid) {
+      const agentId =
+        assetEntity.hasAgent && assetEntity.agentUuid
+          ? formatToUUID(assetEntity.agentUuid as string)
+          : undefined;
+      if (agentId) {
         const agentEntity = await jobState.findEntity(
-          generateEntityKey(
-            Entities.AGENT._type,
-            assetEntity.agentUuid as string,
-          ),
+          generateEntityKey(Entities.AGENT._type, agentId),
         );
         if (agentEntity) {
           await jobState.addRelationship(
@@ -90,13 +91,31 @@ export async function buildAgentRelationships(
           );
         } else {
           logger.warn(
-            { assetKey: assetEntity._key, agentUuid: assetEntity.agentUuid },
+            {
+              assetKey: assetEntity._key,
+              agentUuid: assetEntity.agentUuid,
+              formattedAgentId: agentId,
+            },
             `Asset's host agent could not be found`,
           );
         }
       }
     },
   );
+}
+
+function formatToUUID(input: string): string | undefined {
+  const cleanInput = input.replace(/-/g, ''); // Remove all hyphens
+  if (cleanInput.length === 32) {
+    // Check valid length
+    return `${cleanInput.slice(0, 8)}-${cleanInput.slice(
+      8,
+      12,
+    )}-${cleanInput.slice(12, 16)}-${cleanInput.slice(
+      16,
+      20,
+    )}-${cleanInput.slice(20)}`;
+  }
 }
 
 export const agentsSteps: Step<
