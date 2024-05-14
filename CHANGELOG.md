@@ -1,3 +1,15 @@
+# v9.7.1 (Tue May 14 2024)
+
+#### 🐛 Bug Fix
+
+- APP-15195 - Format uuids so that they are uniform [#245](https://github.com/JupiterOne/graph-tenable-io/pull/245) ([@mknoedel](https://github.com/mknoedel))
+
+#### Authors: 1
+
+- Michael Knoedel ([@mknoedel](https://github.com/mknoedel))
+
+---
+
 # v9.7.0 (Fri May 10 2024)
 
 #### 🚀 Enhancement
