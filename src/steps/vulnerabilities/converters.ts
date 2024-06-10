@@ -373,9 +373,7 @@ export function createVulnerabilityEntity(
         hasPatch: vuln.plugin.has_patch,
 
         // cross-reference plugin information array: CISA, CVE, IAVA
-        xRefs: vuln.plugin.xrefs
-          ? vuln.plugin.xrefs.map((r) => JSON.stringify(r))
-          : [],
+        xRefs: vuln.plugin.xrefs?.map((r) => JSON.stringify(r)) ?? [],
       },
     },
   });
