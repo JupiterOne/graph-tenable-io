@@ -32,42 +32,13 @@ export function getLargestItemKeyAndByteSize(data: any): KeyAndSize {
   return largestItem;
 }
 
-/**
- * Extracts MAC addresses associated with public IP addresses from Tenable asset data.
- * It filters out MAC addresses associated with private and special-use IP addresses,
- * including APIPA and local-link IPv6 addresses, to focus only on those that are most likely to be unique and publicly routable.
- *
- * This function checks both IPv4 and IPv6 addresses:
- * - For IPv4, it excludes addresses within private ranges like 10.x.x.x, 172.16.x.x to 172.31.x.x, 192.168.x.x, and APIPA range 169.254.x.x.
- * - For IPv6, it excludes Unique Local Addresses (ULA) starting with fc00:: or fd00:: and link-local addresses starting with fe80::.
- * MAC addresses from the top-level of the asset data are included, assuming they are associated with public IPs unless specified otherwise.
- */
-export function getMacAddresses(data: AssetExport): string[] {
-  const isPublicIp = (ip: string): boolean => {
-    const privateIp10Regex = /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/; // Matches 10.x.x.x
-    const privateIp172Regex = /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/; // Matches 172.16.x.x to 172.31.x.x
-    const privateIp192Regex = /^192\.168\.\d{1,3}\.\d{1,3}$/; // Matches 192.168.x.x
-    const apipaRegex = /^169\.254\.\d{1,3}\.\d{1,3}$/; // Matches 169.254.x.x (APIPA)
-    const privateIpv6Regex = /^(fc00::|fd00::|fe80::)/; // Matches IPv6 private
-    return !(
-      privateIp10Regex.test(ip) ||
-      privateIp172Regex.test(ip) ||
-      privateIp192Regex.test(ip) ||
-      apipaRegex.test(ip) ||
-      privateIpv6Regex.test(ip)
-    );
-  };
-
+// Extract top level mac addresses regardless if they are private or not
+export function getMacAddresses(data: any): string[] {
   const publicMacAddresses = new Set<string>();
 
-  // Extract MAC addresses associated with at least one public IP address from network interfaces
+  // Extract MAC addresses from all network interfaces
   data.network_interfaces?.forEach((ni) => {
-    const hasPublicIp =
-      (ni.ipv4s?.length && ni.ipv4s.some(isPublicIp)) ||
-      (ni.ipv6s?.length && ni.ipv6s.some(isPublicIp));
-    if (hasPublicIp) {
-      ni.mac_addresses.forEach((mac) => publicMacAddresses.add(mac));
-    }
+    ni.mac_addresses.forEach((mac) => publicMacAddresses.add(mac));
   });
 
   // Include top-level MAC addresses, assuming they are associated with public IPs
