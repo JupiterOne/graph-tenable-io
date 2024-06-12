@@ -16,7 +16,7 @@ export const vulnerabilitySpec: StepSpec<IntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'Asset',
-        _class: ['Record'],
+        _class: ['Device'],
         _type: 'tenable_asset',
       },
     ],
