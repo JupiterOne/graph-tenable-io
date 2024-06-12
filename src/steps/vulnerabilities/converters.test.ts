@@ -124,30 +124,13 @@ describe('getMacAddresses Tests', () => {
     expect(result).toEqual(['00:1B:44:11:3A:B8']); // Expect no MAC addresses since private IP is present
   });
 
-  test('should return MAC addresses only associated with public IPs even if no IPs are public in other interfaces', () => {
-    const testData: AssetExport = {
-      network_interfaces: [
-        {
-          mac_addresses: ['00:1B:44:11:3A:B9'],
-          ipv4s: ['192.168.1.1'], // Private IP
-        },
-        {
-          mac_addresses: ['00:1B:44:11:3A:BA'],
-          ipv4s: ['8.8.8.8'], // Public IP
-        },
-      ],
-    } as AssetExport;
-    const result = getMacAddresses(testData);
-    expect(result).toEqual(['00:1B:44:11:3A:BA']); // Only public IP associated MAC returned
-  });
-
   test('should handle cases where no network interfaces are provided', () => {
     const testData: AssetExport = {} as AssetExport;
     const result = getMacAddresses(testData);
     expect(result).toEqual([]); // Expect no results when no data is provided
   });
 
-  test('should properly handle entries without any IPs specified', () => {
+  test('should list mac address not matter if its public or not', () => {
     const testData: AssetExport = {
       network_interfaces: [
         {
@@ -158,6 +141,6 @@ describe('getMacAddresses Tests', () => {
       ],
     } as unknown as AssetExport;
     const result = getMacAddresses(testData);
-    expect(result).toEqual([]); // No IPs mean no public IPs, thus no MACs returned
+    expect(result).toEqual(['00:1B:44:11:3A:BC']); // No IPs mean no public IPs, thus no MACs returned
   });
 });
