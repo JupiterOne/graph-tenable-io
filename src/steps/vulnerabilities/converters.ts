@@ -101,7 +101,6 @@ export function createAssetEntity(data: AssetExport): Entity {
         updatedOn: parseTimePropertyValue(data.updated_at),
         deletedOn: parseTimePropertyValue(data.deleted_at),
         firstSeenOn: parseTimePropertyValue(data.first_seen),
-        lastSeenOn: parseTimePropertyValue(data.last_seen),
         firstScanTimeOn: parseTimePropertyValue(data.first_scan_time),
         lastScanTimeOn: parseTimePropertyValue(data.last_scan_time),
         lastAuthenticatedScanDateOn: parseTimePropertyValue(
@@ -155,6 +154,14 @@ export function createAssetEntity(data: AssetExport): Entity {
         // TODO Add sources, tags, networkInterfaces
         // sources: data.sources,
         // networkInterfaces: data.network_interfaces,
+        // Device model required properties
+        category: 'UNKNOWN',
+        make: 'UNKNOWN',
+        model: 'UNKNOWN',
+        serial: 'UNKNOWN',
+        deviceId: data.id,
+        lastSeenOn: parseTimePropertyValue(data.last_seen),
+        macAddress: data.network_interfaces?.[0]?.mac_addresses?.[0],
       },
     },
   });

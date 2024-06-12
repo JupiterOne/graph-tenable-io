@@ -89,7 +89,7 @@ The following entities are created:
 | -------------------------- | ------------------------------------ | --------------- |
 | Account                    | `tenable_account`                    | `Account`       |
 | Agent                      | `tenable_agent`                      | `HostAgent`     |
-| Asset                      | `tenable_asset`                      | `Record`        |
+| Asset                      | `tenable_asset`                      | `Device`        |
 | Container Finding          | `tenable_container_finding`          | `Finding`       |
 | Container Image            | `tenable_container_image`            | `Image`         |
 | Container Malware          | `tenable_container_malware`          | `Finding`       |

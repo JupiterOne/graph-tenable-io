@@ -47,7 +47,7 @@ export const Entities: Record<
   },
   ASSET: {
     resourceName: 'Asset',
-    _class: ['Record'],
+    _class: ['Device'],
     _type: 'tenable_asset',
   },
   SERVICE: {
