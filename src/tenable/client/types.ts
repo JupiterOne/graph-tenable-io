@@ -577,14 +577,14 @@ export const VALID_VULNERABILITY_SEVERITIES = [
   'critical',
 ] as const;
 export type VulnerabilitySeverity =
-  (typeof VALID_VULNERABILITY_SEVERITIES)[number];
+  typeof VALID_VULNERABILITY_SEVERITIES[number];
 
 export const VALID_VULNERABILITY_STATES = [
   'open',
   'reopened',
   'fixed',
 ] as const;
-export type VulnerabilityState = (typeof VALID_VULNERABILITY_STATES)[number];
+export type VulnerabilityState = typeof VALID_VULNERABILITY_STATES[number];
 
 // Note: By default, vulnerability exports will only include
 // vulnerabilities found or fixed within the last 30 days if no
