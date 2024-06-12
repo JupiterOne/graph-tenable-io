@@ -1,3 +1,15 @@
+# v9.7.2 (Wed Jun 12 2024)
+
+#### 🐛 Bug Fix
+
+- INT-11148: extract macaddress regardless if is public or not [#248](https://github.com/JupiterOne/graph-tenable-io/pull/248) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### Authors: 1
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+
+---
+
 # v9.7.1 (Tue May 14 2024)
 
 #### 🐛 Bug Fix
