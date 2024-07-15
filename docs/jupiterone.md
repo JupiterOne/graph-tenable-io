@@ -90,6 +90,7 @@ The following entities are created:
 | Account                    | `tenable_account`                    | `Account`       |
 | Agent                      | `tenable_agent`                      | `HostAgent`     |
 | Asset                      | `tenable_asset`                      | `Record`        |
+| Compliance Finding         | `tenable_compliance_finding`         | `Finding`       |
 | Container Finding          | `tenable_container_finding`          | `Finding`       |
 | Container Image            | `tenable_container_image`            | `Image`         |
 | Container Malware          | `tenable_container_malware`          | `Finding`       |
@@ -113,6 +114,7 @@ The following relationships are created:
 | `tenable_account`              | **HAS**               | `tenable_user`                       |
 | `tenable_account`              | **PROVIDES**          | `tenable_scanner`                    |
 | `tenable_agent`                | **PROTECTS**          | `tenable_asset`                      |
+| `tenable_asset`                | **HAS**               | `tenable_compliance_finding`         |
 | `tenable_asset`                | **HAS**               | `tenable_vulnerability_finding`      |
 | `tenable_container_image`      | **HAS**               | `tenable_container_finding`          |
 | `tenable_container_image`      | **HAS**               | `tenable_container_malware`          |
