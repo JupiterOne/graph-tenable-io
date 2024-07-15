@@ -37,6 +37,7 @@ import { sleep } from '@lifeomic/attempt';
 import pMap from 'p-map';
 import { addMinutes, getUnixTime, isAfter, sub } from 'date-fns';
 import { paginated } from '../utils/pagination';
+import { SLEEP_TIME } from '../steps/constants';
 
 function length(resources?: any[]): number {
   return resources ? resources.length : 0;
@@ -207,7 +208,7 @@ export default class TenableClient {
 
       ({ status, chunks_available: chunksAvailable } =
         await this.fetchComplianceExportStatus(exportUuid));
-      await sleep(60_000); // Sleep 60 seconds between status checks.
+      await sleep(SLEEP_TIME); // Sleep 60 seconds between status checks.
     }
 
     await pMap(
@@ -332,7 +333,7 @@ export default class TenableClient {
 
       ({ status, chunks_available: chunksAvailable } =
         await this.fetchVulnerabilitiesExportStatus(exportUuid));
-      await sleep(60_000); // Sleep 60 seconds between status checks.
+      await sleep(SLEEP_TIME); // Sleep 60 seconds between status checks.
     }
 
     await pMap(
@@ -451,7 +452,7 @@ export default class TenableClient {
 
       ({ status, chunks_available: chunksAvailable } =
         await this.fetchAssetsExportStatus(exportUuid));
-      await sleep(60_000); // Sleep 60 seconds between status checks.
+      await sleep(SLEEP_TIME); // Sleep 60 seconds between status checks.
     }
 
     await pMap(

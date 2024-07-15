@@ -8,6 +8,8 @@ import {
 
 export const SERVICE_ENTITY_DATA_KEY = 'entity:service';
 
+export const SLEEP_TIME = 60_000; 
+
 export const StepIds = {
   ACCOUNT: 'step-account',
   SERVICE: 'step-service',
