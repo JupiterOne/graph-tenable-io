@@ -32,7 +32,6 @@ describe.skip('step-compliance-findings', () => {
   });
 });
 
-
 describe.skip('build-asset-compliance-findings-relationships', () => {
   test('success', async () => {
     recording = setupTenableRecording({
@@ -46,7 +45,9 @@ describe.skip('build-asset-compliance-findings-relationships', () => {
       },
     });
 
-    const stepConfig = buildStepTestConfig(StepIds.ASSET_COMPLIANCE_FINDINGS_RELATIONSHIPS);
+    const stepConfig = buildStepTestConfig(
+      StepIds.ASSET_COMPLIANCE_FINDINGS_RELATIONSHIPS,
+    );
     const stepResults = await executeStepWithDependencies(stepConfig);
     expect(stepResults).toMatchStepMetadata(stepConfig);
   });
