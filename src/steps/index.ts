@@ -1,6 +1,7 @@
 import { accountStep } from './account';
 import { containerSteps } from './containers';
 import { scanSteps } from './vulnerabilities';
+import { complianceFindingSteps } from './compliance-finding';
 import { userStep } from './access';
 import { serviceSteps } from './service';
 import { scannerStep } from './scanners';
@@ -16,4 +17,5 @@ export const integrationSteps: IntegrationStep<IntegrationConfig>[] = [
   userStep,
   scannerStep,
   ...agentsSteps,
+  ...complianceFindingSteps,
 ];

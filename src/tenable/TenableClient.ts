@@ -1,8 +1,12 @@
 import { version as graphTenablePackageVersion } from '../../package.json';
 import Client, {
   Agent,
+  ComplianceChunk,
+  ComplianceExportStatusResponse,
+  ComplianceUuid,
   ContainerImage,
   ContainerRepository,
+  ExportComplianceFindingsOptions,
   ExportStatus,
   Scanner,
   TenableResponse,
@@ -88,6 +92,138 @@ export default class TenableClient {
       'Fetched Tenable users',
     );
     return usersResponse.users;
+  }
+
+  private async cancelComplianceExport(
+    exportUuid: string,
+  ): Promise<CancelExportResponse> {
+    const cancelExportResponse = await this.retryRequest(() =>
+      this.client.cancelComplianceFindingExport(exportUuid),
+    );
+
+    this.logger.info(
+      {
+        cancelExportResponse,
+      },
+      'Cancelled Tenable Compliance export',
+    );
+
+    return cancelExportResponse;
+  }
+
+  private async fetchComplianceFinding(
+    options: ExportComplianceFindingsOptions,
+  ): Promise<ComplianceUuid> {
+    const complianceExportResponse = await this.retryRequest(() =>
+      this.client.exportComplianceData(options),
+    );
+
+    this.logger.info(
+      {
+        options,
+        complianceExportResponse,
+      },
+      'Started Complaince Finding export',
+    );
+    return complianceExportResponse;
+  }
+
+  public async fetchComplianceExportStatus(
+    exportUuid: string,
+  ): Promise<ComplianceExportStatusResponse> {
+    const exportStatusResponse = await this.retryRequest(() =>
+      this.client.fetchComplianceStatus(exportUuid),
+    );
+    this.logger.info(
+      {
+        exportUuid,
+        exportStatusResponse,
+      },
+      'Fetched Tenable Compliance export status',
+    );
+    return exportStatusResponse;
+  }
+
+  private async fetchComplianceExportChunk(
+    exportUuid: string,
+    chunkId: number,
+  ): Promise<ComplianceChunk[]> {
+    const complianceChunkResponse = await this.retryRequest(() =>
+      this.client.fetchComplianceChunk(exportUuid, chunkId),
+    );
+
+    this.logger.info(
+      {
+        exportUuid,
+        chunkId,
+        vulnerabilitiesExportResponse: complianceChunkResponse.length,
+      },
+      'Fetched Tenable Compliance export chunk',
+    );
+    return complianceChunkResponse;
+  }
+
+  public async iterateComplianceData(
+    callback: (compliance: ComplianceChunk) => void | Promise<void>,
+    options?: {
+      timeoutInMinutes?: number;
+      exportComplianceFindingsOptions?: ExportComplianceFindingsOptions;
+    },
+  ) {
+    const exportComplianceFindingsOptions =
+      options?.exportComplianceFindingsOptions || {
+        num_findings: 5000,
+        filters: {
+          last_seen: getUnixTime(sub(Date.now(), { days: 30 })),
+          state: ['OPEN', 'REOPENED', 'FIXED'],
+          compliance_results: [
+            'PASSED',
+            'FAILED',
+            'WARNING',
+            'SKIPPED',
+            'UNKNOWN',
+            'ERROR',
+          ],
+        },
+      };
+
+    const timeoutInMinutes = options?.timeoutInMinutes || 180;
+    const { export_uuid: exportUuid } = await this.fetchComplianceFinding(
+      exportComplianceFindingsOptions,
+    );
+
+    let { status, chunks_available: chunksAvailable } =
+      await this.fetchComplianceExportStatus(exportUuid);
+
+    const timeLimit = addMinutes(Date.now(), timeoutInMinutes);
+    while ([ExportStatus.Processing, ExportStatus.Queued].includes(status)) {
+      if (isAfter(Date.now(), timeLimit)) {
+        await this.cancelComplianceExport(exportUuid);
+        throw new IntegrationError({
+          code: 'TenableClientApiError',
+          message: `Compliance Finding export ${exportUuid} failed to finish processing in time limit`,
+        });
+      }
+
+      ({ status, chunks_available: chunksAvailable } =
+        await this.fetchComplianceExportStatus(exportUuid));
+      await sleep(60_000); // Sleep 60 seconds between status checks.
+    }
+
+    await pMap(
+      chunksAvailable,
+      async (chunkId) => {
+        const complianceChunks = await this.fetchComplianceExportChunk(
+          exportUuid,
+          chunkId,
+        );
+        for (const complianceChunk of complianceChunks) {
+          await callback(complianceChunk);
+        }
+      },
+      { concurrency: 3 },
+    );
+    return { exportUuid };
   }
 
   private async exportVulnerabilities(

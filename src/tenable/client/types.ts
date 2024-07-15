@@ -35,6 +35,82 @@ export interface User {
   uuid_id: string;
 }
 
+export interface ComplianceUuid {
+  export_uuid: string;
+}
+
+export interface ComplianceExportStatusResponse {
+  status: ExportStatus;
+  chunks_available: number[];
+  chunks_failed: number[];
+  chunks_cancelled: number[];
+}
+
+export interface VulnerabilitiesExportStatusResponse {
+  uuid: string;
+  status: ExportStatus;
+  chunks_available: number[];
+  chunks_failed: number[];
+  chunks_cancelled: number[];
+  total_chunks: number;
+  chunks_available_count: number;
+  empty_chunks_count: number;
+  finished_chunks: number;
+  num_assets_per_chunk: number;
+  created: number;
+  filters?: ExportVulnerabilitiesFilter;
+}
+
+export interface ComplianceChunk {
+  asset_uuid: string;
+  first_seen: string;
+  last_seen: string;
+  audit_file: string;
+  check_id: string;
+  check_name: string;
+  check_info: string;
+  expected_value: string;
+  actual_value: string;
+  status: string;
+  reference: {
+    framework: string;
+    control: string;
+  }[];
+  see_also: string;
+  solution: string;
+  db_type: string;
+  plugin_id: number;
+  state: string;
+  description: string;
+  compliance_benchmark_name: string;
+  compliance_benchmark_version: string;
+  compliance_control_id: string;
+  compliance_full_id: string;
+  compliance_functional_id: string;
+  compliance_informational_id: string;
+  synopsis: string;
+  last_fixed: string;
+  last_observed: string;
+  metadata_id: string;
+  uname_output: string;
+  indexed_at: string;
+  plugin_name: string;
+  asset: complainceFindingExportAsset;
+}
+
+export interface complainceFindingExportAsset {
+  id: string;
+  ipv4_addresses: string[];
+  fqdns: string[];
+  name: string;
+  agent_name: string;
+  agent_uuid: string;
+  netbios_name: string;
+  mac_addresses: string[];
+  operating_systems: string[];
+  system_type: string;
+}
+
 // -- https://cloud.tenable.com/scans
 //    https://developer.tenable.com/reference#scans-list
 
@@ -419,6 +495,11 @@ export interface UsersResponse {
   users: User[];
 }
 
+export interface ComplianceChunkResponse {
+  length: any;
+  complianceChunk: ComplianceChunk[];
+}
+
 export interface ScansResponse {
   folders: Folder[];
   scans: RecentScanSummary[];
@@ -585,6 +666,36 @@ export const VALID_VULNERABILITY_STATES = [
   'fixed',
 ] as const;
 export type VulnerabilityState = (typeof VALID_VULNERABILITY_STATES)[number];
+
+export const VALID_COMPLIANCE_STATES = ['OPEN', 'REOPENED', 'FIXED'] as const;
+export type complianceChunkState = (typeof VALID_COMPLIANCE_STATES)[number];
+
+export const VALID_COMPLIANCE_RESULT = [
+  'PASSED',
+  'FAILED',
+  'WARNING',
+  'SKIPPED',
+  'UNKNOWN',
+  'ERROR',
+] as const;
+export type complianceChunkResult = (typeof VALID_COMPLIANCE_RESULT)[number];
+
+export const VALID_COMPLIANCE_LAST_SEEN = [15, 30, 60, 90] as const;
+
+export type complianceChunkLastSeen =
+  (typeof VALID_COMPLIANCE_LAST_SEEN)[number];
+
+export interface ExportComplianceFindingsFilter {
+  state?: complianceChunkState[];
+  compliance_results?: complianceChunkResult[];
+  last_seen?: number;
+}
+
+export interface ExportComplianceFindingsOptions {
+  num_findings: number;
+  include_unlicensed?: boolean;
+  filters?: ExportComplianceFindingsFilter;
+}
 
 // Note: By default, vulnerability exports will only include
 // vulnerabilities found or fixed within the last 30 days if no

@@ -23,6 +23,9 @@ export const StepIds = {
   SCANNER_IDS: 'step-scanner-ids',
   AGENTS: 'step-agents',
   AGENT_RELATIONSHIPS: 'build-agent-relationships',
+  COMPLIANCE_FINDINGS: 'step-compliance-findings',
+  ASSET_COMPLIANCE_FINDINGS_RELATIONSHIPS:
+    'build-asset-compliance-findings-relationships',
 };
 
 export const Entities: Record<
@@ -37,7 +40,8 @@ export const Entities: Record<
   | 'CONTAINER_UNWANTED_PROGRAM'
   | 'VULNERABILITY'
   | 'USER'
-  | 'AGENT',
+  | 'AGENT'
+  | 'COMPLIANCE_FINDINGS',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -101,6 +105,11 @@ export const Entities: Record<
     _class: ['HostAgent'],
     _type: 'tenable_agent',
   },
+  COMPLIANCE_FINDINGS: {
+    resourceName: 'Compliance Finding',
+    _class: ['Finding'],
+    _type: 'tenable_compliance_finding',
+  },
 };
 
 export const Relationships: Record<
@@ -120,7 +129,8 @@ export const Relationships: Record<
   | 'REPORT_IDENTIFIED_UNWANTED_PROGRAM'
   | 'ASSET_HAS_VULN'
   | 'ACCOUNT_HAS_AGENT'
-  | 'HOSTAGENT_PROTECTS_DEVICE',
+  | 'HOSTAGENT_PROTECTS_DEVICE'
+  | 'ASSET_HAS_COMPLIANCE_FINDINGS',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -265,10 +275,16 @@ export const Relationships: Record<
     targetType: Entities.AGENT._type,
   },
   HOSTAGENT_PROTECTS_DEVICE: {
-    _type: 'tenable_agent_has_asset',
+    _type: 'tenable_agent_protects_asset',
     sourceType: Entities.AGENT._type,
     _class: RelationshipClass.PROTECTS,
     targetType: Entities.ASSET._type,
+  },
+  ASSET_HAS_COMPLIANCE_FINDINGS: {
+    _type: 'tenable_asset_has_compliance_finding',
+    sourceType: Entities.ASSET._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.COMPLIANCE_FINDINGS._type,
   },
 };
 

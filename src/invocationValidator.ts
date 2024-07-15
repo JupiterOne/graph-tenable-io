@@ -9,6 +9,8 @@ import TenableClient from './tenable/TenableClient';
 import {
   VALID_VULNERABILITY_STATES,
   VALID_VULNERABILITY_SEVERITIES,
+  VALID_COMPLIANCE_STATES,
+  VALID_COMPLIANCE_RESULT,
 } from './tenable/client';
 import { toNum } from './utils/dataType';
 
@@ -43,6 +45,38 @@ function validateVulnerabilityStates(states: string) {
     if (!(VALID_VULNERABILITY_STATES as unknown as string[]).includes(state)) {
       throw new IntegrationValidationError(
         `Status - ${state} - is not valid. Valid vulnerability status include ${VALID_VULNERABILITY_STATES.map(
+          (v) => v,
+        )}`,
+      );
+    }
+  }
+}
+
+function validateComplianceStates(states: string) {
+  const statesValues = states.replace(/\s+/g, '').split(',');
+  for (const state of statesValues) {
+    if (!(VALID_COMPLIANCE_STATES as unknown as string[]).includes(state)) {
+      throw new IntegrationValidationError(
+        `States - ${state} - is not valid. Valid Compliance states include ${VALID_COMPLIANCE_STATES.map(
+          (v) => v,
+        )}`,
+      );
+    }
+  }
+}
+
+function validateComplianceResults(complianceResult: string) {
+  const complianceResultValues = complianceResult
+    .replace(/\s+/g, '')
+    .split(',');
+  for (const complianceResult of complianceResultValues) {
+    if (
+      !(VALID_COMPLIANCE_RESULT as unknown as string[]).includes(
+        complianceResult,
+      )
+    ) {
+      throw new IntegrationValidationError(
+        `complianceResult - ${complianceResult} - is not valid. Valid complianceResult include ${VALID_COMPLIANCE_RESULT.map(
           (v) => v,
         )}`,
       );
@@ -116,6 +150,24 @@ export default async function validateInvocation(
       (executionContext.instance.config.vulnerabilityStates =
         config.vulnerabilityStates.replace(/\s+/g, ''));
     validateVulnerabilityStates(vulnerabilityStates);
+  }
+
+  if (config.complianceStates) {
+    const complianceStates =
+      (executionContext.instance.config.complianceStates =
+        typeof config.complianceStates === 'string'
+          ? config.complianceStates.replace(/\s+/g, '')
+          : config.complianceStates);
+    validateComplianceStates(complianceStates);
+  }
+
+  if (config.complianceResult) {
+    const complianceResult =
+      (executionContext.instance.config.complianceResult =
+        typeof config.complianceResult === 'string'
+          ? config.complianceResult.replace(/\s+/g, '')
+          : config.complianceResult);
+    validateComplianceResults(complianceResult);
   }
 
   const provider = new TenableClient({

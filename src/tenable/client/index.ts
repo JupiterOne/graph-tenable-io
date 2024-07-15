@@ -8,6 +8,9 @@ import {
   AssetsExportStatusResponse,
   AssetsResponse,
   CancelExportResponse,
+  ComplianceChunk,
+  ComplianceExportStatusResponse,
+  ComplianceUuid,
   ContainerImageDetails,
   ContainerImagesResponse,
   ContainerRepositoryResponse,
@@ -75,6 +78,35 @@ export default class TenableClient {
 
   public async fetchUsers() {
     return this.request<UsersResponse>('/users', Method.GET);
+  }
+
+  public async exportComplianceData(options) {
+    return this.request<ComplianceUuid>(
+      '/compliance/export',
+      Method.POST,
+      options,
+    );
+  }
+
+  public async cancelComplianceFindingExport(exportUuid: string) {
+    return await this.request<CancelExportResponse>(
+      `/compliance/export/${exportUuid}/cancel`,
+      Method.POST,
+    );
+  }
+
+  public async fetchComplianceStatus(export_uuid) {
+    return this.request<ComplianceExportStatusResponse>(
+      `/compliance/export/${export_uuid}/status`,
+      Method.GET,
+    );
+  }
+
+  public async fetchComplianceChunk(exportUuid: string, chunkId: number) {
+    return this.request<ComplianceChunk[]>(
+      `/compliance/export/${exportUuid}/chunks/${chunkId}`,
+      Method.GET,
+    );
   }
 
   public async fetchScans() {
