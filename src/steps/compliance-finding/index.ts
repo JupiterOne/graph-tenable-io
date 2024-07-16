@@ -16,7 +16,7 @@ export async function fetchComplianceFindings(
   context: IntegrationStepExecutionContext<IntegrationConfig>,
 ): Promise<void> {
   const { jobState, logger, instance } = context;
-  const { complianceApiTimeoutInMinutes, accessKey, secretKey, numFindings } =
+  const { complianceApiTimeoutInMinutes, accessKey, secretKey } =
     instance.config;
 
   const provider = new TenableClient({
