@@ -170,6 +170,16 @@ export default async function validateInvocation(
     validateComplianceResults(complianceResult);
   }
 
+  if (config.numFindings) {
+    const numFindings = Number(config.numFindings);
+    if (isNaN(numFindings) || numFindings < 50 || numFindings > 10000) {
+      throw new IntegrationConfigLoadError(
+        `'numFindings' config value is invalid (val=${numFindings}, min=50, max=10000)`,
+      );
+    }
+    executionContext.instance.config.numFindings = numFindings;
+  }
+
   const provider = new TenableClient({
     logger,
     accessToken: config.accessKey,

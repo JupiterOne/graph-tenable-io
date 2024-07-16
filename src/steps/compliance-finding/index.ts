@@ -52,7 +52,7 @@ export async function fetchComplianceFindings(
     {
       timeoutInMinutes: complianceApiTimeoutInMinutes,
       exportComplianceFindingsOptions: {
-        num_findings: numFindings as number,
+        num_findings: 5000,
         filters: buildComplianceFilters(instance.config),
       },
     },
