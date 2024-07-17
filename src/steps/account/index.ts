@@ -3,7 +3,7 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig } from '../../config';
-import { Entities, StepIds } from '../constants';
+import { Entities, INGESTION_SOURCE_IDS, StepIds } from '../constants';
 import { createAccountEntity } from './converters';
 import { getAccount } from './util';
 
@@ -19,6 +19,7 @@ export const accountStep: Step<
   id: StepIds.ACCOUNT,
   name: 'Fetch Account',
   entities: [Entities.ACCOUNT],
+  ingestionSourceId: INGESTION_SOURCE_IDS.ACCOUNT,
   relationships: [],
   dependsOn: [],
   executionHandler: fetchAccount,

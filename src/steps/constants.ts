@@ -371,3 +371,17 @@ export const MappedRelationships: Record<
     },
   },
 };
+
+export const INGESTION_SOURCE_IDS = {
+  ACCOUNT: 'account',
+  SERVICE: 'service',
+  ASSETS: 'assets',
+  VULNERABILITIES: 'vulnerabilities',
+  USERS: 'users',
+  CONTAINER_IMAGES: 'container-images',
+  CONTAINER_REPOSITORIES: 'container-repositories',
+  CONTAINER_REPORTS: 'container-reports',
+  SCANNER_IDS: 'scanner-ids',
+  AGENTS: 'agents',
+  COMPLIANCE_FINDINGS: 'compliance-findings',
+};

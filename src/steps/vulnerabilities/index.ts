@@ -8,6 +8,7 @@ import {
 import { IntegrationConfig } from '../../config';
 import {
   Entities,
+  INGESTION_SOURCE_IDS,
   MappedRelationships,
   Relationships,
   StepIds,
@@ -265,6 +266,7 @@ export const scanSteps: Step<
     id: StepIds.ASSETS,
     name: 'Fetch Assets',
     entities: [Entities.ASSET],
+    ingestionSourceId: INGESTION_SOURCE_IDS.ASSETS,
     relationships: [Relationships.ACCOUNT_HAS_ASSET],
     mappedRelationships: [
       MappedRelationships.TENABLE_ASSET_IS_AWS_INSTANCE,
@@ -278,6 +280,7 @@ export const scanSteps: Step<
     id: StepIds.VULNERABILITIES,
     name: 'Fetch Vulnerabilities',
     entities: [Entities.VULNERABILITY],
+    ingestionSourceId: INGESTION_SOURCE_IDS.VULNERABILITIES,
     relationships: [],
     dependsOn: [],
     executionHandler: fetchVulnerabilities,
@@ -286,6 +289,7 @@ export const scanSteps: Step<
     id: StepIds.ASSET_VULNERABILITY_RELATIONSHIPS,
     name: 'Build Asset -> Vulnerability Relationships',
     entities: [],
+    ingestionSourceId: INGESTION_SOURCE_IDS.ASSETS,
     relationships: [Relationships.ASSET_HAS_VULN],
     mappedRelationships: [
       MappedRelationships.VULNERABILITY_HAS_AWS_INSTANCE,
@@ -299,6 +303,7 @@ export const scanSteps: Step<
     id: StepIds.VULNERABILITY_CVE_RELATIONSHIPS,
     name: 'Build Vulnerability -> CVE Mapped Relationships',
     entities: [],
+    ingestionSourceId: INGESTION_SOURCE_IDS.VULNERABILITIES,
     relationships: [],
     mappedRelationships: [MappedRelationships.VULNERABILITY_IS_CVE],
     dependsOn: [StepIds.VULNERABILITIES],
