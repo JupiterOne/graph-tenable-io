@@ -5,7 +5,12 @@ import {
   Step,
   createDirectRelationship,
 } from '@jupiterone/integration-sdk-core';
-import { Entities, StepIds, Relationships } from '../constants';
+import {
+  Entities,
+  StepIds,
+  Relationships,
+  INGESTION_SOURCE_IDS,
+} from '../constants';
 import { IntegrationConfig } from '../../config';
 import { DATA_SCANNER_IDS } from '../scanners/constants';
 import { createAgentEntity } from './converters';
@@ -125,6 +130,7 @@ export const agentsSteps: Step<
     id: StepIds.AGENTS,
     name: 'Fetch Agents',
     entities: [Entities.AGENT],
+    ingestionSourceId: INGESTION_SOURCE_IDS.AGENTS,
     relationships: [Relationships.ACCOUNT_HAS_AGENT],
     dependsOn: [StepIds.ACCOUNT, StepIds.SCANNER_IDS],
     executionHandler: fetchAgents,
@@ -133,6 +139,7 @@ export const agentsSteps: Step<
     id: StepIds.AGENT_RELATIONSHIPS,
     name: 'Build Host Agent Protects Agents Relationship',
     entities: [],
+    ingestionSourceId: INGESTION_SOURCE_IDS.AGENTS,
     relationships: [Relationships.HOSTAGENT_PROTECTS_DEVICE],
     dependsOn: [StepIds.ASSETS, StepIds.AGENTS],
     executionHandler: buildAgentRelationships,

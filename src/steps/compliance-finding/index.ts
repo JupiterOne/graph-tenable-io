@@ -7,7 +7,12 @@ import {
   getRawData,
 } from '@jupiterone/integration-sdk-core';
 import TenableClient from '../../tenable/TenableClient';
-import { Entities, StepIds, Relationships } from '../constants';
+import {
+  Entities,
+  StepIds,
+  Relationships,
+  INGESTION_SOURCE_IDS,
+} from '../constants';
 import { IntegrationConfig } from '../../config';
 import { createComplianceFindingEntity } from './converter';
 import { buildComplianceFilters } from './filters';
@@ -106,6 +111,7 @@ export const complianceFindingSteps: Step<
     id: StepIds.COMPLIANCE_FINDINGS,
     name: 'Fetch Compliance',
     entities: [Entities.COMPLIANCE_FINDINGS],
+    ingestionSourceId: INGESTION_SOURCE_IDS.COMPLIANCE_FINDINGS,
     relationships: [],
     dependsOn: [],
     executionHandler: fetchComplianceFindings,
@@ -114,6 +120,7 @@ export const complianceFindingSteps: Step<
     id: StepIds.ASSET_COMPLIANCE_FINDINGS_RELATIONSHIPS,
     name: 'Build Asset Has Compliance Finding Relationship',
     entities: [],
+    ingestionSourceId: INGESTION_SOURCE_IDS.COMPLIANCE_FINDINGS,
     relationships: [Relationships.ASSET_HAS_COMPLIANCE_FINDINGS],
     dependsOn: [StepIds.ASSETS, StepIds.COMPLIANCE_FINDINGS],
     executionHandler: buildAssetComplianceFindingRelationships,

@@ -3,7 +3,7 @@ import {
   IntegrationStepExecutionContext,
   Step,
 } from '@jupiterone/integration-sdk-core';
-import { StepIds } from '../constants';
+import { INGESTION_SOURCE_IDS, StepIds } from '../constants';
 import { IntegrationConfig } from '../../config';
 import { DATA_SCANNER_IDS } from './constants';
 
@@ -34,6 +34,7 @@ export const scannerStep: Step<
   id: StepIds.SCANNER_IDS,
   name: 'Fetch Scanner IDs',
   entities: [],
+  ingestionSourceId: INGESTION_SOURCE_IDS.SCANNER_IDS,
   relationships: [],
   dependsOn: [],
   executionHandler: fetchScannerIds,
