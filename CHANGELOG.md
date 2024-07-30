@@ -1,3 +1,16 @@
+# v9.8.0 (Tue Jul 30 2024)
+
+#### 🚀 Enhancement
+
+- Tenable enhancement dev [#249](https://github.com/JupiterOne/graph-tenable-io/pull/249) ([@poornima-metron](https://github.com/poornima-metron) [@gastonyelmini](https://github.com/gastonyelmini))
+
+#### Authors: 2
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+- poornima-metron ([@poornima-metron](https://github.com/poornima-metron))
+
+---
+
 # v9.7.2 (Wed Jun 12 2024)
 
 #### 🐛 Bug Fix
