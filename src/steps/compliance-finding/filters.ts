@@ -33,11 +33,13 @@ function calculateLastSeenTimestamp(daysAgo: number): number {
 export function buildComplianceFilters(
   config: IntegrationConfig,
 ): ExportComplianceFindingsFilter {
-  const lastSeenDays = config.lastSeen
-    ? Number(config.lastSeen)
+  const lastSeenDays = config.complianceLastSeen
+    ? Number(config.complianceLastSeen)
     : DEFAULT_LAST_SEEN_DAYS;
   if (isNaN(lastSeenDays)) {
-    throw new Error(`Invalid lastSeen value: ${config.lastSeen}`);
+    throw new Error(
+      `Invalid complianceLastSeen value: ${config.complianceLastSeen}`,
+    );
   }
 
   const lastSeenTimestamp = calculateLastSeenTimestamp(lastSeenDays);

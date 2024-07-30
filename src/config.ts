@@ -11,10 +11,10 @@ export interface IntegrationConfig extends IntegrationInstanceConfig {
   assetApiTimeoutInMinutes?: number;
   vulnerabilitySeverities?: string;
   vulnerabilityStates?: string;
-  lastSeen?: string;
+  complianceLastSeen?: string;
   complianceState?: string;
   complianceResult?: string;
-  numFindings?: number;
+  complianceNumFindings?: number;
 }
 
 export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
@@ -37,7 +37,7 @@ export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
   vulnerabilityStates: {
     type: 'string',
   },
-  lastSeen: {
+  complianceLastSeen: {
     type: 'string',
   },
   complianceApiTimeoutInMinutes: {
@@ -49,7 +49,7 @@ export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
   complianceResult: {
     type: 'string',
   },
-  numFindings: {
+  complianceNumFindings: {
     type: 'string',
   },
 };
