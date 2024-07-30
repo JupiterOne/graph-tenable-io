@@ -3,7 +3,12 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig } from '../../config';
-import { Entities, Relationships, StepIds } from '../constants';
+import {
+  Entities,
+  INGESTION_SOURCE_IDS,
+  Relationships,
+  StepIds,
+} from '../constants';
 import {
   buildRepositoryImagesRelationship,
   fetchContainerImages,
@@ -18,6 +23,7 @@ export const containerSteps: Step<
     id: StepIds.CONTAINER_REPOSITORIES,
     name: 'Fetch Container Repositories',
     entities: [Entities.CONTAINER_REPOSITORY],
+    ingestionSourceId: INGESTION_SOURCE_IDS.CONTAINER_REPOSITORIES,
     relationships: [Relationships.ACCOUNT_HAS_CONTAINER_REPOSITORY],
     dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchContainerRepositories,
@@ -26,6 +32,7 @@ export const containerSteps: Step<
     id: StepIds.CONTAINER_IMAGES,
     name: 'Fetch Container Images',
     entities: [Entities.CONTAINER_IMAGE],
+    ingestionSourceId: INGESTION_SOURCE_IDS.CONTAINER_IMAGES,
     relationships: [
       Relationships.ACCOUNT_HAS_CONTAINER_IMAGE,
       Relationships.SERVICE_SCANS_CONTAINER_IMAGE,
@@ -37,6 +44,7 @@ export const containerSteps: Step<
     id: StepIds.REPOSITORY_IMAGES_RELATIONSHIPS,
     name: 'Build Repository Images Relationships',
     entities: [],
+    ingestionSourceId: INGESTION_SOURCE_IDS.CONTAINER_IMAGES,
     relationships: [Relationships.CONTAINER_REPOSITORY_HAS_IMAGE],
     dependsOn: [StepIds.CONTAINER_IMAGES, StepIds.CONTAINER_REPOSITORIES],
     executionHandler: buildRepositoryImagesRelationship,
@@ -50,6 +58,7 @@ export const containerSteps: Step<
       Entities.CONTAINER_MALWARE,
       Entities.CONTAINER_UNWANTED_PROGRAM,
     ],
+    ingestionSourceId: INGESTION_SOURCE_IDS.CONTAINER_REPORTS,
     relationships: [
       Relationships.CONTAINER_IMAGE_HAS_REPORT,
       Relationships.CONTAINER_IMAGE_HAS_FINDING,

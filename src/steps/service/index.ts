@@ -5,6 +5,7 @@ import {
 import { IntegrationConfig } from '../../config';
 import {
   Entities,
+  INGESTION_SOURCE_IDS,
   Relationships,
   SERVICE_ENTITY_DATA_KEY,
   StepIds,
@@ -42,6 +43,7 @@ export const serviceSteps: Step<
     id: StepIds.SERVICE,
     name: 'Fetch Service Details',
     entities: [Entities.SERVICE],
+    ingestionSourceId: INGESTION_SOURCE_IDS.SERVICE,
     relationships: [Relationships.ACCOUNT_PROVIDES_SERVICE],
     dependsOn: [StepIds.ACCOUNT],
     executionHandler: fetchServiceDetails,

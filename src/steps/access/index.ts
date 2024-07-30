@@ -3,7 +3,12 @@ import {
   Step,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig } from '../../config';
-import { Entities, Relationships, StepIds } from '../constants';
+import {
+  Entities,
+  INGESTION_SOURCE_IDS,
+  Relationships,
+  StepIds,
+} from '../constants';
 import { getAccount } from '../account/util';
 import TenableClient from '../../tenable/TenableClient';
 import { createAccountUserRelationship, createUserEntity } from './converters';
@@ -35,6 +40,7 @@ export const userStep: Step<
   id: StepIds.USERS,
   name: 'Fetch Users',
   entities: [Entities.USER],
+  ingestionSourceId: INGESTION_SOURCE_IDS.USERS,
   relationships: [Relationships.ACCOUNT_HAS_USER],
   dependsOn: [StepIds.ACCOUNT],
   executionHandler: fetchUsers,
