@@ -1,5 +1,4 @@
 import {
-  IntegrationMissingKeyError,
   IntegrationStepExecutionContext,
   RelationshipClass,
   Step,
@@ -83,11 +82,11 @@ export async function buildAssetComplianceFindingRelationships(
         const assetKey = complianceData.asset.id;
 
         if (!assetKey) {
-          throw new IntegrationMissingKeyError(
-            `Cannot build Relationship.
-              Error: Missing Key.
-              assetKey: ${assetKey}`,
+          context.logger.warn(
+            `Cannot build Relationship. Error: Missing Key. assetKey: ${assetKey}`,
           );
+
+          return;
         }
 
         await jobState.addRelationship(
