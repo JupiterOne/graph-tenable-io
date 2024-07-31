@@ -1,3 +1,15 @@
+# v9.8.1 (Wed Jul 31 2024)
+
+#### 🐛 Bug Fix
+
+- update vulnerability open property to account for open states [#251](https://github.com/JupiterOne/graph-tenable-io/pull/251) ([@RonaldEAM](https://github.com/RonaldEAM))
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v9.8.0 (Tue Jul 30 2024)
 
 #### 🚀 Enhancement
