@@ -286,7 +286,7 @@ export function createVulnerabilityEntity(
         description: vuln.plugin.description,
         recommendation: vuln.plugin.solution,
         impact: vuln.plugin.synopsis,
-        open: vuln.state === 'OPEN',
+        open: ['OPEN', 'REOPENED'].includes(vuln.state),
         references: vuln.plugin.see_also,
 
         // Add targets for mapping rules.
