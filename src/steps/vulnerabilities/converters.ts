@@ -337,13 +337,14 @@ export function createVulnerabilityEntity(
         // vulnerability prioritization properties
         cvss3BaseScore: vuln.plugin.cvss3_base_score,
         cvss3TemporalScore: vuln.plugin.cvss3_temporal_score,
-
         cvssBaseScore: vuln.plugin.cvss_base_score,
         cvssTemporalScore: vuln.plugin.cvss_temporal_score,
-
         cvss3Vector: vuln.plugin.cvss3_vector?.raw,
         cvssVector: vuln.plugin.cvss_vector?.raw,
         hasPatch: vuln.plugin.has_patch,
+
+        // cross-reference plugin information array: CISA, CVE, IAVA
+        xRefs: vuln.plugin.xrefs?.map((r) => JSON.stringify(r)) ?? [],
       },
     },
   });
